@@ -1,157 +1,538 @@
 # skills/agent-ops/repo-self-audit.py
-"""
-BLUEPRINT: skills/agent-ops/repo-self-audit.py
+"""Repository spec-compliance audit."""
 
-PURPOSE:
-Automated repository spec-compliance audit. Checks that the repository meets
-the requirements in spec/spec.md: required files exist (§26), skills have all
-required sections (§6.2), prompts have front matter (§7.2), procedures have
-required fields (§8.3), queue schema is valid, Make targets are documented (§10.2),
-and all non-JSON files begin with a file title comment (§1.7).
-Produces a structured Markdown audit report with BLOCKING/WARNING findings.
-Invoked by: scripts/audit-self.sh → make audit:self.
+from __future__ import annotations
 
-DEPENDS ON:
-- pathlib (stdlib) — file discovery
-- re (stdlib) — pattern matching for section headings
-- csv (stdlib) — queue schema validation
-- subprocess (stdlib) — run make -qp to inspect Makefile targets
-- argparse (stdlib) — CLI argument parsing
-- sys (stdlib) — exit codes
+import argparse
+import csv
+import json
+import re
+import sys
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Literal
 
-DEPENDED ON BY:
-- scripts/audit-self.sh — invokes this as main audit engine
-- .cursor/commands/audit.md — documents this as audit machinery
+SKIP_DIRS = frozenset(
+    {
+        ".git",
+        ".venv",
+        "node_modules",
+        "__pycache__",
+        "htmlcov",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".ruff_cache",
+    }
+)
 
-CLASSES:
+QUEUE_COLUMNS = (
+    "id",
+    "batch",
+    "phase",
+    "category",
+    "summary",
+    "dependencies",
+    "notes",
+    "created_date",
+)
 
-  AuditFinding:
-    PURPOSE: Represents a single audit finding.
-    FIELDS:
-      - severity: Literal["BLOCKING", "WARNING"] — finding severity
-      - check: str — which audit check found this (e.g., "inventory", "skill-format")
-      - path: str — file path related to the finding
-      - message: str — what is wrong and how to fix it
-      - spec_reference: str — which spec section this relates to (e.g., "§26.4 item 39")
-    NOTES: Pydantic frozen model for immutability in report generation.
+QUEUE_ARCHIVE_EXTRA = ("status", "completed_date")
 
-  AuditReport:
-    PURPOSE: Collection of all findings from an audit run.
-    FIELDS:
-      - timestamp: datetime — when the audit ran
-      - findings: list[AuditFinding] — all findings
-      - checks_run: list[str] — which checks were performed
-    METHODS:
-      - blocking_count() -> int — count BLOCKING findings
-      - warning_count() -> int — count WARNING findings
-      - passed() -> bool — True if no BLOCKING findings
-      - to_markdown() -> str — format as Markdown report
-      - to_json() -> str — format as JSON for machine consumption
+REQUIRED_PROMPT_FIELDS: tuple[str, ...] = (
+    "purpose",
+    "when_to_use",
+    "required_inputs",
+    "expected_outputs",
+    "validation_expectations",
+    "constraints",
+    "linked_commands",
+    "linked_procedures",
+    "linked_skills",
+)
 
-FUNCTIONS:
+# spec §10 / AGENTS.md — canonical Make targets (see Makefile escaped colons).
+REQUIRED_MAKE_TARGETS: tuple[str, ...] = (
+    "lint",
+    "fmt",
+    "typecheck",
+    "test",
+    "migrate",
+    "queue-peek",
+    "queue-validate",
+    "audit-self",
+    "security-scan",
+    "skills-list",
+    "help",
+    "dev",
+)
 
-  check_file_inventory(repo_root: Path) -> list[AuditFinding]:
-    PURPOSE: Check that all §26 required files exist on disk.
-    STEPS:
-      1. Load required file list from a hardcoded set matching spec §26 (or from a manifest file)
-      2. For each required file: check Path(repo_root / path).exists()
-      3. For missing files: create BLOCKING finding with spec reference
-    RETURNS: list[AuditFinding] for missing required files
-    RAISES: No exceptions — captures errors as findings
+# Critical paths from spec §26 / implementation plan (existence check).
+REQUIRED_PATHS: tuple[str, ...] = (
+    "AGENTS.md",
+    "README.md",
+    "Makefile",
+    "pyproject.toml",
+    "spec/spec.md",
+    "queue/queue.csv",
+    "queue/queuearchive.csv",
+    "queue/QUEUE_INSTRUCTIONS.md",
+    "apps/api/src/main.py",
+    "apps/api/src/config.py",
+    "packages/contracts/__init__.py",
+    "packages/tasks/__init__.py",
+    "skills/README.md",
+    "prompts/README.md",
+    "docs/procedures/README.md",
+)
 
-  check_title_comments(repo_root: Path) -> list[AuditFinding]:
-    PURPOSE: Verify all non-JSON files begin with a file title comment (§1.7).
-    STEPS:
-      1. Walk repo_root recursively, skip: .git, .venv, node_modules, __pycache__
-      2. For each file: read first line
-      3. Apply per-extension check:
-         - .py: first line must start with "# " (comment)
-         - .md: first line must be "# " (H1) or "<!-- "
-         - .yml/.yaml: first line must start with "# "
-         - .sh: second line (after shebang) must start with "# "
-         - .csv: first line must start with "# "
-         - .bat: first line must start with "REM "
-         - JSON: skip (waived)
-      4. If check fails: WARNING finding
-    RETURNS: list[AuditFinding]
 
-  check_skill_format(repo_root: Path) -> list[AuditFinding]:
-    PURPOSE: Verify all skill .md files have §6.2 required sections.
-    STEPS:
-      1. Find all *.md files under skills/ (excluding README.md files)
-      2. For each skill file: read content
-      3. Check for presence of each required section heading:
-         "## Purpose", "## When to Invoke", "## Prerequisites", "## Relevant",
-         "## Step-by-Step Method", "## Command Examples", "## Validation Checklist",
-         "## Common Failure Modes", "## Handoff Expectations",
-         "## Related Procedures", "## Related Prompts", "## Related Rules"
-      4. Missing sections → WARNING finding per section
-    RETURNS: list[AuditFinding]
+@dataclass(frozen=True, slots=True)
+class AuditFinding:
+    """Single audit finding."""
 
-  check_prompt_metadata(repo_root: Path) -> list[AuditFinding]:
-    PURPOSE: Verify all prompt .md files have §7.2 required YAML front matter fields.
-    STEPS:
-      1. Find all *.md files under prompts/ (excluding README.md)
-      2. For each prompt: extract YAML front matter (between --- delimiters)
-      3. Check for all required fields: purpose, when_to_use, required_inputs, expected_outputs,
-         validation_expectations, constraints, linked_commands, linked_procedures, linked_skills
-      4. Missing fields → WARNING finding per field
-    RETURNS: list[AuditFinding]
+    severity: Literal["BLOCKING", "WARNING"]
+    check: str
+    path: str
+    message: str
+    spec_reference: str
 
-  check_procedure_structure(repo_root: Path) -> list[AuditFinding]:
-    PURPOSE: Verify all procedure .md files have §8.3 required sections.
-    STEPS:
-      1. Find all *.md files under docs/procedures/ (excluding README.md)
-      2. For each procedure: check for sections:
-         "## Purpose" or "Purpose", "## Prerequisites", "## Steps" or ordered steps,
-         "## Validation", "## Rollback" or "## Failure Handling", "## Handoff"
-      3. Missing sections → WARNING finding
-    RETURNS: list[AuditFinding]
 
-  check_queue_schema(repo_root: Path) -> list[AuditFinding]:
-    PURPOSE: Verify queue.csv and queuearchive.csv have correct header schemas.
-    STEPS:
-      1. Read queue.csv first row (header)
-      2. Compare against required columns: id, batch, phase, category, summary, dependencies, notes, created_date
-      3. Read queuearchive.csv first row
-      4. Compare against required columns (same + status, completed_date)
-      5. Schema mismatch → BLOCKING finding
-    RETURNS: list[AuditFinding]
+@dataclass
+class AuditReport:
+    """Aggregated audit results."""
 
-  check_make_targets(repo_root: Path) -> list[AuditFinding]:
-    PURPOSE: Verify all §10.2 required Make targets are present in Makefile.
-    STEPS:
-      1. Load required targets list from §10.2 (hardcoded)
-      2. Read Makefile and parse target names (lines matching "^<name>:" pattern)
-      3. For missing targets: WARNING finding
-    RETURNS: list[AuditFinding]
+    timestamp: datetime
+    findings: list[AuditFinding]
+    checks_run: list[str]
 
-  run_audit(repo_root: Path, checks: list[str] | None = None) -> AuditReport:
-    PURPOSE: Run all (or specified) audit checks and return report.
-    STEPS:
-      1. Determine which checks to run (all if checks is None)
-      2. Run each check function, collect findings
-      3. Build AuditReport with all findings
-    RETURNS: AuditReport
+    def blocking_count(self) -> int:
+        return sum(1 for f in self.findings if f.severity == "BLOCKING")
 
-  main() -> None:
-    PURPOSE: CLI entry point.
-    STEPS:
-      1. Parse args: --check (specific check or "all"), --format (markdown|json), --repo-root
-      2. Run audit
-      3. Print formatted report
-      4. Exit 0 if passed (no BLOCKING), 1 if has BLOCKING findings
+    def warning_count(self) -> int:
+        return sum(1 for f in self.findings if f.severity == "WARNING")
 
-CONSTANTS:
-  - REQUIRED_SKILL_SECTIONS: tuple[str, ...] — the §6.2 headings
-  - REQUIRED_PROMPT_FIELDS: tuple[str, ...] — the §7.2 front matter keys
-  - REQUIRED_MAKE_TARGETS: tuple[str, ...] — the §10.2 target names
-  - QUEUE_COLUMNS: tuple[str, ...] — the queue CSV column names
-  - SKIP_DIRS: frozenset[str] = {".git", ".venv", "node_modules", "__pycache__", "htmlcov"}
+    def passed(self) -> bool:
+        return self.blocking_count() == 0
 
-DESIGN DECISIONS:
-- Each check is independent and can run in isolation (--check flag)
-- JSON format allows CI to parse and upload as artifact
-- Exit code 1 on BLOCKING = CI fails if audit fails
-- Required file list is hardcoded (to avoid circular reference to spec) and version-pinned
-"""
+    def to_markdown(self) -> str:
+        lines = [
+            "# Repository self-audit",
+            "",
+            f"- **Run at:** {self.timestamp.isoformat()}",
+            f"- **Checks:** {', '.join(self.checks_run)}",
+            f"- **Blocking:** {self.blocking_count()} | "
+            f"**Warnings:** {self.warning_count()}",
+            "",
+        ]
+        if not self.findings:
+            lines.append("No findings.")
+            return "\n".join(lines)
+
+        for f in self.findings:
+            lines.append(f"## [{f.severity}] {f.check}: {f.path}")
+            lines.append("")
+            lines.append(f.message)
+            lines.append("")
+            lines.append(f"*Spec: {f.spec_reference}*")
+            lines.append("")
+        return "\n".join(lines)
+
+    def to_json(self) -> str:
+        payload = {
+            "timestamp": self.timestamp.isoformat(),
+            "checks_run": self.checks_run,
+            "findings": [
+                {
+                    "severity": f.severity,
+                    "check": f.check,
+                    "path": f.path,
+                    "message": f.message,
+                    "spec_reference": f.spec_reference,
+                }
+                for f in self.findings
+            ],
+        }
+        return json.dumps(payload, indent=2)
+
+
+def _iter_files(repo_root: Path) -> list[Path]:
+    out: list[Path] = []
+    for p in repo_root.rglob("*"):
+        if not p.is_file():
+            continue
+        if any(part in SKIP_DIRS for part in p.parts):
+            continue
+        out.append(p)
+    return out
+
+
+def check_file_inventory(repo_root: Path) -> list[AuditFinding]:
+    findings: list[AuditFinding] = []
+    for rel in REQUIRED_PATHS:
+        path = repo_root / rel
+        if not path.is_file():
+            findings.append(
+                AuditFinding(
+                    severity="BLOCKING",
+                    check="inventory",
+                    path=rel,
+                    message=f"Required file missing: {rel}",
+                    spec_reference="§26",
+                )
+            )
+    return findings
+
+
+def check_title_comments(repo_root: Path) -> list[AuditFinding]:
+    findings: list[AuditFinding] = []
+    for path in _iter_files(repo_root):
+        rel = path.relative_to(repo_root).as_posix()
+        suffix = path.suffix.lower()
+        if suffix == ".json":
+            continue
+        try:
+            raw = path.read_text(encoding="utf-8", errors="replace")
+        except OSError as exc:
+            findings.append(
+                AuditFinding(
+                    severity="WARNING",
+                    check="title-comments",
+                    path=rel,
+                    message=f"Could not read file: {exc}",
+                    spec_reference="§1.7",
+                )
+            )
+            continue
+
+        lines = raw.splitlines()
+        if not lines:
+            findings.append(
+                AuditFinding(
+                    severity="WARNING",
+                    check="title-comments",
+                    path=rel,
+                    message="Empty file has no title comment",
+                    spec_reference="§1.7",
+                )
+            )
+            continue
+
+        first = lines[0].strip()
+        ok = False
+        if suffix == ".py":
+            ok = first.startswith("# ")
+        elif suffix in {".md", ".mdc"}:
+            ok = first.startswith("# ") or first.startswith("<!--")
+        elif suffix in {".yml", ".yaml"}:
+            ok = first.startswith("# ")
+        elif suffix == ".sh":
+            second = lines[1].strip() if len(lines) > 1 else ""
+            ok = first.startswith("#!/") and second.startswith("# ")
+        elif suffix == ".csv":
+            ok = first.startswith("# ")
+        elif suffix == ".bat":
+            ok = first.upper().startswith("REM ")
+        elif suffix in {".toml", ".ini", "dockerfile"} or path.name == "Dockerfile":
+            ok = first.startswith("# ")
+        elif suffix == ".typed":
+            ok = True  # PEP 561 marker may be empty
+        else:
+            ok = first.startswith("# ") or first.startswith("<!--")
+
+        if not ok:
+            findings.append(
+                AuditFinding(
+                    severity="WARNING",
+                    check="title-comments",
+                    path=rel,
+                    message="First line does not match §1.7 title-comment convention",
+                    spec_reference="§1.7",
+                )
+            )
+    return findings
+
+
+def check_skill_format(repo_root: Path) -> list[AuditFinding]:
+    findings: list[AuditFinding] = []
+    skills_dir = repo_root / "skills"
+    if not skills_dir.is_dir():
+        return findings
+
+    for md in skills_dir.rglob("*.md"):
+        if md.name == "README.md":
+            continue
+        rel = md.relative_to(repo_root).as_posix()
+        text = md.read_text(encoding="utf-8", errors="replace")
+        text = re.sub(r"<!--.*?-->", "", text, flags=re.DOTALL)
+        if not re.search(r"^##\s+.*purpose", text, re.IGNORECASE | re.MULTILINE):
+            findings.append(
+                AuditFinding(
+                    severity="WARNING",
+                    check="skill-format",
+                    path=rel,
+                    message='Missing "## Purpose" section (§6.2)',
+                    spec_reference="§6.2",
+                )
+            )
+        if not re.search(r"^##\s+.*when to invoke", text, re.IGNORECASE | re.MULTILINE):
+            findings.append(
+                AuditFinding(
+                    severity="WARNING",
+                    check="skill-format",
+                    path=rel,
+                    message='Missing "## When to invoke" section (§6.2)',
+                    spec_reference="§6.2",
+                )
+            )
+    return findings
+
+
+def check_prompt_metadata(repo_root: Path) -> list[AuditFinding]:
+    findings: list[AuditFinding] = []
+    prompts_dir = repo_root / "prompts"
+    if not prompts_dir.is_dir():
+        return findings
+
+    for md in prompts_dir.glob("*.md"):
+        if md.name == "README.md":
+            continue
+        rel = md.relative_to(repo_root).as_posix()
+        text = md.read_text(encoding="utf-8", errors="replace")
+        if not text.startswith("---"):
+            findings.append(
+                AuditFinding(
+                    severity="WARNING",
+                    check="prompt-metadata",
+                    path=rel,
+                    message="Missing YAML front matter (§7.2)",
+                    spec_reference="§7.2",
+                )
+            )
+            continue
+        end = text.find("\n---", 3)
+        if end == -1:
+            findings.append(
+                AuditFinding(
+                    severity="WARNING",
+                    check="prompt-metadata",
+                    path=rel,
+                    message="Malformed YAML front matter closing ---",
+                    spec_reference="§7.2",
+                )
+            )
+            continue
+        fm = text[3:end]
+        for field in REQUIRED_PROMPT_FIELDS:
+            if not re.search(rf"^{re.escape(field)}\s*:", fm, re.MULTILINE):
+                findings.append(
+                    AuditFinding(
+                        severity="WARNING",
+                        check="prompt-metadata",
+                        path=rel,
+                        message=f"Front matter missing field: {field}",
+                        spec_reference="§7.2",
+                    )
+                )
+    return findings
+
+
+def check_procedure_structure(repo_root: Path) -> list[AuditFinding]:
+    findings: list[AuditFinding] = []
+    proc_dir = repo_root / "docs" / "procedures"
+    if not proc_dir.is_dir():
+        return findings
+
+    required_any = (
+        "purpose",
+        "prerequisite",
+        "step",
+        "validation",
+        "handoff",
+        "rollback",
+        "failure",
+    )
+    for md in proc_dir.glob("*.md"):
+        if md.name == "README.md":
+            continue
+        rel = md.relative_to(repo_root).as_posix()
+        text = md.read_text(encoding="utf-8", errors="replace").lower()
+        if not any(k in text for k in required_any):
+            findings.append(
+                AuditFinding(
+                    severity="WARNING",
+                    check="procedure-structure",
+                    path=rel,
+                    message=(
+                        "Procedure should include Purpose, Prerequisites, Steps, "
+                        "Validation, Handoff (§8.3)"
+                    ),
+                    spec_reference="§8.3",
+                )
+            )
+    return findings
+
+
+def _read_csv_header(path: Path) -> list[str] | None:
+    if not path.is_file():
+        return None
+    with path.open(encoding="utf-8", newline="") as fh:
+        reader = csv.reader(fh)
+        for row in reader:
+            if not row or not row[0].strip():
+                continue
+            if row[0].strip().startswith("#"):
+                continue
+            return [c.strip() for c in row]
+    return None
+
+
+def check_queue_schema(repo_root: Path) -> list[AuditFinding]:
+    findings: list[AuditFinding] = []
+    qc = _read_csv_header(repo_root / "queue" / "queue.csv")
+    if qc is None:
+        findings.append(
+            AuditFinding(
+                severity="BLOCKING",
+                check="queue-schema",
+                path="queue/queue.csv",
+                message="queue.csv missing or empty",
+                spec_reference="§17",
+            )
+        )
+    elif list(QUEUE_COLUMNS) != qc:
+        findings.append(
+            AuditFinding(
+                severity="BLOCKING",
+                check="queue-schema",
+                path="queue/queue.csv",
+                message=f"Header mismatch. Expected {list(QUEUE_COLUMNS)}, got {qc}",
+                spec_reference="§17",
+            )
+        )
+
+    qa = _read_csv_header(repo_root / "queue" / "queuearchive.csv")
+    expected_archive = list(QUEUE_COLUMNS) + list(QUEUE_ARCHIVE_EXTRA)
+    if qa is None:
+        findings.append(
+            AuditFinding(
+                severity="BLOCKING",
+                check="queue-schema",
+                path="queue/queuearchive.csv",
+                message="queuearchive.csv missing or empty",
+                spec_reference="§17",
+            )
+        )
+    elif qa != expected_archive:
+        findings.append(
+            AuditFinding(
+                severity="BLOCKING",
+                check="queue-schema",
+                path="queue/queuearchive.csv",
+                message=f"Header mismatch. Expected {expected_archive}, got {qa}",
+                spec_reference="§17",
+            )
+        )
+    return findings
+
+
+def check_make_targets(repo_root: Path) -> list[AuditFinding]:
+    findings: list[AuditFinding] = []
+    makefile = repo_root / "Makefile"
+    if not makefile.is_file():
+        return [
+            AuditFinding(
+                severity="WARNING",
+                check="make-targets",
+                path="Makefile",
+                message="Makefile missing",
+                spec_reference="§10.2",
+            )
+        ]
+    text = makefile.read_text(encoding="utf-8", errors="replace")
+    # Makefile uses escaped colons; substring match is enough.
+    for req in REQUIRED_MAKE_TARGETS:
+        if req not in text:
+            findings.append(
+                AuditFinding(
+                    severity="WARNING",
+                    check="make-targets",
+                    path="Makefile",
+                    message=f"Expected Make target not found (substring): {req}",
+                    spec_reference="§10.2",
+                )
+            )
+    return findings
+
+
+CHECK_REGISTRY: dict[str, object] = {
+    "inventory": check_file_inventory,
+    "title-comments": check_title_comments,
+    "skill-format": check_skill_format,
+    "prompt-metadata": check_prompt_metadata,
+    "procedure-structure": check_procedure_structure,
+    "queue-schema": check_queue_schema,
+    "make-targets": check_make_targets,
+}
+
+
+def run_audit(repo_root: Path, checks: list[str] | None = None) -> AuditReport:
+    """Run selected or all audit checks."""
+    ts = datetime.now(tz=UTC)
+    to_run = list(CHECK_REGISTRY.keys()) if checks is None else checks
+    findings: list[AuditFinding] = []
+    for name in to_run:
+        fn = CHECK_REGISTRY.get(name)
+        if fn is None:
+            continue
+        findings.extend(fn(repo_root))  # type: ignore[operator]
+    return AuditReport(timestamp=ts, findings=findings, checks_run=to_run)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Repository self-audit (spec compliance).",
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=Path,
+        default=Path.cwd(),
+        help="Repository root (default: cwd)",
+    )
+    parser.add_argument(
+        "--check",
+        action="append",
+        help="Run only this check (repeatable). Default: all checks.",
+    )
+    parser.add_argument(
+        "--format",
+        choices=("markdown", "json"),
+        default="markdown",
+        help="Output format",
+    )
+    parser.add_argument(
+        "--inventory-only",
+        action="store_true",
+        help="Shortcut for --check inventory",
+    )
+    args = parser.parse_args()
+    repo_root = args.repo_root.resolve()
+    checks: list[str] | None = None
+    if args.inventory_only:
+        checks = ["inventory"]
+    elif args.check:
+        checks = args.check
+
+    report = run_audit(repo_root, checks)
+    if args.format == "json":
+        print(report.to_json())  # noqa: T201
+    else:
+        print(report.to_markdown())  # noqa: T201
+
+    if not report.passed():
+        sys.exit(1)
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,30 +1,15 @@
 #!/usr/bin/env bash
 # scripts/clean.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Remove build artifacts: dist/, build/, .eggs/, htmlcov/, .pytest_cache/, __pycache__
-# CORRESPONDS TO: make clean
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Remove Python caches and common build artifacts.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
-
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
-
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+find . -type d -name .pytest_cache -exec rm -rf {} + 2>/dev/null || true
+find . -type d -name .mypy_cache -exec rm -rf {} + 2>/dev/null || true
+find . -type d -name .ruff_cache -exec rm -rf {} + 2>/dev/null || true
+rm -rf htmlcov .coverage coverage.xml dist build *.egg-info 2>/dev/null || true
+echo "clean: OK"

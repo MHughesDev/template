@@ -1,30 +1,28 @@
 #!/usr/bin/env bash
 # scripts/profile-enable.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Enable an optional profile via profile-enable steps (PROFILE= arg required)
-# CORRESPONDS TO: make profile:enable
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Enable optional profile — delegates to skills/init/profile-resolver.py when present.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+if [[ -z "${PROFILE:-}" ]]; then
+  echo "error: PROFILE=<web|mobile|ai|worker|...> required" >&2
+  exit 1
+fi
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
+if [[ -f ".venv/bin/activate" ]]; then
+  # shellcheck source=/dev/null
+  source ".venv/bin/activate"
+fi
 
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
+RESOLVER="$ROOT/skills/init/profile-resolver.py"
+if [[ -f "$RESOLVER" ]]; then
+  exec python3 "$RESOLVER" --profile "$PROFILE"
+fi
 
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+echo "Profile resolver not implemented yet; manual steps for profile: $PROFILE"
+echo "- Update docker-compose.yml profiles"
+echo "- Update .env.example flags"
+echo "- See docs/procedures/enable-profile.md"

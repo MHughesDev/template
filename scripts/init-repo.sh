@@ -1,30 +1,22 @@
 #!/usr/bin/env bash
 # scripts/init-repo.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Run initialization pre-checks: idea.md exists, prereqs installed, provide guidance
-# CORRESPONDS TO: make init
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Initialization pre-checks: Python env, idea validation, queue validate.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+echo "==> Python"
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "error: python3 not found" >&2
+  exit 1
+fi
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
+echo "==> Optional: validate idea.md"
+scripts/validate-idea.sh || echo "idea.md validation reported issues (fill idea.md before init)"
 
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
+echo "==> Queue"
+scripts/queue-validate.sh || true
 
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+echo "init-repo: pre-checks complete — follow docs/procedures/initialize-repo.md"

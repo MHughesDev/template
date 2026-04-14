@@ -1,30 +1,24 @@
 #!/usr/bin/env bash
 # scripts/dev.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Start local API with hot reload (uvicorn --reload)
-# CORRESPONDS TO: make dev
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Start the FastAPI app locally with hot reload (uvicorn).
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+if [[ ! -f "pyproject.toml" ]]; then
+  echo "error: run from repository root (pyproject.toml not found)" >&2
+  exit 1
+fi
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
+if [[ -f ".venv/bin/activate" ]]; then
+  # shellcheck source=/dev/null
+  source ".venv/bin/activate"
+fi
 
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
+HOST="${API_HOST:-0.0.0.0}"
+PORT="${API_PORT:-8000}"
 
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+echo "Starting API at http://${HOST}:${PORT} (reload on) ..."
+exec python3 -m uvicorn apps.api.src.main:app --reload --host "$HOST" --port "$PORT"

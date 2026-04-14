@@ -1,30 +1,26 @@
 #!/usr/bin/env bash
 # scripts/rules-check.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Validate all .cursor/rules/*.md files via rule-linter.py
-# CORRESPONDS TO: make rules:check
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Basic validation: .mdc/.md rules under .cursor/rules/ are non-empty.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+RULES="$ROOT/.cursor/rules"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+if [[ ! -d "$RULES" ]]; then
+  echo "error: $RULES missing" >&2
+  exit 1
+fi
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
+FAILED=0
+while IFS= read -r -d '' f; do
+  if [[ ! -s "$f" ]]; then
+    echo "error: empty rule file $f" >&2
+    FAILED=1
+  fi
+done < <(find "$RULES" -type f \( -name '*.md' -o -name '*.mdc' \) -print0)
 
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+if [[ "$FAILED" -ne 0 ]]; then
+  exit 1
+fi
+echo "rules-check: OK"

@@ -1,30 +1,24 @@
 #!/usr/bin/env bash
 # scripts/generate-env.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Generate .env from .env.example with prompts or defaults
-# CORRESPONDS TO: make env:generate
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Copy .env.example to .env if .env does not exist.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+EX="$ROOT/.env.example"
+OUT="$ROOT/.env"
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
+if [[ ! -f "$EX" ]]; then
+  echo "error: .env.example missing" >&2
+  exit 1
+fi
 
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
+if [[ -f "$OUT" ]]; then
+  echo ".env already exists — not overwriting"
+  exit 0
+fi
 
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+cp "$EX" "$OUT"
+echo "Created .env from .env.example — edit secrets before production."

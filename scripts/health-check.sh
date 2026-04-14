@@ -1,30 +1,20 @@
 #!/usr/bin/env bash
 # scripts/health-check.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: curl-based checks against /health, /ready, /live endpoints
-# CORRESPONDS TO: make health:check
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# GET /health, /ready, /live on local API (default http://127.0.0.1:8000).
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+BASE="${HEALTHCHECK_BASE_URL:-http://127.0.0.1:8000}"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
-
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
-
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+for path in /health /ready /live; do
+  url="${BASE}${path}"
+  echo "GET $url"
+  code=$(curl -s -o /tmp/health.json -w "%{http_code}" "$url" || true)
+  if [[ "$code" != "200" ]]; then
+    echo "error: expected HTTP 200, got $code for $url" >&2
+    exit 1
+  fi
+  cat /tmp/health.json
+  echo ""
+done
+echo "health-check OK"

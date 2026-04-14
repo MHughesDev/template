@@ -1,30 +1,16 @@
 #!/usr/bin/env bash
 # scripts/validate-idea.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Validate idea.md completeness via idea-validator.py
-# CORRESPONDS TO: make idea:validate
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Validate idea.md completeness (skills/init/idea-validator.py).
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+if [[ -f ".venv/bin/activate" ]]; then
+  # shellcheck source=/dev/null
+  source ".venv/bin/activate"
+fi
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
-
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+IDEA="${1:-idea.md}"
+exec python3 "$ROOT/skills/init/idea-validator.py" "$IDEA"

@@ -1,30 +1,41 @@
 #!/usr/bin/env bash
 # scripts/docs-check.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Check documentation for broken links and generated doc drift
-# CORRESPONDS TO: make docs:check
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Verify relative markdown links under docs/ resolve to existing paths.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+exec python3 - "$ROOT" <<'PY'
+from __future__ import annotations
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+import re
+import sys
+from pathlib import Path
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
+root = Path(sys.argv[1])
+docs = root / "docs"
+link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+failed = False
 
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
+for md in docs.rglob("*.md"):
+    text = md.read_text(encoding="utf-8", errors="replace")
+    for m in link_re.finditer(text):
+        raw = m.group(1).strip()
+        if raw.startswith(("#", "http://", "https://", "mailto:")):
+            continue
+        path_part = raw.split("#", 1)[0]
+        if not path_part:
+            continue
+        target = (md.parent / path_part).resolve()
+        try:
+            target.relative_to(root)
+        except ValueError:
+            print(f"link escapes repo: {md}: {raw}", file=sys.stderr)
+            failed = True
+            continue
+        if not target.is_file():
+            print(f"broken link: {md} -> {raw}", file=sys.stderr)
+            failed = True
 
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+sys.exit(1 if failed else 0)
+PY

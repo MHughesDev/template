@@ -1,30 +1,25 @@
 #!/usr/bin/env bash
 # scripts/scaffold-module.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Scaffold a new domain module via module-scaffolder.py (MODULE= arg required)
-# CORRESPONDS TO: make scaffold:module
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Scaffold bounded context module (MODULE=name required).
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+if [[ -z "${MODULE:-}" ]]; then
+  echo "error: MODULE=<context_name> required" >&2
+  exit 1
+fi
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
+SCAF="$ROOT/skills/backend/module-scaffolder.py"
+if [[ -f "$SCAF" ]]; then
+  if [[ -f ".venv/bin/activate" ]]; then
+    # shellcheck source=/dev/null
+    source ".venv/bin/activate"
+  fi
+  exec python3 "$SCAF" --name "$MODULE"
+fi
 
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+echo "error: module-scaffolder.py not available" >&2
+exit 1

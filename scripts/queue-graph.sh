@@ -1,30 +1,33 @@
 #!/usr/bin/env bash
 # scripts/queue-graph.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Render queue dependency graph via queue-intelligence.py --mode graph
-# CORRESPONDS TO: make queue:graph
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Emit Mermaid graph for queue dependencies.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+QUEUE="$ROOT/queue/queue.csv"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+python3 - "$QUEUE" <<'PY'
+from __future__ import annotations
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
+import csv
+import sys
+from pathlib import Path
 
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+path = Path(sys.argv[1])
+rows = []
+with path.open(encoding="utf-8") as fh:
+    for line in fh:
+        if line.lstrip().startswith("#"):
+            continue
+        rows.append(line)
+reader = csv.DictReader(rows)
+print("graph TD")
+for row in reader:
+    rid = row.get("id", "").strip()
+    if not rid:
+        continue
+    deps = row.get("dependencies", "").strip()
+    for d in [x.strip() for x in deps.split(",") if x.strip()]:
+        print(f"  {d} --> {rid}")
+PY
