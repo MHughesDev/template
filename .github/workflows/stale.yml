@@ -1,0 +1,17 @@
+# .github/workflows/stale.yml
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Stale issue/PR automation. Optional per spec §26.12 item 394.
+# SECTIONS:
+#   - Marks issues stale after 60 days of inactivity
+#   - Closes stale issues after 7 more days without activity
+#   - Never marks issues with specific labels as stale (blocked, pinned, security)
+name: Stale
+# on: schedule: cron: "0 1 * * *" (daily)
+# jobs:
+#   stale:
+#     uses: actions/stale@v9
+#     with:
+#       days-before-stale: 60
+#       days-before-close: 7
+#       exempt-issue-labels: blocked,pinned,security,queue
+#       stale-issue-message: "This issue has been stale for 60 days. Comment to keep it open."
