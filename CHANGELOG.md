@@ -15,6 +15,7 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Changed
 
+- Example module: `ExampleRepository.list_all` uses `paginate_query`; `ExampleService` takes `Settings`; routes use `require_auth`; `idea-to-queue.sh` matches prompt (`queue-seeder` defaults to idea §12); `env-var-sync` scans `os.getenv` / `os.environ` in Python sources.
 - `make fmt` now applies formatting; CI uses `make fmt-check`. `docs:check` runs generated-docs drift detection. Dockerfile copies full `/usr/local/lib/python3.12` from the builder. `/ready` returns HTTP 503 when the database check fails. Prompt templates use a `# prompts/<file>.md` title line before YAML front matter.
 - Consolidated open Dependabot updates: GitHub Actions (checkout, stale, docker/build-push-action, setup-buildx-action), API Docker base image to Python 3.14-slim, and Python dependency floors in `pyproject.toml` (asyncpg, bandit, email-validator, pydantic-settings, pytest-cov).
 - Documentation and skills: removed blueprint-style `> PURPOSE:` / `> CONTENT:` blockquotes in favor of normal Markdown; filled stub skills from `spec/spec.md` summaries; expanded `docs/development/` guides (local setup, env vars, git workflow, testing, modules).
