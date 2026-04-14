@@ -1,60 +1,60 @@
 # apps/api/src/main.py
-"""
-BLUEPRINT: apps/api/src/main.py
+"""FastAPI application factory and ASGI entrypoint."""
 
-PURPOSE:
-FastAPI application entry point. Creates the app instance, registers all routers,
-configures middleware (CORS, tenant context, logging, correlation ID), sets up
-lifespan events (startup/shutdown database connections), and registers global
-error handlers.
+from __future__ import annotations
 
-DEPENDS ON:
-- fastapi — FastAPI, Lifespan, middleware utilities
-- contextlib — asynccontextmanager for lifespan
-- apps.api.src.config — settings
-- apps.api.src.middleware — CORSMiddleware setup, CorrelationIdMiddleware, logging
-- apps.api.src.database — database engine initialization
-- apps.api.src.exceptions — AppError subclasses for error handlers
-- apps.api.src.health — health router
-- apps.api.src.auth — auth router
-- apps.api.src.tenancy.middleware — TenantContextMiddleware
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
-DEPENDED ON BY:
-- uvicorn (CLI entrypoint): `uvicorn apps.api.src.main:app`
-- alembic env.py: imports for target_metadata
-- test conftest.py: `from apps.api.src.main import app`
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from starlette.requests import Request
 
-FUNCTIONS:
+from apps.api.src.auth.router import router as auth_router
+from apps.api.src.config import Settings, get_settings
+from apps.api.src.database import dispose_engine
+from apps.api.src.exceptions import AppError
+from apps.api.src.health.router import router as health_router
+from apps.api.src.middleware import (
+    CorrelationIdMiddleware,
+    RequestLoggingMiddleware,
+    app_error_handler,
+    configure_cors,
+)
+from apps.api.src.tenancy.middleware import TenantContextMiddleware
 
-  lifespan(app: FastAPI) -> AsyncContextManager:
-    PURPOSE: Manage application startup and shutdown lifecycle.
-    STEPS:
-      1. On startup: initialize database connection pool, log startup
-      2. On shutdown: dispose database connections, log shutdown
-    NOTES: Used as `@asynccontextmanager` yielding at startup/shutdown boundary
 
-  create_app() -> FastAPI:
-    PURPOSE: Create and configure the FastAPI application instance.
-    STEPS:
-      1. Create FastAPI(title=settings.project_name, lifespan=lifespan)
-      2. Add CORSMiddleware with origins from settings.api_cors_origins
-      3. Add CorrelationIdMiddleware (inject X-Request-ID header)
-      4. Add RequestLoggingMiddleware (structured request/response logs)
-      5. Add TenantContextMiddleware (extract tenant from JWT)
-      6. Register global exception handler for AppError → structured JSON response
-      7. Include routers (alphabetical):
-         - health_router (prefix="/api/v1") or no prefix for /, /health
-         - auth_router (prefix="/api/v1/auth")
-         - (future contexts registered here)
-      8. Return configured app
-    RETURNS: FastAPI instance
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Startup/shutdown hooks."""
 
-CONSTANTS:
-  - app: FastAPI = create_app() — module-level app instance used by uvicorn
+    yield
+    await dispose_engine()
 
-DESIGN DECISIONS:
-- create_app() factory pattern enables test isolation (create fresh app per test)
-- Middleware order matters: correlation ID first (needed by logging), then logging, then tenant
-- Global error handler translates AppError subclasses → consistent JSON shape
-- Lifespan over deprecated startup/shutdown events (FastAPI 0.93+ pattern)
-"""
+
+def create_app(settings: Settings | None = None) -> FastAPI:
+    """Create a configured FastAPI application."""
+
+    resolved = settings or get_settings()
+    app = FastAPI(title=resolved.project_name, lifespan=lifespan)
+
+    # Starlette runs last-registered middleware first. Put CORS outermost.
+    app.add_middleware(TenantContextMiddleware)
+    app.add_middleware(RequestLoggingMiddleware)
+    app.add_middleware(CorrelationIdMiddleware)
+    configure_cors(app, resolved.api_cors_origins)
+
+    async def _app_error_bridge(request: Request, exc: Exception) -> JSONResponse:
+        if isinstance(exc, AppError):
+            return await app_error_handler(request, exc)
+        raise exc
+
+    app.add_exception_handler(AppError, _app_error_bridge)
+
+    app.include_router(health_router)
+    app.include_router(auth_router, prefix=resolved.api_prefix)
+
+    return app
+
+
+app = create_app()

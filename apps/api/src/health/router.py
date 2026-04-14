@@ -1,64 +1,61 @@
 # apps/api/src/health/router.py
-"""
-BLUEPRINT: apps/api/src/health/router.py
+"""Health, readiness, and liveness endpoints."""
 
-PURPOSE:
-Health, readiness, and liveness endpoints. Provides three endpoints:
-/health (always 200), /ready (checks DB and critical deps), /live (process alive).
-Used by K8s probes and Docker HEALTHCHECK. Per spec §26.8 item 218.
+from __future__ import annotations
 
-DEPENDS ON:
-- fastapi — APIRouter, Depends
-- sqlalchemy.ext.asyncio — AsyncSession
-- apps.api.src.dependencies — get_db
-- apps.api.src.exceptions — ExternalServiceError
-- apps.api.src.database — engine (for readiness check)
+from typing import Literal
 
-DEPENDED ON BY:
-- apps.api.src.main — registers this router
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel, Field
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
-ENDPOINTS:
+from apps.api.src.dependencies import get_db
 
-  GET /health -> HealthResponse:
-    PURPOSE: Basic health check. Always returns 200 if the process is alive.
-    STEPS: Return {"status": "ok"} immediately — no DB check.
-    RETURNS: HealthResponse with status="ok"
-    NOTES: K8s liveness probe uses this; must be fast and never depend on external services
+router = APIRouter(tags=["Health"])
 
-  GET /ready -> ReadinessResponse:
-    PURPOSE: Readiness check. Returns 200 if DB is accessible, 503 if not.
-    STEPS:
-      1. Execute a lightweight DB query (SELECT 1)
-      2. If success: return {"status": "ready", "checks": {"database": "ok"}}
-      3. If DB fails: return 503 with {"status": "not_ready", "checks": {"database": "error: <reason>"}}
-    RETURNS: ReadinessResponse (200 or 503)
-    NOTES: K8s readiness probe uses this; if not ready, K8s stops sending traffic
 
-  GET /live -> LivenessResponse:
-    PURPOSE: Liveness check. Returns 200 to confirm process is running.
-    STEPS: Return {"status": "alive"} — no external checks.
-    RETURNS: LivenessResponse with status="alive"
-    NOTES: K8s liveness probe; if this fails, K8s restarts the pod
+class HealthResponse(BaseModel):
+    """Basic liveness payload."""
 
-CLASSES:
+    status: Literal["ok"] = "ok"
 
-  HealthResponse(BaseModel):
-    PURPOSE: Response schema for GET /health.
-    FIELDS: status: Literal["ok"]
 
-  ReadinessResponse(BaseModel):
-    PURPOSE: Response schema for GET /ready.
-    FIELDS:
-      - status: Literal["ready", "not_ready"]
-      - checks: dict[str, str] — per-dependency status
+class ReadinessResponse(BaseModel):
+    """Readiness payload with dependency checks."""
 
-  LivenessResponse(BaseModel):
-    PURPOSE: Response schema for GET /live.
-    FIELDS: status: Literal["alive"]
+    status: Literal["ready", "not_ready"]
+    checks: dict[str, str] = Field(default_factory=dict)
 
-DESIGN DECISIONS:
-- /health and /live: no DB dependency — must succeed even when DB is down (critical for K8s restart cycle)
-- /ready: DB check — pod not ready when DB unreachable (K8s won't send traffic)
-- 503 for /ready failure (not 200 with error body): clients and load balancers understand 503
-- Endpoints not under /api/v1 prefix: health checks are meta-API, not versioned
-"""
+
+class LivenessResponse(BaseModel):
+    """Process liveness payload."""
+
+    status: Literal["alive"] = "alive"
+
+
+@router.get("/health", response_model=HealthResponse)
+async def health() -> HealthResponse:
+    """Fast liveness probe — no external dependencies."""
+
+    return HealthResponse()
+
+
+@router.get("/ready", response_model=ReadinessResponse)
+async def ready(session: AsyncSession = Depends(get_db)) -> ReadinessResponse:
+    """Readiness probe — verifies database connectivity."""
+
+    try:
+        await session.execute(text("SELECT 1"))
+    except Exception as exc:  # noqa: BLE001 - surface dependency failures
+        return ReadinessResponse(
+            status="not_ready", checks={"database": f"error: {exc!s}"}
+        )
+    return ReadinessResponse(status="ready", checks={"database": "ok"})
+
+
+@router.get("/live", response_model=LivenessResponse)
+async def live() -> LivenessResponse:
+    """Kubernetes-style liveness endpoint."""
+
+    return LivenessResponse()

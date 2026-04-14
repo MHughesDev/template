@@ -6,65 +6,48 @@ description: Path-scoped rules for apps/api/. Enforces FastAPI patterns, service
 
 # .cursor/rules/apps-api.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Referenced by: apps/api/AGENTS.md, PYTHON_PROCEDURES.md §6 (Domain Separation) -->
-<!-- - Enforced by: scripts/audit-self.sh, mypy --strict -->
+Rules for **`apps/api/`**: FastAPI layout, layers, DI, schemas vs ORM models, errors, and tests. Align with **[PYTHON_PROCEDURES.md](../../PYTHON_PROCEDURES.md)** and **`apps/api/AGENTS.md`**.
 
-> PURPOSE: Path-scoped rules for the apps/api/ directory. Enforces FastAPI module patterns, service/repository layer boundaries, dependency injection, Pydantic model location, error response shape, and test file naming. Per spec §26.2 item 12.
+## Module structure
 
-## Section: Module Structure Rules
+1. Each bounded context has **`__init__.py`**, **`router.py`**, **`models.py`**, **`schemas.py`**, **`service.py`**.
+2. **`__init__.py`** exports the **`router`** and key public types.
+3. Add **`dependencies.py`** when the module needs non-trivial **`Depends()`** factories.
+4. Add **`repository.py`** when persistence logic is large enough to split from **`service.py`**.
+5. Cover new behavior with **`apps/api/tests/test_<area>.py`** (or focused module tests).
+6. Avoid uncontrolled file sprawl — split subpackages when a context grows.
 
-> CONTENT: Rules for the canonical module layout under apps/api/src/<context>/. Rules:
-> 1. Every bounded context MUST have: `__init__.py`, `router.py`, `models.py`, `schemas.py`, `service.py`
-> 2. `__init__.py` exports the router and key public types
-> 3. `dependencies.py` is optional but required when the module has non-trivial FastAPI dependencies
-> 4. `repository.py` is optional but MUST be separate from `service.py` if persistence logic is complex
-> 5. All module directories MUST have a corresponding `tests/test_<module>.py`
-> 6. No module may exceed 5 files in its directory without a documented rationale
+## Router registration
 
-## Section: Router Registration Pattern
+1. Define **`router = APIRouter(prefix="/...", tags=[...])`** in **`router.py`**.
+2. Include routers from **`apps/api/src/main.py`** under a consistent API prefix (e.g. **`/api/v1`**) without duplicating path segments.
+3. Keep registration order predictable (e.g. alphabetical by package name).
 
-> CONTENT: Rules for how routers are registered. Rules:
-> 1. Router is defined in `router.py` as `router = APIRouter(prefix="/<context>", tags=["<Context>"])`
-> 2. Router MUST be imported and registered in `apps/api/src/main.py` via `app.include_router(router, prefix="/api/v1")`
-> 3. Router prefix and main.py registration prefix MUST NOT duplicate the path segment
-> 4. Every router MUST have an `__init__.py` that exports `router` as the module's public interface
-> 5. New routers are registered in main.py in alphabetical order by module name
+## Dependency injection
 
-## Section: Dependency Injection Rules
+1. Do **not** construct services inline in handlers — use **`Depends()`** factories.
+2. DB access uses shared session dependencies (e.g. **`get_db`**) from **`apps/api/src/dependencies.py`**.
+3. Auth uses **`get_current_user`** (or stricter deps) from **`auth/dependencies.py`**.
+4. Configuration via **`Depends(get_settings)`**, not hidden imports of a global **`settings`** in routers.
+5. Place module-specific **`Depends()`** factories in **`dependencies.py`** for that module.
 
-> CONTENT: Rules for FastAPI Depends() usage. Rules:
-> 1. Services are NEVER instantiated directly in route handlers — always via `Depends()`
-> 2. Database sessions are injected via `Depends(get_db)` from `apps/api/src/dependencies.py`
-> 3. Current user is injected via `Depends(get_current_user)` from `apps/api/src/auth/dependencies.py`
-> 4. Settings are injected via `Depends(get_settings)` — never `from config import settings` directly in routers
-> 5. Factory functions for Depends() live in the module's `dependencies.py` or in the shared `apps/api/src/dependencies.py`
+## Pydantic vs SQLAlchemy
 
-## Section: Pydantic Model Location
+1. Request/response shapes live in **`schemas.py`** for that context.
+2. Cross-cutting contracts live in **`packages/contracts/`**.
+3. SQLAlchemy models live in **`models.py`** — not mixed with API schemas.
+4. Naming: **`CreateXRequest`**, **`XResponse`**, etc. — be consistent within the module.
+5. Return **validated response models**, not raw ORM rows, at HTTP boundaries.
 
-> CONTENT: Rules for where Pydantic models live. Rules:
-> 1. Request and response schemas for a module live in `<module>/schemas.py` — not in `router.py` or `service.py`
-> 2. Schemas shared across multiple modules live in `packages/contracts/models.py`
-> 3. SQLAlchemy models live in `<module>/models.py` — never mixed with Pydantic schemas
-> 4. Response schemas are prefixed `<Entity>Response`; request schemas are `<Entity>Request` or `Create<Entity>Request`
-> 5. Never return SQLAlchemy models directly from endpoints — always convert to Pydantic response schema
+## Errors
 
-## Section: Error Response Shape
+1. Prefer a stable JSON error body (see **`middleware.py`** and **`exceptions.py`**).
+2. Services raise **`AppError`** subclasses — routers stay thin.
+3. Register or map domain errors in one place so clients see consistent **`code`** / **`message`**.
 
-> CONTENT: Rules for consistent API error responses. Rules:
-> 1. All error responses use the standard shape: `{"error": {"code": "ERROR_CODE", "message": "...", "detail": ...}}`
-> 2. Error codes are defined in `apps/api/src/exceptions.py` as string constants (e.g., `AUTH_INVALID_CREDENTIALS`)
-> 3. Services raise `AppError` subclasses from `exceptions.py` — never `HTTPException` directly
-> 4. The global exception handler in `middleware.py` translates `AppError` to HTTP responses
-> 5. HTTP status codes map to error categories: 400=validation, 401=auth, 403=forbidden, 404=not-found, 409=conflict, 422=schema-error, 500=internal
+## Tests
 
-## Section: Test File Naming
-
-> CONTENT: Rules for test file organization. Rules:
-> 1. API module tests live in `apps/api/tests/test_<module>.py` (not co-located with source)
-> 2. Test function names follow: `test_<endpoint_or_function>_<scenario>_<expected_outcome>`
-> 3. Fixtures shared across test files live in `apps/api/tests/conftest.py`
-> 4. Test factories live in `apps/api/tests/factories.py`
-> 5. Integration tests (requiring real DB) are marked with `@pytest.mark.integration`
-> 6. Every public endpoint MUST have at least one happy-path test and one error-path test
+1. Tests live under **`apps/api/tests/`** with clear names: **`test_<unit>_<scenario>_<outcome>`**.
+2. Shared fixtures in **`conftest.py`**; factories in **`factories.py`** when helpful.
+3. Mark slower integration tests (e.g. **`@pytest.mark.integration`**) per **`pyproject.toml`**.
+4. Each public route should have at least one success and one failure case where meaningful.

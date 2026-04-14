@@ -1,71 +1,90 @@
 # apps/api/src/middleware.py
-"""
-BLUEPRINT: apps/api/src/middleware.py
+"""CORS, correlation IDs, request logging, and AppError translation."""
 
-PURPOSE:
-Shared middleware: CORS configuration, request logging with structured output,
-correlation ID injection (X-Request-ID header), and the global exception handler
-that translates AppError subclasses to structured JSON error responses.
+from __future__ import annotations
 
-DEPENDS ON:
-- fastapi — Request, Response
-- starlette.middleware.cors — CORSMiddleware
-- starlette.middleware.base — BaseHTTPMiddleware
-- uuid — UUID4 for correlation ID generation
-- logging — structlog or stdlib for structured logging
-- apps.api.src.exceptions — AppError (for global error handler)
+import logging
+import time
+import uuid
+from typing import Any, cast
 
-DEPENDED ON BY:
-- apps.api.src.main — registers all middleware and error handlers
+from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
-CLASSES:
+from apps.api.src.exceptions import AppError
 
-  CorrelationIdMiddleware(BaseHTTPMiddleware):
-    PURPOSE: Injects a unique X-Request-ID header into every request and response.
-    FIELDS:
-      - header_name: str = "X-Request-ID"
-    METHODS:
-      - dispatch(request, call_next) -> Response
-        1. Read X-Request-ID from request headers if present, else generate UUID4
-        2. Store in request.state.correlation_id
-        3. Call next middleware
-        4. Set X-Request-ID in response headers
-    NOTES: Correlation ID flows through all log records for that request
+logger = logging.getLogger("api")
 
-  RequestLoggingMiddleware(BaseHTTPMiddleware):
-    PURPOSE: Log structured request/response data for observability.
-    METHODS:
-      - dispatch(request, call_next) -> Response
-        1. Log request: method, path, correlation_id (not query params with secrets)
-        2. Record start time
-        3. Call next middleware
-        4. Log response: status_code, duration_ms, correlation_id
-        5. Log at WARNING level for 4xx, ERROR for 5xx, INFO for 2xx/3xx
-    NOTES: Never log request bodies (may contain secrets/PII)
 
-FUNCTIONS:
+class CorrelationIdMiddleware(BaseHTTPMiddleware):
+    """Ensure every request/response has ``X-Request-ID``."""
 
-  configure_cors(app: FastAPI, allowed_origins: list[str]) -> None:
-    PURPOSE: Add CORSMiddleware to the FastAPI app with security-appropriate defaults.
-    STEPS:
-      1. app.add_middleware(CORSMiddleware, ...)
-      2. allow_origins = allowed_origins (from settings, never "*" in production)
-      3. allow_credentials = True (for auth cookie support)
-      4. allow_methods = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
-      5. allow_headers = ["*"] (or specific list for strict mode)
+    header_name = "X-Request-ID"
 
-  global_exception_handler(request: Request, exc: AppError) -> JSONResponse:
-    PURPOSE: Translate AppError subclasses to structured JSON error responses.
-    STEPS:
-      1. Extract status_code from exc.status_code
-      2. Build response body: {"error": {"code": exc.code, "message": exc.message}}
-      3. Log the error with correlation_id and exc_info=True for 5xx errors
-      4. Return JSONResponse(status_code=status_code, content=body)
-    NOTES: Registered in main.py with app.add_exception_handler(AppError, handler)
+    async def dispatch(self, request: Request, call_next: Any) -> Response:
+        incoming = request.headers.get(self.header_name)
+        correlation_id = incoming or str(uuid.uuid4())
+        request.state.correlation_id = correlation_id
+        response = cast(Response, await call_next(request))
+        response.headers[self.header_name] = correlation_id
+        return response
 
-DESIGN DECISIONS:
-- Correlation ID: generated UUID4 if not provided; passed through if client sends X-Request-ID
-- Never log bodies: request/response bodies may contain credentials or PII
-- CORS: origins from settings (never hardcoded); wildcard not allowed in production
-- Global error handler: translates domain errors to HTTP responses (keeps routers thin)
-"""
+
+class RequestLoggingMiddleware(BaseHTTPMiddleware):
+    """Structured request/response logging without bodies."""
+
+    async def dispatch(self, request: Request, call_next: Any) -> Response:
+        start = time.perf_counter()
+        correlation_id = getattr(request.state, "correlation_id", "unknown")
+        logger.info(
+            "request_started",
+            extra={
+                "correlation_id": correlation_id,
+                "method": request.method,
+                "path": request.url.path,
+            },
+        )
+        response = cast(Response, await call_next(request))
+        duration_ms = int((time.perf_counter() - start) * 1000)
+        log_method = logger.info
+        if response.status_code >= 500:
+            log_method = logger.error
+        elif response.status_code >= 400:
+            log_method = logger.warning
+        log_method(
+            "request_finished",
+            extra={
+                "correlation_id": correlation_id,
+                "status_code": response.status_code,
+                "duration_ms": duration_ms,
+            },
+        )
+        return response
+
+
+def configure_cors(app: FastAPI, allowed_origins: list[str]) -> None:
+    """Attach CORS middleware with safe defaults."""
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=allowed_origins,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["*"],
+    )
+
+
+async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
+    """Serialize ``AppError`` subclasses to JSON."""
+
+    correlation_id = getattr(request.state, "correlation_id", "unknown")
+    if exc.status_code >= 500:
+        logger.error(
+            "app_error",
+            extra={"correlation_id": correlation_id, "code": exc.code},
+            exc_info=True,
+        )
+    body = {"error": {"code": exc.code, "message": exc.message}}
+    return JSONResponse(status_code=exc.status_code, content=body)

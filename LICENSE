@@ -1,18 +1,8 @@
 # LICENSE
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Open-source license file. MIT or Apache-2.0 (selected at initialization time from idea.md).
-# SECTIONS:
-#   - Standard license header with year and copyright holder placeholders
-#   - Full license text for chosen license (MIT shown as default; Apache-2.0 is the alternative)
-# DESIGN DECISIONS:
-#   - Year placeholder: {{YEAR}} — filled during initialization
-#   - Copyright holder: {{COPYRIGHT_HOLDER}} — filled from idea.md §1 project identity
-#   - The initialization agent selects the license based on project requirements
-#   - MIT is the default for open-source templates; Apache-2.0 if NOTICE file is needed
 
 MIT License
 
-Copyright (c) {{YEAR}} {{COPYRIGHT_HOLDER}}
+Copyright (c) 2026 Template Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +11,13 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-[Full MIT license text goes here — Composer 2 inserts the complete standard text]
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
----
-
-# ALTERNATIVE: Apache-2.0 — use if NOTICE file is included
-# Apache License Version 2.0 full text goes here if selected
-# See NOTICE file for attribution requirements under Apache-2.0
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

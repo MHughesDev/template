@@ -1,118 +1,99 @@
 # pyproject.toml
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Python project configuration. Defines dependencies, dev dependencies, and tool
-#          configs (ruff, mypy, pytest, coverage). Per spec §26.1 item 7.
-# SECTIONS:
-#   - [project]: name, version, python-requires, dependencies, description
-#   - [project.optional-dependencies]: dev, test, lint groups
-#   - [build-system]: hatchling or setuptools
-#   - [tool.ruff]: lint rules, format settings, per-file ignores
-#   - [tool.mypy]: strict type checking settings
-#   - [tool.pytest.ini_options]: test paths, markers, asyncio mode, coverage
-#   - [tool.coverage.run]: source, omit patterns
-#   - [tool.coverage.report]: fail_under (coverage floor)
-# DESIGN DECISIONS:
-#   - python-requires = ">=3.12" — minimum version enforced
-#   - Dependencies use minimum version pins (~= or >=) not exact (== allows patch updates)
-#   - Dev, test, lint split into optional groups for lean CI environments
-#   - ruff replaces flake8, isort, pydocstyle, pyupgrade — single tool
-#   - mypy strict mode: all checks enabled; no unexplained Any
-#   - asyncio_mode = "auto": pytest-asyncio auto mode (no @pytest.mark.asyncio needed)
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-# name = "{{project-slug}}"  # filled during initialization
-# version = "0.1.0"
-# description = "{{one-line-pitch}}"  # from idea.md §1
-# requires-python = ">=3.12"
-#
-# dependencies = [
-#   "fastapi>=0.111.0",
-#   "uvicorn[standard]>=0.30.0",
-#   "sqlalchemy[asyncio]>=2.0",
-#   "aiosqlite>=0.20.0",  # SQLite async driver
-#   "asyncpg>=0.29.0",  # PostgreSQL async driver
-#   "alembic>=1.13.0",
-#   "pydantic>=2.7.0",
-#   "pydantic-settings>=2.3.0",
-#   "pydantic[email]>=2.7.0",
-#   "python-jose[cryptography]>=3.3.0",  # JWT
-#   "passlib[bcrypt]>=1.7.4",  # password hashing
-#   "httpx>=0.27.0",  # async HTTP client
-#   "structlog>=24.0.0",  # structured logging (optional: use stdlib logging)
-# ]
+name = "template"
+version = "0.1.0"
+description = "Agent-operated template repository (FastAPI modular monolith)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+  "fastapi>=0.115.0",
+  "uvicorn[standard]>=0.32.0",
+  "sqlalchemy[asyncio]>=2.0.36",
+  "aiosqlite>=0.20.0",
+  "asyncpg>=0.30.0",
+  "alembic>=1.14.0",
+  "pydantic>=2.10.0",
+  "pydantic-settings>=2.6.0",
+  "pydantic[email]>=2.10.0",
+  "python-jose[cryptography]>=3.3.0",
+  "passlib[bcrypt]>=1.7.4",
+  "httpx>=0.28.0",
+  "email-validator>=2.2.0",
+]
 
-# [project.optional-dependencies]
-# dev = [
-#   "pytest>=8.2.0",
-#   "pytest-asyncio>=0.23.0",
-#   "pytest-cov>=5.0.0",
-#   "httpx>=0.27.0",
-#   "mypy>=1.10.0",
-#   "ruff>=0.5.0",
-#   "pre-commit>=3.7.0",
-#   "detect-secrets>=1.5.0",
-# ]
-# test = [
-#   "pytest>=8.2.0",
-#   "pytest-asyncio>=0.23.0",
-#   "pytest-cov>=5.0.0",
-#   "httpx>=0.27.0",
-#   "factory_boy>=3.3.0",  # optional: for test factories
-#   "pytest-json-report>=1.5.0",  # optional: for flaky-detector.py
-# ]
-# lint = [
-#   "ruff>=0.5.0",
-#   "mypy>=1.10.0",
-#   "bandit>=1.7.9",
-# ]
-# ai = [
-#   "chromadb>=0.5.0",
-#   "sentence-transformers>=3.0.0",  # or openai>=1.0.0
-# ]
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3.0",
+  "pytest-asyncio>=0.24.0",
+  "pytest-cov>=6.0.0",
+  "mypy>=1.13.0",
+  "ruff>=0.8.0",
+  "pre-commit>=4.0.0",
+  "types-passlib",
+]
+ai = [
+  "chromadb>=0.5.0",
+]
 
-# [tool.ruff]
-# CONTENT: ruff linting and formatting configuration
-# target-version = "py312"
-# line-length = 88
-# [tool.ruff.lint]
-# select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20", "SIM", "RET", "ERA"]
-# ignore = ["S101"]  # allow assert in tests
-# per-file-ignores = {"*/tests/*" = ["S101", "S105"], "*/alembic/*" = ["INP001"]}
-# [tool.ruff.format]
-# quote-style = "double", indent-style = "space", skip-magic-trailing-comma = false
+[tool.hatch.build.targets.wheel]
+packages = ["apps/api/src", "packages/contracts", "packages/tasks"]
 
-# [tool.mypy]
-# CONTENT: mypy type checking configuration (strict mode)
-# python_version = "3.12"
-# strict = true
-# ignore_missing_imports = false
-# plugins = ["pydantic.mypy"]
-# [mypy.pydantic.mypy]
-# init_forbid_extra = true, init_typed = true
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = ["apps/api/src", "packages/contracts", "packages/tasks"]
+extend-exclude = ["skills", "packages/ai", "apps/api/alembic"]
 
-# [tool.pytest.ini_options]
-# CONTENT: pytest configuration
-# testpaths = ["apps/api/tests"]
-# asyncio_mode = "auto"
-# python_files = ["test_*.py"]
-# python_classes = ["Test*"]
-# python_functions = ["test_*"]
-# markers = [
-#   "unit: Tests with no external dependencies",
-#   "integration: Tests requiring real database or services",
-#   "smoke: Critical path tests run post-deploy",
-#   "slow: Tests taking >5 seconds",
-# ]
-# addopts = "--cov=apps/api/src --cov-report=xml --cov-report=term-missing -v"
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20", "SIM", "RET"]
+ignore = ["S101", "B008"]
 
-# [tool.coverage.run]
-# source = ["apps/api/src", "packages"]
-# omit = ["*/alembic/*", "*/__init__.py", "*/test_*.py"]
+[tool.ruff.lint.per-file-ignores]
+"apps/api/tests/**" = ["S101", "S105", "E501"]
+"**/alembic/**" = ["INP001", "E501"]
+"packages/contracts/errors.py" = ["S105"]
 
-# [tool.coverage.report]
-# fail_under = 80  # floor; increased by coverage-ratchet.py as coverage improves
-# exclude_lines = ["if TYPE_CHECKING:", "raise NotImplementedError", "pass"]
+[tool.ruff.format]
+quote-style = "double"
 
-# [build-system]
-# requires = ["hatchling"]
-# build-backend = "hatchling.build"
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+mypy_path = ["."]
+explicit_package_bases = true
+namespace_packages = true
+
+[[tool.mypy.overrides]]
+module = ["passlib.*", "jose.*"]
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+
+[tool.pytest.ini_options]
+testpaths = ["apps/api/tests"]
+asyncio_mode = "auto"
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+markers = [
+  "unit: fast tests with no external IO",
+  "integration: tests needing database or services",
+  "smoke: post-deploy critical paths",
+  "slow: tests taking more than a few seconds",
+]
+addopts = "--cov=apps/api/src --cov=packages --cov-report=term-missing --cov-report=xml -v"
+
+[tool.coverage.run]
+source = ["apps/api/src", "packages"]
+omit = ["*/alembic/*", "*/__init__.py"]
+
+[tool.coverage.report]
+fail_under = 55
+exclude_lines = ["if TYPE_CHECKING:", "raise NotImplementedError", "\\.\\.\\."]

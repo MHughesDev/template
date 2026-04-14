@@ -1,74 +1,76 @@
 # apps/api/src/auth/dependencies.py
-"""
-BLUEPRINT: apps/api/src/auth/dependencies.py
+"""FastAPI dependencies for authentication."""
 
-PURPOSE:
-FastAPI dependencies for auth: get_current_user (extract and validate JWT),
-require_auth (raises 401 if not authenticated), get_auth_service (factory).
-Per spec §26.8 item 224.
+from __future__ import annotations
 
-DEPENDS ON:
-- fastapi — Depends, HTTPBearer, HTTPAuthorizationCredentials, HTTPException
-- sqlalchemy.ext.asyncio — AsyncSession
-- apps.api.src.auth.service — AuthService
-- apps.api.src.auth.models — User
-- apps.api.src.dependencies — get_db, get_settings
-- apps.api.src.exceptions — AuthenticationError
+from uuid import UUID
 
-DEPENDED ON BY:
-- apps.api.src.auth.router — uses get_current_user, get_auth_service
-- apps.api.src.*/router.py — all protected routes use get_current_user
-- apps.api.src.auth.__init__ — re-exports get_current_user
+from fastapi import Depends, HTTPException, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from sqlalchemy.ext.asyncio import AsyncSession
 
-FUNCTIONS:
+from apps.api.src.auth import models
+from apps.api.src.auth.service import AuthService
+from apps.api.src.config import Settings, get_settings
+from apps.api.src.dependencies import get_db
+from apps.api.src.exceptions import AppError, AuthenticationError, AuthorizationError
 
-  get_auth_service(
+http_bearer = HTTPBearer(auto_error=False)
+
+
+def get_auth_service(
     session: AsyncSession = Depends(get_db),
-    settings: Settings = Depends(get_settings)
-  ) -> AuthService:
-    PURPOSE: Factory dependency that creates AuthService with injected dependencies.
-    STEPS: Return AuthService(session=session, settings=settings)
-    RETURNS: AuthService instance
+    settings: Settings = Depends(get_settings),
+) -> AuthService:
+    """Construct AuthService with injected session and settings."""
 
-  async get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
+    return AuthService(session=session, settings=settings)
+
+
+async def get_current_user(
+    request: Request,
+    credentials: HTTPAuthorizationCredentials | None = Depends(http_bearer),
     service: AuthService = Depends(get_auth_service),
     session: AsyncSession = Depends(get_db),
-  ) -> User:
-    PURPOSE: Extract and validate JWT, return current User.
-    STEPS:
-      1. If no credentials provided: raise AuthenticationError (401)
-      2. Validate the Bearer token via service.verify_token(credentials.credentials)
-      3. Extract user_id from claims
-      4. Query User by user_id
-      5. If not found or not active: raise AuthenticationError
-      6. Return User instance
-    RETURNS: User (always active — service raises if not)
-    RAISES: AuthenticationError (401) for any failure
+) -> models.User:
+    """Return the authenticated user from a Bearer access token."""
 
-  async require_auth(
-    current_user: User = Depends(get_current_user)
-  ) -> User:
-    PURPOSE: Alias for get_current_user. Use for explicit documentation of auth requirement.
-    RETURNS: User (same as get_current_user)
-    NOTES: Semantically equivalent; helps make auth requirement explicit in route signatures
+    if credentials is None:
+        raise AuthenticationError("Not authenticated")
 
-  async require_tenant(
-    current_user: User = Depends(get_current_user),
-    request: Request = None,
-  ) -> tuple[User, UUID]:
-    PURPOSE: Require auth AND tenant context. Returns (user, tenant_id) pair.
-    STEPS:
-      1. Get current_user (from get_current_user)
-      2. Get tenant_id from request.state.tenant_id (set by TenantContextMiddleware)
-      3. Validate tenant_id is not None
-      4. Return (user, tenant_id)
-    RETURNS: tuple[User, UUID]
-    RAISES: AuthenticationError if not authenticated; AuthorizationError if no tenant context
+    claims = service.verify_access_token(credentials.credentials)
+    user_id_raw = claims.get("sub")
+    if user_id_raw is None:
+        raise AuthenticationError("Invalid token claims")
 
-DESIGN DECISIONS:
-- auto_error=False on HTTPBearer: allows returning 401 with our error shape (not starlette default)
-- Query user on each request: ensures is_active check; DB hit is acceptable (add cache if needed)
-- require_tenant: separate from require_auth to make multi-tenancy explicit in route signatures
-- All auth dependencies return User: consistent throughout; caller checks user.tenant_id as needed
-"""
+    try:
+        user_id = UUID(str(user_id_raw))
+    except ValueError as exc:
+        raise AuthenticationError("Invalid token subject") from exc
+
+    user = await session.get(models.User, user_id)
+    if user is None or not user.is_active:
+        raise AuthenticationError("User not found or inactive")
+
+    request.state.user_id = user.id
+    return user
+
+
+async def require_tenant(
+    request: Request,
+    current_user: models.User = Depends(get_current_user),
+) -> tuple[models.User, UUID]:
+    """Require a tenant context on the request (JWT claim or explicit header)."""
+
+    tenant_id: UUID | None = getattr(request.state, "tenant_id", None)
+    if tenant_id is None:
+        raise AuthorizationError("Tenant context required")
+    return current_user, tenant_id
+
+
+def app_error_to_http(exc: AppError) -> HTTPException:
+    """Translate domain errors to FastAPI HTTPException."""
+
+    return HTTPException(
+        status_code=exc.status_code, detail={"code": exc.code, "message": exc.message}
+    )

@@ -1,12 +1,3 @@
 # .python-version
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Pin the Python version for pyenv, asdf, and mise version managers.
-#          When a developer runs `pyenv install` or `mise install` in this directory,
-#          the version specified here is installed and activated automatically.
-#          Per spec §26.12 item 361.
-# DESIGN DECISIONS:
-#   - Value: 3.12 (minimum) or 3.12.x (pinned patch) — filled with specific version at initialization
-#   - Use patch-level pin (e.g., 3.12.7) for maximum reproducibility
-#   - Aligns with Python requirement in pyproject.toml [project] requires-python
-#   - Updated when Python version is upgraded (with corresponding pyproject.toml update)
+# Pin for pyenv / asdf / mise. Align with `requires-python` in pyproject.toml.
 3.12

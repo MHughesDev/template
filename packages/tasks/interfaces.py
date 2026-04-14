@@ -1,68 +1,83 @@
 # packages/tasks/interfaces.py
-"""
-BLUEPRINT: packages/tasks/interfaces.py
+"""Background task protocols and an in-memory implementation for development."""
 
-PURPOSE:
-Abstract Protocol interfaces for background task execution. Defines the contract
-that all task implementations must satisfy. Workers are an optional profile —
-the interfaces exist regardless; implementations are only loaded when the worker
-profile is enabled. Per spec §26.9 item 240 and §12.3.
+from __future__ import annotations
 
-DEPENDS ON:
-- typing — Protocol, runtime_checkable, Any
-- dataclasses — TaskDefinition, TaskResult
+import uuid
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import Any, Literal, Protocol, runtime_checkable
 
-DEPENDED ON BY:
-- packages.tasks.__init__ — exports these interfaces
-- (future worker implementations) — implement these protocols
-- apps.api.src.*/service.py — call TaskInterface.submit() for background work
+TaskStatus = Literal["pending", "running", "success", "failure", "cancelled"]
 
-CLASSES:
 
-  TaskDefinition:
-    PURPOSE: Describes a background task to be submitted.
-    FIELDS:
-      - task_name: str — registered task handler name
-      - args: tuple — positional arguments for the handler
-      - kwargs: dict — keyword arguments for the handler
-      - idempotency_key: str | None = None — for deduplication
-      - priority: int = 0 — higher = higher priority (broker-specific)
-    NOTES: dataclass with frozen=True (tasks are immutable after creation)
+@dataclass(frozen=True, slots=True)
+class TaskDefinition:
+    """Immutable description of work to run asynchronously."""
 
-  TaskResult:
-    PURPOSE: Result of a submitted or completed task.
-    FIELDS:
-      - task_id: str — unique task identifier assigned by the broker
-      - status: Literal["pending", "running", "success", "failure", "cancelled"]
-      - result: Any | None = None — task output (if completed successfully)
-      - error: str | None = None — error message (if failed)
-      - created_at: datetime
-      - completed_at: datetime | None = None
+    task_name: str
+    args: tuple[Any, ...] = ()
+    kwargs: dict[str, Any] | None = None
+    idempotency_key: str | None = None
+    priority: int = 0
 
-  TaskInterface(Protocol):
-    PURPOSE: Protocol for submitting tasks to a background queue.
-    METHODS:
-      - async submit(task: TaskDefinition) -> TaskResult — submit a task, return initial result
-      - async get_status(task_id: str) -> TaskResult — check task status
-      - async cancel(task_id: str) -> bool — cancel a pending task (returns True if cancelled)
-    NOTES: @runtime_checkable; implementations must satisfy this protocol
 
-  TaskHandler(Protocol):
-    PURPOSE: Protocol for implementing a task handler (the function that executes the task).
-    METHODS:
-      - async handle(task: TaskDefinition) -> Any — execute the task, return result
-    NOTES: Each task type implements this; registered with the worker by task_name
+@dataclass(frozen=True, slots=True)
+class TaskResult:
+    """Snapshot of task state returned by a broker."""
 
-  InMemoryTaskInterface:
-    PURPOSE: Simple in-process task execution for development/testing (no broker).
-    IMPLEMENTS: TaskInterface
-    METHODS:
-      - async submit(task) — execute synchronously in a thread pool, return result
-    NOTES: Not for production use; used when BROKER_URL is not set
+    task_id: str
+    status: TaskStatus
+    result: Any | None = None
+    error: str | None = None
+    created_at: datetime | None = None
+    completed_at: datetime | None = None
 
-DESIGN DECISIONS:
-- Protocol (not ABC): structural typing; duck typing works without explicit inheritance
-- InMemoryTaskInterface: allows code using TaskInterface to work without a broker in dev
-- Idempotency key: enables safe retries; broker implementations deduplicate
-- task_name (string): decoupled from Python import paths; broker-agnostic
-"""
+
+@runtime_checkable
+class TaskInterface(Protocol):
+    """Submit and observe background tasks."""
+
+    async def submit(self, task: TaskDefinition) -> TaskResult: ...
+
+    async def get_status(self, task_id: str) -> TaskResult: ...
+
+    async def cancel(self, task_id: str) -> bool: ...
+
+
+@runtime_checkable
+class TaskHandler(Protocol):
+    """Executes a logical unit of background work."""
+
+    async def handle(self, task: TaskDefinition) -> Any: ...
+
+
+class InMemoryTaskInterface:
+    """Development helper that records submitted tasks without a broker."""
+
+    def __init__(self) -> None:
+        self._tasks: dict[str, TaskResult] = {}
+
+    async def submit(self, task: TaskDefinition) -> TaskResult:
+        task_id = str(uuid.uuid4())
+        now = datetime.now(UTC)
+        result = TaskResult(task_id=task_id, status="pending", created_at=now)
+        self._tasks[task_id] = result
+        return result
+
+    async def get_status(self, task_id: str) -> TaskResult:
+        return self._tasks[task_id]
+
+    async def cancel(self, task_id: str) -> bool:
+        if task_id not in self._tasks:
+            return False
+        existing = self._tasks[task_id]
+        if existing.status != "pending":
+            return False
+        self._tasks[task_id] = TaskResult(
+            task_id=task_id,
+            status="cancelled",
+            created_at=existing.created_at,
+            completed_at=datetime.now(UTC),
+        )
+        return True

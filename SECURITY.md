@@ -1,40 +1,37 @@
 # SECURITY.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Referenced by: README.md, docs/security/README.md, .github/CODEOWNERS -->
-<!-- - Links to: docs/security/incident-response.md, docs/security/secrets-management.md -->
+Vulnerability disclosure and security expectations for this repository. For deep references see **[docs/security/README.md](docs/security/README.md)**.
 
-> PURPOSE: Public vulnerability disclosure policy for GitHub Security tab. Tells security researchers how to report vulnerabilities. Required by spec §26.12 item 362. Referenced by GitHub's Security Advisories feature.
+## Supported versions
 
-## Supported Versions
+Security fixes are applied to maintained release lines. At template initialization, treat **current `main` / latest tag** as supported.
 
-> CONTENT: Table showing which versions receive security updates. Columns: Version, Supported. Use semver ranges (e.g., >= 1.0.0 = :white_check_mark:, < 1.0.0 = :x:). At template initialization, this will list only the current version. Updated with each major release.
+| Version | Supported |
+|---------|-----------|
+| Latest release / `main` | Yes |
+| Older major versions | Only if explicitly listed in release notes |
 
-## Reporting a Vulnerability
+Update this table when you cut releases and drop old lines.
 
-> CONTENT: Clear, actionable instructions for reporting vulnerabilities. Key points:
->
-> 1. **Do NOT** open a public GitHub issue for security vulnerabilities
-> 2. Use GitHub's Security Advisory feature: "Report a vulnerability" button in the Security tab
-> 3. Alternative: email security contact at {{SECURITY_EMAIL}} (filled during initialization)
-> 4. Include in your report: description of the vulnerability, steps to reproduce, potential impact, suggested fix if any
-> 5. Expected response time: acknowledgment within 48 hours, status update within 7 days
-> 6. Responsible disclosure: please allow 90 days for remediation before public disclosure
->
-> Placeholder {{SECURITY_EMAIL}} filled from idea.md during initialization.
+## Reporting a vulnerability
 
-## Security Policy
+1. **Do not** open a public GitHub issue for undisclosed security vulnerabilities.
+2. Use **GitHub Security Advisories**: open the repository **Security** tab and choose **Report a vulnerability**.
+3. If GitHub is unavailable, email **`security@example.com`** (replace with your project contact during initialization from `idea.md`).
+4. Include: short description, steps to reproduce, suspected impact, and optional fix ideas.
+5. **Acknowledgment:** we aim to acknowledge within **48 hours** and provide a substantive update within **7 days** (best effort).
+6. **Disclosure:** please allow **90 days** for a fix before public disclosure, unless agreed otherwise.
 
-> CONTENT: Brief summary of the project's security stance. Key points:
-> - Secrets are never stored in the repository (env vars only, enforced by CI secret scanning)
-> - Dependencies are reviewed for CVEs via Dependabot and CI security scans
-> - Container images are scanned with Trivy before deployment
-> - JWT tokens have explicit expiry; no long-lived tokens without rotation
-> - Multi-tenant data isolation is enforced at the query layer
->
-> Link to `docs/security/` for detailed security documentation.
+Replace the placeholder security email when you initialize a real project.
 
-## Accepted Risks
+## Security policy
 
-> CONTENT: Brief note that accepted risks (known CVEs that are not fixable or are accepted) are documented in `docs/security/accepted-risks.md`. Link to that file. State that all accepted risks have a review date and justification.
+- **Secrets** belong in environment variables or a secret manager — never in git. CI runs secret and dependency scans.
+- **Dependencies:** Dependabot and `make security:scan` (or CI equivalent) track known CVEs in dependencies.
+- **Containers:** images should be scanned (e.g. Trivy) before production deploy.
+- **Auth:** JWT access tokens are short-lived; refresh and rotation patterns are documented under **`docs/security/`**.
+- **Multi-tenancy:** tenant scope is enforced in services/repositories — see architecture docs.
+
+## Accepted risks
+
+Known accepted risks (CVEs deferred, compensating controls) live in **[docs/security/accepted-risks.md](docs/security/accepted-risks.md)**. Each entry should include review date and owner.

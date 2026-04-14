@@ -1,64 +1,82 @@
 # apps/api/src/auth/router.py
-"""
-BLUEPRINT: apps/api/src/auth/router.py
+"""Authentication routes."""
 
-PURPOSE:
-Auth endpoints: register, login, refresh, logout. Policy-complete stubs with
-extension points for OAuth2, SSO, and MFA. Per spec §26.8 item 220.
+from __future__ import annotations
 
-DEPENDS ON:
-- fastapi — APIRouter, Depends, HTTPException
-- apps.api.src.auth.schemas — RegisterRequest, LoginRequest, TokenResponse, etc.
-- apps.api.src.auth.service — AuthService
-- apps.api.src.auth.dependencies — get_auth_service, get_current_user
-- apps.api.src.dependencies — get_db
+from fastapi import APIRouter, Depends, HTTPException, status
 
-DEPENDED ON BY:
-- apps.api.src.main — registers this router under /api/v1/auth
+from apps.api.src.auth import schemas
+from apps.api.src.auth.dependencies import (
+    app_error_to_http,
+    get_auth_service,
+    get_current_user,
+)
+from apps.api.src.auth.models import User
+from apps.api.src.auth.service import AuthService
+from apps.api.src.exceptions import AppError
 
-ENDPOINTS:
+router = APIRouter(prefix="/auth", tags=["Auth"])
 
-  POST /register -> UserResponse:
-    PURPOSE: Register a new user account.
-    STEPS:
-      1. Validate RegisterRequest body (email, password)
-      2. Inject AuthService via get_auth_service
-      3. Call service.create_user(body)
-      4. Return UserResponse (no tokens — user must login)
-    RAISES: ConflictError (409) if email already registered
-    AUTH: None required
 
-  POST /login -> TokenResponse:
-    PURPOSE: Authenticate user and return JWT tokens.
-    STEPS:
-      1. Validate LoginRequest body (email, password)
-      2. Call service.authenticate_user(email, password)
-      3. Generate access token and refresh token
-      4. Return TokenResponse (access_token, refresh_token, token_type, expires_in)
-    RAISES: AuthenticationError (401) if invalid credentials
-    AUTH: None required
+def _handle(exc: AppError) -> HTTPException:
+    return app_error_to_http(exc)
 
-  POST /refresh -> TokenResponse:
-    PURPOSE: Exchange a refresh token for a new access token.
-    STEPS:
-      1. Validate RefreshRequest body (refresh_token)
-      2. Call service.refresh_access_token(refresh_token)
-      3. Return new TokenResponse
-    RAISES: AuthenticationError (401) if refresh token invalid/expired/revoked
-    AUTH: None (refresh token in body)
 
-  POST /logout -> LogoutResponse:
-    PURPOSE: Revoke the current user's refresh token.
-    STEPS:
-      1. Extract current user via get_current_user
-      2. Extract refresh token from RefreshRequest body
-      3. Call service.revoke_token(refresh_token, user_id)
-      4. Return {"status": "logged_out"}
-    AUTH: Bearer token required (get_current_user)
+@router.post(
+    "/register",
+    response_model=schemas.UserResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def register(
+    payload: schemas.RegisterRequest,
+    service: AuthService = Depends(get_auth_service),
+) -> schemas.UserResponse:
+    """Register a new user account."""
 
-DESIGN DECISIONS:
-- No cookies: stateless JWT in Authorization header (easier for API clients)
-- Refresh tokens stored in DB (RefreshToken model): enables server-side revocation
-- Password complexity: enforced in RegisterRequest Pydantic validator (not shown here)
-- SSO extension point: additional POST /auth/sso/{provider} endpoint stub for OAuth2 IdP
-"""
+    try:
+        user = await service.create_user(payload)
+    except AppError as exc:
+        raise _handle(exc) from exc
+    return schemas.UserResponse.model_validate(user)
+
+
+@router.post("/login", response_model=schemas.TokenResponse)
+async def login(
+    payload: schemas.LoginRequest,
+    service: AuthService = Depends(get_auth_service),
+) -> schemas.TokenResponse:
+    """Authenticate and issue tokens."""
+
+    try:
+        user = await service.authenticate_user(payload)
+        return await service.issue_tokens(user)
+    except AppError as exc:
+        raise _handle(exc) from exc
+
+
+@router.post("/refresh", response_model=schemas.TokenResponse)
+async def refresh(
+    payload: schemas.RefreshRequest,
+    service: AuthService = Depends(get_auth_service),
+) -> schemas.TokenResponse:
+    """Exchange a refresh token for a new token pair."""
+
+    try:
+        return await service.refresh_tokens(payload.refresh_token)
+    except AppError as exc:
+        raise _handle(exc) from exc
+
+
+@router.post("/logout", response_model=schemas.LogoutResponse)
+async def logout(
+    payload: schemas.RefreshRequest,
+    current_user: User = Depends(get_current_user),
+    service: AuthService = Depends(get_auth_service),
+) -> schemas.LogoutResponse:
+    """Revoke the provided refresh token for the authenticated user."""
+
+    try:
+        await service.revoke_refresh_token(payload.refresh_token, current_user.id)
+    except AppError as exc:
+        raise _handle(exc) from exc
+    return schemas.LogoutResponse()

@@ -1,68 +1,60 @@
 # packages/contracts/models.py
-"""
-BLUEPRINT: packages/contracts/models.py
+"""Shared cross-context Pydantic contracts (errors, pagination envelopes)."""
 
-PURPOSE:
-Shared Pydantic models used across bounded contexts and by external API clients.
-The contract layer for the modular monolith — backward compatibility is mandatory.
-Per spec §26.9 item 237.
+from __future__ import annotations
 
-DEPENDS ON:
-- pydantic — BaseModel, ConfigDict
-- datetime — for timestamp fields
-- uuid — for ID fields
+from datetime import datetime
+from typing import Any
+from uuid import UUID
 
-DEPENDED ON BY:
-- apps.api.src.*/schemas.py — bounded context schemas may extend these
-- packages.contracts.errors — ErrorResponse uses ErrorDetail
-- packages.contracts.pagination — PagedResponse uses these base models
+from packages.contracts.errors import ErrorCode
+from pydantic import BaseModel, ConfigDict, Field
 
-CLASSES:
 
-  BaseSchema(BaseModel):
-    PURPOSE: Base Pydantic schema with common configuration for all contract models.
-    CONFIG: from_attributes=True (ORM interop), populate_by_name=True
+class BaseSchema(BaseModel):
+    """Base model with ORM-friendly defaults."""
 
-  TimestampMixin(BaseModel):
-    PURPOSE: Mixin adding created_at and updated_at to any schema.
-    FIELDS:
-      - created_at: datetime — resource creation timestamp
-      - updated_at: datetime | None = None — resource last update timestamp
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
-  IdentifiedMixin(BaseModel):
-    PURPOSE: Mixin adding id field (UUID) to any schema.
-    FIELDS:
-      - id: UUID — resource identifier
 
-  ErrorDetail(BaseSchema):
-    PURPOSE: Structured error detail for API error responses.
-    FIELDS:
-      - code: str — stable error code string
-      - message: str — human-readable error description
-      - field: str | None = None — field name for validation errors
-      - detail: dict | None = None — additional context (never includes secrets)
-    CONFIG: frozen=True
+class TimestampMixin(BaseModel):
+    """Created/updated timestamps for resources."""
 
-  ErrorResponse(BaseSchema):
-    PURPOSE: Standard API error response envelope.
-    FIELDS:
-      - error: ErrorDetail
-    CONFIG: frozen=True
-    NOTES: All API errors use this shape: {"error": {"code": ..., "message": ...}}
+    created_at: datetime
+    updated_at: datetime | None = None
 
-  PagedResponse(BaseSchema, Generic[T]):
-    PURPOSE: Standard list response envelope for paginated collections.
-    FIELDS:
-      - items: list[T] — the page of items
-      - total: int — total count of matching items
-      - page: int — current page number
-      - page_size: int — items per page
-      - next_cursor: str | None = None — cursor for next page
 
-DESIGN DECISIONS:
-- Backward compatibility: never remove or rename fields; add new fields as optional
-- ErrorResponse is a shared contract: all API error responses use this shape
-- Generic PagedResponse: type-safe across all list endpoints
-- frozen=True on error schemas: errors are immutable facts
-- from_attributes=True: allows validation from SQLAlchemy model instances
-"""
+class IdentifiedMixin(BaseModel):
+    """Primary key mixin."""
+
+    id: UUID
+
+
+class ErrorDetail(BaseSchema):
+    """Structured error payload."""
+
+    model_config = ConfigDict(frozen=True)
+
+    code: ErrorCode | str
+    message: str
+    field: str | None = None
+    detail: dict[str, Any] | None = None
+
+
+class ErrorResponse(BaseSchema):
+    """Standard API error envelope."""
+
+    model_config = ConfigDict(frozen=True)
+
+    error: ErrorDetail
+
+
+class PagedResponse[T](BaseSchema):
+    """Paginated list response."""
+
+    items: list[T]
+    total: int = Field(ge=0)
+    page: int = Field(ge=1)
+    page_size: int = Field(ge=1, le=500)
+    next_cursor: str | None = None
+    has_next: bool = False

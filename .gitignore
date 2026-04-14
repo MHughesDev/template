@@ -1,24 +1,6 @@
 # .gitignore
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Git ignore file. Excludes caches, .env, .venv, IDE artifacts, build outputs, .DS_Store.
-#          Per spec §26.12 item 339. Required.
-# SECTIONS:
-#   - Python: __pycache__, *.pyc, *.pyo, *.pyd, .Python, build/, dist/, *.egg-info/, .eggs/
-#   - Virtual environments: .venv/, venv/, env/, .env (but NOT .env.example)
-#   - Testing: .pytest_cache/, .coverage, coverage.xml, htmlcov/, .tox/
-#   - Type checking: .mypy_cache/, .pyright/
-#   - IDE: .idea/, .vscode/, *.swp, *.swo, *~
-#   - OS: .DS_Store, Thumbs.db, Desktop.ini
-#   - Docker: (no build artifacts to exclude; images are external)
-#   - Build: *.egg, *.egg-info, dist/, build/, .eggs/
-#   - Secrets: .env (never commit real .env), *.key, *.pem, *.p12, secrets/
-#   - Logs: *.log (except queue/audit.log which is tracked)
-#   - Alembic: apps/api/alembic/versions/*.pyc (keep .py migration files)
-# DESIGN DECISIONS:
-#   - .env.example IS tracked (committed) — .env is NOT tracked
-#   - queue/audit.log IS tracked (append-only evidence) — other *.log files are NOT tracked
-#   - .venv is excluded; pyproject.toml defines dependencies that create it
-#   - __pycache__ is always excluded including nested occurrences via **/
+# Excludes caches, local env files, virtualenvs, IDE noise, build outputs, and logs.
+# Track `.env.example`; never commit `.env`. `queue/audit.log` is tracked (exception below).
 
 # Python
 **/__pycache__/
@@ -108,3 +90,7 @@ node_modules/
 tmp/
 temp/
 .temp/
+
+# Local SQLite files (dev / tests)
+apps/api/*.db
+*.db

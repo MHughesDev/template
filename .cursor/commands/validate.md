@@ -1,38 +1,30 @@
 # .cursor/commands/validate.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Links to: docs/procedures/validate-change.md -->
-<!-- - Make targets: lint, fmt, typecheck, test, queue:validate -->
+Run the **standard validation suite** before opening a PR.
 
-> PURPOSE: Optional reusable Cursor command to run the full validation suite before any PR. Ensures agents run all required checks in the correct order. Per spec §26.2 item 17.
+| Field | Value |
+|-------|--------|
+| **Name** | Validate |
+| **Description** | Lint, format check, typecheck, tests, optional queue/docs/security checks. |
+| **When to use** | After substantive edits; before pushing or opening a PR. |
+| **Procedure** | [`docs/procedures/validate-change.md`](../docs/procedures/validate-change.md) |
 
-## Command Metadata
+## Steps (Makefile)
 
-> CONTENT: Command metadata block. Fields:
-> - name: "Validate"
-> - description: "Run full validation suite: lint, format check, typecheck, tests, queue validate. Use before any PR."
-> - trigger: "After implementing changes, before opening a PR. Also use after significant refactoring."
-> - linked_procedure: docs/procedures/validate-change.md
+Run in order; skip targets that do not exist in this repo yet:
 
-## Steps
+1. **`make fmt`** — Ruff format **check** (CI mode).
+2. **`make lint`** — Ruff lint.
+3. **`make typecheck`** — mypy strict.
+4. **`make test`** — pytest with coverage.
+5. **`make queue:validate`** — if **`queue/`** changed.
+6. **`make docs:check`** — if **`docs/`** changed.
+7. **`make security:scan`** — auth, tenancy, dependency, or security-sensitive changes.
 
-> CONTENT: Ordered validation steps (exact Make targets):
-> 1. `make fmt` — apply ruff formatting (or check-only with `make fmt:check`)
-> 2. `make lint` — run ruff linting
-> 3. `make typecheck` — run mypy --strict
-> 4. `make test` — run full test suite with coverage
-> 5. `make queue:validate` — validate queue schema and invariants (if queue was touched)
-> 6. `make docs:check` — verify documentation links and generated docs (if docs were updated)
-> 7. `make security:scan` — run bandit and dependency audit (for security-adjacent changes)
-> 8. Capture all output — include in PR description as evidence
+Capture logs and paste key excerpts into the PR.
 
-## Expected Output
+## Expected output
 
-> CONTENT: Expected output from a fully passing validation run:
-> - ruff: no lint errors, no format changes needed
-> - mypy: no type errors
-> - pytest: all tests pass, coverage above floor
-> - queue:validate: "Queue valid" message
-> - docs:check: "Docs OK" or "Generated docs match source"
-> - security:scan: no HIGH/CRITICAL findings (or all findings in accepted-risks.md)
+- Ruff / mypy / pytest **clean** (or only known accepted failures documented).
+- Queue validator reports OK when queue files were touched.
+- Docs check passes when documentation was edited.

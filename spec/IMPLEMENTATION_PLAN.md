@@ -10,15 +10,15 @@ This file is the **implementation checklist** for the template repository descri
 
 ### Phase 1 — Specification and root control plane
 **Milestone 1.1 — Spec and policy surface**
-- [ ] Confirm `spec/spec.md` is the canonical copy; root `spec.md` points to it.
-- [ ] Add `AGENTS.md` per §4 (all required sections).
-- [ ] Add `README.md`, `CONTRIBUTING.md`, `LICENSE`, optional `CODE_OF_CONDUCT.md`.
-- [ ] Add `idea.md`, `CHANGELOG.md` per §27–§28.
+- [x] Confirm `spec/spec.md` is the canonical copy; root `spec.md` points to it.
+- [x] Add `AGENTS.md` per §4 (all required sections).
+- [x] Add `README.md`, `CONTRIBUTING.md`, `LICENSE`, optional `CODE_OF_CONDUCT.md`.
+- [x] Add `idea.md`, `CHANGELOG.md` per §27–§28.
 
 ### Phase 2 — Machine control layer
 **Milestone 2.1 — Cursor rules and commands**
-- [ ] Create `.cursor/rules/` (global, apps-api, security, queue, initialization, skills, prompts; recommended testing + documentation).
-- [ ] Create `.cursor/commands/` (initialize, scaffold-module, audit; optional validate, queue-next).
+- [x] Create `.cursor/rules/` (global, apps-api, security, queue, initialization, skills, prompts; recommended testing + documentation).
+- [x] Create `.cursor/commands/` (initialize, scaffold-module, audit; optional validate, queue-next).
 
 ### Phase 3 — Prompts, skills, and procedures
 **Milestone 3.1 — Agent libraries**
@@ -58,9 +58,9 @@ This file is the **implementation checklist** for the template repository descri
 | Created | Path | Notes |
 |:-------:|------|-------|
 | [ ] | `/` (repo root) | Top-level control plane and configuration. Contains `AGENTS.md`, `spec/spec.md` (canonical spec), optional root `spec.md` pointer, `idea.md`, `README.md`, `Makefile`, `pyproject.toml`, `docker-compose.yml`, `.env.example`, `CHANGELOG.md`, and legal files. Everything an agent or human needs to orient and begin work. |
-| [ ] | `.cursor/` | Machine-control layer for Cursor IDE. Houses persistent rules and reusable commands that shape agent behavior during development sessions. |
-| [ ] | `.cursor/rules/` | Always-on and path-scoped constraints. Global rules apply everywhere; path-scoped rules activate only in matching directories. Agents load these automatically. Includes initialization, skills, and prompts rules. |
-| [ ] | `.cursor/commands/` | Reusable Cursor command definitions. Shortcuts that invoke canonical scripts or document exact command sequences. Includes initialization, scaffolding, and audit commands. |
+| [x] | `.cursor/` | Machine-control layer for Cursor IDE. Houses persistent rules and reusable commands that shape agent behavior during development sessions. |
+| [x] | `.cursor/rules/` | Always-on and path-scoped constraints. Global rules apply everywhere; path-scoped rules activate only in matching directories. Agents load these automatically. Includes initialization, skills, and prompts rules. |
+| [x] | `.cursor/commands/` | Reusable Cursor command definitions. Shortcuts that invoke canonical scripts or document exact command sequences. Includes initialization, scaffolding, and audit commands. |
 | [ ] | `prompts/` | Reusable, versioned prompt templates for recurring agent roles. Each template has metadata (purpose, inputs, outputs, linked procedures/skills) and a prompt body with placeholders. Includes the master `repo_initializer` prompt. |
 | [ ] | `skills/` | Executable playbooks organized by category. Each skill has a `.md` playbook and may include supporting code (machinery) for automation, validation, and generation. |
 | [ ] | `skills/init/` | Initialization skills and machinery. Used during repo initialization from `idea.md`: validation, archetype mapping, module scaffolding, queue seeding, profile resolution, env generation. |
@@ -133,27 +133,27 @@ This file is the **implementation checklist** for the template repository descri
 | Created | Path | Notes |
 |:-------:|------|-------|
 | [ ] | `.bandit.yml` |  |
-| [ ] | `.cursor/commands/audit.md` |  |
-| [ ] | `.cursor/commands/initialize.md` |  |
-| [ ] | `.cursor/commands/queue-next.md` | optional |
-| [ ] | `.cursor/commands/scaffold-module.md` |  |
-| [ ] | `.cursor/commands/validate.md` | optional |
-| [ ] | `.cursor/rules/apps-api.md` |  |
-| [ ] | `.cursor/rules/documentation.md` | recommended |
-| [ ] | `.cursor/rules/global.md` |  |
-| [ ] | `.cursor/rules/initialization.md` |  |
-| [ ] | `.cursor/rules/prompts.md` |  |
-| [ ] | `.cursor/rules/queue.md` |  |
-| [ ] | `.cursor/rules/security.md` |  |
-| [ ] | `.cursor/rules/skills.md` |  |
-| [ ] | `.cursor/rules/testing.md` | recommended |
-| [ ] | `.cursorignore` |  |
-| [ ] | `.devcontainer/devcontainer.json` |  |
-| [ ] | `.dockerignore` |  |
-| [ ] | `.editorconfig` |  |
+| [x] | `.cursor/commands/audit.md` |  |
+| [x] | `.cursor/commands/initialize.md` |  |
+| [x] | `.cursor/commands/queue-next.md` | optional |
+| [x] | `.cursor/commands/scaffold-module.md` |  |
+| [x] | `.cursor/commands/validate.md` | optional |
+| [x] | `.cursor/rules/apps-api.md` |  |
+| [x] | `.cursor/rules/documentation.md` | recommended |
+| [x] | `.cursor/rules/global.md` |  |
+| [x] | `.cursor/rules/initialization.md` |  |
+| [x] | `.cursor/rules/prompts.md` |  |
+| [x] | `.cursor/rules/queue.md` |  |
+| [x] | `.cursor/rules/security.md` |  |
+| [x] | `.cursor/rules/skills.md` |  |
+| [x] | `.cursor/rules/testing.md` | recommended |
+| [x] | `.cursorignore` |  |
+| [x] | `.devcontainer/devcontainer.json` |  |
+| [x] | `.dockerignore` |  |
+| [x] | `.editorconfig` |  |
 | [ ] | `.env.example` |  |
 | [ ] | `.envrc` | optional |
-| [ ] | `.gitattributes` |  |
+| [x] | `.gitattributes` |  |
 | [ ] | `.github/CODEOWNERS` |  |
 | [ ] | `.github/ISSUE_TEMPLATE/bug_report.md` |  |
 | [ ] | `.github/ISSUE_TEMPLATE/feature_request.md` |  |
@@ -169,53 +169,53 @@ This file is the **implementation checklist** for the template repository descri
 | [ ] | `.github/workflows/label-sync.yml` | optional |
 | [ ] | `.github/workflows/security.yml` |  |
 | [ ] | `.github/workflows/stale.yml` | optional |
-| [ ] | `.gitignore` |  |
+| [x] | `.gitignore` |  |
 | [ ] | `.mailmap` | optional |
-| [ ] | `.pre-commit-config.yaml` |  |
-| [ ] | `.python-version` |  |
+| [x] | `.pre-commit-config.yaml` |  |
+| [x] | `.python-version` |  |
 | [ ] | `.trivyignore` |  |
-| [ ] | `AGENTS.md` |  |
-| [ ] | `CHANGELOG.md` |  |
+| [x] | `AGENTS.md` |  |
+| [x] | `CHANGELOG.md` |  |
 | [ ] | `CODEBASE_SUMMARY.md` | optional |
-| [ ] | `CODE_OF_CONDUCT.md` | optional |
-| [ ] | `CONTRIBUTING.md` |  |
-| [ ] | `LICENSE` |  |
+| [x] | `CODE_OF_CONDUCT.md` | optional |
+| [x] | `CONTRIBUTING.md` |  |
+| [x] | `LICENSE` |  |
 | [ ] | `Makefile` |  |
 | [ ] | `NOTICE` | optional |
-| [ ] | `README.md` |  |
-| [ ] | `SECURITY.md` |  |
-| [ ] | `apps/api/AGENTS.md` |  |
+| [x] | `README.md` |  |
+| [x] | `SECURITY.md` |  |
+| [x] | `apps/api/AGENTS.md` |  |
 | [ ] | `apps/api/Dockerfile` |  |
-| [ ] | `apps/api/alembic.ini` |  |
-| [ ] | `apps/api/alembic/env.py` |  |
+| [x] | `apps/api/alembic.ini` |  |
+| [x] | `apps/api/alembic/env.py` |  |
 | [ ] | `apps/api/alembic/script.py.mako` |  |
 | [ ] | `apps/api/alembic/versions/.gitkeep` |  |
-| [ ] | `apps/api/src/__init__.py` |  |
-| [ ] | `apps/api/src/auth/__init__.py` |  |
-| [ ] | `apps/api/src/auth/dependencies.py` |  |
-| [ ] | `apps/api/src/auth/models.py` |  |
-| [ ] | `apps/api/src/auth/router.py` |  |
-| [ ] | `apps/api/src/auth/schemas.py` |  |
-| [ ] | `apps/api/src/auth/service.py` |  |
-| [ ] | `apps/api/src/config.py` |  |
-| [ ] | `apps/api/src/database.py` |  |
-| [ ] | `apps/api/src/dependencies.py` |  |
-| [ ] | `apps/api/src/events.py` | optional |
-| [ ] | `apps/api/src/exceptions.py` |  |
-| [ ] | `apps/api/src/health/__init__.py` |  |
-| [ ] | `apps/api/src/health/router.py` |  |
-| [ ] | `apps/api/src/main.py` |  |
-| [ ] | `apps/api/src/middleware.py` |  |
-| [ ] | `apps/api/src/pagination.py` |  |
-| [ ] | `apps/api/src/tenancy/__init__.py` |  |
-| [ ] | `apps/api/src/tenancy/middleware.py` |  |
-| [ ] | `apps/api/src/tenancy/models.py` |  |
-| [ ] | `apps/api/tests/__init__.py` |  |
-| [ ] | `apps/api/tests/conftest.py` |  |
-| [ ] | `apps/api/tests/factories.py` |  |
-| [ ] | `apps/api/tests/test_auth.py` |  |
-| [ ] | `apps/api/tests/test_health.py` |  |
-| [ ] | `apps/api/tests/test_tenancy.py` |  |
+| [x] | `apps/api/src/__init__.py` |  |
+| [x] | `apps/api/src/auth/__init__.py` |  |
+| [x] | `apps/api/src/auth/dependencies.py` |  |
+| [x] | `apps/api/src/auth/models.py` |  |
+| [x] | `apps/api/src/auth/router.py` |  |
+| [x] | `apps/api/src/auth/schemas.py` |  |
+| [x] | `apps/api/src/auth/service.py` |  |
+| [x] | `apps/api/src/config.py` |  |
+| [x] | `apps/api/src/database.py` |  |
+| [x] | `apps/api/src/dependencies.py` |  |
+| [x] | `apps/api/src/events.py` | optional |
+| [x] | `apps/api/src/exceptions.py` |  |
+| [x] | `apps/api/src/health/__init__.py` |  |
+| [x] | `apps/api/src/health/router.py` |  |
+| [x] | `apps/api/src/main.py` |  |
+| [x] | `apps/api/src/middleware.py` |  |
+| [x] | `apps/api/src/pagination.py` |  |
+| [x] | `apps/api/src/tenancy/__init__.py` |  |
+| [x] | `apps/api/src/tenancy/middleware.py` |  |
+| [x] | `apps/api/src/tenancy/models.py` |  |
+| [x] | `apps/api/tests/__init__.py` |  |
+| [x] | `apps/api/tests/conftest.py` |  |
+| [x] | `apps/api/tests/factories.py` |  |
+| [x] | `apps/api/tests/test_auth.py` |  |
+| [x] | `apps/api/tests/test_health.py` |  |
+| [x] | `apps/api/tests/test_tenancy.py` |  |
 | [ ] | `apps/mobile/AGENTS.md` | optional |
 | [ ] | `apps/mobile/README.md` | optional |
 | [ ] | `apps/web/AGENTS.md` | optional |
@@ -351,14 +351,14 @@ This file is the **implementation checklist** for the template repository descri
 | [ ] | `packages/ai/interfaces.py` | optional |
 | [ ] | `packages/ai/py.typed` | optional |
 | [ ] | `packages/contracts/AGENTS.md` |  |
-| [ ] | `packages/contracts/__init__.py` |  |
-| [ ] | `packages/contracts/errors.py` |  |
-| [ ] | `packages/contracts/models.py` |  |
-| [ ] | `packages/contracts/pagination.py` |  |
+| [x] | `packages/contracts/__init__.py` |  |
+| [x] | `packages/contracts/errors.py` |  |
+| [x] | `packages/contracts/models.py` |  |
+| [x] | `packages/contracts/pagination.py` |  |
 | [ ] | `packages/contracts/py.typed` | optional |
 | [ ] | `packages/tasks/AGENTS.md` |  |
-| [ ] | `packages/tasks/__init__.py` |  |
-| [ ] | `packages/tasks/interfaces.py` |  |
+| [x] | `packages/tasks/__init__.py` |  |
+| [x] | `packages/tasks/interfaces.py` |  |
 | [ ] | `packages/tasks/py.typed` | optional |
 | [ ] | `prompts/README.md` |  |
 | [ ] | `prompts/debugger.md` |  |
@@ -383,7 +383,7 @@ This file is the **implementation checklist** for the template repository descri
 | [ ] | `prompts/spec_hardening_agent.md` |  |
 | [ ] | `prompts/task_planner.md` |  |
 | [ ] | `prompts/test_writer.md` |  |
-| [ ] | `pyproject.toml` |  |
+| [x] | `pyproject.toml` |  |
 | [ ] | `pyrightconfig.json` | optional |
 | [ ] | `queue/QUEUE_AGENT_PROMPT.md` |  |
 | [ ] | `queue/QUEUE_INSTRUCTIONS.md` |  |

@@ -1,53 +1,71 @@
 # apps/api/src/events.py
-"""
-BLUEPRINT: apps/api/src/events.py
+"""Lightweight in-process domain event primitives (optional)."""
 
-PURPOSE:
-Domain events and event bus foundation. Optional per spec §26.12 item 396.
-Provides the base DomainEvent type, an in-process event bus for pub/sub
-communication between bounded contexts, and event emission utilities.
-Enable when bounded contexts need to communicate without direct imports.
+from __future__ import annotations
 
-DEPENDS ON:
-- pydantic — BaseModel, ConfigDict (frozen=True for events)
-- datetime — for event timestamps
-- uuid — for event IDs
-- asyncio — for async event handling
-- typing — for generic event types
+import asyncio
+import uuid
+from collections import defaultdict
+from collections.abc import Awaitable, Callable, Coroutine
+from datetime import UTC, datetime
+from typing import Any
 
-DEPENDED ON BY:
-- apps.api.src.*/service.py — emit domain events
-- (future): event handlers in subscriber modules
+from pydantic import BaseModel, ConfigDict
 
-CLASSES:
 
-  DomainEvent(BaseModel):
-    PURPOSE: Base class for all domain events.
-    FIELDS:
-      - event_id: UUID — unique event identifier
-      - event_type: str — type discriminator (e.g., "invoice.created")
-      - occurred_at: datetime — when the event occurred (UTC)
-      - aggregate_id: str — ID of the entity that caused the event
-      - tenant_id: str | None = None — tenant context for multi-tenant deployments
-    NOTES: model_config = ConfigDict(frozen=True) — events are immutable
+class DomainEvent(BaseModel):
+    """Immutable domain event envelope."""
 
-  EventBus:
-    PURPOSE: In-process event bus for synchronous or async event dispatch.
-    METHODS:
-      - subscribe(event_type: str, handler: Callable) -> None
-        Register a handler for a specific event type.
-      - publish(event: DomainEvent) -> None
-        Publish an event to all registered handlers.
-      - async_publish(event: DomainEvent) -> None
-        Async version of publish for async handlers.
-    NOTES: Simple in-process bus; replace with external broker for cross-service events
+    model_config = ConfigDict(frozen=True)
 
-CONSTANTS:
-  - event_bus: EventBus — module-level singleton for the in-process event bus
+    event_id: uuid.UUID
+    event_type: str
+    occurred_at: datetime
+    aggregate_id: str
+    tenant_id: str | None = None
 
-DESIGN DECISIONS:
-- Optional module: only imported when bounded context communication is needed
-- In-process bus: sufficient for monolith; swap for external broker when extracting services
-- Events are immutable (frozen=True): domain events represent facts, never changed
-- No persistence here: events are fire-and-forget in-process (add outbox for reliability)
-"""
+
+Handler = Callable[[DomainEvent], Coroutine[Any, Any, None] | Awaitable[None]]
+
+
+class EventBus:
+    """Simple async in-process pub/sub bus."""
+
+    def __init__(self) -> None:
+        self._handlers: dict[str, list[Handler]] = defaultdict(list)
+
+    def subscribe(self, event_type: str, handler: Handler) -> None:
+        """Register ``handler`` for ``event_type``."""
+
+        self._handlers[event_type].append(handler)
+
+    async def publish(self, event: DomainEvent) -> None:
+        """Dispatch ``event`` to subscribers."""
+
+        handlers = list(self._handlers.get(event.event_type, []))
+        await asyncio.gather(*(self._call(handler, event) for handler in handlers))
+
+    async def _call(self, handler: Handler, event: DomainEvent) -> None:
+        result = handler(event)
+        if asyncio.iscoroutine(result):
+            await result
+
+
+event_bus = EventBus()
+
+
+def emit_domain_event(
+    event_type: str,
+    aggregate_id: str,
+    *,
+    tenant_id: str | None = None,
+) -> DomainEvent:
+    """Build a timestamped event (callers may publish via ``event_bus``)."""
+
+    return DomainEvent(
+        event_id=uuid.uuid4(),
+        event_type=event_type,
+        occurred_at=datetime.now(UTC),
+        aggregate_id=aggregate_id,
+        tenant_id=tenant_id,
+    )
