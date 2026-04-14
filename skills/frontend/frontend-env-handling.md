@@ -19,10 +19,10 @@
 > CONTENT: apps/web/ or apps/mobile/, docs/optional-clients/
 
 ## Step-by-Step Method
-> CONTENT: TODO
+> CONTENT: Use `.env` / `app.config` for public API URL only; never embed secrets in client bundles.
 
 ## Command Examples
-> CONTENT: TODO
+> CONTENT: `EXPO_PUBLIC_API_URL=http://localhost:8000`
 
 ## Validation Checklist
 > CONTENT:

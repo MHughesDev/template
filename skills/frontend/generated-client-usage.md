@@ -19,10 +19,10 @@
 > CONTENT: apps/web/ or apps/mobile/, docs/optional-clients/
 
 ## Step-by-Step Method
-> CONTENT: TODO
+> CONTENT: Generate client from OpenAPI; import typed methods; map errors to UI states.
 
 ## Command Examples
-> CONTENT: TODO
+> CONTENT: `openapi-generator-cli generate -i http://localhost:8000/openapi.json ...`
 
 ## Validation Checklist
 > CONTENT:

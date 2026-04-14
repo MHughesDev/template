@@ -1,7 +1,5 @@
 ## apps/api/alembic/script.py.mako
-## PURPOSE: Alembic migration script template. Standard Mako template for generating
-##          migration files with file title comment, revision ID, and up/down functions.
-##          Per spec §26.8 item 210.
+## PURPOSE: Alembic migration script template (Mako).
 
 """${message}
 
@@ -9,8 +7,7 @@ Revision ID: ${up_revision}
 Revises: ${down_revision | comma,n}
 Create Date: ${create_date}
 
-## EXPAND/CONTRACT PHASE: TODO — document whether this is an expand, contract, or single-phase migration
-## ROLLBACK PLAN: TODO — document how to rollback this migration safely
+Document in the PR: migration phase (expand / contract / single), rollback plan, and data backfill if any.
 """
 from typing import Sequence, Union
 
@@ -26,19 +23,10 @@ depends_on: Union[str, Sequence[str], None] = ${repr(depends_on)}
 
 
 def upgrade() -> None:
-    """Apply the migration. Write explicit operations, do not rely on autogenerate entirely.
-
-    STEPS:
-    1. Describe each operation
-    2. Verify safe order (foreign keys, indexes)
-    """
+    """Apply the migration."""
     ${upgrades if upgrades else "pass"}
 
 
 def downgrade() -> None:
-    """Reverse the migration. Must be the exact inverse of upgrade().
-
-    STEPS:
-    1. Reverse each upgrade operation in reverse order
-    """
+    """Reverse the migration (inverse of upgrade)."""
     ${downgrades if downgrades else "pass"}

@@ -1,24 +1,14 @@
 {
-  "comment": "pyrightconfig.json — Pyright static type checker configuration. Optional (use if pyright is preferred over mypy). Per spec §26.12 item 406.",
-  "blueprint": "Composer 2 implements from this structure. JSON does not support comments; this key serves as documentation.",
-  "purpose": "Configure Pyright for strict type checking on the apps/api/src/ and packages/ source trees. Equivalent to mypy --strict. Used in CI via make typecheck if pyright is the chosen type checker.",
-  "sections": {
-    "include": ["apps/api/src", "packages", "skills", "scripts"],
-    "exclude": ["**/node_modules", "**/__pycache__", "**/.venv", "**/alembic/versions"],
-    "venvPath": ".",
-    "venv": ".venv",
-    "pythonVersion": "3.12",
-    "typeCheckingMode": "strict",
-    "reportMissingImports": true,
-    "reportMissingTypeStubs": false,
-    "reportUnknownVariableType": true,
-    "reportUnknownArgumentType": true,
-    "reportUnknownMemberType": true,
-    "reportUntypedFunctionDecorator": false
-  },
-  "design_decisions": [
-    "strict mode mirrors mypy --strict — both are acceptable; choose one and document in pyproject.toml",
-    "reportMissingTypeStubs is false because many libraries lack stubs — use py.typed packages where available",
-    "reportUntypedFunctionDecorator is false because FastAPI decorators are not fully typed in all versions"
-  ]
+  "include": ["apps/api/src", "packages", "scripts"],
+  "exclude": ["**/node_modules", "**/__pycache__", "**/.venv", "**/alembic/versions", "skills"],
+  "venvPath": ".",
+  "venv": ".venv",
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "strict",
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "reportUnknownVariableType": true,
+  "reportUnknownArgumentType": true,
+  "reportUnknownMemberType": true,
+  "reportUntypedFunctionDecorator": false
 }

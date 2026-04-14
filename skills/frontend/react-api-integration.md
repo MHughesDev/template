@@ -19,10 +19,10 @@
 > CONTENT: apps/web/ or apps/mobile/, docs/optional-clients/
 
 ## Step-by-Step Method
-> CONTENT: TODO
+> CONTENT: Generate or configure an API client; call authenticated endpoints; handle 401 refresh if applicable.
 
 ## Command Examples
-> CONTENT: TODO
+> CONTENT: `npm run dev` (web) or `npx expo start` (mobile); curl API with Bearer token.
 
 ## Validation Checklist
 > CONTENT:

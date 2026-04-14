@@ -19,10 +19,10 @@
 > CONTENT: apps/web/ or apps/mobile/, docs/optional-clients/
 
 ## Step-by-Step Method
-> CONTENT: TODO
+> CONTENT: Store access/refresh tokens with `expo-secure-store`; clear on logout; refresh before expiry.
 
 ## Command Examples
-> CONTENT: TODO
+> CONTENT: `npx expo install expo-secure-store`
 
 ## Validation Checklist
 > CONTENT:

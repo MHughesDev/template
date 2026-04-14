@@ -1,10 +1,15 @@
 # deploy/k8s/overlays/staging/kustomization.yaml
-# PURPOSE: Staging environment Kustomize overlay. Production-like with lower scale. Per spec §26.10 item 253.
-# bases: [../../base]
-# namespace: staging
-# patches:
-#   - replicas=2, resources similar to prod but lower limits
-#   - LOG_LEVEL=INFO, API_DEBUG=false
-#   - host=api.staging.{{DOMAIN}}
-#   - HPA minReplicas=2, maxReplicas=5
-# images: [{name: ghcr.io/{{ORG}}/{{REPO}}, newTag: latest}]
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: staging
+
+resources:
+  - ../../base
+
+commonLabels:
+  environment: staging
+
+images:
+  - name: template-api
+    newTag: staging
