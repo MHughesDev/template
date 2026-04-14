@@ -1,6 +1,5 @@
 # docs/procedures/validate-idea-md.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Per spec §26.5 and §28.3 -->
 

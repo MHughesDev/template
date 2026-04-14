@@ -1,6 +1,5 @@
 # skills/init/archetype-mapper.py
 """
-BLUEPRINT: skills/init/archetype-mapper.py
 
 PURPOSE:
 Maps project archetype to default profiles, queue categories, module set,

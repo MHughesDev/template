@@ -1,6 +1,5 @@
 # docs/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: README.md (root), AGENTS.md §Navigation -->
 

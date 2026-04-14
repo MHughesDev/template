@@ -1,6 +1,5 @@
 # apps/api/src/auth/__init__.py
 """
-BLUEPRINT: apps/api/src/auth/__init__.py
 
 PURPOSE:
 Package marker for the auth module. Exports the router and key dependency

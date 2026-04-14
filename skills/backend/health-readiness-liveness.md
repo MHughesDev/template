@@ -1,10 +1,9 @@
 # skills/backend/health-readiness-liveness.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/implement-change.md -->
 
-> PURPOSE: TODO — Composer 2 implements full §6.2 skill content from spec §26.4 and related sections.
+> PURPOSE: Operational skill for this topic. Follow the sections below, AGENTS.md, and PYTHON_PROCEDURES.md.
 
 ## Purpose
 

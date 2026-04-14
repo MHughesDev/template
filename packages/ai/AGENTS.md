@@ -1,6 +1,5 @@
 # packages/ai/AGENTS.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.9 item 245 — optional AI profile -->
 
 > PURPOSE: Scoped agent instructions for the AI package. Per spec §26.9 item 245.

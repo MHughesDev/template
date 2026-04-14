@@ -1,6 +1,5 @@
 # skills/agent-ops/queue-triage.py
 """
-BLUEPRINT: skills/agent-ops/queue-triage.py
 
 PURPOSE:
 Queue triage analyzer. Reads queue.csv and queuearchive.csv, validates schema,

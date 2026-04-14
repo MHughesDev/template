@@ -1,6 +1,5 @@
 # docs/getting-started/prerequisites.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 > PURPOSE: Required tools and versions. Python 3.12+, Docker, Make/Task, Git. Per spec §26.5 item 113.
 
 ## Required Tools

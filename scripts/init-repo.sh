@@ -1,30 +1,12 @@
 #!/usr/bin/env bash
 # scripts/init-repo.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Run initialization pre-checks: idea.md exists, prereqs installed, provide guidance
-# CORRESPONDS TO: make init
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Bootstrap dev environment: editable install + optional .env.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
-
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
-
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+python3 -m pip install -e ".[dev]"
+"$ROOT/scripts/generate-env.sh" || true
+echo "Init complete. Run: make migrate && make dev"

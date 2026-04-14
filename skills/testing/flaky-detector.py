@@ -1,6 +1,5 @@
 # skills/testing/flaky-detector.py
 """
-BLUEPRINT: skills/testing/flaky-detector.py
 
 PURPOSE:
 Detects potentially flaky tests by running the test suite multiple times

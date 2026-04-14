@@ -1,6 +1,5 @@
 # skills/agent-ops/repo-self-audit.py
 """
-BLUEPRINT: skills/agent-ops/repo-self-audit.py
 
 PURPOSE:
 Automated repository spec-compliance audit. Checks that the repository meets

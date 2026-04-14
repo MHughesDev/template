@@ -1,6 +1,5 @@
 # skills/repo-governance/adr-index-generator.py
 """
-BLUEPRINT: skills/repo-governance/adr-index-generator.py
 
 PURPOSE:
 Generates the ADR index file (docs/adr/README.md) from ADR files in docs/adr/.

@@ -1,22 +1,3 @@
 # .trivyignore
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Trivy CVE ignore list. Lists specific CVEs that are accepted risks,
-#          cross-referenced with docs/security/accepted-risks.md for justification.
-#          Per spec §26.12 item 380.
-# FORMAT: One CVE ID per line. Comments (#) are supported.
-# POLICY:
-#   - Every entry MUST have a corresponding entry in docs/security/accepted-risks.md
-#   - Every entry MUST have a review date; entries older than 90 days are re-evaluated
-#   - Entries are removed when the vulnerability is patched or the package is replaced
-# SECTIONS:
-#   - Accepted CVEs with justification reference
-# DESIGN DECISIONS:
-#   - This file is intentionally sparse at template initialization
-#   - During project lifecycle, CVEs are added here only after accepted-risks.md review
-#   - No CVEs should be ignored without documented justification and review date
-
-# Format:
-# CVE-YYYY-XXXXX  # <package> - <reason> - reviewed: YYYY-MM-DD
-
-# Example (remove in real projects; add real accepted CVEs):
-# CVE-2024-00000  # example-package - no fix available; mitigated by network isolation - reviewed: 2025-01-01
+# CVE IDs to ignore (must be justified in docs/security/accepted-risks.md).
+# CVE-YYYY-NNNNN

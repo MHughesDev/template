@@ -1,6 +1,5 @@
 # docs/architecture/diagrams/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 > PURPOSE: Index for Mermaid/PlantUML architecture diagram sources. Optional per spec §26.12 item 399.
 
 ## Diagrams

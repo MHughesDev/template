@@ -30,7 +30,6 @@ linked_skills:
 
 # prompts/documentation_updater.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

@@ -1,6 +1,5 @@
 # skills/devops/k8s-manifest-validator.py
 """
-BLUEPRINT: skills/devops/k8s-manifest-validator.py
 
 PURPOSE:
 Validates Kubernetes manifests beyond schema validation: checks resource

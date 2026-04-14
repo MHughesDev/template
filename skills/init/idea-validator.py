@@ -1,6 +1,5 @@
 # skills/init/idea-validator.py
 """
-BLUEPRINT: skills/init/idea-validator.py
 
 PURPOSE:
 Validates idea.md structure and content completeness. Checks every required

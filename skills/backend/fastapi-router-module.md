@@ -1,6 +1,5 @@
 # skills/backend/fastapi-router-module.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/backend/module-scaffolder.py -->
 <!-- - Related procedure: docs/procedures/scaffold-domain-module.md -->

@@ -1,6 +1,5 @@
 # docs/procedures/update-or-create-skill.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Skill: skills/agent-ops/prompt-to-procedure-promotion.md -->
 <!-- - Rule: .cursor/rules/skills.md -->

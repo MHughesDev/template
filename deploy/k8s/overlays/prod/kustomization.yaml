@@ -1,5 +1,4 @@
 # deploy/k8s/overlays/prod/kustomization.yaml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Production environment Kustomize overlay. Full scale, strict settings, PDB. Per spec §26.10 item 254.
 # bases: [../../base]
 # namespace: production

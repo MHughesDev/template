@@ -1,11 +1,10 @@
 # skills/testing/regression-harness.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related rule: .cursor/rules/testing.md -->
 <!-- - Related docs: docs/quality/testing-strategy.md -->
 
-> PURPOSE: TODO — Composer 2 implements full §6.2 skill content for regression-harness in the testing domain.
+> PURPOSE: Operational skill for this topic. Follow the sections below, AGENTS.md, and PYTHON_PROCEDURES.md.
 
 ## Purpose
 > CONTENT: What this testing skill enables.

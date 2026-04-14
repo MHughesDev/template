@@ -1,6 +1,5 @@
 # skills/backend/service-repository-pattern.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related rules: .cursor/rules/apps-api.md, PYTHON_PROCEDURES.md §6 -->
 <!-- - Related procedure: docs/procedures/scaffold-domain-module.md -->

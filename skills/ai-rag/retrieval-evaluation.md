@@ -1,11 +1,10 @@
 # skills/ai-rag/retrieval-evaluation.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Profile: optional AI/RAG profile -->
 <!-- - Related docs: docs/architecture/ai-rag-chromadb.md -->
 
-> PURPOSE: [OPTIONAL] TODO — Composer 2 implements full §6.2 skill content for retrieval-evaluation in the AI/RAG domain. Only relevant when the ai-rag profile is enabled.
+> PURPOSE: [OPTIONAL] Frontend/mobile skill. Enable the web or mobile profile before relying on this.
 
 ## Purpose
 > CONTENT: What this AI/RAG skill enables.

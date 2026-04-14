@@ -1,6 +1,5 @@
 # skills/init/queue-seeder.py
 """
-BLUEPRINT: skills/init/queue-seeder.py
 
 PURPOSE:
 Extracts queue items from idea.md §12 and §15, generates properly formatted

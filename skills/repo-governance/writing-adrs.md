@@ -1,6 +1,5 @@
 # skills/repo-governance/writing-adrs.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Template: docs/adr/template.md -->
 <!-- - Index machinery: skills/repo-governance/adr-index-generator.py -->

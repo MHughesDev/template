@@ -1,6 +1,5 @@
 # skills/security/secret-handling.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/security/secret-scanner.py -->
 <!-- - Related rule: .cursor/rules/security.md -->

@@ -1,6 +1,5 @@
 # queue/QUEUE_AGENT_PROMPT.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Read by: agents processing queue items (injected as context) -->
 <!-- - Referenced by: queue/QUEUE_INSTRUCTIONS.md, prompts/queue_processor.md -->

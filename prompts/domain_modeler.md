@@ -28,7 +28,6 @@ linked_skills:
 
 # prompts/domain_modeler.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

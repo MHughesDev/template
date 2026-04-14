@@ -1,6 +1,5 @@
 # skills/repo-governance/rule-linter.py
 """
-BLUEPRINT: skills/repo-governance/rule-linter.py
 
 PURPOSE:
 Lints .cursor/rules/*.md files for correct structure: frontmatter presence,

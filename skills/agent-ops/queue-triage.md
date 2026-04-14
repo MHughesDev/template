@@ -1,6 +1,5 @@
 # skills/agent-ops/queue-triage.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/agent-ops/queue-triage.py -->
 <!-- - Related procedure: docs/procedures/start-queue-item.md -->

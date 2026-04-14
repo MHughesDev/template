@@ -1,13 +1,14 @@
 # .github/workflows/label-sync.yml
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Sync GitHub labels from .github/labels.yml. Optional per spec §26.12 item 395.
-# SECTIONS:
-#   - on: push (paths: [".github/labels.yml"])
-#   - uses: EndBug/label-sync action to sync labels from labels.yml to repo
-name: Label Sync
-# on: push: paths: [".github/labels.yml"]
-# jobs:
-#   label-sync:
-#     steps:
-#       - checkout
-#       - uses: EndBug/label-sync with labels-from: .github/labels.yml, delete-other-labels: false
+name: Labels
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Note
+        run: |
+          echo "Label definitions live in .github/labels.yml — apply manually or via GitHub UI."

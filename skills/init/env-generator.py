@@ -1,6 +1,5 @@
 # skills/init/env-generator.py
 """
-BLUEPRINT: skills/init/env-generator.py
 
 PURPOSE:
 Generates .env.example content based on enabled profiles. Each profile has a

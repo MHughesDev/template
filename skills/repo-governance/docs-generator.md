@@ -1,6 +1,5 @@
 # skills/repo-governance/docs-generator.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/repo-governance/docs-generator.py -->
 <!-- - Conceptual docs: docs/development/docs-generation.md -->

@@ -1,60 +1,33 @@
 # .github/dependabot.yml
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Dependabot configuration for automated dependency updates.
-#          Per spec §26.7 item 204.
-# SECTIONS:
-#   - pip: Python dependencies (pyproject.toml)
-#   - docker: Dockerfile base images (apps/api/Dockerfile)
-#   - github-actions: Action versions in .github/workflows/
-# DESIGN DECISIONS:
-#   - Weekly schedule for pip and docker (not daily — avoids churn)
-#   - Daily schedule for github-actions (security patches are more urgent)
-#   - Labels: type:chore, source:dependabot for filtering
-#   - Commit message prefix: "chore(deps): " for changelog categorization
-#   - Reviewers: {{ORG}}/maintainers — filled during initialization
-
 version: 2
 updates:
-  # Python dependencies
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: weekly
-      day: monday
-      time: "09:00"
     labels:
       - "type:chore"
       - "source:dependabot"
     commit-message:
       prefix: "chore(deps)"
-    reviewers:
-      - "{{ORG}}/maintainers"
     open-pull-requests-limit: 5
 
-  # Docker base images
   - package-ecosystem: docker
     directory: /apps/api
     schedule:
       interval: weekly
-      day: tuesday
     labels:
       - "type:chore"
       - "source:dependabot"
     commit-message:
       prefix: "chore(docker)"
-    reviewers:
-      - "{{ORG}}/infra-maintainers"
 
-  # GitHub Actions
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
-      day: wednesday
     labels:
       - "type:chore"
       - "source:dependabot"
     commit-message:
       prefix: "chore(actions)"
-    reviewers:
-      - "{{ORG}}/infra-maintainers"

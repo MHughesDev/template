@@ -28,7 +28,6 @@ linked_skills:
 
 # prompts/dependency_upgrade_agent.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

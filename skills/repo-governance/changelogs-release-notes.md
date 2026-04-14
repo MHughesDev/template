@@ -1,6 +1,5 @@
 # skills/repo-governance/changelogs-release-notes.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/release-preparation.md -->
 <!-- - Docs: docs/release/changelog-guide.md -->

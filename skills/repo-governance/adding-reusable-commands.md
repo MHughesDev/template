@@ -1,6 +1,5 @@
 # skills/repo-governance/adding-reusable-commands.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/implement-change.md -->
 

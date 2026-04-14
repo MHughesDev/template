@@ -1,6 +1,5 @@
 # docs/queue/queue-categories.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Enforced by: scripts/queue-validate.sh -->
 <!-- - Procedure: docs/procedures/add-queue-category.md -->

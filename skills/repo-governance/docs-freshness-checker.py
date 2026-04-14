@@ -1,6 +1,5 @@
 # skills/repo-governance/docs-freshness-checker.py
 """
-BLUEPRINT: skills/repo-governance/docs-freshness-checker.py
 
 PURPOSE:
 Checks documentation freshness by comparing doc file modification timestamps

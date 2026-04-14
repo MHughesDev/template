@@ -1,6 +1,5 @@
 # skills/backend/error-code-registry.py
 """
-BLUEPRINT: skills/backend/error-code-registry.py
 
 PURPOSE:
 Error code registry validator and documentation generator. Scans the codebase

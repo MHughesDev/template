@@ -1,6 +1,5 @@
 # skills/agent-ops/queue-intelligence.py
 """
-BLUEPRINT: skills/agent-ops/queue-intelligence.py
 
 PURPOSE:
 Queue intelligence engine implementing §17.11 advanced orchestration:

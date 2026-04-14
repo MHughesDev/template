@@ -1,6 +1,5 @@
 # skills/devops/dockerfile-linter.py
 """
-BLUEPRINT: skills/devops/dockerfile-linter.py
 
 PURPOSE:
 Lints Dockerfiles for best practices: multi-stage build presence, non-root user

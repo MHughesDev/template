@@ -1,6 +1,5 @@
 # docs/getting-started/quickstart.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 > PURPOSE: Step-by-step from clone to running dev server with passing tests. Per spec §26.5 item 114.
 
 ## Quickstart Steps

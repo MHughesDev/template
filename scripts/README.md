@@ -1,6 +1,5 @@
 # scripts/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.11 item 255 -->
 
 > PURPOSE: Scripts index. Documents each script, its corresponding Make target, and expected behavior. Per spec §26.11 item 255.
@@ -51,3 +50,7 @@
 | `idea-to-queue.sh` | `make idea:queue` | Seed queue from idea.md |
 | `generate-env.sh` | `make env:generate` | Generate .env |
 | `inventory-check.sh` | `make inventory:check` | Verify spec-required files |
+| `queue_validate.py` | (via `queue-validate.sh`) | CSV schema validation |
+| `queue_archive.py` | (via `queue-archive.sh`) | Move queue row to archive |
+| `repo_self_audit.py` | (via `audit-self.sh`) | Lightweight audit runner |
+| `inventory_check.py` | (via `inventory-check.sh`) | Check IMPLEMENTATION_PLAN paths |

@@ -1,6 +1,5 @@
 # apps/web/AGENTS.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.8 item 233 — optional web profile -->
 
 > PURPOSE: Scoped agent instructions for web frontend development. Per spec §26.8 item 233.
@@ -11,7 +10,7 @@
 
 ## Framework Conventions
 
-> CONTENT: Framework-specific conventions to be filled during profile enablement based on idea.md §3 (archetype) and chosen framework (e.g., Next.js, Vite+React). Composer 2 fills specific conventions after idea.md is read.
+> CONTENT: Framework-specific conventions to be filled during profile enablement based on idea.md §3 (archetype) and chosen framework (e.g., Next.js, Vite+React). Fill conventions when enabling the web profile from idea.md.
 
 ## API Integration Patterns
 

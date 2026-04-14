@@ -1,5 +1,4 @@
 # queue/queue.lock
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Optional mutex file for single-lane queue processing.
 #          Presence = a processor is actively working on the top queue item.
 #          Absence = queue is unclaimed.

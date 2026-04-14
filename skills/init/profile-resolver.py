@@ -1,6 +1,5 @@
 # skills/init/profile-resolver.py
 """
-BLUEPRINT: skills/init/profile-resolver.py
 
 PURPOSE:
 Resolves the final set of enabled profiles from archetype defaults and idea.md §5

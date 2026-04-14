@@ -1,11 +1,10 @@
 # docs/agents/evolving-from-incidents.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/agents/README.md -->
 <!-- - Per spec §26.5 and §9.3 (Maintainer Supervision) -->
 
-> PURPOSE: TODO — Composer 2 implements agent supervision documentation for evolving-from-incidents. Per spec §9.3 and §26.5.
+> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
 
 ## Overview
 

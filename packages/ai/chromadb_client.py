@@ -1,6 +1,5 @@
 # packages/ai/chromadb_client.py
 """
-BLUEPRINT: packages/ai/chromadb_client.py
 
 PURPOSE:
 ChromaDB client implementation of EmbeddingProvider and RetrievalProvider.

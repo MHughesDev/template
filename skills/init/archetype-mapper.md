@@ -1,6 +1,5 @@
 # skills/init/archetype-mapper.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/init/archetype-mapper.py -->
 <!-- - Spec: §27.3 archetype-to-profile mapping -->

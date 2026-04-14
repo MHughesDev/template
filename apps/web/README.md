@@ -1,6 +1,5 @@
 # apps/web/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.8 item 232 — optional web profile placeholder -->
 
 > PURPOSE: Web frontend placeholder. Documents when/how to enable this profile. Per spec §26.8 item 232.

@@ -1,6 +1,5 @@
 # skills/testing/coverage-ratchet.py
 """
-BLUEPRINT: skills/testing/coverage-ratchet.py
 
 PURPOSE:
 Reads current test coverage percentage, compares against the floor defined in

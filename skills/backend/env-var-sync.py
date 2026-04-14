@@ -1,6 +1,5 @@
 # skills/backend/env-var-sync.py
 """
-BLUEPRINT: skills/backend/env-var-sync.py
 
 PURPOSE:
 Synchronizes .env.example with actual env var usage in the codebase.

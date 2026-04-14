@@ -1,6 +1,5 @@
 # skills/agent-ops/handoff-template-generator.py
 """
-BLUEPRINT: skills/agent-ops/handoff-template-generator.py
 
 PURPOSE:
 Generates a pre-filled handoff document from git diff, recent commands, and

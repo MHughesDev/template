@@ -1,6 +1,5 @@
 # CODEBASE_SUMMARY.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §Navigation, .cursorignore (not excluded) -->
 

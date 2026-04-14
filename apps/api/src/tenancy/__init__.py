@@ -1,6 +1,5 @@
 # apps/api/src/tenancy/__init__.py
 """
-BLUEPRINT: apps/api/src/tenancy/__init__.py
 
 PURPOSE:
 Package marker for the tenancy module. Exports middleware and models for

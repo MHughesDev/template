@@ -1,6 +1,5 @@
 # packages/tasks/__init__.py
 """
-BLUEPRINT: packages/tasks/__init__.py
 
 PURPOSE:
 Package marker. Exports task interfaces for background job submission and handling.

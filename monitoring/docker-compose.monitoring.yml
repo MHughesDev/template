@@ -1,5 +1,4 @@
 # monitoring/docker-compose.monitoring.yml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Local Prometheus + Grafana observability overlay for development.
 #          Use with: docker compose -f docker-compose.yml -f monitoring/docker-compose.monitoring.yml up
 #          Per spec §26.12 item 385.

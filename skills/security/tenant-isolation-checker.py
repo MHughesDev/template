@@ -1,6 +1,5 @@
 # skills/security/tenant-isolation-checker.py
 """
-BLUEPRINT: skills/security/tenant-isolation-checker.py
 
 PURPOSE:
 Static analysis tool for tenant isolation. Scans SQLAlchemy queries in the

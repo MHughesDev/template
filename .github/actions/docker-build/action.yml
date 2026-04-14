@@ -1,5 +1,4 @@
 # .github/actions/docker-build/action.yml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Composite action: Docker build with layer caching.
 #          Optional per spec §26.12 item 390.
 # SECTIONS:

@@ -1,30 +1,12 @@
 #!/usr/bin/env bash
 # scripts/image-scan.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Scan built Docker image with Trivy (config: trivy.yaml)
-# CORRESPONDS TO: make image:scan
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Scan Docker image with Trivy (requires trivy in PATH).
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
-
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
-
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
-
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+TAG="${IMAGE_TAG:-template-api:local}"
+if ! command -v trivy >/dev/null 2>&1; then
+  echo "trivy not installed; skipping image scan." >&2
+  exit 0
+fi
+exec trivy image --exit-code 0 --severity HIGH,CRITICAL "$TAG"

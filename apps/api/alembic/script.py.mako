@@ -1,5 +1,4 @@
 ## apps/api/alembic/script.py.mako
-## BLUEPRINT: Composer 2 implements from this structure
 ## PURPOSE: Alembic migration script template. Standard Mako template for generating
 ##          migration files with file title comment, revision ID, and up/down functions.
 ##          Per spec §26.8 item 210.

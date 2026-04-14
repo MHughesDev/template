@@ -1,30 +1,14 @@
 #!/usr/bin/env bash
 # scripts/queue-archive.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Move completed queue row to queuearchive.csv (QUEUE_ID arg required)
-# CORRESPONDS TO: make queue:archive
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Move QUEUE_ID row from queue.csv to queuearchive.csv.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+if [[ -z "${QUEUE_ID:-}" ]]; then
+  echo "Usage: QUEUE_ID=<id> make queue:archive" >&2
+  exit 1
+fi
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
-
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+exec python3 "$ROOT/scripts/queue_archive.py" "$QUEUE_ID" --root "$ROOT"

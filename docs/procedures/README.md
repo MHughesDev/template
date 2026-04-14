@@ -1,6 +1,5 @@
 # docs/procedures/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §3 (Required Workflow), CONTRIBUTING.md -->
 <!-- - All procedures referenced from AGENTS.md and various skills -->

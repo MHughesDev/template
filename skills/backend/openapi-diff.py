@@ -1,6 +1,5 @@
 # skills/backend/openapi-diff.py
 """
-BLUEPRINT: skills/backend/openapi-diff.py
 
 PURPOSE:
 Compares current FastAPI OpenAPI spec against a stored baseline to detect

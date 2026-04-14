@@ -1,6 +1,5 @@
 # packages/ai/__init__.py
 """
-BLUEPRINT: packages/ai/__init__.py
 
 PURPOSE:
 Package marker. Exports AI/RAG interfaces when the AI profile is enabled.

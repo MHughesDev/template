@@ -1,6 +1,5 @@
 # packages/ai/interfaces.py
 """
-BLUEPRINT: packages/ai/interfaces.py
 
 PURPOSE:
 Abstract Protocol interfaces for AI/RAG operations: embedding generation,

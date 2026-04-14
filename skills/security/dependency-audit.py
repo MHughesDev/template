@@ -1,6 +1,5 @@
 # skills/security/dependency-audit.py
 """
-BLUEPRINT: skills/security/dependency-audit.py
 
 PURPOSE:
 Audits Python dependencies for known vulnerabilities by wrapping pip-audit

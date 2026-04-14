@@ -1,6 +1,5 @@
 # docs/troubleshooting/common-issues.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.12 item 377 -->
 
 > PURPOSE: Common development issues and solutions. Per spec §26.12 item 377.

@@ -1,6 +1,5 @@
 # skills/testing/test-scaffolder.py
 """
-BLUEPRINT: skills/testing/test-scaffolder.py
 
 PURPOSE:
 Generates test stubs for a given module. Analyzes the router file for endpoint

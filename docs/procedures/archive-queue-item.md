@@ -1,6 +1,5 @@
 # docs/procedures/archive-queue-item.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Rule: .cursor/rules/queue.md (archive-before-delete policy) -->
 <!-- - Make target: make queue:archive -->

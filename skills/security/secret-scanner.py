@@ -1,6 +1,5 @@
 # skills/security/secret-scanner.py
 """
-BLUEPRINT: skills/security/secret-scanner.py
 
 PURPOSE:
 Scans the codebase for potential secrets: high-entropy strings, known secret

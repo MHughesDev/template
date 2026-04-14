@@ -1,6 +1,5 @@
 # docs/queue/queue-intelligence.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Per spec §17.11 and §26.12 item 355 -->
 <!-- - Machinery: skills/agent-ops/queue-intelligence.py -->

@@ -1,5 +1,2 @@
 # apps/api/alembic/versions/.gitkeep
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Placeholder to ensure the versions directory exists in version control.
-#          Migration files (.py) are generated here by `make migrate:create`.
-#          Per spec §26.8 item 211.
+# Keeps this directory in git; Alembic revisions live here.

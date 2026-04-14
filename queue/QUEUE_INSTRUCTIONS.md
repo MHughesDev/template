@@ -1,6 +1,5 @@
 # queue/QUEUE_INSTRUCTIONS.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §9, CONTRIBUTING.md, queue/QUEUE_AGENT_PROMPT.md -->
 <!-- - Related skills: skills/agent-ops/queue-triage.md, skills/agent-ops/queue-intelligence.md -->

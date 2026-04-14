@@ -1,5 +1,4 @@
 # deploy/k8s/overlays/dev/kustomization.yaml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Dev environment Kustomize overlay. Single replica, debug settings, relaxed resources. Per spec §26.10 item 252.
 # apiVersion: kustomize.config.k8s.io/v1beta1, kind: Kustomization
 # bases: [../../base]

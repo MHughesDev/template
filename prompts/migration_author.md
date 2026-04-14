@@ -30,7 +30,6 @@ linked_skills:
 
 # prompts/migration_author.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

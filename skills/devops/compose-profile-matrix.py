@@ -1,6 +1,5 @@
 # skills/devops/compose-profile-matrix.py
 """
-BLUEPRINT: skills/devops/compose-profile-matrix.py
 
 PURPOSE:
 Tests Docker Compose profile combinations. Validates that each profile can be

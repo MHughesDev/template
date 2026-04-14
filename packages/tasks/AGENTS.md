@@ -1,6 +1,5 @@
 # packages/tasks/AGENTS.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.9 item 241 -->
 
 > PURPOSE: Scoped agent instructions for the tasks package. Per spec §26.9 item 241.

@@ -1,6 +1,5 @@
 # docs/architecture/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 > PURPOSE: Architecture documentation index. Per spec §26.5 item 115.
 
 ## Contents

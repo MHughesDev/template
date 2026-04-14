@@ -1,6 +1,5 @@
 # docs/repo-governance/audits.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §20 and §26.5 items 178-182 -->
 
-> PURPOSE: TODO — Composer 2 implements repo governance documentation for audits.
+> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.

@@ -1,6 +1,5 @@
 # docs/operations/database-operations.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Optional per spec §26.12 item 402 -->
 
 > PURPOSE: Database operations: VACUUM, indexes, pool tuning, slow queries. Per spec §26.12 item 402.

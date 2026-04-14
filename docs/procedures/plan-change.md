@@ -1,6 +1,5 @@
 # docs/procedures/plan-change.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Skill: skills/agent-ops/task-planning.md -->
 <!-- - Prompt: prompts/task_planner.md -->

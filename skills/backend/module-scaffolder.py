@@ -1,6 +1,5 @@
 # skills/backend/module-scaffolder.py
 """
-BLUEPRINT: skills/backend/module-scaffolder.py
 
 PURPOSE:
 Generates a new FastAPI module from embedded templates. Creates all module files

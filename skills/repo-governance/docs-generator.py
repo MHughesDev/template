@@ -1,6 +1,5 @@
 # skills/repo-governance/docs-generator.py
 """
-BLUEPRINT: skills/repo-governance/docs-generator.py
 
 PURPOSE:
 Documentation generation engine for the auto-sync pipeline (§9.4).

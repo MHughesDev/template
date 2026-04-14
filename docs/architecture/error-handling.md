@@ -1,6 +1,5 @@
 # docs/architecture/error-handling.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Optional per spec §26.12 item 400 -->
 
 > PURPOSE: Cross-cutting error handling strategy. Per spec §26.12 item 400.

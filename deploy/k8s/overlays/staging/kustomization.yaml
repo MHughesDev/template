@@ -1,5 +1,4 @@
 # deploy/k8s/overlays/staging/kustomization.yaml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Staging environment Kustomize overlay. Production-like with lower scale. Per spec §26.10 item 253.
 # bases: [../../base]
 # namespace: staging

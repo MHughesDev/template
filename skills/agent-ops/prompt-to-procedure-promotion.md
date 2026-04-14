@@ -1,6 +1,5 @@
 # skills/agent-ops/prompt-to-procedure-promotion.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/add-prompt-template.md -->
 <!-- - Related rule: .cursor/rules/prompts.md -->

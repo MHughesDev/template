@@ -1,11 +1,10 @@
 # skills/frontend/generated-client-usage.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Profile: optional web/mobile profile -->
 <!-- - Related docs: docs/optional-clients/ -->
 
-> PURPOSE: [OPTIONAL] TODO — Composer 2 implements full §6.2 skill content for generated-client-usage in the frontend/mobile domain. Only relevant when the web or mobile profile is enabled.
+> PURPOSE: [OPTIONAL] Frontend/mobile skill. Enable the web or mobile profile before relying on this.
 
 ## Purpose
 > CONTENT: What this frontend skill enables.

@@ -1,6 +1,5 @@
 # deploy/docker/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.10 item 246 -->
 
 > PURPOSE: Docker deployment documentation. References docker-compose.yml, profiles, and image build. Per spec §26.10 item 246.
