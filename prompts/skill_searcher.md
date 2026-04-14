@@ -1,3 +1,4 @@
+# prompts/skill_searcher.md
 ---
 purpose: "Subroutine: given a task description, search skills/ and return a ranked list of relevant skills with file paths."
 when_to_use: "Called as a subroutine by other prompts and by agents during mandatory skill search. Never used standalone."

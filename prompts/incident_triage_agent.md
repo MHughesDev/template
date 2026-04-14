@@ -1,3 +1,4 @@
+# prompts/incident_triage_agent.md
 ---
 purpose: "Initial incident classification: severity, blast radius, evidence capture, escalation path, comms draft."
 when_to_use: "When a production incident is detected or reported. First action before any remediation."

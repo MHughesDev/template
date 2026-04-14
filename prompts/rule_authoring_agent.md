@@ -1,3 +1,4 @@
+# prompts/rule_authoring_agent.md
 ---
 purpose: "Create or update .cursor/rules files: scope correctly, test enforcement, document rationale."
 when_to_use: "When a repeated mistake needs prevention, when a new constraint should be encoded, or when updating an existing rule."

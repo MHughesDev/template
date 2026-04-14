@@ -11,6 +11,7 @@ from starlette.requests import Request
 
 from apps.api.src.auth.dependencies import get_current_user, require_auth
 from apps.api.src.config import Settings, get_settings
+from apps.api.src.context import RequestContext
 from apps.api.src.database import get_db
 
 __all__ = [
@@ -19,6 +20,7 @@ __all__ = [
     "get_current_user",
     "get_db",
     "get_db_session",
+    "get_request_context",
     "get_settings",
     "require_auth",
 ]
@@ -44,3 +46,16 @@ def get_correlation_id(request: Request) -> str:
     if isinstance(cid, str) and cid:
         return cid
     return str(uuid.uuid4())
+
+
+def get_request_context(request: Request) -> RequestContext:
+    """Aggregate request-scoped identifiers for injection."""
+
+    user_id = getattr(request.state, "user_id", None)
+    tenant_id = getattr(request.state, "tenant_id", None)
+    return RequestContext(
+        correlation_id=get_correlation_id(request),
+        user_id=user_id,
+        tenant_id=tenant_id,
+        is_authenticated=user_id is not None,
+    )

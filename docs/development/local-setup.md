@@ -27,8 +27,9 @@ Run `make help` for the full list. Common targets:
 | Target | Role |
 |--------|------|
 | `make lint` | Ruff lint |
-| `make fmt` | Ruff format check (CI mode) |
-| `make fmt-fix` / `make fmt:fix` | Apply Ruff formatting |
+| `make fmt` | Apply Ruff formatting |
+| `make fmt-check` / `make fmt:check` | Ruff format verify (CI mode) |
+| `make fmt-fix` / `make fmt:fix` | Alias for `make fmt` |
 | `make typecheck` | mypy strict |
 | `make test` | Pytest with coverage |
 | `make test-unit` / `make test:unit` | Unit tests only |

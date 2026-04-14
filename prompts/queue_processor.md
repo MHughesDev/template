@@ -1,3 +1,4 @@
+# prompts/queue_processor.md
 ---
 purpose: "Execute single top-row queue item: claim, branch, implement, validate, archive, handoff."
 when_to_use: "When processing the queue. Always read queue/QUEUE_AGENT_PROMPT.md first — that is the primary contract."

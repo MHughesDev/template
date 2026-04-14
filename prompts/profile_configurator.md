@@ -1,3 +1,4 @@
+# prompts/profile_configurator.md
 ---
 purpose: "Enable or disable optional profiles based on idea.md §5 selections. Configures Compose, env vars, package stubs, and documentation."
 when_to_use: "During initialization Phase 4, or when enabling a profile post-initialization."

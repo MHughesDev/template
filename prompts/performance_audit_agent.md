@@ -1,3 +1,4 @@
+# prompts/performance_audit_agent.md
 ---
 purpose: "Latency and resource review: identify bottlenecks, profile endpoints, recommend optimizations with evidence."
 when_to_use: "When API latency is above SLO targets, on scheduled performance review, or before a major release."

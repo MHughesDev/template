@@ -1,8 +1,19 @@
 # docker-compose.test.yml
-# Ephemeral test stack (override for CI if needed).
+# CI integration test overlay — ephemeral Postgres on host port 5433, no persistent volumes.
 
 services:
-  api:
+  test-db:
+    image: postgres:16-alpine
     environment:
-      DATABASE_URL: sqlite+aiosqlite:///./data/test.db
-      JWT_SECRET_KEY: test-secret-not-for-production
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test -d test"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    tmpfs:
+      - /var/lib/postgresql/data

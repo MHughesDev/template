@@ -22,6 +22,8 @@ All implementation commits on branch. Tests written and expected to pass.
 
 `make fmt`, `make lint`, `make typecheck`, `make test`, `make queue:validate`, `make docs:check`, `make security:scan`, `make audit:self`
 
+Canonical names: `make lint`, `make typecheck`, `make test`, `make security:scan` (run from the repository root).
+
 ## Ordered Steps
 
 1. `make fmt` — apply formatting (auto-fix mode); commit if changes made

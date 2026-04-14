@@ -4,7 +4,7 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-.PHONY: help dev lint fmt fmt-fix typecheck test test-unit test-integration test-smoke \
+.PHONY: help dev lint fmt fmt-check fmt-fix typecheck test test-unit test-integration test-smoke \
         migrate migrate\:create db-reset db-seed docs-check docs-generate docs-index \
         queue-peek queue-validate queue-archive queue-graph queue-analyze \
         prompt-list skills-list rules-check audit-self \
@@ -12,6 +12,7 @@ SHELL := /usr/bin/env bash
         release-prepare release-verify \
         k8s-render k8s-validate docker-up docker-down \
         init idea-validate scaffold-module profile-enable idea-queue env-generate inventory-check \
+        codebase-summary skill-docs-gen \
         clean health-check
 
 ## help: Show targets (see also: scripts/README.md)
@@ -27,13 +28,16 @@ dev:
 lint:
 	@scripts/lint.sh
 
-## fmt: Ruff format check (CI mode)
+## fmt: Apply Ruff formatting
 fmt:
 	@scripts/fmt.sh
 
-## fmt-fix: Apply Ruff formatting
-fmt-fix:
-	@python3 -m ruff format apps/api/src packages/contracts packages/tasks
+## fmt-check: Ruff format verify (CI mode)
+fmt-check:
+	@scripts/fmt-check.sh
+
+## fmt-fix: Alias for fmt (apply formatting)
+fmt-fix: fmt
 
 ## typecheck: mypy strict
 typecheck:
@@ -183,6 +187,14 @@ env-generate:
 inventory-check:
 	@scripts/inventory-check.sh
 
+## codebase-summary: append snapshot section to CODEBASE_SUMMARY.md
+codebase-summary:
+	@scripts/codebase-summary.sh
+
+## skill-docs-gen: run docs-generator.py (regenerate docs/generated)
+skill-docs-gen:
+	@python3 skills/repo-governance/docs-generator.py --mode generate --repo-root .
+
 ## clean: remove caches and build artifacts
 clean:
 	@scripts/clean.sh
@@ -195,7 +207,8 @@ health-check:
 .PHONY: skills\:list queue\:peek queue\:validate queue\:archive queue\:graph queue\:analyze audit\:self rules\:check \
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
         health\:check idea\:validate profile\:enable idea\:queue scaffold\:module test\:unit test\:integration \
-        test\:smoke fmt\:fix
+        test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed image\:build image\:scan \
+        k8s\:render k8s\:validate env\:generate inventory\:check skill\:docs-gen
 
 skills\:list: skills-list
 queue\:peek: queue-peek
@@ -222,3 +235,14 @@ test\:unit: test-unit
 test\:integration: test-integration
 test\:smoke: test-smoke
 fmt\:fix: fmt-fix
+fmt\:check: fmt-check
+prompt\:list: prompt-list
+db\:reset: db-reset
+db\:seed: db-seed
+image\:build: image-build
+image\:scan: image-scan
+k8s\:render: k8s-render
+k8s\:validate: k8s-validate
+env\:generate: env-generate
+inventory\:check: inventory-check
+skill\:docs-gen: skill-docs-gen

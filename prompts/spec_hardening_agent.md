@@ -1,3 +1,4 @@
+# prompts/spec_hardening_agent.md
 ---
 purpose: "Align spec with reality: find drift between spec and implementation, propose PRs to close gaps."
 when_to_use: "On scheduled spec review cadence, after major implementation phases, or when spec drift is suspected."

@@ -1,3 +1,4 @@
+# prompts/domain_modeler.md
 ---
 purpose: "Analyze idea.md domain model and produce bounded context map, entity relationships, and module scaffolding plan."
 when_to_use: "During initialization (Phase 3) or when adding new domains to an existing project."

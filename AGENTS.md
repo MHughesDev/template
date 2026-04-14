@@ -111,7 +111,8 @@ Minimum checks before opening a PR:
 | Command | Purpose |
 |---------|---------|
 | `make lint` | Ruff lint |
-| `make fmt` | Format check (CI mode — no auto-fix in CI) |
+| `make fmt` | Apply Ruff formatting |
+| `make fmt-check` | Ruff format verify (CI mode) |
 | `make typecheck` | mypy strict |
 | `make test` | Full test suite with coverage |
 | `make queue:validate` | If any queue CSV or queue docs were touched |

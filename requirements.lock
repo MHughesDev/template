@@ -1,0 +1,8 @@
+# requirements.lock
+# Generated with: pip install -e ".[dev]" && pip freeze > requirements.lock
+# Regenerate after any dependency change in pyproject.toml.
+# CI and production can install from this file for reproducibility:
+#   pip install -r requirements.lock
+#
+# NOTE: Regenerate by running the commands above in a clean environment.
+# This file is committed as a placeholder to establish the convention.

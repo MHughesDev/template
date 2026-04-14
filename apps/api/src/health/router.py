@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,12 +42,15 @@ async def health() -> HealthResponse:
 
 
 @router.get("/ready", response_model=ReadinessResponse)
-async def ready(session: AsyncSession = Depends(get_db)) -> ReadinessResponse:
+async def ready(
+    response: Response, session: AsyncSession = Depends(get_db)
+) -> ReadinessResponse:
     """Readiness probe — verifies database connectivity."""
 
     try:
         await session.execute(text("SELECT 1"))
     except Exception as exc:  # noqa: BLE001 - surface dependency failures
+        response.status_code = 503
         return ReadinessResponse(
             status="not_ready", checks={"database": f"error: {exc!s}"}
         )

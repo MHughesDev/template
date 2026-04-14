@@ -1,3 +1,4 @@
+# prompts/documentation_updater.md
 ---
 purpose: "Update documentation to match code and operational changes: identify stale docs, edit, verify links, update indexes."
 when_to_use: "When behavior, env vars, endpoints, or ops procedures change. Also invoked by documentation.md cursor rule triggers."

@@ -17,6 +17,8 @@ Specific conditions that trigger this procedure.
 
 What must be true before starting this procedure.
 
+**References:** [`skills/backend/fastapi-router-module.md`](../../skills/backend/fastapi-router-module.md), [`skills/backend/module-scaffolder.py`](../../skills/backend/module-scaffolder.py) (machinery).
+
 ## Exact Commands
 
 All make targets and CLI commands used in this procedure:

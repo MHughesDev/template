@@ -1,3 +1,4 @@
+# prompts/repo_bootstrap_agent.md
 ---
 purpose: "Take a fresh clone to green development state: install deps, configure env, run validation, verify all targets."
 when_to_use: "When setting up a new development environment from scratch after cloning. Also used for CI environment setup."

@@ -1,3 +1,4 @@
+# prompts/skill_authoring_agent.md
 ---
 purpose: "Create or update skills to the §6.2 standard: all required sections, machinery code referenced, cross-references complete."
 when_to_use: "When a new recurring work pattern is identified, or when an existing skill needs updating."

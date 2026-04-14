@@ -15,6 +15,7 @@ from apps.api.src.config import Settings, get_settings
 from apps.api.src.database import dispose_engine
 from apps.api.src.exceptions import AppError
 from apps.api.src.health.router import router as health_router
+from apps.api.src.logging_config import configure_logging
 from apps.api.src.middleware import (
     CorrelationIdMiddleware,
     RequestLoggingMiddleware,
@@ -31,6 +32,8 @@ from apps.api.src.tenancy.middleware import (
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Startup/shutdown hooks."""
 
+    settings = get_settings()
+    configure_logging(settings)
     yield
     await dispose_engine()
 
@@ -39,7 +42,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     """Create a configured FastAPI application."""
 
     resolved = settings or get_settings()
-    app = FastAPI(title=resolved.project_name, lifespan=lifespan)
+    app = FastAPI(
+        title=resolved.project_name,
+        version="0.1.0",
+        description="Agent-operated API — see spec/spec.md for full specification.",
+        lifespan=lifespan,
+        docs_url="/docs" if resolved.api_debug else None,
+        redoc_url="/redoc" if resolved.api_debug else None,
+        openapi_url="/openapi.json",
+    )
 
     # Starlette runs last-registered middleware first. Put CORS outermost.
     app.add_middleware(TenantEnforcementMiddleware)

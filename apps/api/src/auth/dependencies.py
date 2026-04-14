@@ -10,6 +10,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.api.src.auth import models
+from apps.api.src.auth.repository import RefreshTokenRepository, UserRepository
 from apps.api.src.auth.service import AuthService
 from apps.api.src.config import Settings, get_settings
 from apps.api.src.database import get_db
@@ -24,7 +25,12 @@ def get_auth_service(
 ) -> AuthService:
     """Construct AuthService with injected session and settings."""
 
-    return AuthService(session=session, settings=settings)
+    return AuthService(
+        session=session,
+        settings=settings,
+        users=UserRepository(session),
+        tokens=RefreshTokenRepository(session),
+    )
 
 
 async def get_current_user(

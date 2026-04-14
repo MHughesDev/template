@@ -1,3 +1,4 @@
+# prompts/release_manager.md
 ---
 purpose: "Prepare a release: update changelog, bump version, verify, tag, and produce promotion documentation."
 when_to_use: "When a release is scheduled or ready. Triggered by a release queue item or human decision."

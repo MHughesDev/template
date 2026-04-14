@@ -10,10 +10,10 @@ from uuid import UUID
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from apps.api.src.auth import models
+from apps.api.src.auth.repository import RefreshTokenRepository, UserRepository
 from apps.api.src.auth.schemas import LoginRequest, RegisterRequest, TokenResponse
 from apps.api.src.config import Settings
 from apps.api.src.exceptions import AuthenticationError, ConflictError
@@ -33,16 +33,22 @@ def _ensure_utc(dt: datetime) -> datetime:
 class AuthService:
     """Coordinates credential verification and token lifecycle."""
 
-    def __init__(self, session: AsyncSession, settings: Settings) -> None:
+    def __init__(
+        self,
+        session: AsyncSession,
+        settings: Settings,
+        users: UserRepository,
+        tokens: RefreshTokenRepository,
+    ) -> None:
         self._session = session
         self._settings = settings
+        self._users = users
+        self._tokens = tokens
 
     async def create_user(self, request: RegisterRequest) -> models.User:
         """Register a user; raises ConflictError if the email exists."""
 
-        existing = await self._session.scalar(
-            select(models.User).where(models.User.email == request.email)
-        )
+        existing = await self._users.get_by_email(str(request.email))
         if existing is not None:
             raise ConflictError("Email already registered")
 
@@ -55,17 +61,12 @@ class AuthService:
             created_at=now,
             updated_at=now,
         )
-        self._session.add(user)
-        await self._session.commit()
-        await self._session.refresh(user)
-        return user
+        return await self._users.create(user)
 
     async def authenticate_user(self, request: LoginRequest) -> models.User:
         """Validate credentials and return the active user."""
 
-        user = await self._session.scalar(
-            select(models.User).where(models.User.email == request.email)
-        )
+        user = await self._users.get_by_email(str(request.email))
         generic_error = AuthenticationError("Invalid credentials")
         if user is None or not user.is_active:
             raise generic_error
@@ -108,9 +109,8 @@ class AuthService:
             revoked=False,
             created_at=now,
         )
-        self._session.add(refresh)
-        await self._session.commit()
-        return token_value
+        created = await self._tokens.create(refresh)
+        return created.token
 
     def verify_access_token(self, token: str) -> dict[str, Any]:
         """Validate a JWT access token and return claims."""
@@ -142,34 +142,24 @@ class AuthService:
         """Rotate refresh token and issue a new access token."""
 
         now = datetime.now(UTC)
-        token_row = await self._session.scalar(
-            select(models.RefreshToken).where(
-                models.RefreshToken.token == refresh_token
-            )
-        )
+        token_row = await self._tokens.get_by_token(refresh_token)
         if token_row is None or token_row.revoked:
             raise AuthenticationError("Invalid refresh token")
         expires_at = _ensure_utc(token_row.expires_at)
         if expires_at <= now:
             raise AuthenticationError("Invalid refresh token")
 
-        user = await self._session.get(models.User, token_row.user_id)
+        user = await self._users.get_by_id(token_row.user_id)
         if user is None or not user.is_active:
             raise AuthenticationError("Invalid refresh token")
 
-        token_row.revoked = True
-        await self._session.flush()
+        await self._tokens.mark_revoked_flush(token_row)
         return await self.issue_tokens(user)
 
     async def revoke_refresh_token(self, refresh_token: str, user_id: UUID) -> None:
         """Revoke a refresh token for logout."""
 
-        token_row = await self._session.scalar(
-            select(models.RefreshToken).where(
-                models.RefreshToken.token == refresh_token
-            )
-        )
+        token_row = await self._tokens.get_by_token(refresh_token)
         if token_row is None or token_row.user_id != user_id:
             raise AuthenticationError("Invalid refresh token")
-        token_row.revoked = True
-        await self._session.commit()
+        await self._tokens.revoke(token_row)

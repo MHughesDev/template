@@ -1,3 +1,4 @@
+# prompts/repo_initializer.md
 ---
 purpose: "Initialize the repository from a filled idea.md, configuring the entire project machine from scratch."
 when_to_use: "First action after cloning the template with a filled idea.md. Do not use on a repo that is already initialized."

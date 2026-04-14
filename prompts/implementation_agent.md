@@ -1,3 +1,4 @@
+# prompts/implementation_agent.md
 ---
 purpose: "Execute code changes with strict scope discipline: plan, implement in increments, validate, commit, handoff."
 when_to_use: "When a plan exists and it is time to write actual code. Always preceded by task_planner."

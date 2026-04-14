@@ -35,4 +35,6 @@ for md in root.rglob("*.md"):
             errors += 1
 sys.exit(1 if errors else 0)
 PY
+echo "Checking generated docs for drift..."
+python3 "$ROOT/skills/repo-governance/docs-generator.py" --mode check --repo-root "$ROOT"
 echo "docs:check OK"

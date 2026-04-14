@@ -17,6 +17,9 @@ Table mapping each script to its Make target and purpose:
 | `dev.sh` | `make dev` | Start local API with hot reload |
 | `lint.sh` | `make lint` | Run ruff lint checks |
 | `fmt.sh` | `make fmt` | Apply ruff formatting |
+| `fmt-check.sh` | `make fmt-check` | Verify ruff formatting (CI) |
+| `codebase-summary.sh` | `make codebase-summary` | Append snapshot to CODEBASE_SUMMARY.md |
+| `implementation-plan-ci.sh` | (CI) | Verify IMPLEMENTATION_PLAN checked paths exist |
 | `typecheck.sh` | `make typecheck` | Run mypy --strict |
 | `test.sh` | `make test`, `make test:unit`, `make test:integration`, `make test:smoke` | Run test suite |
 | `migrate.sh` | `make migrate`, `make migrate:create` | Database migrations |

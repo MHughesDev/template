@@ -1,3 +1,4 @@
+# prompts/task_planner.md
 ---
 purpose: "Decompose a task or queue item into implementable steps with acceptance criteria, file impact analysis, risk identification, and scope bounds."
 when_to_use: "Before beginning any implementation. Invoked at the start of processing a queue item or any substantial coding task."

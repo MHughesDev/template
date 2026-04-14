@@ -1,3 +1,4 @@
+# prompts/refactorer.md
 ---
 purpose: "Behavior-preserving structural changes: identify smell, plan transformation, verify equivalence via tests."
 when_to_use: "When code needs structural improvement without behavioral change. Triggered by refactor triggers in PYTHON_PROCEDURES.md §20."

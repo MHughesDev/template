@@ -25,6 +25,10 @@ REQUIRED_PATHS = (
     "apps/api/src/config.py",
     "apps/api/src/exceptions.py",
     "apps/api/src/database.py",
+    "scripts/repo_self_audit.py",
+    "scripts/queue_validate.py",
+    "scripts/queue_archive.py",
+    "scripts/inventory_check.py",
     "queue/queue.csv",
     "queue/queuearchive.csv",
     "queue/QUEUE_INSTRUCTIONS.md",
@@ -72,6 +76,8 @@ def file_title_comments(root: Path) -> list[str]:
         if path.suffix.lower() not in TITLE_EXT:
             continue
         if "prompts" in path.parts:
+            continue
+        if path.parts[0] == "docs" and "generated" in path.parts:
             continue
         if ".cursor" in path.parts or ".github" in path.parts:
             continue
@@ -126,9 +132,38 @@ def prompts_have_frontmatter(root: Path) -> list[str]:
         if md.name == "README.md":
             continue
         text = md.read_text(encoding="utf-8", errors="ignore")
-        if not text.startswith("---"):
+        lines = text.splitlines()
+        if not any(l.strip() == "---" for l in lines[:40]):
             bad.append(str(md.relative_to(root)))
     return bad
+
+
+def check_prompt_frontmatter(root: Path) -> list[str]:
+    """Verify prompt templates have a title line and YAML front matter with required fields."""
+
+    errors: list[str] = []
+    prompts_dir = root / "prompts"
+    required_fields = ("purpose:", "when_to_use:")
+    for md_file in sorted(prompts_dir.glob("*.md")):
+        if md_file.name == "README.md":
+            continue
+        rel = md_file.relative_to(root)
+        content = md_file.read_text(encoding="utf-8", errors="ignore")
+        first_line = content.splitlines()[0] if content.splitlines() else ""
+        if not first_line.startswith(f"# prompts/{md_file.name}"):
+            errors.append(f"{rel}: expected first line `# prompts/{md_file.name}`")
+        if "---" not in content:
+            errors.append(f"{rel}: missing YAML front matter")
+            continue
+        parts = content.split("---", 2)
+        if len(parts) < 3:
+            errors.append(f"{rel}: malformed front matter")
+            continue
+        front_matter = parts[1]
+        for field in required_fields:
+            if field not in front_matter:
+                errors.append(f"{rel}: missing front matter field '{field.rstrip(':')}'")
+    return errors
 
 
 def makefile_targets_documented(root: Path) -> list[str]:
@@ -173,6 +208,9 @@ def main() -> int:
 
     prompts = prompts_have_frontmatter(root)
     sections.append(("prompts_frontmatter", len(prompts) == 0, prompts))
+
+    prompt_fields = check_prompt_frontmatter(root)
+    sections.append(("prompts_title_and_fields", len(prompt_fields) == 0, prompt_fields))
 
     mk = makefile_targets_documented(root)
     sections.append(("makefile_help", len(mk) == 0, mk))

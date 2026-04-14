@@ -1,3 +1,4 @@
+# prompts/dependency_upgrade_agent.md
 ---
 purpose: "Safe dependency bump: identify outdated, upgrade, run full CI, document breaking changes."
 when_to_use: "When Dependabot opens a PR, when dependencies have known CVEs, or on scheduled dependency review."

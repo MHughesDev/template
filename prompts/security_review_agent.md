@@ -1,3 +1,4 @@
+# prompts/security_review_agent.md
 ---
 purpose: "Threat-focused code review: secrets exposure, injection, auth bypass, tenant leakage, dependency CVEs."
 when_to_use: "Before any PR touching auth, tenancy, secrets, or external inputs. Also on scheduled security review cadence."

@@ -9,6 +9,7 @@ commonLabels:
   app.kubernetes.io/managed-by: kustomize
 
 resources:
+  - secret.yaml
   - serviceaccount.yaml
   - configmap.yaml
   - deployment.yaml

@@ -1,3 +1,4 @@
+# prompts/migration_author.md
 ---
 purpose: "Author database migrations with expand/contract notes, rollback plan, and CI dry-run verification."
 when_to_use: "When a schema change is needed: new table, new column, index change, constraint change."

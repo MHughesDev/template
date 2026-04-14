@@ -1,3 +1,4 @@
+# prompts/reviewer_critic.md
 ---
 purpose: "Adversarial review of code diffs against spec, security policy, tenant isolation, scope creep, and test coverage."
 when_to_use: "After implementation is complete, before PR is merged. Can be used on any diff or PR."

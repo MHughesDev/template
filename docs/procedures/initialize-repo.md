@@ -22,6 +22,8 @@ When idea.md has been filled out completely (all 17 sections, no placeholder HTM
 - Fresh clone of the template repository
 - No prior initialization has been run
 
+**Related prompts and skills:** [`prompts/repo_initializer.md`](../../prompts/repo_initializer.md), [`skills/init/idea-validator.md`](../../skills/init/idea-validator.md), [`skills/init/archetype-mapper.md`](../../skills/init/archetype-mapper.md), [`skills/init/profile-resolver.md`](../../skills/init/profile-resolver.md), [`skills/init/queue-seeder.md`](../../skills/init/queue-seeder.md).
+
 ## Exact Commands
 
 List of all make targets used in this procedure:

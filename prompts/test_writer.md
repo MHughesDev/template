@@ -1,3 +1,4 @@
+# prompts/test_writer.md
 ---
 purpose: "Author tests aligned to acceptance criteria — unit, integration, edge cases, and failure paths."
 when_to_use: "When a module or feature needs tests written. Can be used standalone or as part of implementation."

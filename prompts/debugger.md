@@ -1,3 +1,4 @@
+# prompts/debugger.md
 ---
 purpose: "Systematic failure isolation: reproduce the bug, form hypotheses, instrument, verify the fix, add regression test."
 when_to_use: "When a test is failing, a CI check is failing, or a runtime error needs diagnosis."
