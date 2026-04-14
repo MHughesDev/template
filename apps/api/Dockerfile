@@ -9,7 +9,10 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 FROM python:3.12-slim AS runner
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends curl \
+# Install curl for HEALTHCHECK, then apply security updates for the slim base (Trivy / CI).
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends curl \
+ && apt-get upgrade -y \
  && rm -rf /var/lib/apt/lists/* \
  && useradd --create-home --uid 1000 app
 

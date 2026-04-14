@@ -29,6 +29,8 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Security
 
+- Container scanning: API runner stage runs `apt-get upgrade -y` after installing `curl` so Debian base packages match security updates; Security workflow Trivy step uses `trivy.yaml`, `.trivyignore`, `exit-code: 1`, and pins `aquasecurity/trivy-action@0.33.1`. Transitive PyPI `ecdsa` CVE-2024-23342 is documented in `docs/security/accepted-risks.md` and listed in `.trivyignore` (no upstream fix for pure-Python timing class; see GHSA).
+
 ### Deprecated
 
 ## [0.1.0] — 2026-04-14
