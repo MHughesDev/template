@@ -1,15 +1,22 @@
 # docs/architecture/error-handling.md
 
 <!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Referenced by: docs/architecture/README.md -->
+<!-- Optional per spec §26.12 item 400 -->
 
-> PURPOSE: TODO — Composer 2 implements full architecture documentation for error-handling. See spec §26.5 for required sections.
+> PURPOSE: Cross-cutting error handling strategy. Per spec §26.12 item 400.
 
-## Overview
+## Error Hierarchy
 
-> CONTENT: One paragraph describing the error-handling architecture in this repository. Reference relevant spec sections (§12-§14) and implementation patterns.
+> CONTENT: AppError hierarchy from apps/api/src/exceptions.py. Base class structure, HTTP status mappings, stable error codes.
 
-## Key Sections
+## Error Response Shape
 
-> CONTENT: Per spec §26.5, the error-handling.md file must include specific sections. Composer 2 fills these from the spec's "Structure" column for this file.
+> CONTENT: Standard JSON error envelope: {"error": {"code": "...", "message": "..."}}. Never expose stack traces externally.
+
+## Error Propagation
+
+> CONTENT: Service raises AppError subclass → global exception handler in middleware.py translates → structured JSON response. Layer responsibilities: repositories translate SQLAlchemy errors at the adapter boundary.
+
+## Client Handling Guide
+
+> CONTENT: How API clients should handle each error category: 401 (re-auth), 429 (backoff), 503 (retry with backoff), 422 (fix request).

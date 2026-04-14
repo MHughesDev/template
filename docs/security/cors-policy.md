@@ -1,11 +1,18 @@
 # docs/security/cors-policy.md
 
 <!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Referenced by: docs/security/README.md, AGENTS.md §11 (Escalation) -->
+<!-- Optional per spec §26.12 item 403 -->
 
-> PURPOSE: TODO — Composer 2 implements security documentation for cors-policy. See spec §26.5 for required sections.
+> PURPOSE: CORS origins and security rationale. Per spec §26.12 item 403.
 
-## Overview
+## CORS Configuration
 
-> CONTENT: Security documentation covering cors-policy. Per spec §26.5, this file must include the sections defined in the spec's Structure column.
+> CONTENT: Allowed origins are defined in settings.api_cors_origins (env var API_CORS_ORIGINS). Never "*" in production. Local dev: http://localhost:3000, http://localhost:8000.
+
+## Security Rationale
+
+> CONTENT: Why we restrict CORS: prevent cross-origin requests from malicious sites. Allow credentials=True: needed for cookie-based auth if ever implemented. Allowed methods and headers list.
+
+## Per-Environment Settings
+
+> CONTENT: Dev: permissive (multiple localhost origins). Staging: staging domain only. Prod: production domain(s) only.
