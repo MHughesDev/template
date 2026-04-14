@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 
 from packages.contracts.pagination import PageInfo, PaginatedResponse, PaginationParams
 
+from apps.api.src.config import Settings
 from apps.api.src.example.models import Example
 from apps.api.src.example.repository import ExampleRepository
 from apps.api.src.example.schemas import ExampleCreate, ExampleResponse, ExampleUpdate
@@ -17,8 +18,9 @@ from apps.api.src.exceptions import NotFoundError
 class ExampleService:
     """Coordinates example CRUD."""
 
-    def __init__(self, repo: ExampleRepository) -> None:
+    def __init__(self, repo: ExampleRepository, settings: Settings) -> None:
         self._repo = repo
+        self._settings = settings
 
     async def get(self, example_id: uuid.UUID) -> Example:
         row = await self._repo.get_by_id(example_id)
@@ -29,7 +31,7 @@ class ExampleService:
     async def list(
         self, params: PaginationParams
     ) -> PaginatedResponse[ExampleResponse]:
-        rows, _total = await self._repo.list_all(params)
+        rows, total = await self._repo.list_all(params)
         has_next = len(rows) > params.page_size
         page_rows = rows[: params.page_size]
         items = [ExampleResponse.model_validate(r) for r in page_rows]
@@ -38,7 +40,7 @@ class ExampleService:
             has_previous=params.page > 1 or (params.offset or 0) > 0,
             next_cursor=None,
             previous_cursor=None,
-            total_count=None,
+            total_count=total,
         )
         return PaginatedResponse(items=items, page_info=page_info)
 

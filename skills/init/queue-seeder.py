@@ -126,6 +126,10 @@ def main() -> int:
         print("Missing queue.csv", file=sys.stderr)
         return 1
 
+    # Default: --from-idea when only --repo-root (matches scripts/idea-to-queue.sh).
+    if not args.from_idea and args.spec is None:
+        args.from_idea = True
+
     if args.from_idea:
         idea = args.repo_root / "idea.md"
         if not idea.is_file():
@@ -138,8 +142,8 @@ def main() -> int:
         return v
 
     if not args.spec or not args.spec.is_file():
-        print("Provide --from-idea or --spec file with rows id|summary")
-        return 0
+        print("Provide --spec file with rows id|summary (or use default idea.md §12)", file=sys.stderr)
+        return 1
 
     raw = qpath.read_text(encoding="utf-8")
     lines = raw.splitlines()

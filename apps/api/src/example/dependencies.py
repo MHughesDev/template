@@ -7,6 +7,7 @@ from fastapi import Depends, Query
 from packages.contracts.pagination import PaginationParams
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from apps.api.src.config import Settings, get_settings
 from apps.api.src.database import get_db
 from apps.api.src.example.repository import ExampleRepository
 from apps.api.src.example.service import ExampleService
@@ -14,10 +15,11 @@ from apps.api.src.example.service import ExampleService
 
 def get_example_service(
     session: AsyncSession = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ) -> ExampleService:
-    """Construct ``ExampleService`` with repository."""
+    """Construct ``ExampleService`` with repository and settings."""
 
-    return ExampleService(repo=ExampleRepository(session))
+    return ExampleService(repo=ExampleRepository(session), settings=settings)
 
 
 def get_pagination_params(

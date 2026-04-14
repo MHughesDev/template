@@ -5,4 +5,4 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-exec python3 "$ROOT/skills/init/queue-seeder.py" --repo-root "$ROOT" --from-idea "$@"
+exec python3 "$ROOT/skills/init/queue-seeder.py" --repo-root "$ROOT"

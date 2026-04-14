@@ -8,7 +8,7 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from packages.contracts.pagination import PaginatedResponse, PaginationParams
 
-from apps.api.src.auth.dependencies import app_error_to_http, get_current_user
+from apps.api.src.auth.dependencies import app_error_to_http, require_auth
 from apps.api.src.auth.models import User
 from apps.api.src.example.dependencies import get_example_service, get_pagination_params
 from apps.api.src.example.schemas import ExampleCreate, ExampleResponse, ExampleUpdate
@@ -26,7 +26,7 @@ def _handle(exc: AppError) -> HTTPException:
 async def list_examples(
     params: PaginationParams = Depends(get_pagination_params),
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(get_current_user),
+    _user: User = Depends(require_auth),
 ) -> PaginatedResponse[ExampleResponse]:
     try:
         return await service.list(params)
@@ -42,7 +42,7 @@ async def list_examples(
 async def create_example(
     body: ExampleCreate,
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(get_current_user),
+    _user: User = Depends(require_auth),
 ) -> ExampleResponse:
     try:
         row = await service.create(body)
@@ -55,7 +55,7 @@ async def create_example(
 async def get_example(
     example_id: uuid.UUID,
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(get_current_user),
+    _user: User = Depends(require_auth),
 ) -> ExampleResponse:
     try:
         row = await service.get(example_id)
@@ -69,7 +69,7 @@ async def update_example(
     example_id: uuid.UUID,
     body: ExampleUpdate,
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(get_current_user),
+    _user: User = Depends(require_auth),
 ) -> ExampleResponse:
     try:
         row = await service.update(example_id, body)
@@ -82,7 +82,7 @@ async def update_example(
 async def delete_example(
     example_id: uuid.UUID,
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(get_current_user),
+    _user: User = Depends(require_auth),
 ) -> Response:
     try:
         await service.delete(example_id)

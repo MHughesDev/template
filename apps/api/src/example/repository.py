@@ -4,14 +4,15 @@
 from __future__ import annotations
 
 import uuid
-from typing import Any
+from typing import Any, cast
 
 from packages.contracts.pagination import PaginationParams
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.schema import Column
 
 from apps.api.src.example.models import Example
-from apps.api.src.pagination import calculate_offset
+from apps.api.src.pagination import paginate_query
 
 
 class ExampleRepository:
@@ -24,13 +25,13 @@ class ExampleRepository:
         return await self._session.get(Example, example_id)
 
     async def list_all(self, params: PaginationParams) -> tuple[list[Example], int]:
-        """Return up to ``page_size + 1`` rows (for ``has_next``) and total count."""
+        """Rows (limit page_size+1 for has_next) and total count."""
 
         count_stmt = select(func.count()).select_from(Example)
         total = int((await self._session.execute(count_stmt)).scalar_one())
-        offset = calculate_offset(params)
-        limit = params.page_size + 1
-        stmt = select(Example).order_by(Example.id).offset(offset).limit(limit)
+        base = select(Example).order_by(Example.id)
+        id_col = cast(Column[Any], Example.__table__.c.id)
+        stmt = paginate_query(base, params, id_col)
         result = await self._session.execute(stmt)
         rows: list[Any] = list(result.scalars().all())
         return rows, total
