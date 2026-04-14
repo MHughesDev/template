@@ -1,10 +1,5 @@
 # apps/api/src/auth/__init__.py
-"""
-
-PURPOSE:
-Package marker for the auth module. Exports the router and key dependency
-functions for use in other modules. Per spec §26.8 item 219.
-"""
+"""Authentication bounded context: router and ``get_current_user`` dependency."""
 
 from apps.api.src.auth.dependencies import get_current_user
 from apps.api.src.auth.router import router

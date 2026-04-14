@@ -1,10 +1,5 @@
 # apps/api/src/health/__init__.py
-"""
-
-PURPOSE:
-Package marker for the health module. Exports the router for registration in main.py.
-Per spec §26.8 item 217.
-"""
+"""Health/readiness/liveness routes."""
 
 from apps.api.src.health.router import router
 
