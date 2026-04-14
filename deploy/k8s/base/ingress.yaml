@@ -1,0 +1,6 @@
+# deploy/k8s/base/ingress.yaml
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Base Ingress with TLS and routing. Patched per overlay for hostname. Per spec §26.12 item 366.
+# apiVersion: networking.k8s.io/v1, kind: Ingress
+# annotations: nginx or traefik annotations for TLS, rewrite, timeouts
+# spec: tls: [{hosts: [api.{{DOMAIN}}], secretName: api-tls}], rules: [{host: api.{{DOMAIN}}, http: {paths: [{path: /, pathType: Prefix, backend: {service: {name: api, port: {number: 80}}}}]}}]
