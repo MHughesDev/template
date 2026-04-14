@@ -1,5 +1,5 @@
 # skills/testing/test-scaffolder.py
-"""Emit pytest stub tests for each @router.get/post/... in a router module (regex-based)."""
+"""Emit pytest stub tests for each @router.* route in apps/api/src/<module>/router.py."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ from pathlib import Path
 
 def find_routes(source: str) -> list[tuple[str, str]]:
     """Return (method, path) from FastAPI route decorators."""
+
     out: list[tuple[str, str]] = []
     for m in re.finditer(
         r"@router\.(get|post|put|patch|delete)\(\s*[\"']([^\"']+)[\"']",
@@ -21,15 +22,17 @@ def find_routes(source: str) -> list[tuple[str, str]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("router_file", type=Path, help="Path to router.py")
+    parser = argparse.ArgumentParser(description="Generate pytest stub tests for a router module")
+    parser.add_argument("--module", required=True, help="Bounded context name under apps/api/src/")
+    parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
     args = parser.parse_args()
-    if not args.router_file.is_file():
-        print("File not found", file=sys.stderr)
+    router_file = args.repo_root / "apps" / "api" / "src" / args.module / "router.py"
+    if not router_file.is_file():
+        print(f"Router not found: {router_file}", file=sys.stderr)
         return 1
-    text = args.router_file.read_text(encoding="utf-8")
+    text = router_file.read_text(encoding="utf-8")
     routes = find_routes(text)
-    mod = args.router_file.parent.name
+    mod = args.module
     print(f'"""Generated stubs for {mod}."""')
     print()
     print("import pytest")
@@ -40,6 +43,7 @@ def main() -> int:
         print()
         print(f"async def {fname}() -> None:")
         print(f'    raise NotImplementedError("{method} {path}")')
+    print()
     return 0
 
 

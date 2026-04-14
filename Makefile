@@ -8,11 +8,12 @@ SHELL := /usr/bin/env bash
         migrate migrate\:create db-reset db-seed docs-check docs-generate docs-index \
         queue-peek queue-validate queue-archive queue-graph queue-analyze \
         prompt-list skills-list rules-check audit-self \
-        security-scan image-build image-scan \
+        security-scan secret-scan image-build image-scan \
         release-prepare release-verify \
         k8s-render k8s-validate docker-up docker-down \
         init idea-validate scaffold-module profile-enable idea-queue env-generate inventory-check \
         codebase-summary skill-docs-gen \
+        test-scaffold env-sync coverage-ratchet rule-lint adr-index \
         clean health-check
 
 ## help: Show targets (see also: scripts/README.md)
@@ -187,13 +188,37 @@ env-generate:
 inventory-check:
 	@scripts/inventory-check.sh
 
-## codebase-summary: append snapshot section to CODEBASE_SUMMARY.md
+## codebase-summary: regenerate CODEBASE_SUMMARY.md
 codebase-summary:
 	@scripts/codebase-summary.sh
 
 ## skill-docs-gen: run docs-generator.py (regenerate docs/generated)
 skill-docs-gen:
 	@python3 skills/repo-governance/docs-generator.py --mode generate --repo-root .
+
+## secret-scan: scan for potential secrets (heuristic)
+secret-scan:
+	@python3 skills/security/secret-scanner.py --repo-root .
+
+## test-scaffold: print pytest stubs for a module router (MODULE= required)
+test-scaffold:
+	@python3 skills/testing/test-scaffolder.py --repo-root . --module "$(MODULE)"
+
+## env-sync: compare .env.example with Settings fields (heuristic)
+env-sync:
+	@python3 skills/backend/env-var-sync.py --repo-root .
+
+## coverage-ratchet: compare coverage.xml to policy floor
+coverage-ratchet:
+	@python3 skills/testing/coverage-ratchet.py --repo-root .
+
+## rule-lint: lint .cursor/rules front matter
+rule-lint:
+	@python3 skills/repo-governance/rule-linter.py --repo-root .
+
+## adr-index: regenerate docs/adr/README.md
+adr-index:
+	@python3 skills/repo-governance/adr-index-generator.py --repo-root .
 
 ## clean: remove caches and build artifacts
 clean:
@@ -208,7 +233,8 @@ health-check:
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
         health\:check idea\:validate profile\:enable idea\:queue scaffold\:module test\:unit test\:integration \
         test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed image\:build image\:scan \
-        k8s\:render k8s\:validate env\:generate inventory\:check skill\:docs-gen
+        k8s\:render k8s\:validate env\:generate inventory\:check skill\:docs-gen \
+        secret\:scan test\:scaffold env\:sync coverage\:ratchet rule\:lint adr\:index
 
 skills\:list: skills-list
 queue\:peek: queue-peek
@@ -246,3 +272,9 @@ k8s\:validate: k8s-validate
 env\:generate: env-generate
 inventory\:check: inventory-check
 skill\:docs-gen: skill-docs-gen
+secret\:scan: secret-scan
+test\:scaffold: test-scaffold
+env\:sync: env-sync
+coverage\:ratchet: coverage-ratchet
+rule\:lint: rule-lint
+adr\:index: adr-index

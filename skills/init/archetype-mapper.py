@@ -12,6 +12,11 @@ from pathlib import Path
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Emit machine-readable JSON plan",
+    )
     args = parser.parse_args()
     path = args.repo_root / "idea.md"
     if not path.is_file():
@@ -24,7 +29,12 @@ def main() -> int:
         archetype = "api-backend"
     else:
         archetype = "general"
-    print("Archetype:", archetype)
+    if getattr(args, "json", False):
+        import json
+
+        print(json.dumps({"archetype": archetype, "source": "idea.md"}))
+    else:
+        print("Archetype:", archetype)
     return 0
 
 
