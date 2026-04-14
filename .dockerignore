@@ -1,23 +1,5 @@
 # .dockerignore
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Docker build context exclusions. Reduces image size, prevents secret leakage,
-#          and speeds up builds by excluding unnecessary files. Per spec §26.12 item 340.
-# SECTIONS:
-#   - Development tools: .venv, .mypy_cache, .pytest_cache, __pycache__
-#   - Secrets: .env (real env; .env.example is fine to exclude too)
-#   - IDE: .idea, .vscode
-#   - OS: .DS_Store
-#   - Git: .git, .gitignore, .gitattributes
-#   - Documentation: docs/ (not needed in image)
-#   - Test files: tests/ (not needed in production image)
-#   - Queue: queue/ (operational artifact, not app code)
-#   - Skills and prompts: not needed in image
-#   - Scripts: only if not needed at runtime
-# DESIGN DECISIONS:
-#   - tests/ is excluded from production image but may be included in CI build stages
-#   - docs/ is excluded — if API serves docs, OpenAPI spec is generated at runtime by FastAPI
-#   - .env is excluded — secrets come from environment injection at runtime
-#   - .git is always excluded — git history not needed in image
+# Shrinks build context: no secrets, no VCS metadata, no dev caches, no docs/tests in API image.
 
 .git
 .gitignore
@@ -54,7 +36,6 @@ htmlcov/
 # Documentation (not needed in image)
 docs/
 *.md
-!apps/api/README.md
 
 # Queue (operational, not app code)
 queue/

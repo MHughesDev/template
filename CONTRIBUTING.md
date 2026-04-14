@@ -1,51 +1,61 @@
 # CONTRIBUTING.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Referenced by: README.md, .github/PULL_REQUEST_TEMPLATE.md -->
-<!-- - Links to: AGENTS.md, queue/QUEUE_INSTRUCTIONS.md, docs/procedures/open-pull-request.md -->
+How to contribute to this repository — for **humans** and **agents**. Agent policy lives in **[AGENTS.md](AGENTS.md)**; this file complements it with contribution mechanics.
 
-> PURPOSE: Contribution guide for both humans and agents. Links to AGENTS.md (agent policy), the queue system (agent work orchestration), and key procedures. Per spec §26.1 item 9.
+## How to contribute
 
-## How to Contribute
+This repository is designed for **coding agents** as primary operators. Humans contribute by maintaining **policy** (AGENTS.md, rules, skills, procedures, CI), reviewing **PRs**, filling **`idea.md`** for initialization, and steering the queue.
 
-> CONTENT: Opening paragraph that welcomes both human contributors and AI agents. State that this repository is primarily agent-operated; humans contribute by filling out `idea.md`, reviewing PRs, and maintaining the machine (rules, skills, procedures, CI). Link to AGENTS.md as the primary policy document.
+**Start here:** [AGENTS.md](AGENTS.md) — instruction hierarchy, mandatory skill search, validation, and queue rules.
 
-## Development Setup
+## Development setup
 
-> CONTENT: Brief setup overview with link to `docs/getting-started/` for detailed instructions. Quick steps: clone → `./setup.sh` → `make dev`. Mention that `setup.sh` handles all dependencies, environment, and initial validation. Link to `docs/development/local-setup.md` for all Make targets.
+1. Clone the repository.
+2. Run **`./setup.sh`** (or `setup.bat` on Windows) for a guided bootstrap, **or** follow **[docs/development/local-setup.md](docs/development/local-setup.md)**.
+3. Use **`make dev`** for the local stack and **`make test`** to verify.
 
-## Branch Naming Conventions
+Full prerequisites: **[docs/getting-started/](docs/getting-started/)**.
 
-> CONTENT: Two valid branch naming patterns:
-> - **Queue-driven work:** `queue/<id>-short-slug` — the queue item ID is mandatory in the branch name
-> - **Agent/Cursor initiated:** `cursor/<descriptive-slug>-<4-char-suffix>` — for non-queue agent work
-> - **Human hotfixes:** `hotfix/<description>` — for urgent human-initiated fixes
->
-> State that branches without a valid naming pattern will not be accepted for merge.
+## Branch naming
 
-## Pull Request Process
+| Pattern | When |
+|---------|------|
+| `queue/<id>-short-slug` | Queue-driven work — **include the queue item ID** |
+| `cursor/<descriptive-slug>-<4-char-suffix>` | Agent/Cursor work not from a queue row |
+| `hotfix/<description>` | Urgent human-initiated fixes (use sparingly) |
 
-> CONTENT: Steps for opening a PR. Reference `.github/PULL_REQUEST_TEMPLATE.md` as the required description format. Key requirements:
-> - All CI checks must be green
-> - PR description must include: queue ID (if applicable), files changed, commands run with output, tests added/updated, docs updated, risks
-> - Link to `docs/procedures/open-pull-request.md` for the full SOP
-> - No direct push to main — all changes via PR
-> - One logical change per PR where possible
+Branches that do not match an agreed pattern may be rejected at review.
 
-## Queue-Driven Work
+## Pull requests
 
-> CONTENT: Explanation of the CSV queue as the primary agent work orchestration system (not a product backlog). Key points:
-> - `queue/queue.csv` top row = the current active work item
-> - Agents read the full row, branch as `queue/<id>-slug`, implement, and archive on completion
-> - Link to `queue/QUEUE_INSTRUCTIONS.md` for the full SOP
-> - Link to `docs/procedures/start-queue-item.md` and `docs/procedures/archive-queue-item.md`
-> - State: "Adding items to the queue is how humans direct agent work."
+1. Open a PR against **`main`** (no direct pushes to `main`).
+2. Use **`.github/PULL_REQUEST_TEMPLATE.md`** for the description.
+3. Keep **one logical change** per PR when practical.
+4. Ensure **CI is green** (lint, format check, typecheck, tests, and any other required checks).
+5. Include **evidence**: queue ID if applicable, files touched, commands run with output, tests and docs updated, risks called out.
 
-## Code of Conduct
+Step-by-step: **[docs/procedures/open-pull-request.md](docs/procedures/open-pull-request.md)**.
 
-> CONTENT: Brief reference to CODE_OF_CONDUCT.md (if present) or statement that contributors are expected to be respectful and constructive. Link to the file.
+## Queue-driven work
 
-## Questions and Escalation
+The CSV queue is **agent work orchestration**, not a product backlog.
 
-> CONTENT: Where to go for help. For spec or policy questions: open a GitHub issue. For blocked queue items: follow `docs/procedures/handle-blocked-work.md`. For security concerns: see SECURITY.md. For architecture questions: open a discussion or create an ADR PR.
+- **`queue/queue.csv`** — open items; the **top data row** is the active item in single-lane mode.
+- Branch as **`queue/<id>-slug`**, implement, validate, then **archive** per SOP.
+
+Read **[queue/QUEUE_INSTRUCTIONS.md](queue/QUEUE_INSTRUCTIONS.md)**. Related procedures: **[docs/procedures/start-queue-item.md](docs/procedures/start-queue-item.md)**, **[docs/procedures/archive-queue-item.md](docs/procedures/archive-queue-item.md)**.
+
+Adding rows to the queue is how maintainers **direct agent work** in an auditable way.
+
+## Code of conduct
+
+This project follows **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** when present. Otherwise: be respectful, assume good intent, and keep review feedback actionable.
+
+## Questions and escalation
+
+| Topic | Where |
+|-------|--------|
+| Spec / policy | GitHub issue, or ask in PR with context |
+| Blocked queue work | **[docs/procedures/handle-blocked-work.md](docs/procedures/handle-blocked-work.md)** |
+| Security | **[SECURITY.md](SECURITY.md)** — do not file public issues for undisclosed vulnerabilities |
+| Architecture | Discussion, ADR under **`docs/adr/`**, or design PR |
