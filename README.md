@@ -1,3 +1,3 @@
 # template
 
-Authoritative specification: [`spec.md`](spec.md). Root agent control plane (when generated): `AGENTS.md`.
+Authoritative specification: [`downloadable.md`](downloadable.md) ([`spec.md`](spec.md) is an alias). Root agent control plane (when generated): `AGENTS.md`.
