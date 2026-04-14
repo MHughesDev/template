@@ -1,12 +1,8 @@
 # packages/tasks/__init__.py
-"""
-BLUEPRINT: packages/tasks/__init__.py
+"""Background task interfaces and in-memory helper for development."""
 
-PURPOSE:
-Package marker. Exports task interfaces for background job submission and handling.
-Workers are an optional profile. Per spec §26.9 item 239.
-"""
+from __future__ import annotations
 
-from packages.tasks.interfaces import TaskHandler, TaskInterface
+from packages.tasks.interfaces import InMemoryTaskInterface, TaskHandler, TaskInterface
 
-__all__ = ["TaskInterface", "TaskHandler"]
+__all__ = ["InMemoryTaskInterface", "TaskInterface", "TaskHandler"]

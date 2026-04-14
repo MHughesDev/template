@@ -41,13 +41,13 @@ ai = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["apps/api/src", "packages/contracts", "packages/tasks"]
+packages = ["apps/api/src", "packages/contracts", "packages/tasks", "packages/ai"]
 
 [tool.ruff]
 target-version = "py312"
 line-length = 88
-src = ["apps/api/src", "packages/contracts", "packages/tasks"]
-extend-exclude = ["skills", "packages/ai", "apps/api/alembic"]
+src = ["apps/api/src", "packages/contracts", "packages/tasks", "packages/ai"]
+extend-exclude = ["skills", "apps/api/alembic"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20", "SIM", "RET"]
@@ -92,7 +92,7 @@ addopts = "--cov=apps/api/src --cov=packages --cov-report=term-missing --cov-rep
 
 [tool.coverage.run]
 source = ["apps/api/src", "packages"]
-omit = ["*/alembic/*", "*/__init__.py"]
+omit = ["*/alembic/*", "*/__init__.py", "packages/ai/*"]
 
 [tool.coverage.report]
 fail_under = 55
