@@ -12,6 +12,7 @@ from alembic import context
 from apps.api.src.auth import models as auth_models  # noqa: F401
 from apps.api.src.config import get_settings
 from apps.api.src.database import Base
+from apps.api.src.example import models as example_models  # noqa: F401
 from apps.api.src.tenancy import models as tenancy_models  # noqa: F401
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection

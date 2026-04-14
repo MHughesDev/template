@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import (
 
 from apps.api.src.config import get_settings
 from apps.api.src.database import Base, dispose_engine, get_db
+from apps.api.src.example import models as example_models  # noqa: F401
 from apps.api.src.main import create_app
 
 

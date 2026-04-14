@@ -13,6 +13,7 @@ from starlette.requests import Request
 from apps.api.src.auth.router import router as auth_router
 from apps.api.src.config import Settings, get_settings
 from apps.api.src.database import dispose_engine
+from apps.api.src.example.router import router as example_router
 from apps.api.src.exceptions import AppError
 from apps.api.src.health.router import router as health_router
 from apps.api.src.logging_config import configure_logging
@@ -68,6 +69,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(health_router)
     app.include_router(auth_router, prefix=resolved.api_prefix)
+    app.include_router(example_router, prefix=resolved.api_prefix)
 
     return app
 
