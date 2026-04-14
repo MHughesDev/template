@@ -1,63 +1,30 @@
 # .github/workflows/cd.yml
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Continuous deployment workflow. Triggers: main push, semver tags, manual dispatch.
-#          Promotion: dev → staging → prod with environment protection. Per spec §26.7 item 197.
-# SECTIONS:
-#   - on: push (branches: [main]), release (types: [published]), workflow_dispatch
-#   - jobs:
-#     - deploy-dev: auto on main push; build + push image; apply to dev overlay
-#     - deploy-staging: manual approval; apply to staging overlay
-#     - deploy-prod: manual approval + release:verify; apply to prod overlay
-# DESIGN DECISIONS:
-#   - Environment protection: staging and prod require human approval
-#   - Container registry: GHCR (github.com/owner/repo) — configurable
-#   - Kubernetes deploy via: kubectl apply -k deploy/k8s/overlays/<env>
-#   - DB migrations: approval gate for prod; run after image deploy but before health check
-#   - Rollback: documented in docs/operations/rollback.md; manual trigger available
-
 name: CD
 
-# on:
-#   push: branches: [main]
-#   release: types: [published]
-#   workflow_dispatch: (manual with environment input)
-#
-# env: IMAGE_REGISTRY, IMAGE_NAME, KUBE_CONFIG (secret)
-#
-# jobs:
-#   build-and-push:
-#     name: Build and push image
-#     steps:
-#       - checkout
-#       - login to GHCR
-#       - run: make image:build
-#       - run: make image:scan (fail if CRITICAL)
-#       - push image with commit SHA tag and latest/main tag
-#
-#   deploy-dev:
-#     name: Deploy to dev
-#     needs: [build-and-push]
-#     environment: dev
-#     steps:
-#       - set image tag in kustomize overlay
-#       - kubectl apply -k deploy/k8s/overlays/dev
-#       - kubectl rollout status deployment/api -n dev
-#       - run: make health:check (against dev endpoint)
-#
-#   deploy-staging:
-#     name: Deploy to staging
-#     needs: [deploy-dev]
-#     environment: staging (requires approval)
-#     steps:
-#       - (same as dev but targeting staging overlay)
-#       - DB migrations: kubectl apply migration job, wait for completion
-#
-#   deploy-prod:
-#     name: Deploy to production
-#     needs: [deploy-staging]
-#     environment: production (requires approval)
-#     if: github.ref_type == 'tag'
-#     steps:
-#       - run: make release:verify
-#       - (same as staging but targeting prod overlay)
-#       - create GitHub release with changelog excerpt
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Image tag (e.g. v0.1.0)
+        required: true
+        type: string
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          push: false
+          tags: template-api:${{ inputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

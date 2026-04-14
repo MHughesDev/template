@@ -1,11 +1,10 @@
 # skills/security/sbom-attestation.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/validate-change.md -->
 <!-- - Related docs: docs/security/README.md -->
 
-> PURPOSE: TODO — Composer 2 implements full §6.2 skill content. Covers sbom-attestation procedures for this repository.
+> PURPOSE: Operational skill for this topic. Follow the sections below, AGENTS.md, and PYTHON_PROCEDURES.md.
 
 ## Purpose
 > CONTENT: One paragraph describing the sbom-attestation skill and what it enables.

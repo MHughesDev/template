@@ -22,7 +22,6 @@ linked_skills:
 
 # prompts/skill_searcher.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - This subroutine is referenced by every other prompt's preamble -->
 <!-- - Referenced by: AGENTS.md §13 -->

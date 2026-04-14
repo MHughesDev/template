@@ -30,7 +30,6 @@ linked_skills:
 
 # prompts/incident_triage_agent.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

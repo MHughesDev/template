@@ -37,7 +37,6 @@ linked_skills:
 
 # prompts/queue_processor.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - PRIMARY CONTRACT: queue/QUEUE_AGENT_PROMPT.md (read that first) -->
 <!-- - This prompt supplements QUEUE_AGENT_PROMPT.md with role and validation details -->

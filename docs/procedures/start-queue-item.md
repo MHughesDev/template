@@ -1,6 +1,5 @@
 # docs/procedures/start-queue-item.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §9, prompts/queue_processor.md -->
 <!-- - Skill: skills/agent-ops/queue-triage.md -->

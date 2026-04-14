@@ -1,5 +1,4 @@
 # queue/audit.log
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Append-only JSON lines log of queue operations (claim, release, archive, reorder).
 #          Each line is one JSON object. Never edit existing lines — only append.
 #          Per spec §26.6 item 195.

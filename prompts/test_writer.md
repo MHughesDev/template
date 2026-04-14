@@ -30,7 +30,6 @@ linked_skills:
 
 # prompts/test_writer.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

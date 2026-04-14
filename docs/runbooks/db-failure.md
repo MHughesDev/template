@@ -1,10 +1,9 @@
 # docs/runbooks/db-failure.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/runbooks/README.md, AGENTS.md §11 (Escalation) -->
 
-> PURPOSE: TODO — Composer 2 implements runbook for db-failure. Per spec §26.5 items 169-173.
+> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
 
 ## Symptoms
 > CONTENT: How to detect this failure condition.

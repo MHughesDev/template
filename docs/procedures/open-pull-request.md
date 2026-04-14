@@ -1,6 +1,5 @@
 # docs/procedures/open-pull-request.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Template: .github/PULL_REQUEST_TEMPLATE.md -->
 <!-- - Referenced by: AGENTS.md §4 (Branch and PR Policy) -->

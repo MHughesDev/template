@@ -1,37 +1,8 @@
 # docker-compose.test.yml
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Docker Compose override for CI integration tests. Extends docker-compose.yml
-#          with test-specific overrides: ephemeral volumes, test database, CI-appropriate
-#          settings. Optional per spec §26.12 item 392.
-# SECTIONS:
-#   - Overrides for api service: test command, ephemeral database
-#   - Test database service (PostgreSQL) with fresh data per test run
-#   - No persistent volumes (tmpfs for speed)
-# DESIGN DECISIONS:
-#   - Used with: docker compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit
-#   - api service command overridden to run pytest instead of uvicorn
-#   - Test DB uses tmpfs for fast ephemeral storage
-#   - No named volumes — all data ephemeral for reproducible test runs
+# Ephemeral test stack (override for CI if needed).
 
-# Top-level structure:
-# services:
-#   api:
-#     command: [pytest, --cov=apps/api/src, --cov-report=xml, -v]
-#     environment:
-#       - DATABASE_URL=postgresql+asyncpg://test:test@test-db:5432/testdb
-#       - API_DEBUG=false
-#     depends_on:
-#       test-db: {condition: service_healthy}
-#
-#   test-db:
-#     image: postgres:16-alpine
-#     environment:
-#       - POSTGRES_USER=test
-#       - POSTGRES_PASSWORD=test
-#       - POSTGRES_DB=testdb
-#     tmpfs:
-#       - /var/lib/postgresql/data
-#     healthcheck:
-#       test: [CMD, pg_isready, -U, test, -d, testdb]
-#       interval: 5s
-#       retries: 5
+services:
+  api:
+    environment:
+      DATABASE_URL: sqlite+aiosqlite:///./data/test.db
+      JWT_SECRET_KEY: test-secret-not-for-production

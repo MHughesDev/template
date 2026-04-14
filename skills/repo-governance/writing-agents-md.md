@@ -1,6 +1,5 @@
 # skills/repo-governance/writing-agents-md.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/update-or-create-rule.md -->
 <!-- - Spec reference: spec §4 -->

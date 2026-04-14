@@ -1,5 +1,4 @@
 # monitoring/prometheus/alerts.yml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Prometheus alerting rules for API and dependencies. Per spec §26.12 item 383.
 # SECTIONS:
 #   - groups: one group per concern (api, database, infrastructure)

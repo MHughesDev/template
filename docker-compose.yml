@@ -1,61 +1,44 @@
 # docker-compose.yml
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Orchestrates local development and CI services. Uses Docker Compose profiles for
-#          optional components (db, ai, worker). Per spec §26.1 item 5.
-# SECTIONS:
-#   - services:
-#     - api: FastAPI application (always active)
-#     - db: PostgreSQL database (profile: db)
-#     - chroma: ChromaDB vector store (profile: ai)
-#     - worker: background task worker (profile: worker)
-#     - redis: Redis broker for worker (profile: worker)
-#   - volumes: named volumes for persistence
-#   - networks: isolated network for service communication
-# DESIGN DECISIONS:
-#   - api service always active; optional services behind profiles
-#   - Profiles activated via: docker compose --profile db --profile ai up
-#   - api service can switch between SQLite (default) and PostgreSQL (db profile) via DATABASE_URL
-#   - All environment references point to .env file (never hardcoded values)
-#   - Healthchecks on all services; api waits for db to be healthy before starting
+# Local stack: API + optional Postgres (profile db).
 
-# Top-level structure:
-# version: "3.9" (or use modern format without version key)
-# services:
-#   api:
-#     build: context: apps/api, dockerfile: Dockerfile
-#     environment: from .env file references
-#     ports: 8000:8000
-#     volumes: source code mount for hot reload in development
-#     depends_on: db (condition: service_healthy, only when db profile active)
-#     healthcheck: GET /health
-#
-#   db:
-#     image: postgres:16-alpine
-#     profiles: [db]
-#     environment: POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
-#     volumes: postgres_data:/var/lib/postgresql/data
-#     healthcheck: pg_isready
-#
-#   chroma:
-#     image: chromadb/chroma:latest
-#     profiles: [ai]
-#     volumes: chroma_data:/chroma/chroma
-#     healthcheck: GET /api/v1/heartbeat
-#
-#   worker:
-#     build: same as api
-#     profiles: [worker]
-#     command: [celery, -A, apps.api.tasks, worker, --loglevel=info]
-#     depends_on: redis
-#
-#   redis:
-#     image: redis:7-alpine
-#     profiles: [worker]
-#     healthcheck: redis-cli ping
-#
-# volumes:
-#   postgres_data:
-#   chroma_data:
-#
-# networks:
-#   app_net: driver bridge
+services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite+aiosqlite:////data/dev.db}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dev-only-change-me}
+    volumes:
+      - api_data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  db:
+    image: postgres:16-alpine
+    profiles:
+      - db
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  api_data:
+  pg_data:

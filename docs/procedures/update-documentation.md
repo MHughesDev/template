@@ -1,6 +1,5 @@
 # docs/procedures/update-documentation.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Rule: .cursor/rules/documentation.md -->
 <!-- - Skill: skills/repo-governance/maintaining-procedural-docs.md -->

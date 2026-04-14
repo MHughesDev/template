@@ -43,7 +43,6 @@ linked_skills:
 
 # prompts/repo_initializer.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - This is the MOST IMPORTANT prompt in the template library -->
 <!-- - Referenced by: .cursor/commands/initialize.md, docs/agents/initialization-guide.md -->

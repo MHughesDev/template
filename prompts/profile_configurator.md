@@ -29,7 +29,6 @@ linked_skills:
 
 # prompts/profile_configurator.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

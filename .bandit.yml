@@ -1,5 +1,4 @@
 # .bandit.yml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Bandit SAST (static application security testing) configuration.
 #          Defines which tests to run, severity thresholds, and exclusions.
 #          Per spec §26.12 item 378. Referenced by scripts/security-scan.sh.

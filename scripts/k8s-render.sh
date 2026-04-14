@@ -1,30 +1,18 @@
 #!/usr/bin/env bash
 # scripts/k8s-render.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Render K8s manifests via kustomize build for specified overlay
-# CORRESPONDS TO: make k8s:render
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Render Kustomize overlay to stdout (kubectl or kustomize CLI).
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+OVERLAY="${OVERLAY:-dev}"
+DIR="$ROOT/deploy/k8s/overlays/$OVERLAY"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
-
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
-
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+if command -v kubectl >/dev/null 2>&1; then
+  exec kubectl kustomize "$DIR"
+fi
+if command -v kustomize >/dev/null 2>&1; then
+  exec kustomize build "$DIR"
+fi
+echo "Install kubectl or kustomize to render manifests." >&2
+exit 1

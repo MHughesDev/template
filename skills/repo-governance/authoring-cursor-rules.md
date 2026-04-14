@@ -1,6 +1,5 @@
 # skills/repo-governance/authoring-cursor-rules.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/repo-governance/rule-linter.py -->
 <!-- - Related procedure: docs/procedures/update-or-create-rule.md -->

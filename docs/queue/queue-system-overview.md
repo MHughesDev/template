@@ -1,6 +1,5 @@
 # docs/queue/queue-system-overview.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: queue/QUEUE_INSTRUCTIONS.md, docs/README.md -->
 <!-- - Per spec §26.5 item 187 and §17 -->

@@ -1,30 +1,38 @@
 #!/usr/bin/env bash
 # scripts/docs-check.sh
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Check documentation for broken links and generated doc drift
-# CORRESPONDS TO: make docs:check
-# DEPENDS ON: Python/Docker/Make as appropriate; .venv activated; .env loaded
+# Verify internal markdown links under docs/ only.
 
 set -euo pipefail
 
-# STEP 1: Verify prerequisites
-#   - Check .venv exists (if Python script)
-#   - Check .env exists (if app must start)
-#   - Print usage if required args missing
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
 
-# STEP 2: Execute the primary operation
-#   - Exact CLI command(s) for this script
-#   - Arguments passed through from Make target
+python3 <<'PY'
+from __future__ import annotations
 
-# STEP 3: Validate output
-#   - Check exit code
-#   - Print success message
+import re
+import sys
+from pathlib import Path
 
-# STEP 4: Handle errors
-#   - Print clear error message with remediation hint
-#   - Exit non-zero on failure
-
-# ERROR HANDLING: set -euo pipefail catches errors; trap ERR for cleanup
-# OUTPUT: progress messages to stdout; errors to stderr
-
-echo "Composer 2 implements this script. See spec §26.11 for the full implementation."
+root = Path("docs")
+link_re = re.compile(r"\]\(([^)]+)\)")
+errors = 0
+for md in root.rglob("*.md"):
+    text = md.read_text(encoding="utf-8", errors="ignore")
+    for m in link_re.finditer(text):
+        target = m.group(1).split("#", 1)[0].strip()
+        if not target or target.startswith(("http://", "https://", "mailto:")):
+            continue
+        if target.startswith("/"):
+            continue
+        resolved = (md.parent / target).resolve()
+        try:
+            resolved.relative_to(Path(".").resolve())
+        except ValueError:
+            continue
+        if not resolved.exists():
+            print(f"Broken link in {md}: {target}", file=sys.stderr)
+            errors += 1
+sys.exit(1 if errors else 0)
+PY
+echo "docs:check OK"

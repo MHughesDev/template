@@ -4,7 +4,6 @@ description: Structured issue ready for queue.csv import
 labels: ["type:queue"]
 ---
 <!-- .github/ISSUE_TEMPLATE/queue_item.md -->
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.7 item 201 -->
 
 ## Summary (Elaborative — ≥100 chars required)

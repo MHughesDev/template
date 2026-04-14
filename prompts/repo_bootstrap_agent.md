@@ -29,7 +29,6 @@ linked_skills:
 
 # prompts/repo_bootstrap_agent.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

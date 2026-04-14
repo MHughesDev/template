@@ -1,72 +1,109 @@
 # packages/ai/chromadb_client.py
-"""
-BLUEPRINT: packages/ai/chromadb_client.py
+"""ChromaDB-backed embedding and retrieval (optional dependency: chromadb)."""
 
-PURPOSE:
-ChromaDB client implementation of EmbeddingProvider and RetrievalProvider.
-Manages ChromaDB connection, collection operations, document ingestion, and
-similarity queries. Behind packages/ai/interfaces.py abstractions.
-Optional per spec §26.9 item 244.
+from __future__ import annotations
 
-DEPENDS ON:
-- chromadb — ChromaDB client (installed only in ai-rag profile)
-- apps.api.src.config — settings for CHROMA_HOST, CHROMA_PORT
-- packages.ai.interfaces — EmbeddingProvider, RetrievalProvider protocols
-- sentence_transformers or openai — embedding model (based on EMBEDDING_PROVIDER setting)
+from typing import Any, Protocol
 
-DEPENDED ON BY:
-- packages.ai.__init__ — exports ChromaDBClient
-- (future): ai service layers that need retrieval
 
-CLASSES:
+class _AISettings(Protocol):
+    """Minimal settings shape; satisfied by apps.api.src.config.Settings."""
 
-  ChromaDBClient:
-    PURPOSE: Production ChromaDB client implementing EmbeddingProvider and RetrievalProvider.
-    FIELDS:
-      - _client: chromadb.HttpClient — connection to ChromaDB server
-      - _embedding_fn — embedding function (OpenAI, local model, or ChromaDB default)
-    METHODS:
+    ai_enabled: bool
+    chroma_host: str
+    chroma_port: int
 
-      @classmethod
-      async from_settings(settings: Settings) -> ChromaDBClient:
-        PURPOSE: Factory method creating client from application settings.
-        STEPS:
-          1. Create chromadb.HttpClient(host=settings.chroma_host, port=settings.chroma_port)
-          2. Determine embedding function from settings.embedding_provider
-          3. Return initialized ChromaDBClient
 
-      async embed_texts(texts: list[str]) -> list[list[float]]:
-        PURPOSE: Generate embeddings for multiple texts.
-        STEPS: Use configured embedding function to embed all texts.
-        RETURNS: list of embedding vectors
+class ChromaDBClient:
+    """Embedding + retrieval using ChromaDB HTTP client."""
 
-      async embed_query(query: str) -> list[float]:
-        PURPOSE: Generate embedding for a single query.
-        RETURNS: Embedding vector
+    def __init__(self, settings: _AISettings) -> None:
+        self._settings = settings
+        self._client: Any = None
+        self._collection_cache: dict[str, Any] = {}
 
-      async add_documents(documents: list[dict], collection: str) -> None:
-        PURPOSE: Add documents to a ChromaDB collection.
-        STEPS:
-          1. Get or create collection with get_or_create_collection()
-          2. Extract: ids, texts, metadatas from documents
-          3. Generate embeddings for texts
-          4. collection.add(embeddings=embeddings, documents=texts, metadatas=metadatas, ids=ids)
+    @classmethod
+    async def from_settings(cls, settings: _AISettings) -> ChromaDBClient:
+        return cls(settings)
 
-      async query(query_embedding: list[float], collection: str, n_results: int) -> list[dict]:
-        PURPOSE: Find similar documents by embedding similarity.
-        STEPS:
-          1. Get collection
-          2. collection.query(query_embeddings=[query_embedding], n_results=n_results)
-          3. Parse results into list of dicts with id, text, metadata, distance
-        RETURNS: list of matching documents with similarity scores
+    def _require_ai(self) -> None:
+        if not self._settings.ai_enabled:
+            msg = "AI features are disabled (AI_ENABLED=false)"
+            raise RuntimeError(msg)
 
-      async delete_documents(ids: list[str], collection: str) -> None:
-        PURPOSE: Delete documents by ID from a collection.
-        STEPS: Get collection; collection.delete(ids=ids)
+    def _ensure_client(self) -> Any:
+        if self._client is not None:
+            return self._client
+        try:
+            import chromadb  # noqa: PLC0415
+        except ImportError as exc:
+            msg = "chromadb package is not installed; pip install -e '.[ai]'"
+            raise RuntimeError(msg) from exc
+        self._client = chromadb.HttpClient(
+            host=self._settings.chroma_host,
+            port=self._settings.chroma_port,
+        )
+        return self._client
 
-DESIGN DECISIONS:
-- HttpClient (not in-process): ChromaDB runs in separate container (persistent volumes)
-- Embedding function is configurable: OpenAI (production) or local model (offline/dev)
-- Persistent volume: data survives ChromaDB container restarts
-- Kill switch: all methods decorated with @requires_ai_enabled (from interfaces.py)
-"""
+    def _collection(self, name: str) -> Any:
+        if name not in self._collection_cache:
+            client = self._ensure_client()
+            self._collection_cache[name] = client.get_or_create_collection(name=name)
+        return self._collection_cache[name]
+
+    async def embed_texts(self, texts: list[str]) -> list[list[float]]:
+        """Deterministic pseudo-embeddings for dev when no ML model is configured."""
+        self._require_ai()
+        if not texts:
+            return []
+        return [
+            [float((hash(t + str(i)) % 997) / 997.0) for i in range(8)] for t in texts
+        ]
+
+    async def embed_query(self, query: str) -> list[float]:
+        self._require_ai()
+        return (await self.embed_texts([query]))[0]
+
+    async def add_documents(
+        self, documents: list[dict[str, Any]], collection: str
+    ) -> None:
+        self._require_ai()
+        col = self._collection(collection)
+        ids = [str(d.get("id", idx)) for idx, d in enumerate(documents)]
+        texts = [str(d.get("text", "")) for d in documents]
+        metadatas = [dict(d.get("metadata", {})) for d in documents]
+        embeddings = await self.embed_texts(texts)
+        col.add(
+            embeddings=embeddings,
+            documents=texts,
+            metadatas=metadatas,
+            ids=ids,
+        )
+
+    async def query(
+        self, query_embedding: list[float], collection: str, n_results: int
+    ) -> list[dict[str, Any]]:
+        self._require_ai()
+        col = self._collection(collection)
+        res = col.query(
+            query_embeddings=[query_embedding],
+            n_results=n_results,
+        )
+        out: list[dict[str, Any]] = []
+        ids_list = res.get("ids", [[]])[0]
+        docs_list = res.get("documents", [[]])[0]
+        meta_list = res.get("metadatas", [[]])[0]
+        dist_list = res.get("distances", [[]])[0] if res.get("distances") else []
+        for i, doc_id in enumerate(ids_list):
+            item: dict[str, Any] = {"id": doc_id, "text": docs_list[i] if i < len(docs_list) else ""}
+            if meta_list and i < len(meta_list):
+                item["metadata"] = meta_list[i]
+            if dist_list and i < len(dist_list):
+                item["distance"] = dist_list[i]
+            out.append(item)
+        return out
+
+    async def delete_documents(self, ids: list[str], collection: str) -> None:
+        self._require_ai()
+        col = self._collection(collection)
+        col.delete(ids=ids)

@@ -33,7 +33,6 @@ linked_skills:
 
 # prompts/task_planner.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Procedure: docs/procedures/plan-change.md -->
 <!-- - Skill: skills/agent-ops/task-planning.md -->

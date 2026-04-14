@@ -30,7 +30,6 @@ linked_skills:
 
 # prompts/refactorer.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

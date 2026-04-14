@@ -1,6 +1,5 @@
 # docs/procedures/implement-change.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Prompt: prompts/implementation_agent.md -->
 <!-- - Validates with: docs/procedures/validate-change.md -->

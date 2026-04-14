@@ -1,6 +1,5 @@
 # docs/optional-clients/web.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.5 items 188-189 and §9.2 -->
 
 > PURPOSE: web profile documentation: when to enable, setup, env vars, operational burden. Per spec §9.2 and §15.

@@ -1,6 +1,5 @@
 # skills/agent-ops/post-pr-audit.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/archive-queue-item.md -->
 <!-- - Related docs: docs/agents/pr-audit-checklist.md -->

@@ -4,7 +4,6 @@ description: Suggest a new feature or enhancement
 labels: ["type:feature"]
 ---
 <!-- .github/ISSUE_TEMPLATE/feature_request.md -->
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.7 item 200 -->
 
 ## Problem Statement

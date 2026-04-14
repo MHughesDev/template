@@ -1,6 +1,5 @@
 # prompts/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §14, docs/prompts/README.md, docs/prompts/index.md -->
 <!-- - Procedure: docs/procedures/add-prompt-template.md -->

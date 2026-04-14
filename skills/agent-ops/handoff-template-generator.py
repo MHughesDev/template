@@ -1,76 +1,90 @@
 # skills/agent-ops/handoff-template-generator.py
-"""
-BLUEPRINT: skills/agent-ops/handoff-template-generator.py
+"""Emit a Markdown handoff skeleton from git status and optional queue id."""
 
-PURPOSE:
-Generates a pre-filled handoff document from git diff, recent commands, and
-queue state. Reduces token cost and error rate by auto-populating boilerplate
-sections of the handoff document. The generated template is then filled in
-by the agent with acceptance criteria verification, risks, and follow-ups.
+from __future__ import annotations
 
-DEPENDS ON:
-- subprocess (stdlib) — run git commands
-- csv (stdlib) — read queue.csv for current item
-- pathlib (stdlib) — file paths
-- argparse (stdlib) — CLI argument parsing
-- datetime (stdlib) — timestamp generation
+import argparse
+import csv
+import io
+import subprocess
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
 
-DEPENDED ON BY:
-- skills/agent-ops/implementation-handoff.md — references this as machinery
 
-FUNCTIONS:
+def git_shortstat(repo: Path) -> str:
+    r = subprocess.run(
+        ["git", "-C", str(repo), "diff", "--stat", "HEAD"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return (r.stdout or "(no commits or not a git repo)").strip()
 
-  get_git_diff_stat(base_ref: str = "HEAD~1") -> str:
-    PURPOSE: Run `git diff --stat <base_ref>..HEAD` and return output.
-    STEPS:
-      1. subprocess.run(["git", "diff", "--stat", f"{base_ref}..HEAD"])
-      2. Return stdout as string
-    RETURNS: Formatted diff stat string
-    RAISES: RuntimeError if git command fails
 
-  get_changed_files(base_ref: str = "HEAD~1") -> list[tuple[str, str]]:
-    PURPOSE: Return list of (filename, change_type) pairs for files changed since base_ref.
-    STEPS:
-      1. subprocess.run(["git", "diff", "--name-status", base_ref])
-      2. Parse output: "A filename" → ("filename", "added"), "M filename" → ("filename", "modified"), etc.
-    RETURNS: list of (path, change_type) tuples
-    RAISES: RuntimeError if git command fails
+def load_queue_row(repo: Path, qid: str) -> dict[str, str] | None:
+    path = repo / "queue" / "queue.csv"
+    if not path.is_file():
+        return None
+    raw = path.read_text(encoding="utf-8")
+    lines = raw.splitlines()
+    start = 1 if lines and lines[0].startswith("#") else 0
+    reader = csv.DictReader(io.StringIO("\n".join(lines[start:])))
+    for row in reader:
+        if (row.get("id") or "").strip() == qid:
+            return dict(row)
+    return None
 
-  get_queue_item(queue_id: str, queue_path: Path = Path("queue/queue.csv")) -> dict[str, str] | None:
-    PURPOSE: Read the queue row for the given queue ID.
-    STEPS:
-      1. Open queue.csv with csv.DictReader
-      2. Find row where id == queue_id
-      3. Return row as dict
-    RETURNS: Row dict or None if not found
 
-  generate_template(queue_id: str | None, base_ref: str) -> str:
-    PURPOSE: Generate the pre-filled Markdown handoff template.
-    STEPS:
-      1. Get changed files list
-      2. Get queue item (if queue_id provided)
-      3. Build Markdown template with filled sections:
-         - Header with timestamp
-         - Files changed table (auto-filled from git)
-         - Queue item summary (auto-filled if queue_id provided)
-         - Acceptance criteria section (filled with criteria from queue summary)
-         - Commands run section (placeholder for agent to fill)
-         - Risks section (placeholder)
-         - Follow-ups section (placeholder)
-         - PR link placeholder
-    RETURNS: Complete Markdown template string
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
+    parser.add_argument("--queue-id", default="")
+    args = parser.parse_args()
+    repo = args.repo_root
+    ts = datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
+    stat = git_shortstat(repo)
+    lines = [
+        "# Handoff",
+        "",
+        f"**Generated:** {ts}",
+        "",
+        "## Git diff --stat",
+        "",
+        "```",
+        stat,
+        "```",
+        "",
+    ]
+    if args.queue_id:
+        row = load_queue_row(repo, args.queue_id)
+        if row:
+            lines += [
+                "## Queue item",
+                "",
+                f"- **id:** {row.get('id', '')}",
+                f"- **summary:** {row.get('summary', '')}",
+                "",
+            ]
+        else:
+            lines += ["## Queue item", "", f"(id {args.queue_id!r} not found)", ""]
+    lines += [
+        "## Commands run",
+        "",
+        "(paste make lint / make test output)",
+        "",
+        "## Risks",
+        "",
+        "- ",
+        "",
+        "## Follow-ups",
+        "",
+        "- ",
+        "",
+    ]
+    print("\n".join(lines))
+    return 0
 
-  main() -> None:
-    PURPOSE: CLI entry point.
-    STEPS:
-      1. Parse args: --queue-id (optional), --base-ref (default HEAD~1), --output (stdout or file)
-      2. Call generate_template()
-      3. Write to output destination
-    RAISES: SystemExit 1 on error
 
-DESIGN DECISIONS:
-- base_ref defaults to HEAD~1 (last commit); agent can pass a branch name for full branch diff
-- Queue item is optional — works without it for non-queue work
-- Output goes to stdout by default so agent can copy-paste into PR description
-- Acceptance criteria are extracted from queue summary using heuristic pattern matching
-"""
+if __name__ == "__main__":
+    raise SystemExit(main())

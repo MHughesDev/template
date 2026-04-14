@@ -1,6 +1,5 @@
 # skills/init/env-generator.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/init/env-generator.py -->
 

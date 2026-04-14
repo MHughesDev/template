@@ -1,32 +1,11 @@
 # Makefile
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Single canonical command entrypoint. Every recurring operation has a named target.
-#          Agents MUST use these targets over ad hoc shell commands. Per spec §26.1 item 6 and §10.2.
-# SECTIONS:
-#   - Help target (runs by default: make or make help)
-#   - Development targets: dev, lint, fmt, typecheck, test variants
-#   - Database targets: migrate, migrate:create, db:reset, db:seed
-#   - Documentation targets: docs:check, docs:generate, docs:index
-#   - Queue targets: queue:peek, queue:validate, queue:archive, queue:graph, queue:analyze
-#   - Automation targets: prompt:list, skills:list, rules:check, audit:self
-#   - Security targets: security:scan, image:build, image:scan
-#   - Release targets: release:prepare, release:verify
-#   - K8s targets: k8s:render, k8s:validate
-#   - Docker targets: docker:up, docker:down
-#   - Initialization targets: init, idea:validate, scaffold:module, profile:enable, idea:queue, env:generate, inventory:check
-#   - Utility: clean, health:check
-# DESIGN DECISIONS:
-#   - All targets delegate to scripts/ for non-trivial logic
-#   - .PHONY declarations prevent make from looking for files with target names
-#   - help target parses ## comments for self-documentation
-#   - Each target has a ## comment for make help output
-#   - Shell: bash (not sh) for consistent behavior
+# Canonical command entrypoint. Prefer `make <target>` over ad hoc shell.
 
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-.PHONY: help dev lint fmt typecheck test test-unit test-integration test-smoke \
-        migrate db-reset db-seed docs-check docs-generate docs-index \
+.PHONY: help dev lint fmt fmt-fix typecheck test test-unit test-integration test-smoke \
+        migrate migrate\:create db-reset db-seed docs-check docs-generate docs-index \
         queue-peek queue-validate queue-archive queue-graph queue-analyze \
         prompt-list skills-list rules-check audit-self \
         security-scan image-build image-scan \
@@ -35,219 +14,179 @@ SHELL := /usr/bin/env bash
         init idea-validate scaffold-module profile-enable idea-queue env-generate inventory-check \
         clean health-check
 
-## help: Show this help message
+## help: Show targets (see also: scripts/README.md)
 help:
-	@echo "Repository make targets:"
-	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/## //' | column -t -s ':'
+	@echo "Targets:"
+	@grep -E '^##' $(MAKEFILE_LIST) | sed 's/^## //' | column -t -s ':'
 
-## ─────────────────────────────────────────────
-## DEVELOPMENT
-## ─────────────────────────────────────────────
-
-## dev: Start local API with hot reload
+## dev: Run API with uvicorn --reload
 dev:
 	@scripts/dev.sh
 
-## lint: Run ruff lint (no auto-fix)
+## lint: Ruff lint
 lint:
 	@scripts/lint.sh
 
-## fmt: Apply ruff formatting
+## fmt: Ruff format check (CI mode)
 fmt:
 	@scripts/fmt.sh
 
-## typecheck: Run mypy --strict
+## fmt-fix: Apply Ruff formatting
+fmt-fix:
+	@python3 -m ruff format apps/api/src packages/contracts packages/tasks
+
+## typecheck: mypy strict
 typecheck:
 	@scripts/typecheck.sh
 
-## test: Run full test suite with coverage
+## test: pytest with coverage
 test:
 	@scripts/test.sh
 
-## test\:unit: Run unit tests only
-test\:unit:
+## test-unit: unit tests only
+test-unit:
 	@TEST_TYPE=unit scripts/test.sh
 
-## test\:integration: Run integration tests only
-test\:integration:
+## test-integration: integration tests only
+test-integration:
 	@TEST_TYPE=integration scripts/test.sh
 
-## test\:smoke: Run smoke tests only
-test\:smoke:
+## test-smoke: smoke tests only
+test-smoke:
 	@TEST_TYPE=smoke scripts/test.sh
 
-## ─────────────────────────────────────────────
-## DATABASE
-## ─────────────────────────────────────────────
-
-## migrate: Apply database migrations (alembic upgrade head)
+## migrate: alembic upgrade head
 migrate:
 	@scripts/migrate.sh
 
-## migrate\:create: Scaffold new migration (MESSAGE=<description> required)
+## migrate\:create: alembic revision --autogenerate (MESSAGE= required)
 migrate\:create:
 	@MESSAGE="$(MESSAGE)" scripts/migrate.sh create
 
-## db\:reset: Drop and recreate local database; run migrations
-db\:reset:
+## db-reset: reset local sqlite + migrate
+db-reset:
 	@scripts/db-reset.sh
 
-## db\:seed: Populate local database with sample data
-db\:seed:
+## db-seed: optional seed data
+db-seed:
 	@scripts/seed-db.sh
 
-## ─────────────────────────────────────────────
-## DOCUMENTATION
-## ─────────────────────────────────────────────
-
-## docs\:check: Check documentation for drift and broken links
-docs\:check:
+## docs-check: documentation link check
+docs-check:
 	@scripts/docs-check.sh
 
-## docs\:generate: Generate all auto-generated documentation from source
-docs\:generate:
+## docs-generate: placeholder for generated docs
+docs-generate:
 	@scripts/docs-generate.sh
 
-## docs\:index: Regenerate documentation index files
-docs\:index:
+## docs-index: placeholder for docs index
+docs-index:
 	@scripts/docs-index.sh
 
-## ─────────────────────────────────────────────
-## QUEUE
-## ─────────────────────────────────────────────
-
-## queue\:peek: Read-only: header + first open queue row
-queue\:peek:
+## queue-peek: show queue header + first row
+queue-peek:
 	@scripts/queue-peek.sh
 
-## queue\:validate: Validate queue schema and invariants
-queue\:validate:
+## queue-validate: validate queue CSV schema
+queue-validate:
 	@scripts/queue-validate.sh
 
-## queue\:archive: Move completed row to archive (QUEUE_ID=<id> required)
-queue\:archive:
+## queue-archive: move row to archive (QUEUE_ID= required)
+queue-archive:
 	@QUEUE_ID="$(QUEUE_ID)" scripts/queue-archive.sh
 
-## queue\:graph: Render queue dependency graph (Mermaid)
-queue\:graph:
+## queue-graph: mermaid stub / graph placeholder
+queue-graph:
 	@scripts/queue-graph.sh
 
-## queue\:analyze: Full queue intelligence analysis
-queue\:analyze:
+## queue-analyze: validate + analysis stub
+queue-analyze:
 	@scripts/queue-analyze.sh
 
-## ─────────────────────────────────────────────
-## AGENT TOOLING
-## ─────────────────────────────────────────────
-
-## prompt\:list: List all prompt templates
-prompt\:list:
+## prompt-list: list prompts/*.md
+prompt-list:
 	@scripts/prompt-list.sh
 
-## skills\:list: List all skills by category
-skills\:list:
+## skills-list: list skills by folder
+skills-list:
 	@scripts/skills-list.sh
 
-## rules\:check: Validate .cursor/rules/ files
-rules\:check:
+## rules-check: cursor rules front matter
+rules-check:
 	@scripts/rules-check.sh
 
-## audit\:self: Comprehensive repo spec-compliance audit
-audit\:self:
+## audit-self: repo self-audit
+audit-self:
 	@scripts/audit-self.sh
 
-## ─────────────────────────────────────────────
-## SECURITY
-## ─────────────────────────────────────────────
-
-## security\:scan: Run bandit SAST + dependency audit + secret scanner
-security\:scan:
+## security-scan: bandit + pip-audit
+security-scan:
 	@scripts/security-scan.sh
 
-## image\:build: Build API container image
-image\:build:
+## image-build: docker build API image
+image-build:
 	@scripts/image-build.sh
 
-## image\:scan: Scan built container image with Trivy
-image\:scan:
+## image-scan: trivy scan image
+image-scan:
 	@scripts/image-scan.sh
 
-## ─────────────────────────────────────────────
-## RELEASE
-## ─────────────────────────────────────────────
-
-## release\:prepare: Update CHANGELOG, verify version
-release\:prepare:
+## release-prepare: changelog sanity check
+release-prepare:
 	@scripts/release-prepare.sh
 
-## release\:verify: Pre-tag verification (all checks + changelog + version)
-release\:verify:
+## release-verify: lint + fmt check + typecheck + test
+release-verify:
 	@scripts/release-verify.sh
 
-## ─────────────────────────────────────────────
-## KUBERNETES
-## ─────────────────────────────────────────────
-
-## k8s\:render: Render K8s manifests from Kustomize (OVERLAY=dev|staging|prod)
-k8s\:render:
+## k8s-render: kubectl kustomize overlay (OVERLAY=dev|staging|prod)
+k8s-render:
 	@OVERLAY="$(or $(OVERLAY),dev)" scripts/k8s-render.sh
 
-## k8s\:validate: Validate rendered K8s manifests
-k8s\:validate:
-	@scripts/k8s-validate.sh
+## k8s-validate: validate kustomize output
+k8s-validate:
+	@OVERLAY="$(or $(OVERLAY),dev)" scripts/k8s-validate.sh
 
-## ─────────────────────────────────────────────
-## DOCKER
-## ─────────────────────────────────────────────
-
-## docker\:up: Start Docker Compose services
-docker\:up:
+## docker-up: docker compose up -d
+docker-up:
 	docker compose up -d
 
-## docker\:down: Stop Docker Compose services
-docker\:down:
+## docker-down: docker compose down
+docker-down:
 	docker compose down
 
-## ─────────────────────────────────────────────
-## INITIALIZATION
-## ─────────────────────────────────────────────
-
-## init: Run initialization pre-checks and guidance
+## init: pip install -e and .env stub
 init:
 	@scripts/init-repo.sh
 
-## idea\:validate: Validate idea.md completeness
-idea\:validate:
+## idea-validate: idea.md placeholder check
+idea-validate:
 	@scripts/validate-idea.sh
 
-## scaffold\:module: Scaffold a new domain module (MODULE=<name> required)
-scaffold\:module:
+## scaffold-module: MODULE= name
+scaffold-module:
 	@MODULE="$(MODULE)" scripts/scaffold-module.sh
 
-## profile\:enable: Enable an optional profile (PROFILE=<name> required)
-profile\:enable:
+## profile-enable: PROFILE= name
+profile-enable:
 	@PROFILE="$(PROFILE)" scripts/profile-enable.sh
 
-## idea\:queue: Extract queue items from idea.md and seed queue.csv
-idea\:queue:
+## idea-queue: queue seeding stub
+idea-queue:
 	@scripts/idea-to-queue.sh
 
-## env\:generate: Generate .env from .env.example
-env\:generate:
+## env-generate: copy .env.example to .env
+env-generate:
 	@scripts/generate-env.sh
 
-## inventory\:check: Verify all spec-required files exist
-inventory\:check:
+## inventory-check: verify completed IMPLEMENTATION_PLAN paths exist
+inventory-check:
 	@scripts/inventory-check.sh
 
-## ─────────────────────────────────────────────
-## UTILITY
-## ─────────────────────────────────────────────
-
-## clean: Remove build artifacts and caches
+## clean: remove caches and build artifacts
 clean:
 	@scripts/clean.sh
 
-## health\:check: Check API health endpoints (/health /ready /live)
-health\:check:
+## health-check: curl /health
+health-check:
 	@scripts/health-check.sh

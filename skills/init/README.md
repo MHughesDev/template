@@ -1,6 +1,5 @@
 # skills/init/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Used by: prompts/repo_initializer.md, .cursor/commands/initialize.md -->
 <!-- - Procedure: docs/procedures/initialize-repo.md -->

@@ -1,6 +1,5 @@
 # docs/procedures/validate-change.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §7, prompts/reviewer_critic.md -->
 <!-- - Uses: make audit:self -->

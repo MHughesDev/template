@@ -39,7 +39,6 @@ linked_skills:
 
 # prompts/implementation_agent.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Procedure: docs/procedures/implement-change.md -->
 <!-- - Skills: skills/agent-ops/implementation-handoff.md -->

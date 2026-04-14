@@ -1,6 +1,5 @@
 # docs/getting-started/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 > PURPOSE: Getting started index. Links to prerequisites and quickstart. Per spec §26.5 item 112.
 
 ## Overview

@@ -27,7 +27,6 @@ linked_skills:
 
 # prompts/skill_authoring_agent.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

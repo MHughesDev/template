@@ -1,16 +1,3 @@
 # .mailmap
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Normalize git author names and email addresses for `git shortlog`, `git log --use-mailmap`,
-#          and contributor statistics. Optional per spec §26.12 item 405.
-# SECTIONS:
-#   - One entry per line in format: Canonical Name <canonical@email> Commit Name <commit@email>
-#   - Or: Canonical Name <canonical@email> <old@email> — to fix just the email
-#   - Or: <canonical@email> <old@email> — to fix just the email, keeping the name
-# DESIGN DECISIONS:
-#   - Populated when contributors use different email addresses across machines/accounts
-#   - Useful for bots: map bot commits to a canonical bot identity
-#   - Run `git shortlog -s -n` to see current contributor stats; add entries here to fix
-
-# Example entries (remove/replace with actual entries):
-# Correct Name <correct@email.com> Old Name <old@email.com>
-# Bot Identity <bot@org.com> github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+# Canonicalize git author lines for git shortlog / statistics.
+# Format: Name <email> Old Name <old@email>

@@ -1,11 +1,10 @@
 # skills/frontend/react-api-integration.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Profile: optional web/mobile profile -->
 <!-- - Related docs: docs/optional-clients/ -->
 
-> PURPOSE: [OPTIONAL] TODO — Composer 2 implements full §6.2 skill content for react-api-integration in the frontend/mobile domain. Only relevant when the web or mobile profile is enabled.
+> PURPOSE: [OPTIONAL] Frontend/mobile skill. Enable the web or mobile profile before relying on this.
 
 ## Purpose
 > CONTENT: What this frontend skill enables.
@@ -20,10 +19,10 @@
 > CONTENT: apps/web/ or apps/mobile/, docs/optional-clients/
 
 ## Step-by-Step Method
-> CONTENT: TODO
+> CONTENT: Generate or configure an API client; call authenticated endpoints; handle 401 refresh if applicable.
 
 ## Command Examples
-> CONTENT: TODO
+> CONTENT: `npm run dev` (web) or `npx expo start` (mobile); curl API with Bearer token.
 
 ## Validation Checklist
 > CONTENT:

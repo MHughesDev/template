@@ -1,6 +1,5 @@
 # docs/procedures/handle-blocked-work.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Skill: skills/agent-ops/blocked-task-recovery.md -->
 <!-- - Rule: .cursor/rules/queue.md (blocked state) -->

@@ -1,11 +1,10 @@
 # skills/frontend/frontend-env-handling.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Profile: optional web/mobile profile -->
 <!-- - Related docs: docs/optional-clients/ -->
 
-> PURPOSE: [OPTIONAL] TODO — Composer 2 implements full §6.2 skill content for frontend-env-handling in the frontend/mobile domain. Only relevant when the web or mobile profile is enabled.
+> PURPOSE: [OPTIONAL] Frontend/mobile skill. Enable the web or mobile profile before relying on this.
 
 ## Purpose
 > CONTENT: What this frontend skill enables.
@@ -20,10 +19,10 @@
 > CONTENT: apps/web/ or apps/mobile/, docs/optional-clients/
 
 ## Step-by-Step Method
-> CONTENT: TODO
+> CONTENT: Use `.env` / `app.config` for public API URL only; never embed secrets in client bundles.
 
 ## Command Examples
-> CONTENT: TODO
+> CONTENT: `EXPO_PUBLIC_API_URL=http://localhost:8000`
 
 ## Validation Checklist
 > CONTENT:

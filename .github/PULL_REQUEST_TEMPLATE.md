@@ -1,5 +1,4 @@
 <!-- .github/PULL_REQUEST_TEMPLATE.md -->
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.7 item 202 -->
 
 ## Summary of Changes

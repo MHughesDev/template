@@ -1,11 +1,10 @@
 # skills/frontend/generated-client-usage.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Profile: optional web/mobile profile -->
 <!-- - Related docs: docs/optional-clients/ -->
 
-> PURPOSE: [OPTIONAL] TODO — Composer 2 implements full §6.2 skill content for generated-client-usage in the frontend/mobile domain. Only relevant when the web or mobile profile is enabled.
+> PURPOSE: [OPTIONAL] Frontend/mobile skill. Enable the web or mobile profile before relying on this.
 
 ## Purpose
 > CONTENT: What this frontend skill enables.
@@ -20,10 +19,10 @@
 > CONTENT: apps/web/ or apps/mobile/, docs/optional-clients/
 
 ## Step-by-Step Method
-> CONTENT: TODO
+> CONTENT: Generate client from OpenAPI; import typed methods; map errors to UI states.
 
 ## Command Examples
-> CONTENT: TODO
+> CONTENT: `openapi-generator-cli generate -i http://localhost:8000/openapi.json ...`
 
 ## Validation Checklist
 > CONTENT:

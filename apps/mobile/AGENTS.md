@@ -1,6 +1,5 @@
 # apps/mobile/AGENTS.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.8 item 235 — optional mobile profile -->
 
 > PURPOSE: Scoped agent instructions for mobile development (Expo/React Native). Per spec §26.8 item 235.

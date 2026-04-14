@@ -1,6 +1,5 @@
 # skills/init/module-template-generator.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Uses: skills/backend/module-scaffolder.py -->
 <!-- - Procedure: docs/procedures/scaffold-domain-module.md -->

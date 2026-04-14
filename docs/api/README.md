@@ -1,10 +1,9 @@
 # docs/api/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Source: generated from FastAPI OpenAPI (make docs:generate) -->
 
-> PURPOSE: TODO — Composer 2 implements API documentation for README. Generated from source by make docs:generate.
+> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
 
 ## Overview
 

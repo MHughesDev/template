@@ -1,10 +1,9 @@
 # skills/devops/backup-restore-drills.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedures: docs/operations/ -->
 
-> PURPOSE: TODO — Composer 2 implements full §6.2 skill content for backup-restore-drills in the DevOps domain.
+> PURPOSE: Operational skill for this topic. Follow the sections below, AGENTS.md, and PYTHON_PROCEDURES.md.
 
 ## Purpose
 > CONTENT: What this DevOps skill enables.

@@ -1,6 +1,5 @@
 # skills/init/idea-validator.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/init/idea-validator.py -->
 <!-- - Related procedure: docs/procedures/validate-idea-md.md -->

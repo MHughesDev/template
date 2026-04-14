@@ -1,6 +1,5 @@
 # docs/security/cors-policy.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Optional per spec §26.12 item 403 -->
 
 > PURPOSE: CORS origins and security rationale. Per spec §26.12 item 403.

@@ -1,6 +1,5 @@
 # skills/init/profile-resolver.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/init/profile-resolver.py -->
 <!-- - Related: skills/init/archetype-mapper.py -->

@@ -1,6 +1,5 @@
 # packages/contracts/AGENTS.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.9 item 238 -->
 
 > PURPOSE: Scoped agent instructions for the contracts package. Emphasizes backward compatibility, versioning, and testing contract changes. Per spec §26.9 item 238.

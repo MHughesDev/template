@@ -1,6 +1,5 @@
 # deploy/k8s/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.10 item 247 -->
 
 > PURPOSE: Kubernetes deployment documentation. Manifest structure, rendering, validation, deployment. Per spec §26.10 item 247.

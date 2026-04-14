@@ -1,6 +1,5 @@
 # docs/procedures/handoff.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Skill: skills/agent-ops/implementation-handoff.md -->
 <!-- - Machinery: skills/agent-ops/handoff-template-generator.py -->

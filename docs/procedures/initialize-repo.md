@@ -1,6 +1,5 @@
 # docs/procedures/initialize-repo.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: prompts/repo_initializer.md, .cursor/commands/initialize.md -->
 <!-- - Skills: skills/init/ (all), skills/backend/fastapi-router-module.md -->

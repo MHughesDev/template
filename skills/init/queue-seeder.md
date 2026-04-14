@@ -1,6 +1,5 @@
 # skills/init/queue-seeder.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/init/queue-seeder.py -->
 <!-- - Related procedure: docs/procedures/initialize-repo.md (Phase 5) -->

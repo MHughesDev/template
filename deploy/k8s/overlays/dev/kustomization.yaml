@@ -1,12 +1,15 @@
 # deploy/k8s/overlays/dev/kustomization.yaml
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Dev environment Kustomize overlay. Single replica, debug settings, relaxed resources. Per spec §26.10 item 252.
-# apiVersion: kustomize.config.k8s.io/v1beta1, kind: Kustomization
-# bases: [../../base]
-# namespace: dev
-# patches:
-#   - target: {kind: Deployment, name: api}, patch: replicas=1, resources.limits={cpu: 200m, memory: 256Mi}
-#   - target: {kind: ConfigMap, name: api-config}, patch: LOG_LEVEL=DEBUG, API_DEBUG=true
-#   - target: {kind: Ingress, name: api}, patch: host=api.dev.{{DOMAIN}}
-#   - target: {kind: HorizontalPodAutoscaler}, patch: minReplicas=1, maxReplicas=3
-# images: [{name: ghcr.io/{{ORG}}/{{REPO}}, newTag: dev-latest}]
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: dev
+
+resources:
+  - ../../base
+
+commonLabels:
+  environment: dev
+
+images:
+  - name: template-api
+    newTag: dev

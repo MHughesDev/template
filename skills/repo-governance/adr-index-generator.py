@@ -1,54 +1,34 @@
 # skills/repo-governance/adr-index-generator.py
-"""
-BLUEPRINT: skills/repo-governance/adr-index-generator.py
+"""Print a Markdown table of docs/adr/*.md (excluding README and template)."""
 
-PURPOSE:
-Generates the ADR index file (docs/adr/README.md) from ADR files in docs/adr/.
-Parses the title, status, date, and context from each ADR file and produces
-a formatted index table sorted by ADR number. Invoked when a new ADR is added.
+from __future__ import annotations
 
-DEPENDS ON:
-- pathlib (stdlib) — file discovery
-- re (stdlib) — parsing ADR metadata from Markdown
-- argparse (stdlib) — CLI
+import argparse
+import sys
+from pathlib import Path
 
-DEPENDED ON BY:
-- skills/repo-governance/writing-adrs.md — references as machinery
-- scripts/docs-generate.sh — may include ADR index generation
 
-FUNCTIONS:
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
+    args = parser.parse_args()
+    adr = args.repo_root / "docs" / "adr"
+    if not adr.is_dir():
+        print("No docs/adr", file=sys.stderr)
+        return 1
+    files = sorted(
+        p for p in adr.glob("*.md") if p.name not in {"README.md", "template.md"}
+    )
+    print("# ADR index\n")
+    print("| ADR | Title |")
+    print("|-----|-------|")
+    for p in files:
+        first = p.read_text(encoding="utf-8").splitlines()[:1]
+        title = first[0].lstrip("# ").strip() if first else p.stem
+        rel = p.relative_to(args.repo_root)
+        print(f"| [{p.stem}]({rel.as_posix()}) | {title} |")
+    return 0
 
-  parse_adr_metadata(adr_path: Path) -> dict[str, str]:
-    PURPOSE: Extract ADR metadata from a single ADR file.
-    STEPS:
-      1. Read file content
-      2. Extract title from first H1 heading (# ADR-NNN: Title)
-      3. Extract number from filename (ADR-001-name.md → "001")
-      4. Extract status from "**Status:** Accepted/Proposed/Deprecated/Superseded" line
-      5. Extract date from "**Date:** YYYY-MM-DD" line
-      6. Extract one-line context summary from Context section (first sentence)
-    RETURNS: dict with keys: number, title, status, date, context_summary, path
 
-  generate_index(adrs_dir: Path) -> str:
-    PURPOSE: Generate the complete docs/adr/README.md index content.
-    STEPS:
-      1. Find all *.md files in adrs_dir, excluding README.md and template.md
-      2. Parse metadata from each ADR
-      3. Sort by ADR number
-      4. Generate Markdown table: Number | Title | Status | Date | Summary
-      5. Prepend header with explanation of ADR process
-    RETURNS: Complete Markdown content for docs/adr/README.md
-
-  main() -> None:
-    PURPOSE: CLI entry point.
-    STEPS:
-      1. Parse args: --adrs-dir, --output (default stdout or docs/adr/README.md)
-      2. Run generate_index()
-      3. Write to output
-
-DESIGN DECISIONS:
-- Overwrites docs/adr/README.md completely (content is fully generated)
-- Skips README.md and template.md in docs/adr/ (they are not ADR files)
-- Status values: Proposed, Accepted, Deprecated, Superseded (standard ADR states)
-- Sorted by ADR number for stable, predictable output
-"""
+if __name__ == "__main__":
+    raise SystemExit(main())

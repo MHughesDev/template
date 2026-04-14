@@ -1,6 +1,5 @@
 # skills/agent-ops/repo-self-audit.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/agent-ops/repo-self-audit.py -->
 <!-- - Related command: .cursor/commands/audit.md -->

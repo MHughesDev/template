@@ -31,7 +31,6 @@ linked_skills:
 
 # prompts/reviewer_critic.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Procedure: docs/procedures/validate-change.md -->
 <!-- - Skills: skills/security/secret-handling.md, skills/security/rbac-tenant-isolation.md -->

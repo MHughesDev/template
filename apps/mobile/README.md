@@ -1,6 +1,5 @@
 # apps/mobile/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.8 item 234 — optional mobile profile placeholder -->
 
 > PURPOSE: Mobile app placeholder. Documents when/how to enable. Per spec §26.8 item 234.

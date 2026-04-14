@@ -1,5 +1,4 @@
 # trivy.yaml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Trivy container/filesystem scanner configuration. Defines severity thresholds,
 #          ignore rules, and scan targets. Per spec §26.12 item 379.
 #          Referenced by scripts/image-scan.sh and .github/workflows/security.yml.

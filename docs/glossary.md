@@ -1,6 +1,5 @@
 # docs/glossary.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §Navigation, docs/README.md -->
 

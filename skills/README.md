@@ -1,6 +1,5 @@
 # skills/README.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §13 (Mandatory Skill Search), prompts/skill_searcher.md -->
 <!-- - Procedure: docs/procedures/update-or-create-skill.md -->

@@ -1,6 +1,5 @@
 # skills/testing/pytest-conventions.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Machinery: skills/testing/test-scaffolder.py -->
 <!-- - Related rule: .cursor/rules/testing.md -->
@@ -51,7 +50,7 @@
 
 ## Step-by-Step Method — Fixture Patterns
 
-> CONTENT: Standard fixtures defined in conftest.py (Composer 2 implements with real code):
+> CONTENT: Standard fixtures defined in conftest.py (see apps/api/tests/conftest.py):
 > 1. `app` fixture (scope=session): create FastAPI test app, apply migrations
 > 2. `client` fixture (scope=function): `httpx.AsyncClient(app=app, base_url="http://test")`
 > 3. `db_session` fixture (scope=function): `AsyncSession` with automatic rollback after test

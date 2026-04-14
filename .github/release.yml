@@ -1,5 +1,4 @@
 # .github/release.yml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Auto-generated release notes configuration. Per spec §26.12 item 364.
 # SECTIONS:
 #   - changelog: configuration for auto-generated GitHub release notes

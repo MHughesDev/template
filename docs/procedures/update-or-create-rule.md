@@ -1,6 +1,5 @@
 # docs/procedures/update-or-create-rule.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Skill: skills/agent-ops/rule-refinement-after-mistakes.md -->
 <!-- - Skill: skills/repo-governance/authoring-cursor-rules.md -->

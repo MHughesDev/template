@@ -1,6 +1,5 @@
 # docs/adr/template.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 > PURPOSE: ADR template for new decisions. Per spec §26.5 item 159.
 
 ## ADR-NNN: Decision Title

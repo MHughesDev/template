@@ -31,7 +31,6 @@ linked_skills:
 
 # prompts/debugger.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 
 ## Preamble
 

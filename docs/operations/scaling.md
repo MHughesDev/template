@@ -1,6 +1,5 @@
 # docs/operations/scaling.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Optional per spec §26.12 item 401 -->
 
 > PURPOSE: Scaling playbook: horizontal pod autoscaling, workers, cache. Per spec §26.12 item 401.

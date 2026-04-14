@@ -1,6 +1,5 @@
 # skills/repo-governance/repository-hygiene.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/update-documentation.md -->
 

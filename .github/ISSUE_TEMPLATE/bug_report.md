@@ -4,7 +4,6 @@ description: File a bug report
 labels: ["type:bug"]
 ---
 <!-- .github/ISSUE_TEMPLATE/bug_report.md -->
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- Per spec §26.7 item 199 -->
 
 ## Bug Description

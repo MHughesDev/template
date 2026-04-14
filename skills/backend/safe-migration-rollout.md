@@ -1,6 +1,5 @@
 # skills/backend/safe-migration-rollout.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/database-migration.md -->
 <!-- - Related prompt: prompts/migration_author.md -->

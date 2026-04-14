@@ -1,5 +1,4 @@
 # .github/labels.yml
-# BLUEPRINT: Composer 2 implements from this structure
 # PURPOSE: Label definitions for issues and PRs. Used by CI or label-sync tools.
 #          Recommended per spec §26.7 item 205.
 # FORMAT: YAML array of label objects: name, color, description

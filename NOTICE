@@ -1,25 +1,7 @@
 # NOTICE
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Apache-2.0 attribution file. Required when using Apache-2.0 license. Optional with MIT.
-#          Per spec §26.12 item 404. Only include this file if the project uses Apache-2.0 license.
-# SECTIONS:
-#   - Project name and copyright statement
-#   - Third-party attributions (libraries with Apache-2.0 or other licenses requiring attribution)
-#   - NOTICE text as required by Apache License 2.0 Section 4(d)
-# DESIGN DECISIONS:
-#   - This file is pre-populated with the project's own attribution
-#   - Third-party attributions are added as dependencies are added to pyproject.toml
-#   - The initialization agent populates {{PROJECT_NAME}} and {{YEAR}} from idea.md
-#   - If MIT license is chosen instead, this file should be removed
+# Optional third-party attributions (Apache-2.0 projects). MIT-only repos may omit this file.
 
-{{PROJECT_NAME}}
-Copyright {{YEAR}} {{COPYRIGHT_HOLDER}}
+Template Repository
+Copyright 2026 Template Contributors
 
-This product includes software developed by the following third parties:
-[Third-party attributions are added here as the project grows]
-
----
-
-This software is licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+This product may include software developed by third parties; add attributions here as dependencies require.

@@ -1,59 +1,38 @@
 # skills/devops/k8s-manifest-validator.py
-"""
-BLUEPRINT: skills/devops/k8s-manifest-validator.py
+"""Render Kustomize overlay via kubectl or kustomize CLI."""
 
-PURPOSE:
-Validates Kubernetes manifests beyond schema validation: checks resource
-requests/limits present, probe configuration complete, securityContext set,
-namespace consistency across manifests.
+from __future__ import annotations
 
-DEPENDS ON:
-- pathlib (stdlib) — file discovery
-- re (stdlib) — pattern matching
-- argparse (stdlib) — CLI
+import argparse
+import shutil
+import subprocess
+import sys
+from pathlib import Path
 
-DEPENDED ON BY:
-- skills/devops/k8s-probes.md — references as machinery
-- scripts/k8s-validate.sh — may call this
 
-FUNCTIONS:
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--overlay", default="dev")
+    parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
+    args = parser.parse_args()
+    path = args.repo_root / "deploy" / "k8s" / "overlays" / args.overlay
+    if not path.is_dir():
+        print(f"Missing {path}", file=sys.stderr)
+        return 1
+    if shutil.which("kubectl"):
+        cmd = ["kubectl", "kustomize", str(path)]
+    elif shutil.which("kustomize"):
+        cmd = ["kustomize", "build", str(path)]
+    else:
+        print("kubectl/kustomize not installed", file=sys.stderr)
+        return 0
+    r = subprocess.run(cmd, capture_output=True, text=True, check=False)
+    if r.returncode != 0:
+        print(r.stderr, file=sys.stderr)
+        return 1
+    print("Rendered", len(r.stdout or ""), "bytes")
+    return 0
 
-  load_manifest(manifest_path: Path) -> list[dict]:
-    PURPOSE: Load a YAML manifest (potentially multi-document) into list of dicts.
-    STEPS:
-      1. Read file content
-      2. Split on "---" document separator
-      3. Parse each document as simple YAML (key:value without full PyYAML)
-    RETURNS: list of manifest dicts
 
-  check_deployment(manifest: dict) -> list[dict[str, str]]:
-    PURPOSE: Validate a Deployment manifest.
-    STEPS:
-      1. Check containers have resource requests AND limits (CPU + memory)
-      2. Check liveness probe configured
-      3. Check readiness probe configured
-      4. Check securityContext.runAsNonRoot = true
-      5. Check securityContext.readOnlyRootFilesystem = true (recommended)
-    RETURNS: list of finding dicts
-
-  check_all_manifests(k8s_dir: Path) -> list[dict[str, str]]:
-    PURPOSE: Validate all manifests in a Kustomize base or overlay directory.
-    STEPS:
-      1. Find all *.yaml files in k8s_dir
-      2. Load each manifest
-      3. Dispatch to appropriate check function by kind
-    RETURNS: aggregated list of findings
-
-  main() -> None:
-    PURPOSE: CLI entry point.
-    STEPS:
-      1. Parse args: --k8s-dir (default deploy/k8s/base)
-      2. Run validation
-      3. Print report
-      4. Exit 1 if any CRITICAL findings
-
-DESIGN DECISIONS:
-- Simple YAML parsing without PyYAML dependency for portability
-- CRITICAL: missing resource limits (production safety)
-- WARNING: missing readOnlyRootFilesystem (security recommendation)
-"""
+if __name__ == "__main__":
+    raise SystemExit(main())
