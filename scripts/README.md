@@ -23,6 +23,7 @@ Table mapping each script to its Make target and purpose:
 | `typecheck.sh` | `make typecheck` | Run mypy --strict |
 | `test.sh` | `make test`, `make test:unit`, `make test:integration`, `make test:smoke` | Run test suite |
 | `migrate.sh` | `make migrate`, `make migrate:create` | Database migrations |
+| `ci-migrate-dry-run.sh` | `make ci-migrate-dry-run` | SQLite migration preview + apply (parity with CI `migrate-dry-run` job) |
 | `docs-check.sh` | `make docs:check` | Check documentation |
 | `docs-generate.sh` | `make docs:generate` | Generate docs from source |
 | `docs-index.sh` | `make docs:index` | Update auto-index block in `docs/README.md` |

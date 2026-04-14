@@ -34,6 +34,7 @@ Run `make help` for the full list. Common targets:
 | `make test` | Pytest with coverage |
 | `make test-unit` / `make test:unit` | Unit tests only |
 | `make migrate` | Alembic upgrade to head |
+| `make ci-migrate-dry-run` | Same SQLite migration checks as CI (`migrate-dry-run` job) — run before pushing migration PRs |
 | `make migrate:create MESSAGE="..."` / `make migrate:create` | New revision (MESSAGE required) |
 | `make docker-up` / `make docker:up` | `docker compose up -d` |
 | `make docker-down` / `make docker:down` | `docker compose down` |

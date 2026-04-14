@@ -35,7 +35,8 @@ Ordered list of all procedure files with one-line descriptions and links. Ordere
 - [update-or-create-skill.md](update-or-create-skill.md) — Skill lifecycle management
 - [update-or-create-rule.md](update-or-create-rule.md) — Rule lifecycle management
 - [dependency-upgrade.md](dependency-upgrade.md) — Safe dependency upgrades with CI evidence
-- [database-migration.md](database-migration.md) — Alembic migrations with rollback notes
+- [database-migration.md](database-migration.md) — Alembic migrations (SQLite + PostgreSQL; CI parity)
+- [ci-failure-triage.md](ci-failure-triage.md) — Classify CI failures and run local parity commands
 - [release-preparation.md](release-preparation.md) — Changelog, version bump, tag, verification
 - [incident-rollback.md](incident-rollback.md) — Rollback during production incident
 

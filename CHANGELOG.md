@@ -8,6 +8,7 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Added
 
+- **`make ci-migrate-dry-run`** (`scripts/ci-migrate-dry-run.sh`) — local parity with CI `migrate-dry-run` (SQLite SQL preview + `make migrate`); see `docs/procedures/database-migration.md` and `docs/procedures/ci-failure-triage.md`.
 - **`example/` teaching module** — full CRUD under `/api/v1/examples` with repository/service layers, Alembic `examples` table, and integration tests; `make scaffold:module` now runs `module-scaffolder.py` with full file set; `idea-to-queue.sh` seeds from idea.md §12; `profile-resolver.py` supports `--profile` and `--apply`; skill machinery Make targets (`secret-scan`, `test-scaffold`, `env-sync`, `coverage-ratchet`, `rule-lint`, `adr-index`); regenerated `requirements.lock`; `CODEBASE_SUMMARY.md` full regeneration; exception unit tests (`test_exceptions.py`).
 - K8s `deploy/k8s/base/secret.yaml` template for `api-secrets`; structured logging (`logging_config.py`); `RequestContext` dependency; auth repositories; OpenAPI metadata; `make fmt-check`, `skill-docs-gen`, `codebase-summary`; CI jobs for migration SQL dry-run and implementation-plan inventory; `docs/procedures/add-make-target.md`; `requirements.lock` placeholder; expanded `repo_self_audit` prompt checks; wired queue graph/analyze to `queue-intelligence.py`.
 - Makefile aliases for colon-style targets documented in `spec/spec.md` (e.g. `make skills:list`, `make queue:peek`, `make audit:self`) delegating to existing hyphenated targets.
@@ -26,12 +27,13 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 - Docker image build: `.dockerignore` had excluded `*.md`, so `COPY README.md` in `apps/api/Dockerfile` failed; root `README.md` is now un-ignored for hatchling (`readme = "README.md"` in `pyproject.toml`).
 - **Examples API:** list/get/update/delete are scoped to the authenticated user via `owner_user_id` (fixes `test_list_examples_empty` on shared Postgres CI DBs). Alembic migration `c2d3e4f5a6b7_add_example_owner_user_id`.
 - **CI:** Trivy action uses tag `v0.33.1` (valid `uses:` ref); CD workflow logs into GHCR before push; dependency-review job uses `continue-on-error` when Dependency graph is disabled.
+- **Migrations (SQLite):** revision `c2d3e4f5a6b7` uses `batch_alter_table(..., copy_from=...)` on SQLite so `alembic upgrade --sql` and online apply both succeed (fixes migrate-dry-run when adding FKs).
 
 ### Removed
 
 ### Security
 
-- Container scanning: API runner stage runs `apt-get upgrade -y` after installing `curl` so Debian base packages match security updates; Security workflow Trivy step uses `trivy.yaml`, `.trivyignore`, `exit-code: 1`, and pins `aquasecurity/trivy-action@0.33.1`. Transitive PyPI `ecdsa` CVE-2024-23342 is documented in `docs/security/accepted-risks.md` and listed in `.trivyignore` (no upstream fix for pure-Python timing class; see GHSA).
+- Container scanning: API runner stage runs `apt-get upgrade -y` after installing `curl` so Debian base packages match security updates; Security workflow Trivy step uses `trivy.yaml`, `.trivyignore`, `exit-code: 1`, and pins `aquasecurity/trivy-action@v0.33.1`. Transitive PyPI `ecdsa` CVE-2024-23342 is documented in `docs/security/accepted-risks.md` and listed in `.trivyignore` (no upstream fix for pure-Python timing class; see GHSA).
 
 ### Deprecated
 
