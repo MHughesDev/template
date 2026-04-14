@@ -18,14 +18,14 @@ Table mapping each script to its Make target and purpose:
 | `lint.sh` | `make lint` | Run ruff lint checks |
 | `fmt.sh` | `make fmt` | Apply ruff formatting |
 | `fmt-check.sh` | `make fmt-check` | Verify ruff formatting (CI) |
-| `codebase-summary.sh` | `make codebase-summary` | Append snapshot to CODEBASE_SUMMARY.md |
+| `codebase-summary.sh` | `make codebase-summary` | Regenerate `CODEBASE_SUMMARY.md` |
 | `implementation-plan-ci.sh` | (CI) | Verify IMPLEMENTATION_PLAN checked paths exist |
 | `typecheck.sh` | `make typecheck` | Run mypy --strict |
 | `test.sh` | `make test`, `make test:unit`, `make test:integration`, `make test:smoke` | Run test suite |
 | `migrate.sh` | `make migrate`, `make migrate:create` | Database migrations |
 | `docs-check.sh` | `make docs:check` | Check documentation |
 | `docs-generate.sh` | `make docs:generate` | Generate docs from source |
-| `docs-index.sh` | `make docs:index` | Regenerate doc index |
+| `docs-index.sh` | `make docs:index` | Update auto-index block in `docs/README.md` |
 | `queue-peek.sh` | `make queue:peek` | Read top queue item |
 | `queue-validate.sh` | `make queue:validate` | Validate queue schema |
 | `queue-archive.sh` | `make queue:archive` | Move row to archive |
@@ -57,3 +57,14 @@ Table mapping each script to its Make target and purpose:
 | `queue_archive.py` | (via `queue-archive.sh`) | Move queue row to archive |
 | `repo_self_audit.py` | (via `audit-self.sh`) | Lightweight audit runner |
 | `inventory_check.py` | (via `inventory-check.sh`) | Check IMPLEMENTATION_PLAN paths |
+
+Skill machinery (invoked via Make, not shell wrappers):
+
+| Skill | Make Target |
+|-------|-------------|
+| `skills/security/secret-scanner.py` | `make secret-scan` / `make secret:scan` |
+| `skills/testing/test-scaffolder.py` | `make test-scaffold MODULE=…` |
+| `skills/backend/env-var-sync.py` | `make env-sync` |
+| `skills/testing/coverage-ratchet.py` | `make coverage-ratchet` |
+| `skills/repo-governance/rule-linter.py` | `make rule-lint` |
+| `skills/repo-governance/adr-index-generator.py` | `make adr-index` |

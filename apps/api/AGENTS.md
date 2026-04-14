@@ -15,7 +15,7 @@ Each bounded context under **`apps/api/src/<context>/`** should include:
 | `service.py` | Domain logic and orchestration |
 | `dependencies.py` | `Depends()` factories (optional per module) |
 
-Contexts today: **`health/`**, **`auth/`**, **`tenancy/`**.
+Contexts today: **`health/`**, **`auth/`**, **`tenancy/`**, **`example/`** (teaching module — remove or replace during project init).
 
 ## Routers
 

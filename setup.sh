@@ -34,9 +34,9 @@ fi
 # shellcheck source=/dev/null
 source .venv/bin/activate
 python -m pip install --upgrade pip
-# For reproducible installs after dependency lock is generated: pip install -r requirements.lock
 if [[ -f requirements.lock ]]; then
   pip install -r requirements.lock
+  pip install -e . --no-deps
 else
   pip install -e ".[dev]"
 fi

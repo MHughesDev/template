@@ -12,7 +12,7 @@ Detailed local development setup. All Make/Task targets documented with expected
 ## Environment
 
 1. **Python:** 3.12+ (`python --version`).
-2. **Virtual env:** One-shot bootstrap: `./setup.sh` (creates `.venv`, installs `pip install -e ".[dev]"`, copies `.env` from `.env.example`, runs `make migrate`, lint, fmt, typecheck, test).
+2. **Virtual env:** One-shot bootstrap: `./setup.sh` (creates `.venv`, installs from `requirements.lock` when present then `pip install -e . --no-deps`, else `pip install -e ".[dev]"`, copies `.env` from `.env.example`, runs `make migrate`, lint, fmt, typecheck, test).
 3. **Environment file:** Copy `cp .env.example .env` and set `JWT_SECRET_KEY` to a strong value before any shared or production use. All settings are read through `apps/api/src/config.py` only.
 
 ## Running the API
@@ -45,6 +45,13 @@ Run `make help` for the full list. Common targets:
 | `make docs-generate` / `make docs:generate` | Regenerate generated docs |
 | `make idea-validate` / `make idea:validate` | Validate `idea.md` placeholders |
 | `make security-scan` / `make security:scan` | Bandit + pip-audit |
+| `make secret-scan` / `make secret:scan` | Heuristic secret-pattern scan |
+| `make env-sync` / `make env:sync` | Compare `.env.example` with `Settings` fields |
+| `make test-scaffold MODULE=…` / `make test:scaffold` | Print pytest stubs for a router |
+| `make coverage-ratchet` / `make coverage:ratchet` | Compare `coverage.xml` to policy floor |
+| `make rule-lint` / `make rule:lint` | Lint `.cursor/rules` front matter |
+| `make adr-index` / `make adr:index` | Regenerate `docs/adr/README.md` |
+| `make codebase-summary` | Regenerate `CODEBASE_SUMMARY.md` |
 
 Colon forms (e.g. `make queue:peek`) are aliases to the hyphenated targets in the root `Makefile`.
 

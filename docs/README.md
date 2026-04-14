@@ -38,3 +38,32 @@ Ordered list of every docs/ subdirectory with description and link to its README
 **Optional profiles:**
 - [optional-clients/](optional-clients/web.md) — Web and mobile profile documentation
 - [troubleshooting/](troubleshooting/README.md) — Common issues and solutions
+
+<!-- AUTO_INDEX_START -->
+
+## Auto-generated index
+
+_Machine listing of top-level docs paths — see sections above for curated descriptions._
+
+- [adr/](adr/README.md)
+- [agents/](agents/README.md)
+- [api/](api/README.md)
+- [architecture/](architecture/README.md)
+- [development/](development/README.md)
+- `generated/`
+- [getting-started/](getting-started/README.md)
+- [glossary](glossary.md)
+- [operations/](operations/README.md)
+- `optional-clients/`
+- [procedures/](procedures/README.md)
+- [prompts/](prompts/README.md)
+- [quality/](quality/README.md)
+- `queue/`
+- [release/](release/README.md)
+- [repo-governance/](repo-governance/README.md)
+- [runbooks/](runbooks/README.md)
+- [security/](security/README.md)
+- [troubleshooting/](troubleshooting/README.md)
+
+<!-- AUTO_INDEX_END -->
+
