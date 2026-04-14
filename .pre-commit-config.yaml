@@ -1,0 +1,60 @@
+# .pre-commit-config.yaml
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Local pre-commit hooks that run before every git commit. Enforces formatting,
+#          linting, secret detection, YAML validation, and whitespace hygiene locally
+#          before CI catches issues. Per spec §26.12 item 363.
+# SECTIONS:
+#   - repos: list of hook sources with specific revisions
+#   - pre-commit-hooks: common checks (whitespace, file endings, large files, merge conflicts)
+#   - ruff: lint + format checks (same as CI)
+#   - detect-secrets: prevent secrets from being committed
+#   - check-yaml: validate YAML syntax
+# DESIGN DECISIONS:
+#   - Pin all hook repos to specific revisions for reproducibility
+#   - ruff replaces flake8, isort, and black — no duplicate hooks
+#   - detect-secrets uses baseline file (tracked in repo) to reduce false positives
+#   - Hooks run on files staged for commit, not the entire repo
+#   - Run `pre-commit install` after cloning to activate; `pre-commit run --all-files` to check all
+
+repos:
+  # Common file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0  # Pin to specific version — Composer 2 updates to latest
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-toml
+      - id: check-json
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: no-commit-to-branch
+        args: [--branch=main]
+
+  # Ruff: lint + format (replaces flake8, isort, black)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.0  # Pin to specific version — Composer 2 updates to latest
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # Secret detection: prevent credentials from being committed
+  # DESIGN: Run `detect-secrets scan > .secrets.baseline` to create/update baseline
+  # DESIGN: Commit .secrets.baseline to track accepted false positives
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0  # Pin to specific version — Composer 2 updates to latest
+    hooks:
+      - id: detect-secrets
+        args: [--baseline, .secrets.baseline]
+        exclude: |
+          (?x)^(
+            \.env\.example|
+            PYTHON_PROCEDURES\.md
+          )$

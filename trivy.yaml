@@ -1,0 +1,41 @@
+# trivy.yaml
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Trivy container/filesystem scanner configuration. Defines severity thresholds,
+#          ignore rules, and scan targets. Per spec §26.12 item 379.
+#          Referenced by scripts/image-scan.sh and .github/workflows/security.yml.
+# SECTIONS:
+#   - severity: vulnerability severity levels to report
+#   - exit-code: fail on HIGH/CRITICAL
+#   - ignore-unfixed: whether to skip vulnerabilities without available fixes
+#   - skip-dirs: directories to exclude from filesystem scans
+#   - timeout: scan timeout
+# DESIGN DECISIONS:
+#   - exit-code: 1 — non-zero exit on HIGH or CRITICAL vulnerabilities (blocks CI)
+#   - severity: HIGH,CRITICAL — MEDIUM and LOW are reported but do not fail
+#   - ignore-unfixed: false — report all findings; unfixed ones documented in accepted-risks.md
+#   - .trivyignore lists specific CVEs accepted via docs/security/accepted-risks.md process
+
+severity:
+  - HIGH
+  - CRITICAL
+
+exit-code: 1
+
+# Do not ignore unfixed — surface all findings; accept deliberately via .trivyignore
+ignore-unfixed: false
+
+# Directories to skip during filesystem scan
+skip-dirs:
+  - .venv
+  - venv
+  - node_modules
+  - .git
+
+# Scan timeout
+timeout: 10m
+
+# Output format for CI artifact upload
+format: sarif
+
+# Ignorefile location
+ignorefile: .trivyignore

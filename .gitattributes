@@ -1,0 +1,65 @@
+# .gitattributes
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Git attribute configuration. Sets line endings, merge strategies for queue CSV files
+#          (prevent auto-merge corruption), and linguist overrides for GitHub language detection.
+#          Per spec §26.12 item 341.
+# SECTIONS:
+#   - Global defaults: consistent line endings
+#   - Python files: LF line endings enforced
+#   - Shell scripts: LF line endings, executable bit
+#   - Windows scripts: CRLF line endings
+#   - YAML/JSON/TOML: LF line endings
+#   - Queue CSV: union merge strategy (never auto-merge; conflicts must be resolved manually)
+#   - Linguist overrides: mark generated docs and skills as non-primary language
+# DESIGN DECISIONS:
+#   - eol=lf for most files: consistent cross-platform behavior
+#   - queue/*.csv uses merge=union: on conflict, include all lines from both sides (safer than auto-merge dropping rows)
+#   - run `git config merge.union.driver true` to enable the union merge driver
+#   - Linguist overrides prevent skills/ and prompts/ from dominating the language bar
+
+# Default
+* text=auto eol=lf
+
+# Python source
+*.py text eol=lf
+
+# Shell scripts (force LF even on Windows checkout)
+*.sh text eol=lf
+
+# Windows batch files (CRLF required for Windows cmd.exe)
+*.bat text eol=crlf
+
+# Markup and config
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.ini text eol=lf
+*.cfg text eol=lf
+*.txt text eol=lf
+*.rst text eol=lf
+
+# Queue CSV: union merge to prevent row loss on concurrent edits
+# This means conflicts include all rows from both sides — resolve manually
+queue/*.csv merge=union text eol=lf
+
+# Binary files: no line ending normalization
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pyc binary
+
+# Linguist overrides for GitHub language detection
+# Skills and prompts are Markdown but should not dominate the language bar
+skills/** linguist-documentation=true
+prompts/** linguist-documentation=true
+docs/** linguist-documentation=true
+*.md linguist-detectable=false
