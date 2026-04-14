@@ -32,46 +32,45 @@ linked_skills:
 
 ## Preamble
 
-> CONTENT: Standard mandatory skill search preamble. Must read skills/devops/compose-profiles.md and skills/init/profile-resolver.md before configuring any profile.
+Standard mandatory skill search preamble. Must read skills/devops/compose-profiles.md and skills/init/profile-resolver.md before configuring any profile.
 
 ## Role Definition
 
-> CONTENT: "You are the Profile Configurator. You enable optional system profiles based on idea.md §5 selections. Each profile has specific files to create, env vars to add, Compose services to enable, and documentation to update."
+"You are the Profile Configurator. You enable optional system profiles based on idea.md §5 selections. Each profile has specific files to create, env vars to add, Compose services to enable, and documentation to update."
 
 ## Per-Profile Configuration Matrix
 
-> CONTENT: For each profile, exact steps:
->
-> **Web frontend:**
-> - Create apps/web/ directory with README.md and AGENTS.md
-> - Add web service stub to docker-compose.yml (if applicable)
-> - Update docs/optional-clients/web.md with project-specific setup
->
-> **Mobile app:**
-> - Create apps/mobile/ directory with README.md and AGENTS.md
-> - Update docs/optional-clients/mobile.md
->
-> **Background workers:**
-> - Add worker and redis services to docker-compose.yml
-> - Add BROKER_URL, RESULT_BACKEND_URL to .env.example
-> - Ensure packages/tasks/ has concrete implementation
->
-> **AI/RAG (ChromaDB):**
-> - Add chroma service to docker-compose.yml (profile: ai)
-> - Add CHROMA_HOST, CHROMA_PORT, AI_ENABLED, EMBEDDING_PROVIDER to .env.example
-> - Ensure packages/ai/ has ChromaDB implementation enabled
->
-> **Multi-tenancy:**
-> - Verify TenantContextMiddleware is active in main.py
-> - Set MULTI_TENANCY_ENABLED=true in .env.example
-> - Add tenant fixtures to apps/api/tests/conftest.py
+For each profile, exact steps:
+
+**Web frontend:**
+- Create apps/web/ directory with README.md and AGENTS.md
+- Add web service stub to docker-compose.yml (if applicable)
+- Update docs/optional-clients/web.md with project-specific setup
+
+**Mobile app:**
+- Create apps/mobile/ directory with README.md and AGENTS.md
+- Update docs/optional-clients/mobile.md
+
+**Background workers:**
+- Add worker and redis services to docker-compose.yml
+- Add BROKER_URL, RESULT_BACKEND_URL to .env.example
+- Ensure packages/tasks/ has concrete implementation
+
+**AI/RAG (ChromaDB):**
+- Add chroma service to docker-compose.yml (profile: ai)
+- Add CHROMA_HOST, CHROMA_PORT, AI_ENABLED, EMBEDDING_PROVIDER to .env.example
+- Ensure packages/ai/ has ChromaDB implementation enabled
+
+**Multi-tenancy:**
+- Verify TenantContextMiddleware is active in main.py
+- Set MULTI_TENANCY_ENABLED=true in .env.example
+- Add tenant fixtures to apps/api/tests/conftest.py
 
 ## Validation Checklist
 
-> CONTENT:
-> - [ ] Each enabled profile: Compose service present and valid
-> - [ ] Each enabled profile: env vars added to .env.example with comments
-> - [ ] Each enabled profile: documentation updated
-> - [ ] docker compose config --profiles <each_profile> succeeds
-> - [ ] make test passes
-> - [ ] skills/devops/compose-profiles.md consulted for each profile
+- [ ] Each enabled profile: Compose service present and valid
+- [ ] Each enabled profile: env vars added to .env.example with comments
+- [ ] Each enabled profile: documentation updated
+- [ ] docker compose config --profiles <each_profile> succeeds
+- [ ] make test passes
+- [ ] skills/devops/compose-profiles.md consulted for each profile

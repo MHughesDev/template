@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Source: generated from FastAPI OpenAPI (make docs:generate) -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** API endpoint catalog. Auto-generated or manually maintained list of all routes with request/response schemas.
 
 ## Overview
 
-> CONTENT: API documentation for endpoints. This file is generated from FastAPI OpenAPI spec and exceptions.py. See docs/development/docs-generation.md for how to regenerate.
+API endpoint catalog. Auto-generated or manually maintained list of all routes with request/response schemas. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

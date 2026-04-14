@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/operations/README.md -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Rollback and forward-fix decision tree. When to rollback vs fix-forward, procedures for each (§2).
 
 ## Overview
 
-> CONTENT: Operations documentation covering rollback. Includes commands, troubleshooting, and relevant Make targets.
+Rollback and forward-fix decision tree. When to rollback vs fix-forward, procedures for each (§2). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

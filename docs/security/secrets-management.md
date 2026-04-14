@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/security/README.md, AGENTS.md §11 (Escalation) -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** How secrets are managed: sourcing (env vars only), rotation procedures, CI/CD injection, never in code.
 
 ## Overview
 
-> CONTENT: Security documentation covering secrets-management. Per spec §26.5, this file must include the sections defined in the spec's Structure column.
+How secrets are managed: sourcing (env vars only), rotation procedures, CI/CD injection, never in code. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

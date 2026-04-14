@@ -4,42 +4,41 @@
 <!-- - Profile: optional web/mobile profile -->
 <!-- - Related docs: docs/optional-clients/ -->
 
-> PURPOSE: [OPTIONAL] Frontend/mobile skill. Enable the web or mobile profile before relying on this.
+**Purpose:** [OPTIONAL] Frontend/mobile skill. Enable the web or mobile profile before relying on this.
 
 ## Purpose
-> CONTENT: What this frontend skill enables.
+What this frontend skill enables.
 
 ## When to Invoke
-> CONTENT: When web or mobile profile is active.
+When web or mobile profile is active.
 
 ## Prerequisites
-> CONTENT: Profile enabled, Node.js/Expo installed.
+Profile enabled, Node.js/Expo installed.
 
 ## Relevant Files/Areas
-> CONTENT: apps/web/ or apps/mobile/, docs/optional-clients/
+apps/web/ or apps/mobile/, docs/optional-clients/
 
 ## Step-by-Step Method
-> CONTENT: Generate client from OpenAPI; import typed methods; map errors to UI states.
+Generate client from OpenAPI; import typed methods; map errors to UI states.
 
 ## Command Examples
-> CONTENT: `openapi-generator-cli generate -i http://localhost:8000/openapi.json ...`
+`openapi-generator-cli generate -i http://localhost:8000/openapi.json ...`
 
 ## Validation Checklist
-> CONTENT:
-> - [ ] Frontend/mobile connects to API
-> - [ ] Auth flow works end-to-end
+- [ ] Frontend/mobile connects to API
+- [ ] Auth flow works end-to-end
 
 ## Common Failure Modes
-> CONTENT: CORS configuration, auth token storage.
+CORS configuration, auth token storage.
 
 ## Handoff Expectations
-> CONTENT: Frontend connected, tested.
+Frontend connected, tested.
 
 ## Related Procedures
-> CONTENT: docs/procedures/add-optional-app-profile.md
+docs/procedures/add-optional-app-profile.md
 
 ## Related Prompts
-> CONTENT: prompts/profile_configurator.md
+prompts/profile_configurator.md
 
 ## Related Rules
-> CONTENT: .cursor/rules/security.md
+.cursor/rules/security.md

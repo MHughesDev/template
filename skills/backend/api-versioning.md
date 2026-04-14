@@ -3,57 +3,69 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedure: docs/procedures/implement-change.md -->
 
-> PURPOSE: Operational skill for this topic. Follow the sections below, AGENTS.md, and PYTHON_PROCEDURES.md.
+**Purpose:** How to version API endpoints: URL prefix strategy, deprecation headers, migration path documentation.
 
 ## Purpose
 
-> CONTENT: One paragraph describing what this skill enables agents to do in the api-versioning domain. Reference relevant spec sections and link to FastAPI/SQLAlchemy/K8s documentation as appropriate.
+How to version API endpoints: URL prefix strategy, deprecation headers, migration path documentation.
 
 ## When to Invoke
 
-> CONTENT: Specific trigger conditions for invoking this skill. Not "when you need to..." but concrete events: "When adding a new health endpoint", "When configuring a new env var", etc.
+- You are changing FastAPI modules, configuration, jobs, or API behavior described in this skill.
+- You are implementing or testing a change that matches the summary above.
+- You need a checklist before merging or handing off work in this area.
 
 ## Prerequisites
 
-> CONTENT: List of required reads and tool installations before starting.
+- Read root `AGENTS.md` and complete the mandatory skill search (`make skills-list` or `skills/README.md`).
+- Install dev dependencies: `pip install -e ".[dev]"` (or use `./setup.sh`).
 
 ## Relevant Files/Areas
 
-> CONTENT: Specific file paths and modules involved in this skill.
+- This skill file and `skills/README.md`
+- `docs/procedures/implement-change.md` and `docs/procedures/validate-change.md`
+- `apps/api/src/`
+- `packages/tasks/`
+- `apps/api/tests/`
 
 ## Step-by-Step Method
 
-> CONTENT: Numbered, actionable steps. Use exact make targets. Reference PYTHON_PROCEDURES.md for Python-specific patterns. Include code examples for non-obvious patterns.
+1. Read the **Purpose** and **When to Invoke** sections above — confirm this skill applies.
+2. Inspect the code and docs listed under **Relevant Files/Areas**.
+3. Apply the change in small commits; keep scope aligned with `AGENTS.md` §6.
+4. Run `make lint`, `make fmt`, `make typecheck`, and `make test` (add focused pytest if needed).
+5. Update user-facing or operator docs if behavior changed.
 
 ## Command Examples
 
-> CONTENT: Exact make targets and CLI commands for this skill.
+- `make lint` — Ruff
+- `make fmt` — format check
+- `make typecheck` — mypy
+- `make test` — full suite
 
 ## Validation Checklist
 
-> CONTENT:
-> - [ ] Primary functionality implemented and tested
-> - [ ] make lint passes
-> - [ ] make typecheck passes
-> - [ ] make test passes
-> - [ ] Docs updated if applicable
+- [ ] Change matches the skill summary and acceptance criteria for the task
+- [ ] `make lint`, `make fmt`, `make typecheck`, and `make test` pass
+- [ ] Docs or queue notes updated if required by the change
 
 ## Common Failure Modes
 
-> CONTENT: 2-4 common failure modes with root cause and fix.
+- **Scope creep**: fix unrelated issues in the same PR — split work per `AGENTS.md` §6.
+- **Skipping validation**: run the full `make` checks above before handoff.
 
 ## Handoff Expectations
 
-> CONTENT: What the next agent/human needs after this skill completes.
+- List files changed, commands run with key output, risks, and follow-ups (see `skills/agent-ops/implementation-handoff.md`).
 
 ## Related Procedures
 
-> CONTENT: docs/procedures/implement-change.md, docs/procedures/validate-change.md
+`docs/procedures/implement-change.md`, `docs/procedures/validate-change.md`
 
 ## Related Prompts
 
-> CONTENT: prompts/implementation_agent.md
+`prompts/implementation_agent.md`, `prompts/task_planner.md`
 
 ## Related Rules
 
-> CONTENT: .cursor/rules/apps-api.md, PYTHON_PROCEDURES.md
+`.cursor/rules/global.md`, `PYTHON_PROCEDURES.md` where applicable

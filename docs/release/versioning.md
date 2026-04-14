@@ -4,4 +4,8 @@
 <!-- - Referenced by: docs/release/README.md -->
 <!-- - Per spec §26.5 items 174-177 -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Versioning strategy: semver, when to bump major/minor/patch, pre-release conventions.
+
+## Overview
+
+Versioning strategy: semver, when to bump major/minor/patch, pre-release conventions. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

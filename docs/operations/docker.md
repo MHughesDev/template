@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/operations/README.md -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Docker operations: building images, running containers, Compose profiles, troubleshooting.
 
 ## Overview
 
-> CONTENT: Operations documentation covering docker. Includes commands, troubleshooting, and relevant Make targets.
+Docker operations: building images, running containers, Compose profiles, troubleshooting. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

@@ -2,15 +2,15 @@
 
 <!-- Per spec §26.11 item 255 -->
 
-> PURPOSE: Scripts index. Documents each script, its corresponding Make target, and expected behavior. Per spec §26.11 item 255.
+**Purpose:** Scripts index. Documents each script, its corresponding Make target, and expected behavior. Per spec §26.11 item 255.
 
 ## Convention
 
-> CONTENT: Every script: `#!/usr/bin/env bash`, `set -euo pipefail`, executable (`chmod +x`). Scripts are the execution layer; Makefile is the interface layer. Never call scripts directly — use `make <target>`.
+Every script: `#!/usr/bin/env bash`, `set -euo pipefail`, executable (`chmod +x`). Scripts are the execution layer; Makefile is the interface layer. Never call scripts directly — use `make <target>`.
 
 ## Script Index
 
-> CONTENT: Table mapping each script to its Make target and purpose:
+Table mapping each script to its Make target and purpose:
 
 | Script | Make Target | Purpose |
 |--------|------------|---------|

@@ -8,9 +8,13 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Added
 
+- Makefile aliases for colon-style targets documented in `spec/spec.md` (e.g. `make skills:list`, `make queue:peek`, `make audit:self`) delegating to existing hyphenated targets.
+
 ### Changed
 
 - Consolidated open Dependabot updates: GitHub Actions (checkout, stale, docker/build-push-action, setup-buildx-action), API Docker base image to Python 3.14-slim, and Python dependency floors in `pyproject.toml` (asyncpg, bandit, email-validator, pydantic-settings, pytest-cov).
+- Documentation and skills: removed blueprint-style `> PURPOSE:` / `> CONTENT:` blockquotes in favor of normal Markdown; filled stub skills from `spec/spec.md` summaries; expanded `docs/development/` guides (local setup, env vars, git workflow, testing, modules).
+- Added maintenance scripts: `scripts/convert-blueprint-markdown.py`, `scripts/enrich-docs-from-spec.py`, `scripts/enrich-skills-from-spec.py` for future bulk doc alignment.
 
 ### Fixed
 

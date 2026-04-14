@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/security/README.md, AGENTS.md §11 (Escalation) -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Incident response plan: classification, evidence capture, communication, remediation, post-incident (§2).
 
 ## Overview
 
-> CONTENT: Security documentation covering incident-response. Per spec §26.5, this file must include the sections defined in the spec's Structure column.
+Incident response plan: classification, evidence capture, communication, remediation, post-incident (§2). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

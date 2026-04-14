@@ -4,43 +4,70 @@
 <!-- - Related procedure: docs/procedures/validate-change.md -->
 <!-- - Related docs: docs/security/README.md -->
 
-> PURPOSE: Operational skill for this topic. Follow the sections below, AGENTS.md, and PYTHON_PROCEDURES.md.
+**Purpose:** How to scan container images (Trivy/GitHub): interpret results, fix critical/high, document accepted risks.
 
 ## Purpose
-> CONTENT: One paragraph describing the image-scanning skill and what it enables.
+
+How to scan container images (Trivy/GitHub): interpret results, fix critical/high, document accepted risks.
 
 ## When to Invoke
-> CONTENT: Specific triggers for this security skill.
+
+- You are changing auth, secrets, dependencies, containers, or security documentation.
+- You are implementing or testing a change that matches the summary above.
+- You need a checklist before merging or handing off work in this area.
 
 ## Prerequisites
-> CONTENT: Required reads and tool setup.
+
+- Read root `AGENTS.md` and complete the mandatory skill search (`make skills-list` or `skills/README.md`).
+- Install dev dependencies: `pip install -e ".[dev]"` (or use `./setup.sh`).
+- No secrets in code; use `.env` and `apps/api/src/config.py` only for settings.
 
 ## Relevant Files/Areas
-> CONTENT: Security-relevant file paths.
+
+- This skill file and `skills/README.md`
+- `docs/procedures/implement-change.md` and `docs/procedures/validate-change.md`
+- `docs/security/`
+- `.env.example`
+- `apps/api/src/auth/`
 
 ## Step-by-Step Method
-> CONTENT: Numbered security procedure steps.
+
+1. Read the **Purpose** and **When to Invoke** sections above — confirm this skill applies.
+2. Inspect the code and docs listed under **Relevant Files/Areas**.
+3. Apply the change in small commits; keep scope aligned with `AGENTS.md` §6.
+4. Run `make lint`, `make fmt`, `make typecheck`, and `make test` (add focused pytest if needed).
+5. Update user-facing or operator docs if behavior changed.
 
 ## Command Examples
-> CONTENT: make security:scan and relevant CLI commands.
+
+- `make lint` — Ruff
+- `make fmt` — format check
+- `make typecheck` — mypy
+- `make test` — full suite
 
 ## Validation Checklist
-> CONTENT:
-> - [ ] Security check complete
-> - [ ] Findings documented
-> - [ ] Accepted risks in docs/security/accepted-risks.md
+
+- [ ] Change matches the skill summary and acceptance criteria for the task
+- [ ] `make lint`, `make fmt`, `make typecheck`, and `make test` pass
+- [ ] Docs or queue notes updated if required by the change
 
 ## Common Failure Modes
-> CONTENT: Common security mistakes and fixes.
+
+- **Scope creep**: fix unrelated issues in the same PR — split work per `AGENTS.md` §6.
+- **Skipping validation**: run the full `make` checks above before handoff.
 
 ## Handoff Expectations
-> CONTENT: Security report and findings documented.
+
+- List files changed, commands run with key output, risks, and follow-ups (see `skills/agent-ops/implementation-handoff.md`).
 
 ## Related Procedures
-> CONTENT: docs/procedures/validate-change.md, docs/security/incident-response.md
+
+`docs/procedures/implement-change.md`, `docs/procedures/validate-change.md`
 
 ## Related Prompts
-> CONTENT: prompts/security_review_agent.md
+
+`prompts/implementation_agent.md`, `prompts/task_planner.md`
 
 ## Related Rules
-> CONTENT: .cursor/rules/security.md
+
+`.cursor/rules/global.md`, `PYTHON_PROCEDURES.md` where applicable

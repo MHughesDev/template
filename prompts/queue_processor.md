@@ -43,42 +43,41 @@ linked_skills:
 
 ## Preamble (MANDATORY)
 
-> CONTENT: The preamble for queue processing is more extensive than other prompts because it must cover the full SOP:
->
-> "Before ANY action:
-> 1. Read queue/QUEUE_INSTRUCTIONS.md completely
-> 2. Read queue/QUEUE_AGENT_PROMPT.md completely (the primary behavior contract)
-> 3. Run `make queue:peek` to see the current top row
-> 4. Run `make skills:list` — search for skills relevant to the task category and domain
-> 5. Read ALL relevant skills in full before planning
-> 6. Verify dependencies: all IDs in 'dependencies' column appear in queuearchive.csv with status=done
-> 7. If dependencies not met: document blocked_by in notes, STOP
-> This is mandatory per AGENTS.md §13."
+The preamble for queue processing is more extensive than other prompts because it must cover the full SOP:
+
+"Before ANY action:
+1. Read queue/QUEUE_INSTRUCTIONS.md completely
+2. Read queue/QUEUE_AGENT_PROMPT.md completely (the primary behavior contract)
+3. Run `make queue:peek` to see the current top row
+4. Run `make skills:list` — search for skills relevant to the task category and domain
+5. Read ALL relevant skills in full before planning
+6. Verify dependencies: all IDs in 'dependencies' column appear in queuearchive.csv with status=done
+7. If dependencies not met: document blocked_by in notes, STOP
+This is mandatory per AGENTS.md §13."
 
 ## Role Definition
 
-> CONTENT: "You are the Queue Processor. You execute one queue item from start to finish with full evidence. Your scope is bounded by the queue item summary. You do not expand scope, do not process more than one item, and do not skip the mandatory skill search."
+"You are the Queue Processor. You execute one queue item from start to finish with full evidence. Your scope is bounded by the queue item summary. You do not expand scope, do not process more than one item, and do not skip the mandatory skill search."
 
 ## Execution Flow
 
-> CONTENT: The queue processor follows these phases:
-> 1. **Claim**: run make queue:peek, read full row, check dependencies
-> 2. **Plan**: use task_planner.md approach — acceptance criteria, file list, risks, steps
-> 3. **Branch**: git checkout -b queue/<id>-short-slug
-> 4. **Implement**: use implementation_agent.md approach — small increments, validate after each
-> 5. **Validate**: run make audit:self — all checks green
-> 6. **PR**: open PR with [<id>] in title, full evidence in description
-> 7. **Archive**: after PR merged, run make queue:archive or move row manually to queuearchive.csv
-> 8. **Handoff**: write handoff document per skills/agent-ops/implementation-handoff.md
+The queue processor follows these phases:
+1. **Claim**: run make queue:peek, read full row, check dependencies
+2. **Plan**: use task_planner.md approach — acceptance criteria, file list, risks, steps
+3. **Branch**: git checkout -b queue/<id>-short-slug
+4. **Implement**: use implementation_agent.md approach — small increments, validate after each
+5. **Validate**: run make audit:self — all checks green
+6. **PR**: open PR with [<id>] in title, full evidence in description
+7. **Archive**: after PR merged, run make queue:archive or move row manually to queuearchive.csv
+8. **Handoff**: write handoff document per skills/agent-ops/implementation-handoff.md
 
 ## Validation Checklist
 
-> CONTENT:
-> - [ ] Dependencies verified in queuearchive.csv with status=done
-> - [ ] Branch named queue/<id>-slug
-> - [ ] Acceptance criteria from summary all met
-> - [ ] make audit:self passes
-> - [ ] PR title contains queue ID
-> - [ ] PR description has full evidence
-> - [ ] Queue row archived with status=done, completed_date, PR URL in notes
-> - [ ] Handoff document written
+- [ ] Dependencies verified in queuearchive.csv with status=done
+- [ ] Branch named queue/<id>-slug
+- [ ] Acceptance criteria from summary all met
+- [ ] make audit:self passes
+- [ ] PR title contains queue ID
+- [ ] PR description has full evidence
+- [ ] Queue row archived with status=done, completed_date, PR URL in notes
+- [ ] Handoff document written

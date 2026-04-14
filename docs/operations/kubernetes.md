@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/operations/README.md -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Kubernetes operations: manifest rendering, deployment, scaling, monitoring.
 
 ## Overview
 
-> CONTENT: Operations documentation covering kubernetes. Includes commands, troubleshooting, and relevant Make targets.
+Kubernetes operations: manifest rendering, deployment, scaling, monitoring. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
