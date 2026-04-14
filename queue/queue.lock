@@ -1,0 +1,17 @@
+# queue/queue.lock
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Optional mutex file for single-lane queue processing.
+#          Presence = a processor is actively working on the top queue item.
+#          Absence = queue is unclaimed.
+#          Per spec §26.6 item 194.
+# FORMAT: JSON with fields: owner (agent/user id), claimed_at (ISO 8601), branch (branch name), queue_id (item ID)
+# DESIGN DECISIONS:
+#   - Empty file at template initialization (no active processor)
+#   - Agents write this when claiming a queue item (optional but recommended)
+#   - Agents delete this when archiving or releasing a queue item
+#   - Lock is advisory only — does not prevent parallel work in distributed environments
+#   - If lock is stale (agent crashed): human deletes manually and notes in audit.log
+#   - CI: queue:validate checks that lock is valid JSON if file is non-empty
+
+# Current state: No active processor (file is empty JSON = unlocked)
+{}

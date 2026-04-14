@@ -1,0 +1,43 @@
+# .github/CODEOWNERS
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Code ownership for review routing. Per spec §26.7 item 203.
+# FORMAT: path-pattern → @team-or-user (GitHub login or team slug)
+# SECTIONS:
+#   - Default: all files require maintainer review
+#   - queue/: queue maintainers (humans who manage work orchestration)
+#   - .cursor/: platform maintainers (agents and humans who maintain the machine)
+#   - docs/: documentation maintainers
+#   - apps/api/: backend maintainers
+#   - deploy/: infrastructure maintainers
+# DESIGN DECISIONS:
+#   - Placeholders use @{{ORG}}/{{TEAM}} format — filled during initialization
+#   - Root * catch-all ensures no file is unowned
+#   - Scoped ownership reduces review bottlenecks for specialized areas
+
+# Default owners for everything
+* @{{ORG}}/maintainers
+
+# Queue system — humans who manage agent work orchestration
+queue/ @{{ORG}}/queue-maintainers
+
+# Machine control layer — platform maintainers
+.cursor/ @{{ORG}}/platform-maintainers
+AGENTS.md @{{ORG}}/platform-maintainers
+spec/ @{{ORG}}/platform-maintainers
+
+# Documentation — docs maintainers
+docs/ @{{ORG}}/docs-maintainers
+
+# API — backend maintainers
+apps/api/ @{{ORG}}/backend-maintainers
+packages/ @{{ORG}}/backend-maintainers
+
+# Infrastructure — infra maintainers
+deploy/ @{{ORG}}/infra-maintainers
+.github/workflows/ @{{ORG}}/infra-maintainers
+docker-compose.yml @{{ORG}}/infra-maintainers
+
+# Security-sensitive files — security reviewers
+.bandit.yml @{{ORG}}/security-reviewers
+trivy.yaml @{{ORG}}/security-reviewers
+docs/security/ @{{ORG}}/security-reviewers

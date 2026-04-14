@@ -1,0 +1,40 @@
+# .github/actions/docker-build/action.yml
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Composite action: Docker build with layer caching.
+#          Optional per spec §26.12 item 390.
+# SECTIONS:
+#   - Inputs: image-name, dockerfile, context, build-args
+#   - Steps: setup Buildx, login to registry, cache setup, build and push
+
+name: Docker Build with Cache
+description: Build Docker image with layer caching via GitHub Actions cache
+
+inputs:
+  image-name:
+    description: Full image name with registry (e.g., ghcr.io/org/repo)
+    required: true
+  tag:
+    description: Image tag
+    default: latest
+    required: false
+  dockerfile:
+    description: Path to Dockerfile
+    default: apps/api/Dockerfile
+    required: false
+  context:
+    description: Docker build context
+    default: apps/api
+    required: false
+
+runs:
+  using: composite
+  steps:
+    # STEP 1: Setup Docker Buildx
+    # uses: docker/setup-buildx-action
+    # STEP 2: Cache Docker layers
+    # uses: actions/cache with key including Dockerfile hash
+    # STEP 3: Build image (with cache-from and cache-to)
+    # uses: docker/build-push-action
+    - name: TODO
+      shell: bash
+      run: echo "Composer 2 implements this composite action"

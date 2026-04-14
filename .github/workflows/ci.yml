@@ -1,0 +1,93 @@
+# .github/workflows/ci.yml
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Continuous integration workflow. Runs on PR. Stages: checkout, deps, lint,
+#          typecheck, test (unit+integration), image build, image scan, docs check,
+#          migration dry-run, k8s validate. Per spec §26.7 item 196 and §11.2.
+# SECTIONS:
+#   - name: CI
+#   - on: pull_request (branches: [main])
+#   - jobs:
+#     - lint: ruff check + format check
+#     - typecheck: mypy --strict
+#     - test: pytest with coverage (matrix: SQLite + Postgres)
+#     - build: Docker image build + Trivy scan
+#     - docs: make docs:check
+#     - migrations: alembic upgrade head --sql dry-run
+#     - k8s: make k8s:render + make k8s:validate
+# DESIGN DECISIONS:
+#   - Test matrix: unit tests run fast (no DB), integration tests require Postgres service
+#   - Coverage artifact uploaded for trend tracking
+#   - Image scan uses Trivy with SARIF output → GitHub Security tab
+#   - All jobs must pass before merge (enforced by branch protection)
+
+name: CI
+
+# TOP-LEVEL:
+# on: pull_request targeting main branch
+# env: CI=true, Python version pinned to .python-version
+
+# jobs:
+#   lint:
+#     name: Lint and format check
+#     runs-on: ubuntu-latest
+#     steps:
+#       - checkout
+#       - setup Python (use .github/actions/setup-python if exists)
+#       - install dependencies: pip install -e ".[lint]"
+#       - run: make lint (ruff check)
+#       - run: make fmt (ruff format --check, no auto-fix)
+#
+#   typecheck:
+#     name: Type checking
+#     needs: [lint]
+#     runs-on: ubuntu-latest
+#     steps:
+#       - checkout, setup Python, install deps
+#       - run: make typecheck (mypy --strict)
+#
+#   test:
+#     name: Tests (${{ matrix.db }})
+#     needs: [lint]
+#     strategy:
+#       matrix:
+#         db: [sqlite, postgres]
+#     services:
+#       postgres: (only when matrix.db == postgres)
+#         image: postgres:16-alpine
+#         env: POSTGRES_PASSWORD: test
+#     steps:
+#       - checkout, setup Python, install deps
+#       - run: make migrate (apply migrations)
+#       - run: make test (pytest --cov, generate coverage.xml)
+#       - upload coverage artifact
+#
+#   build:
+#     name: Docker build and scan
+#     needs: [test]
+#     steps:
+#       - checkout
+#       - run: make image:build
+#       - run: make image:scan (Trivy SARIF output)
+#       - upload SARIF to GitHub Security tab
+#
+#   docs:
+#     name: Documentation check
+#     needs: [lint]
+#     steps:
+#       - checkout, setup Python, install deps
+#       - run: make docs:generate (generate from source)
+#       - run: make docs:check (verify no drift)
+#
+#   migrations:
+#     name: Migration dry-run
+#     needs: [test]
+#     services:
+#       postgres:...
+#     steps:
+#       - run: alembic upgrade head --sql → review SQL output
+#
+#   k8s:
+#     name: K8s manifest validation
+#     steps:
+#       - run: make k8s:render (kustomize build)
+#       - run: make k8s:validate (kubeconform)

@@ -1,0 +1,19 @@
+# queue/audit.log
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Append-only JSON lines log of queue operations (claim, release, archive, reorder).
+#          Each line is one JSON object. Never edit existing lines — only append.
+#          Per spec §26.6 item 195.
+# FORMAT: One JSON object per line with fields:
+#   timestamp: ISO 8601 UTC timestamp
+#   action: "claim" | "release" | "archive" | "reorder" | "validate" | "seed"
+#   queue_id: the queue item ID affected
+#   actor: agent identifier or human username
+#   branch: branch name (for claim/release)
+#   notes: additional context (error messages, reason for release, etc.)
+# DESIGN DECISIONS:
+#   - File is tracked in git (unlike most .log files) as an immutable audit trail
+#   - JSON lines format allows parsing with standard tools (jq, Python csv.DictReader)
+#   - Actors use identifiers that distinguish human vs. agent (e.g., "cursor-agent-1" vs. "john@example.com")
+#   - Timestamps in UTC with millisecond precision
+#   - Initialization event logged to confirm audit trail is active
+{"timestamp": "1970-01-01T00:00:00.000Z", "action": "seed", "queue_id": "all", "actor": "template-init", "branch": null, "notes": "Queue initialized from template. Audit log started."}

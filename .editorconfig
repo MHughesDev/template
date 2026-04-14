@@ -1,0 +1,62 @@
+# .editorconfig
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Editor-agnostic formatting defaults. Ensures consistent indentation and line endings
+#          across all editors and IDEs without requiring each contributor to configure manually.
+#          Per spec §26.12 item 360.
+# SECTIONS:
+#   - [*] global defaults
+#   - [*.py] Python-specific (4-space indent, 88 max line length matching ruff)
+#   - [*.{yml,yaml}] YAML (2-space indent)
+#   - [*.{json,toml}] JSON/TOML (2-space indent)
+#   - [*.md] Markdown (trim trailing whitespace false — some MD parsers use trailing space)
+#   - [Makefile] Makefile (tabs required)
+#   - [*.{bat}] Windows batch (CRLF)
+# DESIGN DECISIONS:
+#   - indent_size=4 for Python matches PEP 8 and ruff's default
+#   - max_line_length=88 matches ruff's default (black-compatible)
+#   - YAML uses 2-space indent per community convention
+#   - Makefile MUST use tabs (make requirement); editorconfig enforces this
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+[*.{json}]
+indent_style = space
+indent_size = 2
+
+[*.toml]
+indent_style = space
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+[Makefile]
+indent_style = tab
+indent_size = 4
+
+[*.bat]
+end_of_line = crlf
+
+[*.sh]
+end_of_line = lf
+
+[*.csv]
+trim_trailing_whitespace = false

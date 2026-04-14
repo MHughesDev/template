@@ -1,0 +1,63 @@
+# deploy/k8s/base/deployment.yaml
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Base Kubernetes Deployment manifest for the API. Includes liveness/readiness/startup probes,
+#          resource requests/limits, env from ConfigMap/Secret. Per spec §26.10 item 248.
+# SECTIONS:
+#   - apiVersion: apps/v1, kind: Deployment
+#   - metadata: name, namespace, labels
+#   - spec: replicas (patched per overlay), selector, template
+#   - containers: image (patched per overlay), ports, envFrom, resources, probes
+# DESIGN DECISIONS:
+#   - Non-root user in container (runAsNonRoot: true, runAsUser: 1000)
+#   - readOnlyRootFilesystem: true (security hardening)
+#   - Probes use /health, /ready, /live endpoints (must align with health/router.py)
+#   - Resource requests != limits: allow burst; limits prevent runaway processes
+#   - env from ConfigMap (non-secrets) and Secret (DATABASE_URL, JWT_SECRET_KEY)
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: api
+#   namespace: default  # patched per overlay
+#   labels:
+#     app: api
+#     app.kubernetes.io/name: api
+#
+# spec:
+#   replicas: 1  # patched per overlay: dev=1, staging=2, prod=3+
+#   selector:
+#     matchLabels:
+#       app: api
+#   template:
+#     metadata:
+#       labels:
+#         app: api
+#     spec:
+#       serviceAccountName: api  # uses dedicated service account
+#       securityContext:
+#         runAsNonRoot: true
+#         runAsUser: 1000
+#         fsGroup: 1000
+#       containers:
+#         - name: api
+#           image: ghcr.io/{{ORG}}/{{REPO}}:latest  # patched per overlay
+#           ports:
+#             - containerPort: 8000
+#           envFrom:
+#             - configMapRef: {name: api-config}
+#             - secretRef: {name: api-secrets}
+#           resources:
+#             requests: {cpu: "100m", memory: "128Mi"}
+#             limits: {cpu: "500m", memory: "512Mi"}  # patched per overlay
+#           securityContext:
+#             readOnlyRootFilesystem: true
+#             allowPrivilegeEscalation: false
+#           livenessProbe:
+#             httpGet: {path: /live, port: 8000}
+#             initialDelaySeconds: 10, periodSeconds: 30, failureThreshold: 3
+#           readinessProbe:
+#             httpGet: {path: /ready, port: 8000}
+#             initialDelaySeconds: 5, periodSeconds: 10, failureThreshold: 3
+#           startupProbe:
+#             httpGet: {path: /health, port: 8000}
+#             failureThreshold: 30, periodSeconds: 2

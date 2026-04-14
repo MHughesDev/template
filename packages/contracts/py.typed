@@ -1,0 +1,6 @@
+# packages/contracts/py.typed
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: PEP 561 marker file indicating this package supports inline type information.
+#          Signals to mypy and type checkers that this package is fully typed.
+#          Optional per spec §26.12 item 386.
+# CONTENT: Empty file per PEP 561 convention.

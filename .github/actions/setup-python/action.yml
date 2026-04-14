@@ -1,0 +1,36 @@
+# .github/actions/setup-python/action.yml
+# BLUEPRINT: Composer 2 implements from this structure
+# PURPOSE: Composite action: Python setup with dependency caching.
+#          Optional per spec §26.12 item 389. Reused across CI/CD workflows.
+# SECTIONS:
+#   - name, description, inputs, runs (composite)
+# DESIGN DECISIONS:
+#   - Reads Python version from .python-version file for consistency
+#   - Cache key includes pyproject.toml hash for automatic invalidation
+#   - Installs editable package with all optional dependency groups
+
+name: Setup Python with Cache
+description: Setup Python and install dependencies with pip cache
+
+inputs:
+  python-version:
+    description: Python version to use
+    default: "3.12"
+    required: false
+  install-groups:
+    description: Pip optional dependency groups to install (comma-separated)
+    default: "dev,test,lint"
+    required: false
+
+runs:
+  using: composite
+  steps:
+    # STEP 1: Setup Python with specified version
+    # uses: actions/setup-python@v5 with python-version input
+    # STEP 2: Cache pip packages
+    # uses: actions/cache@v4 with key including pyproject.toml hash
+    # STEP 3: Install dependencies
+    # run: pip install --upgrade pip && pip install -e ".[{install-groups}]"
+    - name: TODO
+      shell: bash
+      run: echo "Composer 2 implements this composite action"
