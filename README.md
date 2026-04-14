@@ -1,3 +1,3 @@
 # template
 
-Authoritative specification: [`spec.md`](spec.md). Root agent control plane (when generated): `AGENTS.md`.
+Authoritative specification: [`spec/spec.md`](spec/spec.md). Root agent control plane (when generated): `AGENTS.md`.
