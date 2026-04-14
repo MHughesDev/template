@@ -1,6 +1,6 @@
 # Template Repository Specification — Agent-Operated Machine
 
-**Version:** 2.1  
+**Version:** 3.0  
 **Stack:** Python 3.12+, FastAPI, optional React/Expo front-ends  
 **Primary operators:** Coding agents (Cursor and compatible tooling). Humans are **reviewers, supervisors, and policy maintainers**, not the default execution path.
 
@@ -101,6 +101,7 @@ The following MUST exist in a generated template (stubs allowed where noted):
 
 | Artifact | Role |
 |----------|------|
+| `idea.md` | Project intake form: singular input for repo initialization. Defines project identity, archetype, domain model, profiles, auth, data, integrations, API design, NFRs, deployment, queue seed, constraints, risks. |
 | `AGENTS.md` (root) | Top-level control plane: mission, hierarchy, workflows, validation, queue, escalation. |
 | `.cursor/rules/` | Persistent constraints; path-scoped as repo grows. |
 | `.cursor/commands/` or equivalent | Optional: command metadata / reusable Cursor commands if supported by tooling. |
@@ -129,6 +130,7 @@ The following MUST exist in a generated template (stubs allowed where noted):
 
 ```
 repo-root/
+├── idea.md                     # REQUIRED: project intake form (fill before init)
 ├── AGENTS.md                   # REQUIRED: repo-wide agent control plane
 ├── .cursor/
 │   ├── rules/                  # Global + scoped rules (mdc/md)
@@ -292,6 +294,9 @@ The library MUST include templates for at least these **roles**:
 
 | Template | Role |
 |----------|------|
+| `repo_initializer` | Master prompt: read idea.md, scaffold entire repo (§27) |
+| `domain_modeler` | Analyze domain model, produce context map and scaffolding plan |
+| `profile_configurator` | Enable/disable profiles based on idea.md selections |
 | `task_planner` | Decompose work, acceptance criteria, risks |
 | `implementation_agent` | Code change execution with scope discipline |
 | `reviewer_critic` | Adversarial review against spec and security |
@@ -325,6 +330,10 @@ At least one procedure file per topic (names illustrative; content required):
 
 | Procedure | Covers |
 |-----------|--------|
+| `initialize-repo.md` | Full repo initialization from idea.md (§27.4) |
+| `scaffold-domain-module.md` | Create bounded context module in apps/api/src/ |
+| `enable-profile.md` | Enable optional profile with dependency checking |
+| `validate-idea-md.md` | Validate idea.md completeness before initialization |
 | `start-queue-item.md` | Claim work, branch, read docs row |
 | `plan-change.md` | Planning outputs, scope, risk |
 | `implement-change.md` | Editing, commits, incremental validation |
@@ -1315,13 +1324,347 @@ Each script implements one or more `Makefile` targets (§10.2). Scripts are the 
 
 ---
 
-## 27. Full repository file and folder structure
+## 27. Idea-to-repo initialization system
+
+### 27.1 Overview
+
+The template repository is designed to be **cloned and initialized for a specific project**. The initialization flow is:
+
+1. **Human** fills out `idea.md` (the project intake form — §27.2).
+2. **Human** opens Cursor in the cloned repo and invokes the initialization agent by referencing `idea.md` and `prompts/repo_initializer.md`.
+3. **Initialization agent** reads `idea.md`, validates completeness, maps the idea to a project archetype, enables profiles, scaffolds domain modules, populates the queue, configures environment, and produces an initialization PR.
+4. **Human** reviews the initialization PR and merges.
+5. **Repo is live** — agents can begin processing queue items.
+
+### 27.2 `idea.md` — project intake form
+
+`idea.md` is a **REQUIRED** root file in the template. It is a structured form that the project owner fills out before initialization. It is the **singular point of reference** for how the repo should be configured.
+
+**Required sections** (all must be present; mark inapplicable ones `N/A`):
+
+| # | Section | Purpose | Initialization agent reads to determine... |
+|---|---------|---------|---------------------------------------------|
+| 1 | Project identity | Name, slug, one-liner | Repo naming, README content, pyproject.toml name |
+| 2 | Problem and solution | What and why | README description, AGENTS.md mission |
+| 3 | Project archetype | Category of project | Default profiles, module set, queue categories, deployment shape |
+| 4 | Domain model | Entities, contexts, workflows | Module scaffolding in `apps/api/src/`, model files, test stubs |
+| 5 | Profile selection | Which optional features to enable | docker-compose profiles, packages to include, deploy config |
+| 6 | Auth and authorization | Auth model, roles, permissions | Auth module configuration, middleware, test fixtures |
+| 7 | Data layer | Database, caching, external data | Database config, migration setup, connection management |
+| 8 | Integrations | External services | Integration module stubs, env vars, circuit breaker setup |
+| 9 | API design | Style, versioning, pagination | Router patterns, middleware, OpenAPI config |
+| 10 | Non-functional requirements | Performance, compliance, availability | K8s resource config, monitoring setup, security config |
+| 11 | Deployment | Target env, cloud, registry | Deploy overlays, CI/CD config, Dockerfile |
+| 12 | Initial queue items | First batch of work | `queue/queue.csv` seed data |
+| 13 | Constraints and non-goals | Hard limits and exclusions | Rules in `.cursor/rules/`, scope guards in AGENTS.md |
+| 14 | Risk register | Known risks and mitigations | ADR stubs, skill selection, test priorities |
+| 15 | Timeline and phasing | Milestones | Queue batch assignment, phase tags |
+| 16 | Open questions | Unresolved items | Blocked queue items, escalation notes |
+| 17 | Additional context | Links, wireframes, references | Reference material for agents |
+
+### 27.3 Archetype-to-profile mapping
+
+The initialization agent maps the selected archetype to default profile enablement:
+
+| Archetype | Profiles enabled by default | Default queue categories |
+|-----------|----------------------------|--------------------------|
+| API service | workers (optional) | `core-api`, `infrastructure`, `testing`, `documentation` |
+| Full-stack web app | web | `core-api`, `frontend`, `infrastructure`, `testing`, `documentation` |
+| Full-stack with mobile | web, mobile | `core-api`, `frontend`, `mobile`, `infrastructure`, `testing`, `documentation` |
+| Platform / internal tool | workers | `core-api`, `admin`, `infrastructure`, `testing`, `documentation` |
+| Data pipeline / ETL | workers, scheduled-jobs | `pipeline`, `infrastructure`, `testing`, `documentation` |
+| AI / ML service | ai-rag, workers | `core-api`, `ai`, `infrastructure`, `testing`, `documentation` |
+| Marketplace / multi-sided | web, multi-tenancy | `core-api`, `marketplace`, `frontend`, `infrastructure`, `testing`, `documentation` |
+| SaaS product | web, multi-tenancy, billing | `core-api`, `saas`, `frontend`, `billing`, `infrastructure`, `testing`, `documentation` |
+
+Humans may override any default by explicitly toggling profiles in §5 of `idea.md`.
+
+### 27.4 Initialization procedure
+
+The initialization agent follows this exact sequence (see also `docs/procedures/initialize-repo.md`):
+
+**Phase 1 — Validate and plan**
+1. Read `idea.md` completely.
+2. Validate all required sections are filled (not still placeholder comments).
+3. Flag open questions (§16) as blockers — create blocked queue items for each.
+4. Map archetype → profiles → module set.
+5. Produce initialization plan (list of files to create/modify, profiles to enable, queue items to seed).
+
+**Phase 2 — Configure root**
+6. Update `README.md` with project name, description, quickstart.
+7. Update `pyproject.toml` with project name, description, initial dependencies based on profiles.
+8. Update `.env.example` with all required env vars for enabled profiles.
+9. Update `docker-compose.yml` to enable/disable profile services.
+10. Update `AGENTS.md` mission section with project-specific context from `idea.md` §2.
+11. Add project-specific constraints to `.cursor/rules/` from `idea.md` §13.
+
+**Phase 3 — Scaffold domain**
+12. For each bounded context in `idea.md` §4.2, create module directory under `apps/api/src/<context>/`:
+    - `__init__.py`, `router.py`, `models.py`, `schemas.py`, `service.py`
+    - `tests/test_<context>.py` with stub tests for each entity
+13. Register all new routers in `apps/api/src/main.py`.
+14. Create initial Alembic migration for all domain models.
+15. Update `docs/api/endpoints.md` with scaffolded endpoint stubs.
+
+**Phase 4 — Configure profiles**
+16. For each enabled profile, run the corresponding sub-procedure:
+    - Web → `docs/procedures/add-optional-app-profile.md` for `apps/web/`
+    - Mobile → same for `apps/mobile/`
+    - Workers → scaffold `packages/tasks/` implementations, add worker service to Compose
+    - AI/RAG → scaffold `packages/ai/` implementations, add ChromaDB to Compose
+    - Multi-tenancy → verify tenant middleware active, add tenant fixtures to tests
+    - Each additional profile (billing, email, search, etc.) → create integration stub under `packages/<profile>/`
+
+**Phase 5 — Seed queue**
+17. Populate `queue/queue.csv` from `idea.md` §12.
+18. Add blocked items for open questions from `idea.md` §16.
+19. Add standard initialization verification items (run all checks, review generated code).
+20. Run `make queue:validate` to verify queue integrity.
+
+**Phase 6 — Validate and handoff**
+21. Run `make lint && make fmt && make typecheck`.
+22. Run `make test` (should pass with stub tests).
+23. Run `make audit:self`.
+24. Create initialization PR with full evidence.
+
+### 27.5 `prompts/repo_initializer.md` — initialization agent prompt
+
+This is the **most important prompt** in the template. It is the entry point for turning a blank template into a configured project. It MUST be:
+
+- **Fully enumerative** of all options (profiles, archetypes, module patterns).
+- **Strictly procedural** — no ambiguity in execution order.
+- **Self-validating** — includes checkpoints after each phase.
+- **Token-efficient** — uses references to procedures and skills rather than inlining their content.
+
+The prompt template MUST include:
+- Role definition (initialization agent with full repo authority).
+- Input: `idea.md` (read completely before any action).
+- Archetype mapping table (§27.3) for quick lookup.
+- Phase-by-phase execution instructions (§27.4) with command checkpoints.
+- Profile enablement decision tree.
+- Module scaffolding patterns (reference `skills/backend/fastapi-router-module.md`).
+- Queue seeding rules (reference `queue/QUEUE_INSTRUCTIONS.md`).
+- Validation checklist before PR.
+- Output: initialization PR with evidence of all phases completed.
+
+### 27.6 Post-initialization
+
+After the initialization PR is merged:
+- `idea.md` remains in the repo as **project context** — agents reference it for domain understanding.
+- The first queue item is ready for processing.
+- All enabled profiles have scaffolded stubs.
+- CI should pass on the initialization commit.
+
+---
+
+## 28. Expanded file enumeration — initialization and skill machinery
+
+This section enumerates additional files beyond §26 that are required for the initialization system, skill machinery (code backing skills), additional scripts, documentation, rules, and procedures discovered through systematic brainstorming of each folder.
+
+**Skill machinery convention:** Skills in `skills/` are not documentation-only. Where a skill benefits from supporting code — validators, generators, linters, formatters, analyzers — the skill folder contains both the `.md` playbook and supporting code files. The `.md` file references the code; the code is invoked by scripts and Make targets. This makes skills **executable machine components**, not just prose.
+
+---
+
+### 28.1 New root files
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 276 | `idea.md` | REQUIRED | Project intake form. Singular input for repo initialization. Structured sections covering identity, archetype, domain model, profiles, auth, data, integrations, API design, NFRs, deployment, queue seed, constraints, risks, timeline, open questions. | All 17 sections with placeholder comments and tables. Human fills this out before initialization. See §27.2 for required sections. |
+| 277 | `CHANGELOG.md` | REQUIRED | Project changelog following Keep a Changelog format. Initialized with `[Unreleased]` section. | Sections: header with format link, `[Unreleased]` with subsections (Added, Changed, Fixed, Removed, Security). Populated during releases per `docs/release/changelog-guide.md`. |
+
+---
+
+### 28.2 New prompts
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 278 | `prompts/repo_initializer.md` | REQUIRED | The master initialization prompt. Reads `idea.md`, maps archetype to profiles, scaffolds the entire repo. The most important prompt in the template. | YAML front matter (purpose: initialize repo from idea.md, when_to_use: first action after cloning template, required_inputs: filled idea.md, expected_outputs: initialization PR, linked_procedures: initialize-repo.md, linked_skills: all scaffolding skills). Prompt body: role definition, read order, archetype mapping table, 6-phase execution procedure, profile decision tree, validation checklist, output format. |
+| 279 | `prompts/domain_modeler.md` | REQUIRED | Role: analyze `idea.md` domain model and produce bounded context map, entity relationship diagrams, and module scaffolding plan. Used during initialization and when adding new domains. | YAML front matter. Prompt body: read idea.md §4, identify entities and relationships, group into bounded contexts, propose module structure, identify shared vs context-local models, output scaffolding plan. |
+| 280 | `prompts/profile_configurator.md` | REQUIRED | Role: enable/disable optional profiles based on idea.md §5 selections. Configures Compose, env vars, package stubs, and documentation for each enabled profile. | YAML front matter. Prompt body: profile decision matrix, per-profile configuration steps (files to create, env vars to add, Compose services to enable, docs to update), validation for each profile. |
+
+---
+
+### 28.3 New procedures
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 281 | `docs/procedures/initialize-repo.md` | REQUIRED | SOP for initializing the repo from `idea.md`. The canonical procedure the `repo_initializer` prompt follows. | Per §8.3 format. Purpose: turn blank template into configured project. Trigger: fresh clone with filled `idea.md`. Prerequisites: `idea.md` complete, template repo cloned. Commands: make targets for each phase. Ordered steps: §27.4 six-phase procedure. Expected artifacts: initialization PR. Validation: `make lint`, `make test`, `make audit:self`. |
+| 282 | `docs/procedures/scaffold-domain-module.md` | REQUIRED | SOP for scaffolding a new bounded context module in `apps/api/src/`. Used during initialization and when adding new domains post-init. | Per §8.3 format. Steps: create directory, create `__init__.py` with router export, create `router.py` with CRUD endpoint stubs, create `models.py` with SQLAlchemy models from entity definitions, create `schemas.py` with Pydantic request/response models, create `service.py` with business logic stubs, register router in `main.py`, create `tests/test_<context>.py`, create Alembic migration. |
+| 283 | `docs/procedures/enable-profile.md` | REQUIRED | SOP for enabling an optional profile (generalized from `add-optional-app-profile.md`). Covers all profile types with a decision matrix. | Per §8.3 format. Steps: identify profile, check prerequisites, create package/app directory, update docker-compose.yml, add env vars to .env.example, update documentation, add profile-specific tests, validate with `make test`. Per-profile checklists for web, mobile, workers, ai, multi-tenancy, billing, email, search, analytics. |
+| 284 | `docs/procedures/validate-idea-md.md` | REQUIRED | SOP for validating that `idea.md` is complete enough for initialization. Lists every required field and validation rules. | Per §8.3 format. Steps: read each section, check for placeholder comments vs real content, validate entity relationships are consistent, verify archetype matches profile selections, check for contradictions between constraints and profile choices, list open questions as blockers. Output: validation report (pass/fail per section, list of blockers). |
+
+---
+
+### 28.4 New documentation files
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 285 | `docs/architecture/system-context.md` | REQUIRED | System context diagram and description. Shows the system boundary, external actors, and integrations. Populated from `idea.md` §8. | Sections: System boundary, External actors (users, services, data sources), Integration points, Data flows, Trust boundaries. Template with placeholders filled during initialization. |
+| 286 | `docs/architecture/domain-model.md` | REQUIRED | Domain model documentation. Entity definitions, relationships, bounded context map. Populated from `idea.md` §4. | Sections: Entity catalog (table: entity, context, key fields, relationships), Bounded context map, Context interaction patterns, Aggregate roots, Domain events (if applicable). |
+| 287 | `docs/architecture/api-design.md` | REQUIRED | API design decisions: style, versioning, pagination, rate limiting, error handling conventions. Populated from `idea.md` §9. | Sections: API style rationale, Versioning strategy, Pagination convention, Rate limiting policy, Error response format, Authentication header format, Content negotiation. |
+| 288 | `docs/development/environment-vars.md` | REQUIRED | Complete environment variable reference. Every env var the system reads, with description, type, default, required/optional, and which profile needs it. | Table format: Variable, Description, Type, Default, Required, Profile. Generated from `.env.example` with expanded descriptions. Updated whenever new env vars are added. |
+| 289 | `docs/development/module-patterns.md` | REQUIRED | Reference for the standard module structure in `apps/api/src/`. Shows the canonical file layout, naming conventions, and registration pattern. | Sections: Module directory layout, Router pattern, Model pattern, Schema pattern, Service pattern, Test pattern, Registration in main.py. Code examples for each. |
+| 290 | `docs/development/dependency-management.md` | REQUIRED | How to manage Python dependencies: adding, removing, upgrading, lockfile, CI verification. | Sections: Adding a dependency (pyproject.toml), Dev vs production deps, Lockfile management, Upgrade procedure (link to procedure), CI dependency caching, Pinning policy. |
+| 291 | `docs/operations/configuration.md` | REQUIRED | Operations configuration reference: how config flows from env vars through Pydantic settings to application code. | Sections: Configuration sources (env vars only — no config files in prod), Pydantic BaseSettings pattern, Validation on startup, Profile-specific config, Secrets vs config distinction. |
+| 292 | `docs/operations/health-checks.md` | REQUIRED | Health check documentation: endpoint contracts, probe configuration, dependency checks, degraded states. | Sections: Endpoint reference (/health, /ready, /live), Dependency health checks, Degraded state handling, K8s probe mapping, Monitoring integration. |
+| 293 | `docs/agents/initialization-guide.md` | REQUIRED | Guide for the initialization process: what `idea.md` is, how to fill it out, what the initializer does, what to review in the initialization PR. | Sections: Overview of initialization flow, How to fill out idea.md (tips per section), What the initialization agent does (summary of §27.4), How to review the initialization PR, Post-initialization next steps. |
+| 294 | `docs/queue/queue-categories.md` | REQUIRED | Registry of valid queue categories with descriptions, validation rules, and examples. Extended during initialization based on archetype. | Table: Category, Description, Example summary, Added by (initialization/manual). Default categories: `core-api`, `infrastructure`, `testing`, `documentation`, `bugfix`, `refactor`, `security`, `devops`. |
+
+---
+
+### 28.5 New `.cursor/rules/` files
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 295 | `.cursor/rules/initialization.md` | REQUIRED | Rules active during repo initialization. Ensures the initializer follows the correct procedure, doesn't skip validation, and produces a complete initialization PR. | Frontmatter: `globs: ["idea.md", "prompts/repo_initializer.md"]`. Rules: must read idea.md completely before any file creation, must follow 6-phase procedure, must run validation after each phase, must not modify spec.md during initialization, must create initialization PR with evidence. |
+| 296 | `.cursor/rules/skills.md` | REQUIRED | Rules for skill files. Ensures skills follow the §6.2 structure, include machinery code where applicable, and cross-reference procedures/prompts/rules. | Frontmatter: `globs: ["skills/**"]`. Rules: every skill .md must have all §6.2 headings, machinery code must be referenced from the .md, machinery code must be tested, skills must link to at least one procedure or prompt. |
+| 297 | `.cursor/rules/prompts.md` | REQUIRED | Rules for prompt files. Ensures prompts have required YAML front matter and follow the metadata convention. | Frontmatter: `globs: ["prompts/**"]`. Rules: every prompt .md must have YAML front matter with all §7.2 fields, must use `{{placeholder}}` syntax for variable injection, must include validation checklist, must link to at least one procedure. |
+
+---
+
+### 28.6 New scripts
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 298 | `scripts/init-repo.sh` | REQUIRED | Repo initialization orchestrator. Validates `idea.md` is present and non-empty, runs pre-initialization checks, and provides guidance. Corresponds to `make init`. | Bash script: check idea.md exists and is not template-only (grep for un-replaced placeholders), verify Python version, verify Docker, print initialization instructions, optionally run `scripts/validate-idea.sh`. |
+| 299 | `scripts/validate-idea.sh` | REQUIRED | Validates `idea.md` completeness. Checks each required section has content beyond placeholder comments. Corresponds to `make idea:validate`. | Bash script: parse idea.md, for each of the 17 sections check that content exists beyond HTML comments, report pass/fail per section, exit non-zero if any required section is empty. |
+| 300 | `scripts/scaffold-module.sh` | REQUIRED | Scaffolds a new domain module directory structure. Creates all files from templates. Corresponds to `make scaffold:module`. | Bash script: accepts module name and entity list as args, creates `apps/api/src/<module>/` with `__init__.py`, `router.py`, `models.py`, `schemas.py`, `service.py`, creates `apps/api/tests/test_<module>.py`, registers router in main.py (or prints instruction). |
+| 301 | `scripts/profile-enable.sh` | REQUIRED | Enables an optional profile. Modifies docker-compose.yml, .env.example, and creates package stubs. Corresponds to `make profile:enable`. | Bash script: accepts profile name as arg, validates against known profiles, enables Compose service, adds env vars, creates package directory if needed, prints post-enable instructions. |
+| 302 | `scripts/idea-to-queue.sh` | RECOMMENDED | Extracts queue items from `idea.md` §12 and writes them to `queue/queue.csv`. Corresponds to `make idea:queue`. | Bash/Python script: parse idea.md §12 table, generate CSV rows with auto-incrementing IDs, batch assignment from idea.md §15, validate with `scripts/queue-validate.sh`. |
+| 303 | `scripts/generate-env.sh` | REQUIRED | Generates `.env` from `.env.example` with interactive or default values. Corresponds to `make env:generate`. | Bash script: read .env.example, for each var prompt for value or use default, write .env (gitignored), validate required vars are set. |
+| 304 | `scripts/inventory-check.sh` | REQUIRED | Checks that all spec-required files exist. Reports missing files. Corresponds to `make inventory:check`. | Bash script: read the required file list from spec.md §26 (or a manifest file), check each path exists, report missing files with their spec reference, exit non-zero if any required file missing. |
+
+---
+
+### 28.7 Skill machinery files
+
+Skills are not just `.md` documentation — where beneficial, they include **supporting code** that makes the skill executable, more efficient, or machine-verifiable. The `.md` file is the playbook; the code files are the machinery.
+
+**Convention:** Skill machinery code lives alongside the skill `.md` in the same directory. The `.md` references the code file with a `## Machinery` section explaining what the code does and how to invoke it.
+
+#### Agent Operations machinery (`skills/agent-ops/`)
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 305 | `skills/agent-ops/queue-triage.py` | REQUIRED | Queue triage analyzer. Reads `queue.csv`, parses all rows, scores readiness (dependencies met, summary quality, category valid), and outputs a prioritized triage report. Used by the queue-triage skill. | Python script: load CSV, validate schema, for each row check: summary length ≥ 100 chars, category in valid set, dependencies column parseable, no circular deps. Output: sorted triage report with readiness score per item. |
+| 306 | `skills/agent-ops/handoff-template-generator.py` | REQUIRED | Generates a pre-filled handoff document from git diff, recent commands, and queue state. Reduces token cost by auto-populating boilerplate. | Python script: read git diff (subprocess), read queue.csv for current item, read recent shell history, generate Markdown handoff template with files changed, commands run, queue state, placeholder sections for risks and follow-ups. |
+| 307 | `skills/agent-ops/repo-self-audit.py` | REQUIRED | Automated repo audit. Checks spec compliance: required files exist, skills have all sections, prompts have front matter, procedures have required fields, queue schema valid, Make targets documented. | Python script: inventory check (all §26 files), skill format validation (§6.2 headings present), prompt metadata validation (§7.2 fields), procedure structure validation (§8.3 fields), queue schema validation, Make target documentation check. Output: audit report with pass/fail per check. |
+
+#### Repo Governance machinery (`skills/repo-governance/`)
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 308 | `skills/repo-governance/rule-linter.py` | REQUIRED | Lints `.cursor/rules/` files for correct structure: frontmatter presence, valid glob patterns, no contradictions with other rules. | Python script: parse each rule file, validate YAML frontmatter (alwaysApply or globs), check glob syntax, detect potential contradictions (two rules in same scope with opposing directives), output lint report. |
+| 309 | `skills/repo-governance/docs-freshness-checker.py` | REQUIRED | Checks documentation freshness. Compares doc last-modified dates against related code files. Flags docs that may be stale because their related code changed more recently. | Python script: for each doc file, find related code files (by path heuristic or explicit links), compare git timestamps, flag docs where code changed after doc, output staleness report sorted by risk. |
+| 310 | `skills/repo-governance/adr-index-generator.py` | REQUIRED | Generates the ADR index (`docs/adr/README.md`) from ADR files. Parses status, title, and date from each ADR and produces a formatted index table. | Python script: scan `docs/adr/` for `*.md` (excluding README.md and template.md), parse title, status, date from each, generate Markdown table sorted by number, write to `docs/adr/README.md`. |
+
+#### Backend / Platform machinery (`skills/backend/`)
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 311 | `skills/backend/module-scaffolder.py` | REQUIRED | Generates a new FastAPI module from templates. Creates router, models, schemas, service, tests with proper imports and registration. More detailed than `scripts/scaffold-module.sh` — produces production-quality stubs. | Python script: accepts module name, entity definitions (name + fields as args or JSON), generates all module files from embedded templates, includes proper imports, type hints, docstrings, test stubs with parametrized cases, outputs file manifest. |
+| 312 | `skills/backend/error-code-registry.py` | REQUIRED | Error code registry validator and generator. Maintains a central error code catalog, detects duplicates, generates error documentation, and produces client-facing error reference. | Python script: scan codebase for error code definitions (by convention: `ERROR_` prefix or error enum), validate uniqueness, check all codes are documented in `docs/api/error-codes.md`, generate updated error docs if gaps found. |
+| 313 | `skills/backend/env-var-sync.py` | REQUIRED | Synchronizes `.env.example` with actual env var usage in code. Detects vars used in code but missing from `.env.example`, and vars in `.env.example` not used anywhere. | Python script: scan Python files for `os.getenv`, `os.environ`, and Pydantic `Field(env=...)` patterns, compare against `.env.example`, report missing/orphaned vars, optionally auto-add missing vars with `TODO` comments. |
+| 314 | `skills/backend/openapi-diff.py` | RECOMMENDED | Compares current OpenAPI spec against a baseline to detect breaking changes. Used before releases and in CI. | Python script: generate current OpenAPI JSON from FastAPI app, compare against stored baseline (`docs/api/openapi-baseline.json`), classify changes as breaking/non-breaking per OpenAPI compatibility rules, output diff report. |
+
+#### Security machinery (`skills/security/`)
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 315 | `skills/security/secret-scanner.py` | REQUIRED | Scans codebase for potential secrets: high-entropy strings, known secret patterns (API keys, tokens, passwords), and env vars with default values that look like secrets. | Python script: regex patterns for common secret formats (AWS keys, JWT tokens, base64 blobs > 40 chars, password= assignments), scan all Python/YAML/JSON/MD files, exclude `.env.example` intentional placeholders, output findings with file:line references. |
+| 316 | `skills/security/dependency-audit.py` | REQUIRED | Audits Python dependencies for known vulnerabilities. Wraps `pip-audit` or `safety` with structured output and severity classification. | Python script: run pip-audit (subprocess), parse output, classify by severity (critical/high/medium/low), cross-reference with project's accepted-risk list (`docs/security/accepted-risks.md` if exists), output actionable report. |
+| 317 | `skills/security/tenant-isolation-checker.py` | REQUIRED | Static analysis for tenant isolation. Scans SQLAlchemy queries for missing tenant filters, checks that all tenant-scoped models use TenantMixin, verifies middleware is applied to relevant routes. | Python script: parse Python AST, find all query expressions, check for tenant_id filter on tenant-scoped models, verify TenantMixin inheritance, check router dependency chains include tenant middleware, output isolation report. |
+
+#### Testing machinery (`skills/testing/`)
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 318 | `skills/testing/test-scaffolder.py` | REQUIRED | Generates test stubs for a given module. Analyzes router endpoints and service methods, produces parametrized test functions with descriptive names and TODO bodies. | Python script: parse router file for endpoint decorators, parse service file for public methods, generate test functions following naming convention (`test_<unit>_<scenario>_<expected>`), include fixture usage, output test file content. |
+| 319 | `skills/testing/coverage-ratchet.py` | REQUIRED | Reads current coverage, compares against floor defined in `docs/quality/coverage-policy.md`, updates the floor if coverage improved, fails if coverage dropped below floor. | Python script: parse coverage report (JSON or XML), read current floor from policy doc, compare, if coverage > floor update policy doc floor value, if coverage < floor exit non-zero with gap report. |
+| 320 | `skills/testing/flaky-detector.py` | RECOMMENDED | Detects potentially flaky tests by running the test suite N times and identifying tests that sometimes pass and sometimes fail. | Python script: run pytest N times (configurable, default 5), collect per-test pass/fail results, identify tests with inconsistent results, output flaky test report with failure patterns. |
+
+#### DevOps machinery (`skills/devops/`)
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 321 | `skills/devops/dockerfile-linter.py` | REQUIRED | Lints Dockerfiles for best practices: multi-stage build, non-root user, no `latest` tags, HEALTHCHECK present, layer ordering for cache efficiency. | Python script: parse Dockerfile, check for required directives (USER non-root, HEALTHCHECK, multi-stage FROM), warn on anti-patterns (COPY before dependency install, RUN with `apt-get` without cleanup, `latest` image tags), output lint report. |
+| 322 | `skills/devops/k8s-manifest-validator.py` | REQUIRED | Validates Kubernetes manifests beyond schema: checks for resource requests/limits, probe configuration, security context, namespace consistency. | Python script: parse YAML manifests, validate: all Deployments have resource requests+limits, all containers have liveness+readiness probes, securityContext.runAsNonRoot set, namespace matches overlay, output validation report. |
+| 323 | `skills/devops/compose-profile-matrix.py` | RECOMMENDED | Tests Docker Compose profile combinations. Validates that each profile can be enabled independently and in common combinations without conflicts. | Python script: enumerate profiles from docker-compose.yml, test each individual profile and key combinations (`docker compose config --profiles X`), validate no port conflicts or missing dependency services, output compatibility matrix. |
+
+#### Initialization machinery (`skills/init/`)
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 324 | `skills/init/README.md` | REQUIRED | Index for initialization skills. Lists all skills used during the repo initialization process from `idea.md`. | Skill index with links to each init skill file and its machinery. |
+| 325 | `skills/init/idea-validator.md` | REQUIRED [FULL] | Skill: validate `idea.md` completeness and consistency. Uses `skills/init/idea-validator.py` machinery. | Full §6.2 skill format. Purpose: ensure idea.md is complete before initialization. Steps: run validator, review report, resolve issues with human. Machinery section references `idea-validator.py`. |
+| 326 | `skills/init/idea-validator.py` | REQUIRED | Validates `idea.md` structure and content completeness. Checks every required section has real content (not just HTML comment placeholders), validates internal consistency (archetype matches profiles, entities match contexts). | Python script: parse Markdown sections, for each section check content length > threshold, detect un-replaced placeholder patterns (`<!-- ... -->`), validate archetype-profile consistency, validate entity-context coverage (every entity appears in at least one context), output validation report with section-by-section pass/fail. |
+| 327 | `skills/init/archetype-mapper.md` | REQUIRED [FULL] | Skill: map idea.md archetype and profile selections to concrete file scaffolding plan. Uses `skills/init/archetype-mapper.py` machinery. | Full §6.2 skill format. Purpose: translate abstract idea into concrete file list. Steps: read archetype, apply profile defaults, generate file manifest, output module plan. |
+| 328 | `skills/init/archetype-mapper.py` | REQUIRED | Maps project archetype to default profiles, queue categories, module set, and file manifest. Produces a structured initialization plan as JSON. | Python script: archetype-to-profile mapping table (§27.3), profile-to-files mapping (which files each profile requires), module template for each bounded context, output JSON plan: `{profiles: [], modules: [], queue_categories: [], files_to_create: [], files_to_modify: []}`. |
+| 329 | `skills/init/module-template-generator.md` | REQUIRED [FULL] | Skill: generate all files for a new domain module from entity definitions. Uses `skills/backend/module-scaffolder.py` machinery. | Full §6.2 skill format. References the backend module scaffolder for actual file generation. Adds initialization-specific concerns: bulk module creation, router registration order, migration sequencing. |
+| 330 | `skills/init/queue-seeder.md` | REQUIRED | Skill: populate `queue/queue.csv` from idea.md §12 and §15. Assigns batch IDs from phases, generates proper summaries, validates with `make queue:validate`. | Skill format with steps: parse idea.md §12, assign IDs, map phases to batches, generate elaborative summaries from user's input, add standard initialization verification items, run `make queue:validate`. |
+| 331 | `skills/init/queue-seeder.py` | REQUIRED | Extracts queue items from idea.md and generates properly formatted queue.csv rows. Assigns IDs, batches from phases, and validates summaries meet minimum quality bar. | Python script: parse idea.md §12 Markdown table, extract rows, assign sequential IDs, map priority to phase/batch, expand terse summaries with context from idea.md §4 (entities) and §9 (API), validate summary length ≥ 100 chars, output CSV rows. |
+| 332 | `skills/init/profile-resolver.md` | REQUIRED | Skill: resolve profile enablement from idea.md §5 and archetype defaults. Handles conflicts and dependencies between profiles (e.g., billing requires multi-tenancy for SaaS). | Skill format with steps: read archetype defaults (§27.3), overlay explicit selections from §5, check profile dependencies (billing requires auth, workers requires broker choice, ai requires ChromaDB), flag conflicts, output resolved profile set. |
+| 333 | `skills/init/profile-resolver.py` | REQUIRED | Resolves profile enablement with dependency checking. Profiles can have dependencies (billing → auth + multi-tenancy), conflicts (SQLite-only + multi-tenancy at scale), and defaults per archetype. | Python script: profile dependency graph (dict of profile → required profiles), conflict rules, archetype defaults, merge algorithm: archetype defaults + explicit overrides, expand dependencies, check conflicts, output resolved set with warnings. |
+| 334 | `skills/init/env-generator.md` | REQUIRED | Skill: generate `.env.example` tailored to enabled profiles. Each profile adds its required env vars with documentation comments. | Skill format with steps: start with base env vars (DB, Auth, API), add per-profile vars, organize into sections with comments, validate no duplicate var names, output `.env.example`. |
+| 335 | `skills/init/env-generator.py` | REQUIRED | Generates `.env.example` content based on enabled profiles. Each profile has a defined set of env vars with defaults and documentation. | Python script: base vars dict (DATABASE_URL, JWT_SECRET, etc.), per-profile var dicts, merge based on enabled profiles, format with section headers and inline comments, output `.env.example` content. |
+
+---
+
+### 28.8 New Makefile targets
+
+The following additional Make targets are required to support initialization and skill machinery:
+
+| Target | Purpose | Script |
+|--------|---------|--------|
+| `init` | Run initialization pre-checks and guidance | `scripts/init-repo.sh` |
+| `idea:validate` | Validate idea.md completeness | `scripts/validate-idea.sh` |
+| `scaffold:module` | Scaffold a new domain module | `scripts/scaffold-module.sh` |
+| `profile:enable` | Enable an optional profile | `scripts/profile-enable.sh` |
+| `idea:queue` | Extract queue items from idea.md | `scripts/idea-to-queue.sh` |
+| `env:generate` | Generate .env from .env.example | `scripts/generate-env.sh` |
+| `inventory:check` | Verify all spec-required files exist | `scripts/inventory-check.sh` |
+
+---
+
+### 28.9 New `.cursor/commands/`
+
+| # | File | Status | Summary | Initial content |
+|---|------|--------|---------|-----------------|
+| 336 | `.cursor/commands/initialize.md` | REQUIRED | Reusable command: run the full repo initialization flow. Reads idea.md, invokes repo_initializer prompt, follows 6-phase procedure. | Command metadata: name "Initialize Repo", description, steps (validate idea.md → read repo_initializer prompt → execute 6-phase procedure), links to `prompts/repo_initializer.md` and `docs/procedures/initialize-repo.md`. |
+| 337 | `.cursor/commands/scaffold-module.md` | REQUIRED | Reusable command: scaffold a new domain module from entity definitions. | Command metadata: name "Scaffold Module", description, args (module name, entities), steps (run scaffolder → register router → create migration → add tests), links to `skills/backend/module-scaffolder.py`. |
+| 338 | `.cursor/commands/audit.md` | REQUIRED | Reusable command: run comprehensive repo self-audit. | Command metadata: name "Repo Audit", steps (make audit:self → review report → create issues for findings), links to `skills/agent-ops/repo-self-audit.py`. |
+
+---
+
+### 28.10 Enumeration summary update
+
+| Category | Previous count | New files | Updated total |
+|----------|---------------|-----------|---------------|
+| Root files | 10 | 2 (idea.md, CHANGELOG.md) | 12 |
+| `.cursor/rules/` | 6 | 3 | 9 |
+| `.cursor/commands/` | 2 | 3 | 5 |
+| `prompts/` | 19 | 3 | 22 |
+| `skills/` (with machinery) | 71 | 31 | 102 |
+| `docs/` | 79 | 14 | 93 |
+| `queue/` | 6 | 0 | 6 |
+| `.github/` | 10 | 0 | 10 |
+| `apps/` | 30 | 0 | 30 |
+| `packages/` | 10 | 0 | 10 |
+| `deploy/` | 9 | 0 | 9 |
+| `scripts/` | 23 | 7 | 30 |
+| **TOTAL** | **275** | **63** | **338** |
+
+---
+
+## 29. Full repository file and folder structure (updated)
 
 ```
 repo-root/
 ├── AGENTS.md
 ├── spec.md
 ├── README.md
+├── idea.md                                         # project intake form
+├── CHANGELOG.md
 ├── .env.example
 ├── docker-compose.yml
 ├── Makefile
@@ -1337,13 +1680,22 @@ repo-root/
 │   │   ├── security.md
 │   │   ├── queue.md
 │   │   ├── testing.md                              # recommended
-│   │   └── documentation.md                        # recommended
-│   └── commands/                                   # optional
-│       ├── validate.md
-│       └── queue-next.md
+│   │   ├── documentation.md                        # recommended
+│   │   ├── initialization.md
+│   │   ├── skills.md
+│   │   └── prompts.md
+│   └── commands/
+│       ├── validate.md                             # optional
+│       ├── queue-next.md                           # optional
+│       ├── initialize.md
+│       ├── scaffold-module.md
+│       └── audit.md
 │
 ├── prompts/
 │   ├── README.md
+│   ├── repo_initializer.md                         # master initialization prompt
+│   ├── domain_modeler.md
+│   ├── profile_configurator.md
 │   ├── task_planner.md
 │   ├── implementation_agent.md
 │   ├── reviewer_critic.md
@@ -1365,15 +1717,31 @@ repo-root/
 │
 ├── skills/
 │   ├── README.md
+│   ├── init/                                       # initialization skills + machinery
+│   │   ├── README.md
+│   │   ├── idea-validator.md
+│   │   ├── idea-validator.py
+│   │   ├── archetype-mapper.md
+│   │   ├── archetype-mapper.py
+│   │   ├── module-template-generator.md
+│   │   ├── queue-seeder.md
+│   │   ├── queue-seeder.py
+│   │   ├── profile-resolver.md
+│   │   ├── profile-resolver.py
+│   │   ├── env-generator.md
+│   │   └── env-generator.py
 │   ├── agent-ops/
 │   │   ├── queue-triage.md
+│   │   ├── queue-triage.py                         # machinery
 │   │   ├── task-planning.md
 │   │   ├── implementation-handoff.md
+│   │   ├── handoff-template-generator.py           # machinery
 │   │   ├── blocked-task-recovery.md
 │   │   ├── prompt-to-procedure-promotion.md
 │   │   ├── rule-refinement-after-mistakes.md
 │   │   ├── post-pr-audit.md
-│   │   └── repo-self-audit.md
+│   │   ├── repo-self-audit.md
+│   │   └── repo-self-audit.py                      # machinery
 │   ├── repo-governance/
 │   │   ├── writing-agents-md.md
 │   │   ├── authoring-cursor-rules.md
@@ -1381,7 +1749,10 @@ repo-root/
 │   │   ├── maintaining-procedural-docs.md
 │   │   ├── writing-adrs.md
 │   │   ├── changelogs-release-notes.md
-│   │   └── repository-hygiene.md
+│   │   ├── repository-hygiene.md
+│   │   ├── rule-linter.py                          # machinery
+│   │   ├── docs-freshness-checker.py               # machinery
+│   │   └── adr-index-generator.py                  # machinery
 │   ├── backend/
 │   │   ├── fastapi-router-module.md
 │   │   ├── service-repository-pattern.md
@@ -1399,7 +1770,11 @@ repo-root/
 │   │   ├── rate-limiting.md
 │   │   ├── retries-circuit-breakers.md
 │   │   ├── safe-migration-rollout.md
-│   │   └── sqlite-to-postgres.md
+│   │   ├── sqlite-to-postgres.md
+│   │   ├── module-scaffolder.py                    # machinery
+│   │   ├── error-code-registry.py                  # machinery
+│   │   ├── env-var-sync.py                         # machinery
+│   │   └── openapi-diff.py                         # machinery (recommended)
 │   ├── security/
 │   │   ├── secret-handling.md
 │   │   ├── token-lifecycle.md
@@ -1409,7 +1784,10 @@ repo-root/
 │   │   ├── image-scanning.md
 │   │   ├── sbom-attestation.md                     # recommended
 │   │   ├── secure-defaults-review.md
-│   │   └── incident-evidence-capture.md
+│   │   ├── incident-evidence-capture.md
+│   │   ├── secret-scanner.py                       # machinery
+│   │   ├── dependency-audit.py                     # machinery
+│   │   └── tenant-isolation-checker.py             # machinery
 │   ├── testing/
 │   │   ├── pytest-conventions.md
 │   │   ├── async-testing.md
@@ -1419,7 +1797,10 @@ repo-root/
 │   │   ├── regression-harness.md
 │   │   ├── load-test-basics.md                     # recommended
 │   │   ├── flaky-test-triage.md
-│   │   └── validation-loop-design.md
+│   │   ├── validation-loop-design.md
+│   │   ├── test-scaffolder.py                      # machinery
+│   │   ├── coverage-ratchet.py                     # machinery
+│   │   └── flaky-detector.py                       # machinery (recommended)
 │   ├── devops/
 │   │   ├── docker-multi-stage-builds.md
 │   │   ├── compose-profiles.md
@@ -1429,7 +1810,10 @@ repo-root/
 │   │   ├── release-promotion.md
 │   │   ├── artifact-publishing.md
 │   │   ├── environment-configuration.md
-│   │   └── backup-restore-drills.md                # recommended
+│   │   ├── backup-restore-drills.md                # recommended
+│   │   ├── dockerfile-linter.py                    # machinery
+│   │   ├── k8s-manifest-validator.py               # machinery
+│   │   └── compose-profile-matrix.py               # machinery (recommended)
 │   ├── ai-rag/                                     # optional profile
 │   │   ├── chromadb-ingestion.md
 │   │   ├── embedding-refresh.md
@@ -1455,12 +1839,18 @@ repo-root/
 │   │   ├── modular-monolith.md
 │   │   ├── data-layer.md
 │   │   ├── auth-multi-tenancy.md
-│   │   └── ai-rag-chromadb.md                      # optional
+│   │   ├── ai-rag-chromadb.md                      # optional
+│   │   ├── system-context.md
+│   │   ├── domain-model.md
+│   │   └── api-design.md
 │   ├── development/
 │   │   ├── README.md
 │   │   ├── local-setup.md
 │   │   ├── coding-standards.md
-│   │   └── testing-guide.md
+│   │   ├── testing-guide.md
+│   │   ├── environment-vars.md
+│   │   ├── module-patterns.md
+│   │   └── dependency-management.md
 │   ├── api/
 │   │   ├── README.md
 │   │   ├── endpoints.md
@@ -1471,7 +1861,9 @@ repo-root/
 │   │   ├── kubernetes.md
 │   │   ├── observability.md
 │   │   ├── backups.md
-│   │   └── rollback.md
+│   │   ├── rollback.md
+│   │   ├── configuration.md
+│   │   └── health-checks.md
 │   ├── security/
 │   │   ├── README.md
 │   │   ├── threat-model-stub.md
@@ -1480,6 +1872,10 @@ repo-root/
 │   │   └── token-lifecycle.md
 │   ├── procedures/
 │   │   ├── README.md
+│   │   ├── initialize-repo.md
+│   │   ├── scaffold-domain-module.md
+│   │   ├── enable-profile.md
+│   │   ├── validate-idea-md.md
 │   │   ├── start-queue-item.md
 │   │   ├── plan-change.md
 │   │   ├── implement-change.md
@@ -1504,6 +1900,7 @@ repo-root/
 │   │   └── template.md
 │   ├── agents/
 │   │   ├── README.md
+│   │   ├── initialization-guide.md
 │   │   ├── supervision-guide.md
 │   │   ├── reviewing-ai-diffs.md
 │   │   ├── pr-audit-checklist.md
@@ -1536,7 +1933,8 @@ repo-root/
 │   │   ├── coverage-policy.md
 │   │   └── flake-policy.md
 │   ├── queue/
-│   │   └── queue-system-overview.md
+│   │   ├── queue-system-overview.md
+│   │   └── queue-categories.md
 │   └── optional-clients/
 │       ├── web.md                                  # optional
 │       └── mobile.md                               # optional
@@ -1661,78 +2059,86 @@ repo-root/
     ├── release-prepare.sh
     ├── release-verify.sh
     ├── k8s-render.sh
-    └── k8s-validate.sh
+    ├── k8s-validate.sh
+    ├── init-repo.sh
+    ├── validate-idea.sh
+    ├── scaffold-module.sh
+    ├── profile-enable.sh
+    ├── idea-to-queue.sh                            # recommended
+    ├── generate-env.sh
+    └── inventory-check.sh
 ```
 
 ---
 
-## 28. Folder summary table
+## 30. Folder summary table
 
 | # | Folder | Purpose |
 |---|--------|---------|
-| 1 | `/` (repo root) | Top-level control plane and configuration. Contains `AGENTS.md`, `spec.md`, `README.md`, `Makefile`, `pyproject.toml`, `docker-compose.yml`, `.env.example`, and legal files. Everything an agent or human needs to orient and begin work. |
-| 2 | `.cursor/` | Machine-control layer for Cursor IDE. Houses persistent rules and optional reusable commands that shape agent behavior during development sessions. |
-| 3 | `.cursor/rules/` | Always-on and path-scoped constraints. Global rules apply everywhere; path-scoped rules activate only in matching directories. Agents load these automatically. |
-| 4 | `.cursor/commands/` | Optional reusable Cursor command definitions. Shortcuts that invoke canonical scripts or document exact command sequences. Must not contradict `Makefile` targets. |
-| 5 | `prompts/` | Reusable, versioned prompt templates for recurring agent roles. Each template has metadata (purpose, inputs, outputs, linked procedures/skills) and a prompt body with placeholders. |
-| 6 | `skills/` | Executable playbooks organized by category. Each skill is a step-by-step procedure for a specialized task with prerequisites, commands, validation, failure modes, and cross-references. |
-| 7 | `skills/agent-ops/` | Skills for agent-specific operations: queue triage, task planning, handoffs, blocked recovery, prompt promotion, rule refinement, auditing. |
-| 8 | `skills/repo-governance/` | Skills for maintaining the repository machine: writing `AGENTS.md`, authoring rules, maintaining procedures, writing ADRs, changelogs, hygiene. |
-| 9 | `skills/backend/` | Skills for backend/platform development: FastAPI patterns, service layers, health endpoints, API versioning, background jobs, configuration, logging, metrics, tracing, rate limiting, migrations. |
-| 10 | `skills/security/` | Skills for security and compliance: secret handling, token lifecycle, RBAC/tenant isolation, dependency review, code/image scanning, SBOM, incident evidence. |
-| 11 | `skills/testing/` | Skills for testing and quality: pytest conventions, async testing, contract testing, snapshots, smoke tests, regression, load testing, flaky triage, validation loops. |
-| 12 | `skills/devops/` | Skills for DevOps and operations: Docker builds, Compose profiles, K8s probes, rollout/rollback, GitHub Actions, release promotion, artifact publishing, env config, backup/restore. |
-| 13 | `skills/ai-rag/` | Skills for AI/RAG operations (optional profile): ChromaDB ingestion, embedding refresh, retrieval evaluation, prompt versioning, kill switch, provider abstraction, safety review. |
-| 14 | `skills/frontend/` | Skills for optional frontend/mobile profiles: generated clients, React API integration, Expo auth storage, frontend env handling. |
-| 15 | `docs/` | Documentation hub. All conceptual and operational documentation organized by subsystem. Every major subsystem has both a conceptual explanation (why) and an operational explanation (how). |
-| 16 | `docs/getting-started/` | Onboarding documentation: prerequisites, quickstart from clone to running dev server with passing tests. |
-| 17 | `docs/architecture/` | Architecture documentation: modular monolith design, data layer strategy, auth/multi-tenancy, AI/RAG architecture. |
-| 18 | `docs/development/` | Development documentation: local setup with all Make targets, coding standards, testing guide. |
-| 19 | `docs/api/` | API documentation: endpoint catalog, error code taxonomy. |
-| 20 | `docs/operations/` | Operations documentation: Docker, Kubernetes, observability, backups, rollback procedures. |
-| 21 | `docs/security/` | Security documentation: threat model, secrets management, incident response, token lifecycle. |
-| 22 | `docs/procedures/` | Standard Operating Procedures. Canonical workflows written for agents first, usable by humans. Each has ordered steps, exact commands, expected artifacts, validation, and failure handling. |
-| 23 | `docs/adr/` | Architecture Decision Records. Index of all architectural decisions with template for new ones. |
-| 24 | `docs/agents/` | Agent supervision documentation for human maintainers: how to supervise agents, review AI diffs, audit PRs, ratchet quality, evolve from incidents. |
-| 25 | `docs/prompts/` | Prompt library documentation: conventions, metadata format, authoring guide, index of all templates. |
-| 26 | `docs/runbooks/` | Operational runbooks for specific failure scenarios: API down, DB failure, JWT key rotation, ChromaDB unavailable. |
-| 27 | `docs/release/` | Release documentation: versioning strategy, promotion path (dev → staging → prod), changelog guide. |
-| 28 | `docs/repo-governance/` | Repository governance documentation: improvement loops, audits, procedure drift detection, documentation freshness. |
-| 29 | `docs/quality/` | Quality documentation: testing strategy, coverage policy and floors, flaky test policy. |
-| 30 | `docs/queue/` | Queue system documentation: conceptual overview of the CSV-based agent work orchestration system. |
-| 31 | `docs/optional-clients/` | Documentation for optional application profiles (web, mobile): when to enable, setup, operational burden. |
-| 32 | `queue/` | Agent work orchestration lane. CSV-based queue with strict lifecycle, single-lane processing, audit logging, and validation tooling. |
-| 33 | `.github/` | GitHub repository management: CI/CD workflows, issue templates, PR template, code ownership, dependency management, labels. |
-| 34 | `.github/workflows/` | GitHub Actions workflow definitions: CI (lint, typecheck, test, build, scan), CD (deploy through environments), security scanning. |
-| 35 | `.github/ISSUE_TEMPLATE/` | GitHub issue templates: structured forms for bug reports, feature requests, and queue items. |
-| 36 | `apps/` | Application code. Contains the primary API and optional frontend/mobile profiles. Each app may have its own scoped `AGENTS.md`. |
-| 37 | `apps/api/` | FastAPI modular monolith — the primary application. Health endpoints, auth stubs, tenant hooks, Alembic migrations, Docker build, tests. |
-| 38 | `apps/api/alembic/` | Database migration configuration and version scripts (Alembic). |
-| 39 | `apps/api/alembic/versions/` | Individual migration version files. Starts with `.gitkeep`; populated as schema evolves. |
-| 40 | `apps/api/src/` | API application source code organized by bounded context (health, auth, tenancy). |
-| 41 | `apps/api/src/health/` | Health module: health, readiness, and liveness endpoints for operational monitoring and K8s probes. |
-| 42 | `apps/api/src/auth/` | Authentication module: register, login, refresh, logout endpoints with JWT token management. Policy-complete stubs with extension points. |
-| 43 | `apps/api/src/tenancy/` | Multi-tenancy module: tenant context middleware, tenant models, query scoping mixin. |
-| 44 | `apps/api/tests/` | API test suite: health endpoint tests, auth endpoint tests, shared fixtures and configuration. |
-| 45 | `apps/web/` | Optional web frontend placeholder. Contains README and scoped AGENTS.md when profile is enabled. |
-| 46 | `apps/mobile/` | Optional mobile app placeholder. Contains README and scoped AGENTS.md when profile is enabled. |
-| 47 | `packages/` | Shared packages used across bounded contexts and applications. Contracts, task interfaces, AI interfaces. |
-| 48 | `packages/contracts/` | Shared Pydantic models and OpenAPI schemas. The contract layer for the modular monolith — backward compatibility is mandatory. |
-| 49 | `packages/tasks/` | Background task interfaces. Abstract base classes for task submission and handling. Workers are an optional profile. |
-| 50 | `packages/ai/` | AI/RAG interfaces (optional profile). Provider-agnostic abstractions for embedding, retrieval, and generation with ChromaDB implementation. |
-| 51 | `deploy/` | Deployment configuration for Docker and Kubernetes. |
-| 52 | `deploy/docker/` | Docker-specific deployment documentation and configurations. |
-| 53 | `deploy/k8s/` | Kubernetes manifests organized with Kustomize: base resources and environment-specific overlays. |
-| 54 | `deploy/k8s/base/` | Base Kubernetes manifests: Deployment, Service, ConfigMap, Kustomization. Shared across all environments. |
-| 55 | `deploy/k8s/overlays/` | Environment-specific Kustomize overlays that patch base manifests for dev, staging, and production. |
-| 56 | `deploy/k8s/overlays/dev/` | Dev environment overlay: single replica, debug settings, relaxed resource limits. |
-| 57 | `deploy/k8s/overlays/staging/` | Staging environment overlay: production-like configuration at lower scale. |
-| 58 | `deploy/k8s/overlays/prod/` | Production environment overlay: full scale, strict settings, pod disruption budgets. |
-| 59 | `scripts/` | Shell script implementations backing Makefile targets. The execution layer for all canonical commands. |
+| 1 | `/` (repo root) | Top-level control plane and configuration. Contains `AGENTS.md`, `spec.md`, `idea.md`, `README.md`, `Makefile`, `pyproject.toml`, `docker-compose.yml`, `.env.example`, `CHANGELOG.md`, and legal files. Everything an agent or human needs to orient and begin work. |
+| 2 | `.cursor/` | Machine-control layer for Cursor IDE. Houses persistent rules and reusable commands that shape agent behavior during development sessions. |
+| 3 | `.cursor/rules/` | Always-on and path-scoped constraints. Global rules apply everywhere; path-scoped rules activate only in matching directories. Agents load these automatically. Includes initialization, skills, and prompts rules. |
+| 4 | `.cursor/commands/` | Reusable Cursor command definitions. Shortcuts that invoke canonical scripts or document exact command sequences. Includes initialization, scaffolding, and audit commands. |
+| 5 | `prompts/` | Reusable, versioned prompt templates for recurring agent roles. Each template has metadata (purpose, inputs, outputs, linked procedures/skills) and a prompt body with placeholders. Includes the master `repo_initializer` prompt. |
+| 6 | `skills/` | Executable playbooks organized by category. Each skill has a `.md` playbook and may include supporting code (machinery) for automation, validation, and generation. |
+| 7 | `skills/init/` | Initialization skills and machinery. Used during repo initialization from `idea.md`: validation, archetype mapping, module scaffolding, queue seeding, profile resolution, env generation. |
+| 8 | `skills/agent-ops/` | Skills for agent-specific operations: queue triage, task planning, handoffs, blocked recovery, prompt promotion, rule refinement, auditing. Includes Python machinery for queue analysis, handoff generation, and self-audit. |
+| 9 | `skills/repo-governance/` | Skills for maintaining the repository machine: writing `AGENTS.md`, authoring rules, maintaining procedures, writing ADRs, changelogs, hygiene. Includes machinery for rule linting, docs freshness checking, and ADR index generation. |
+| 10 | `skills/backend/` | Skills for backend/platform development: FastAPI patterns, service layers, health endpoints, API versioning, background jobs, configuration, logging, metrics, tracing, rate limiting, migrations. Includes machinery for module scaffolding, error code registry, env var sync, and OpenAPI diffing. |
+| 11 | `skills/security/` | Skills for security and compliance: secret handling, token lifecycle, RBAC/tenant isolation, dependency review, code/image scanning, SBOM, incident evidence. Includes machinery for secret scanning, dependency auditing, and tenant isolation checking. |
+| 12 | `skills/testing/` | Skills for testing and quality: pytest conventions, async testing, contract testing, snapshots, smoke tests, regression, load testing, flaky triage, validation loops. Includes machinery for test scaffolding, coverage ratcheting, and flaky detection. |
+| 13 | `skills/devops/` | Skills for DevOps and operations: Docker builds, Compose profiles, K8s probes, rollout/rollback, GitHub Actions, release promotion, artifact publishing, env config, backup/restore. Includes machinery for Dockerfile linting, K8s manifest validation, and Compose profile testing. |
+| 14 | `skills/ai-rag/` | Skills for AI/RAG operations (optional profile): ChromaDB ingestion, embedding refresh, retrieval evaluation, prompt versioning, kill switch, provider abstraction, safety review. |
+| 15 | `skills/frontend/` | Skills for optional frontend/mobile profiles: generated clients, React API integration, Expo auth storage, frontend env handling. |
+| 16 | `docs/` | Documentation hub. All conceptual and operational documentation organized by subsystem. Every major subsystem has both a conceptual explanation (why) and an operational explanation (how). |
+| 17 | `docs/getting-started/` | Onboarding documentation: prerequisites, quickstart from clone to running dev server with passing tests. |
+| 18 | `docs/architecture/` | Architecture documentation: modular monolith design, data layer strategy, auth/multi-tenancy, AI/RAG architecture, system context, domain model, API design. |
+| 19 | `docs/development/` | Development documentation: local setup with all Make targets, coding standards, testing guide, env var reference, module patterns, dependency management. |
+| 20 | `docs/api/` | API documentation: endpoint catalog, error code taxonomy. |
+| 21 | `docs/operations/` | Operations documentation: Docker, Kubernetes, observability, backups, rollback, configuration, health checks. |
+| 22 | `docs/security/` | Security documentation: threat model, secrets management, incident response, token lifecycle. |
+| 23 | `docs/procedures/` | Standard Operating Procedures. Canonical workflows written for agents first, usable by humans. Includes initialization, scaffolding, profile enablement, and idea validation procedures alongside all original SOPs. |
+| 24 | `docs/adr/` | Architecture Decision Records. Index of all architectural decisions with template for new ones. |
+| 25 | `docs/agents/` | Agent supervision documentation for human maintainers: initialization guide, supervision, review AI diffs, audit PRs, ratchet quality, evolve from incidents. |
+| 26 | `docs/prompts/` | Prompt library documentation: conventions, metadata format, authoring guide, index of all templates. |
+| 27 | `docs/runbooks/` | Operational runbooks for specific failure scenarios: API down, DB failure, JWT key rotation, ChromaDB unavailable. |
+| 28 | `docs/release/` | Release documentation: versioning strategy, promotion path (dev → staging → prod), changelog guide. |
+| 29 | `docs/repo-governance/` | Repository governance documentation: improvement loops, audits, procedure drift detection, documentation freshness. |
+| 30 | `docs/quality/` | Quality documentation: testing strategy, coverage policy and floors, flaky test policy. |
+| 31 | `docs/queue/` | Queue system documentation: conceptual overview of the CSV-based agent work orchestration system, queue category registry. |
+| 32 | `docs/optional-clients/` | Documentation for optional application profiles (web, mobile): when to enable, setup, operational burden. |
+| 33 | `queue/` | Agent work orchestration lane. CSV-based queue with strict lifecycle, single-lane processing, audit logging, and validation tooling. |
+| 34 | `.github/` | GitHub repository management: CI/CD workflows, issue templates, PR template, code ownership, dependency management, labels. |
+| 35 | `.github/workflows/` | GitHub Actions workflow definitions: CI (lint, typecheck, test, build, scan), CD (deploy through environments), security scanning. |
+| 36 | `.github/ISSUE_TEMPLATE/` | GitHub issue templates: structured forms for bug reports, feature requests, and queue items. |
+| 37 | `apps/` | Application code. Contains the primary API and optional frontend/mobile profiles. Each app may have its own scoped `AGENTS.md`. |
+| 38 | `apps/api/` | FastAPI modular monolith — the primary application. Health endpoints, auth stubs, tenant hooks, Alembic migrations, Docker build, tests. |
+| 39 | `apps/api/alembic/` | Database migration configuration and version scripts (Alembic). |
+| 40 | `apps/api/alembic/versions/` | Individual migration version files. Starts with `.gitkeep`; populated as schema evolves. |
+| 41 | `apps/api/src/` | API application source code organized by bounded context (health, auth, tenancy). |
+| 42 | `apps/api/src/health/` | Health module: health, readiness, and liveness endpoints for operational monitoring and K8s probes. |
+| 43 | `apps/api/src/auth/` | Authentication module: register, login, refresh, logout endpoints with JWT token management. Policy-complete stubs with extension points. |
+| 44 | `apps/api/src/tenancy/` | Multi-tenancy module: tenant context middleware, tenant models, query scoping mixin. |
+| 45 | `apps/api/tests/` | API test suite: health endpoint tests, auth endpoint tests, shared fixtures and configuration. |
+| 46 | `apps/web/` | Optional web frontend placeholder. Contains README and scoped AGENTS.md when profile is enabled. |
+| 47 | `apps/mobile/` | Optional mobile app placeholder. Contains README and scoped AGENTS.md when profile is enabled. |
+| 48 | `packages/` | Shared packages used across bounded contexts and applications. Contracts, task interfaces, AI interfaces. |
+| 49 | `packages/contracts/` | Shared Pydantic models and OpenAPI schemas. The contract layer for the modular monolith — backward compatibility is mandatory. |
+| 50 | `packages/tasks/` | Background task interfaces. Abstract base classes for task submission and handling. Workers are an optional profile. |
+| 51 | `packages/ai/` | AI/RAG interfaces (optional profile). Provider-agnostic abstractions for embedding, retrieval, and generation with ChromaDB implementation. |
+| 52 | `deploy/` | Deployment configuration for Docker and Kubernetes. |
+| 53 | `deploy/docker/` | Docker-specific deployment documentation and configurations. |
+| 54 | `deploy/k8s/` | Kubernetes manifests organized with Kustomize: base resources and environment-specific overlays. |
+| 55 | `deploy/k8s/base/` | Base Kubernetes manifests: Deployment, Service, ConfigMap, Kustomization. Shared across all environments. |
+| 56 | `deploy/k8s/overlays/` | Environment-specific Kustomize overlays that patch base manifests for dev, staging, and production. |
+| 57 | `deploy/k8s/overlays/dev/` | Dev environment overlay: single replica, debug settings, relaxed resource limits. |
+| 58 | `deploy/k8s/overlays/staging/` | Staging environment overlay: production-like configuration at lower scale. |
+| 59 | `deploy/k8s/overlays/prod/` | Production environment overlay: full scale, strict settings, pod disruption budgets. |
+| 60 | `scripts/` | Shell script implementations backing Makefile targets. The execution layer for all canonical commands including initialization and scaffolding. |
 
 ---
 
-## 29. File summary table — every file
+## 31. File summary table — every file
 
 | # | File path | Purpose | Spec reference |
 |---|-----------|---------|----------------|
@@ -2011,19 +2417,82 @@ repo-root/
 | 273 | `scripts/release-verify.sh` | Pre-tag verification → `make release:verify` | §10.2 |
 | 274 | `scripts/k8s-render.sh` | Render K8s manifests → `make k8s:render` | §10.2 |
 | 275 | `scripts/k8s-validate.sh` | Validate K8s manifests → `make k8s:validate` | §10.2 |
+| 276 | `idea.md` | Project intake form — singular input for repo initialization | §27.2 |
+| 277 | `CHANGELOG.md` | Project changelog (Keep a Changelog format) | §28.1 |
+| 278 | `prompts/repo_initializer.md` | Master initialization prompt — reads idea.md, scaffolds entire repo | §27.5 |
+| 279 | `prompts/domain_modeler.md` | Role: analyze domain model, produce bounded context map and scaffolding plan | §28.2 |
+| 280 | `prompts/profile_configurator.md` | Role: enable/disable profiles based on idea.md selections | §28.2 |
+| 281 | `docs/procedures/initialize-repo.md` | SOP: initialize repo from idea.md (6-phase procedure) | §27.4 |
+| 282 | `docs/procedures/scaffold-domain-module.md` | SOP: scaffold new bounded context module in apps/api/src/ | §28.3 |
+| 283 | `docs/procedures/enable-profile.md` | SOP: enable optional profile with dependency checking | §28.3 |
+| 284 | `docs/procedures/validate-idea-md.md` | SOP: validate idea.md completeness before initialization | §28.3 |
+| 285 | `docs/architecture/system-context.md` | System context: boundary, actors, integrations, data flows | §28.4 |
+| 286 | `docs/architecture/domain-model.md` | Domain model: entities, relationships, bounded context map | §28.4 |
+| 287 | `docs/architecture/api-design.md` | API design decisions: style, versioning, pagination, rate limiting | §28.4 |
+| 288 | `docs/development/environment-vars.md` | Environment variable reference with types, defaults, and profiles | §28.4 |
+| 289 | `docs/development/module-patterns.md` | Standard module structure reference for apps/api/src/ | §28.4 |
+| 290 | `docs/development/dependency-management.md` | Dependency management: adding, removing, upgrading, lockfile | §28.4 |
+| 291 | `docs/operations/configuration.md` | Configuration flow: env vars → Pydantic settings → app code | §28.4 |
+| 292 | `docs/operations/health-checks.md` | Health endpoint contracts, probe config, degraded states | §28.4 |
+| 293 | `docs/agents/initialization-guide.md` | Guide for the initialization process and idea.md | §28.4 |
+| 294 | `docs/queue/queue-categories.md` | Queue category registry with descriptions and validation | §28.4 |
+| 295 | `.cursor/rules/initialization.md` | Rules for repo initialization: procedure compliance, validation | §28.5 |
+| 296 | `.cursor/rules/skills.md` | Rules for skill files: structure, machinery, cross-references | §28.5 |
+| 297 | `.cursor/rules/prompts.md` | Rules for prompt files: metadata, placeholders, validation | §28.5 |
+| 298 | `scripts/init-repo.sh` | Initialization pre-checks and guidance → `make init` | §28.6 |
+| 299 | `scripts/validate-idea.sh` | Validate idea.md completeness → `make idea:validate` | §28.6 |
+| 300 | `scripts/scaffold-module.sh` | Scaffold domain module → `make scaffold:module` | §28.6 |
+| 301 | `scripts/profile-enable.sh` | Enable optional profile → `make profile:enable` | §28.6 |
+| 302 | `scripts/idea-to-queue.sh` | Extract queue items from idea.md → `make idea:queue` (recommended) | §28.6 |
+| 303 | `scripts/generate-env.sh` | Generate .env from .env.example → `make env:generate` | §28.6 |
+| 304 | `scripts/inventory-check.sh` | Verify spec-required files exist → `make inventory:check` | §28.6 |
+| 305 | `skills/agent-ops/queue-triage.py` | Machinery: queue readiness analyzer and triage report generator | §28.7 |
+| 306 | `skills/agent-ops/handoff-template-generator.py` | Machinery: auto-generate handoff docs from git diff and queue state | §28.7 |
+| 307 | `skills/agent-ops/repo-self-audit.py` | Machinery: automated spec compliance checker and audit reporter | §28.7 |
+| 308 | `skills/repo-governance/rule-linter.py` | Machinery: lint .cursor/rules/ for structure, globs, contradictions | §28.7 |
+| 309 | `skills/repo-governance/docs-freshness-checker.py` | Machinery: detect stale docs by comparing git timestamps | §28.7 |
+| 310 | `skills/repo-governance/adr-index-generator.py` | Machinery: generate ADR index from ADR files | §28.7 |
+| 311 | `skills/backend/module-scaffolder.py` | Machinery: generate FastAPI module from templates (router, models, schemas, service, tests) | §28.7 |
+| 312 | `skills/backend/error-code-registry.py` | Machinery: validate error code uniqueness and documentation coverage | §28.7 |
+| 313 | `skills/backend/env-var-sync.py` | Machinery: sync .env.example with actual env var usage in code | §28.7 |
+| 314 | `skills/backend/openapi-diff.py` | Machinery: detect breaking API changes against baseline (recommended) | §28.7 |
+| 315 | `skills/security/secret-scanner.py` | Machinery: scan codebase for potential secrets and high-entropy strings | §28.7 |
+| 316 | `skills/security/dependency-audit.py` | Machinery: audit Python deps for CVEs with severity classification | §28.7 |
+| 317 | `skills/security/tenant-isolation-checker.py` | Machinery: static analysis for missing tenant filters in queries | §28.7 |
+| 318 | `skills/testing/test-scaffolder.py` | Machinery: generate test stubs from router/service analysis | §28.7 |
+| 319 | `skills/testing/coverage-ratchet.py` | Machinery: enforce and update coverage floor | §28.7 |
+| 320 | `skills/testing/flaky-detector.py` | Machinery: detect flaky tests via repeated runs (recommended) | §28.7 |
+| 321 | `skills/devops/dockerfile-linter.py` | Machinery: lint Dockerfiles for best practices | §28.7 |
+| 322 | `skills/devops/k8s-manifest-validator.py` | Machinery: validate K8s manifests beyond schema compliance | §28.7 |
+| 323 | `skills/devops/compose-profile-matrix.py` | Machinery: test Compose profile combinations (recommended) | §28.7 |
+| 324 | `skills/init/README.md` | Initialization skills index | §28.7 |
+| 325 | `skills/init/idea-validator.md` | Skill [FULL]: validate idea.md completeness and consistency | §28.7 |
+| 326 | `skills/init/idea-validator.py` | Machinery: parse and validate idea.md structure and content | §28.7 |
+| 327 | `skills/init/archetype-mapper.md` | Skill [FULL]: map archetype to profiles, modules, and file plan | §28.7 |
+| 328 | `skills/init/archetype-mapper.py` | Machinery: archetype-to-profile mapping with JSON plan output | §28.7 |
+| 329 | `skills/init/module-template-generator.md` | Skill [FULL]: generate all files for domain module from entities | §28.7 |
+| 330 | `skills/init/queue-seeder.md` | Skill: populate queue.csv from idea.md | §28.7 |
+| 331 | `skills/init/queue-seeder.py` | Machinery: extract and format queue items from idea.md | §28.7 |
+| 332 | `skills/init/profile-resolver.md` | Skill: resolve profile enablement with dependency checking | §28.7 |
+| 333 | `skills/init/profile-resolver.py` | Machinery: profile dependency graph resolution | §28.7 |
+| 334 | `skills/init/env-generator.md` | Skill: generate .env.example for enabled profiles | §28.7 |
+| 335 | `skills/init/env-generator.py` | Machinery: profile-aware env var generation | §28.7 |
+| 336 | `.cursor/commands/initialize.md` | Command: run full repo initialization flow | §28.9 |
+| 337 | `.cursor/commands/scaffold-module.md` | Command: scaffold new domain module | §28.9 |
+| 338 | `.cursor/commands/audit.md` | Command: run comprehensive repo self-audit | §28.9 |
 
 ---
 
-## 30. Document control (updated)
+## 32. Document control (updated)
 
 | Item | Value |
 |------|--------|
 | **Canonical spec file** | `spec.md` |
-| **Version** | 2.1 |
+| **Version** | 3.0 |
 | **Owners** | Repository maintainers |
 | **Change process** | PR with rationale; bump version header when breaking; ADR if architectural |
-| **Total enumerated files** | 275 |
-| **Total enumerated folders** | 59 |
+| **Total enumerated files** | 338 |
+| **Total enumerated folders** | 60 |
 
 ---
 
