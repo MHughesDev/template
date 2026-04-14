@@ -36,6 +36,8 @@ htmlcov/
 # Documentation (not needed in image)
 docs/
 *.md
+# pyproject.toml references readme = "README.md" — must be in build context for hatchling
+!README.md
 
 # Queue (operational, not app code)
 queue/
