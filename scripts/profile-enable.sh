@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 # scripts/profile-enable.sh
-# Placeholder for enabling optional app profiles.
+# Resolve optional profile enablement (see skills/init/profile-resolver.py).
 
 set -euo pipefail
 
-if [[ -z "${PROFILE:-}" ]]; then
-  echo "Usage: PROFILE=web make profile:enable" >&2
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+PROFILE="${PROFILE:-}"
+if [[ -z "$PROFILE" ]]; then
+  echo "Usage: PROFILE=<name> make profile:enable" >&2
+  echo "Available profiles: web, mobile, ai, worker" >&2
   exit 1
 fi
-echo "Profile enablement for '$PROFILE' is manual in this template (update docs + deps)."
-exit 0
+
+exec python3 "$ROOT/skills/init/profile-resolver.py" --repo-root "$ROOT" --profile "$PROFILE" "$@"
