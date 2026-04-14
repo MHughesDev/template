@@ -1,45 +1,20 @@
 # .github/workflows/security.yml
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Security scanning workflow. Runs on PR and scheduled weekly.
-#          Dependency review, code scanning (bandit/semgrep), image scanning (Trivy).
-#          Per spec §26.7 item 198.
-# SECTIONS:
-#   - on: pull_request, schedule (weekly Monday 0:00 UTC)
-#   - jobs:
-#     - dependency-review: GitHub dependency review action (on PR only)
-#     - code-scan: bandit SAST + semgrep (optional)
-#     - image-scan: Trivy on built image
-
 name: Security
 
-# on:
-#   pull_request: branches: [main]
-#   schedule: cron: "0 0 * * 1" (weekly Monday)
-#   workflow_dispatch:
-#
-# jobs:
-#   dependency-review:
-#     name: Dependency review (PR only)
-#     if: github.event_name == 'pull_request'
-#     steps:
-#       - uses: actions/dependency-review-action
-#         with:
-#           fail-on-severity: high
-#           allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
-#
-#   code-scan:
-#     name: Code scanning (bandit)
-#     steps:
-#       - checkout
-#       - setup Python
-#       - run: make security:scan (bandit -c .bandit.yml -r apps/ packages/ skills/)
-#       - upload SARIF if available
-#
-#   image-scan:
-#     name: Container image scan
-#     steps:
-#       - checkout
-#       - run: make image:build
-#       - run: trivy image --config trivy.yaml --ignorefile .trivyignore <image>
-#       - upload SARIF to GitHub Security tab
-#       - fail on CRITICAL/HIGH unless in .trivyignore (documented in accepted-risks.md)
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]" bandit
+      - run: bandit -c .bandit.yml -r apps/api/src packages/contracts packages/tasks

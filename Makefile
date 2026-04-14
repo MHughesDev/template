@@ -1,26 +1,5 @@
 # Makefile
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: Single canonical command entrypoint. Every recurring operation has a named target.
-#          Agents MUST use these targets over ad hoc shell commands. Per spec §26.1 item 6 and §10.2.
-# SECTIONS:
-#   - Help target (runs by default: make or make help)
-#   - Development targets: dev, lint, fmt, typecheck, test variants
-#   - Database targets: migrate, migrate:create, db:reset, db:seed
-#   - Documentation targets: docs:check, docs:generate, docs:index
-#   - Queue targets: queue:peek, queue:validate, queue:archive, queue:graph, queue:analyze
-#   - Automation targets: prompt:list, skills:list, rules:check, audit:self
-#   - Security targets: security:scan, image:build, image:scan
-#   - Release targets: release:prepare, release:verify
-#   - K8s targets: k8s:render, k8s:validate
-#   - Docker targets: docker:up, docker:down
-#   - Initialization targets: init, idea:validate, scaffold:module, profile:enable, idea:queue, env:generate, inventory:check
-#   - Utility: clean, health:check
-# DESIGN DECISIONS:
-#   - All targets delegate to scripts/ for non-trivial logic
-#   - .PHONY declarations prevent make from looking for files with target names
-#   - help target parses ## comments for self-documentation
-#   - Each target has a ## comment for make help output
-#   - Shell: bash (not sh) for consistent behavior
+# Canonical command entrypoint for the repository (see AGENTS.md and docs/development/local-setup.md).
 
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help

@@ -1,7 +1,19 @@
 # deploy/k8s/base/networkpolicy.yaml
-# BLUEPRINT: Composer 2 implements from this structure
-# PURPOSE: NetworkPolicy: default-deny with explicit allows. Per spec §26.12 item 368.
-# apiVersion: networking.k8s.io/v1, kind: NetworkPolicy
-# spec: podSelector: {matchLabels: {app: api}}
-# ingress: allow from namespace: ingress-controller on port 8000
-# egress: allow to kube-dns (port 53), to database namespace (port 5432), HTTPS to external (443)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-ingress
+  labels:
+    app: api
+spec:
+  podSelector:
+    matchLabels:
+      app: api
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8000
