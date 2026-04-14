@@ -5,80 +5,69 @@ description: Universal constraints applied to every agent interaction in this re
 
 # .cursor/rules/global.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Referenced by: AGENTS.md §13, PYTHON_PROCEDURES.md -->
-<!-- - Enforced by: scripts/audit-self.sh, scripts/rules-check.sh -->
+Universal constraints for **every** agent session: commits, scope, evidence, file title comments (spec §1.7), mandatory skill search (spec §4.1 item 13), and forbidden patterns. See **[AGENTS.md](../../AGENTS.md)**, **[PYTHON_PROCEDURES.md](../../PYTHON_PROCEDURES.md)**, and **`scripts/audit-self.sh`**.
 
-> PURPOSE: Universal constraints applied to every agent interaction. Covers commit message format, scope discipline, evidence requirements, forbidden behaviors, file title comment standard (§1.7), and mandatory skill search before execution (§4.1 item 13). Per spec §26.2 item 11.
+## Commit standards
 
-## Section: Commit Standards
+1. Use **Conventional Commits**: `<type>(<scope>): <short description>` with `type` in `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `ci`, `style`, `perf`, `security`.
+2. Subject line **≤ 72** characters.
+3. Body explains **why**, not a diff narration; reference queue IDs when applicable (`Closes queue/Q-001`).
+4. Never commit with **`--no-verify`** (bypasses hooks).
+5. Prefer **one logical change** per commit; squash noise before review.
+6. No meaningless subjects (`fix`, `update`, `WIP` without context).
 
-> CONTENT: Numbered rules for commit messages. Rules:
-> 1. Use Conventional Commits format: `<type>(<scope>): <short description>` where type is one of: feat, fix, docs, refactor, test, chore, ci, style, perf, security
-> 2. Short description ≤ 72 characters
-> 3. Body (if present) explains WHY not WHAT; references queue ID if applicable (`Closes queue/Q-001`)
-> 4. NEVER commit with `--no-verify` (bypasses pre-commit hooks)
-> 5. One logical change per commit; squash accidental commits before PR
-> 6. Commit message must accurately describe the change — no "WIP", "fix", "update" without context
+## Scope discipline
 
-## Section: Scope Discipline
+1. Edit only files in the **planned scope** for the current task.
+2. Out-of-scope findings: **stop**, open a queue row or issue, reference in the PR — do not fix in the same PR without approval.
+3. Before editing, confirm the file is in the plan.
+4. **"While I'm here"** fixes need explicit approval or a follow-up item.
+5. If scope grows by **~20%+**, re-plan and document the expansion.
 
-> CONTENT: Rules for preventing scope creep. Rules:
-> 1. Only modify files directly within the scope of the current task
-> 2. Out-of-scope discoveries: stop, create a queue row or GitHub issue, reference it in PR, do NOT fix in this PR
-> 3. Before any file edit, verify the file is in the planned scope (established in planning step)
-> 4. "While I'm here" fixes require explicit approval — create a separate PR
-> 5. If scope expands by more than 20% from the plan, re-plan and document the expansion
+## Evidence and handoff
 
-## Section: Evidence and Handoff Requirements
+1. PR descriptions include: **commands run** (with key output), **files changed**, **tests/docs** updates, **risks**.
+2. Queue **notes** updated before archive (PR URL, completion metadata per SOP).
+3. If CI fails, paste **failure output** — do not only say "CI failed".
+4. After deploy or migration, capture **health check** output when relevant.
+5. Architectural decisions need an **ADR** and a link in the PR.
 
-> CONTENT: Rules for what evidence must accompany every meaningful change. Rules:
-> 1. Every PR description must include: commands run + key output, files changed list, tests added/updated, docs updated
-> 2. Queue notes must be updated before archiving (PR URL, completion date)
-> 3. If a command fails in CI, paste the failure output in PR comments — do not just say "CI failed"
-> 4. After any deployment or migration, capture health check output as evidence
-> 5. ADR required for architectural decisions; link to the ADR in PR description
+## File title comment standard (spec §1.7)
 
-## Section: File Title Comment Standard (§1.7)
+1. **Python:** first line `# path/from/repo/root/file.py`.
+2. **Markdown:** first line `# path/to/file.md` as H1, or `<!-- path/to/file.md -->` when the visible title must differ.
+3. **YAML:** first line `# filename.yml` (path or filename).
+4. **Shell:** after shebang, `# scripts/name.sh`.
+5. **Dockerfile:** first line `# path/to/Dockerfile` (or `# Dockerfile`).
+6. **CSV:** `# queue/queue.csv` (or path) **before** the header row.
+7. **Batch:** `REM filename.bat`.
+8. **JSON:** no comment line (spec waiver).
+9. **`scripts/audit-self.sh`** flags files missing title comments (where applicable).
+10. No empty files — stubs at least contain the title line.
 
-> CONTENT: Rules enforcing the file title comment standard. Per spec §1.7 — every file must begin with a path/title comment.
-> Rules:
-> 1. Python files: first line must be `# path/to/file.py` (exact path from repo root)
-> 2. Markdown files: first line must be `# path/to/filename.md` (H1 with path) OR `<!-- path/to/filename.md -->` when different H1 is needed
-> 3. YAML files: first line must be `# filename.yml` (just filename or full path)
-> 4. Shell scripts: after shebang line, next line is `# scripts/filename.sh`
-> 5. Dockerfile: first non-comment line is `# apps/api/Dockerfile` or equivalent
-> 6. CSV files: `# queue/queue.csv` before the header row
-> 7. Batch files: `REM filename.bat`
-> 8. JSON files: WAIVED (JSON does not support comments)
-> 9. Enforcement: `scripts/audit-self.sh` checks all non-JSON files for title comments
-> 10. No file is ever empty — stubs must at minimum contain the title comment
+## Mandatory skill search (spec §4.1 item 13)
 
-## Section: Mandatory Skill Search (§4.1 item 13)
+**Before any task** (queue, prompt, command, chat, or other):
 
-> CONTENT: The non-negotiable mandatory skill search rule. This is the most important rule in this file.
-> Rules:
-> 1. BEFORE beginning ANY task — regardless of trigger (queue, prompt, command, manual, any source) — search `skills/` for relevant skills
-> 2. Procedure: `make skills:list` OR read `skills/README.md` → scan all "When to invoke" sections → read every relevant skill in full
-> 3. Note machinery files (`.py` alongside `.md`) as available automation tools
-> 4. For complex domain matching: use `prompts/skill_searcher.md` as a subroutine
-> 5. NEVER start planning or writing code before this step is complete
-> 6. Document which skills were found and used in the PR description or queue notes
-> 7. If no relevant skill exists for a recurring pattern: that is a signal to create one
+1. Search **`skills/`** — `make skills:list` or read **`skills/README.md`**.
+2. Scan **When to invoke**; read every **relevant** skill **in full** before planning or coding.
+3. Note **machinery** (`.py` next to `.md`) as optional automation.
+4. For broad tasks, use **`prompts/skill_searcher.md`** as a subroutine.
+5. **Do not** start planning or implementation until this step is done.
+6. Record which skills you used in the PR or queue notes.
+7. Missing skill for a **recurring** pattern → add or extend a skill (see **`docs/procedures/update-or-create-skill.md`**).
 
-## Section: Forbidden Patterns
+## Forbidden patterns
 
-> CONTENT: Explicit prohibitions — behaviors that will cause PR rejection. Rules:
-> 1. NEVER commit secrets, credentials, tokens, passwords, API keys to the repository
-> 2. NEVER bypass CI: no `--no-verify`, no direct push to main, no force push to main
-> 3. NEVER use `os.getenv()` outside `apps/api/src/config.py` (use Pydantic BaseSettings via DI)
-> 4. NEVER use `Any` type annotation without a documented justification comment
-> 5. NEVER add `# type: ignore` without an explanatory comment on the same line
-> 6. NEVER query the database from a router handler (use service layer)
-> 7. NEVER hardcode environment-specific values (URLs, IDs, credentials)
-> 8. NEVER swallow exceptions silently (`except Exception: pass` is always wrong)
-> 9. NEVER use ad hoc shell commands when a canonical `make` target exists
-> 10. NEVER skip the mandatory skill search before beginning work
-> 11. NEVER use `print()` for logging in production code (use `logger`)
-> 12. NEVER mutate shared state between requests (use request-scoped dependencies)
+1. No secrets, tokens, passwords, or API keys in the repo.
+2. No CI bypass, no direct or force push to **`main`**.
+3. No **`os.getenv()`** outside **`apps/api/src/config.py`** (use `Settings` + DI).
+4. No bare **`Any`** without a short justification.
+5. No **`# type: ignore`** without an explanatory comment.
+6. No DB queries in **router** handlers (service/repository only).
+7. No hardcoded environment-specific URLs or IDs in application code.
+8. No **`except Exception: pass`**.
+9. No ad hoc shell when a **`make`** target exists.
+10. No skipping the **mandatory skill search**.
+11. No **`print()`** for production logging (use **`logging`**).
+12. No cross-request mutable globals — use request-scoped dependencies.

@@ -6,36 +6,24 @@ description: Rules for skill files. Ensures skills follow the §6.2 structure, i
 
 # .cursor/rules/skills.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Referenced by: docs/procedures/update-or-create-skill.md -->
-<!-- - Validation: skills/repo-governance/rule-linter.py -->
+Structure and linking for **`skills/**/*.md`**. Authoring procedure: **`docs/procedures/update-or-create-skill.md`**. Spec reference: §6.2.
 
-> PURPOSE: Rules governing skill file content and structure. Ensures every skill in skills/ follows the spec §6.2 required structure, machinery code is referenced and tested, and skills cross-reference related procedures/prompts/rules. Per spec §28.5 item 296.
+## Required headings
 
-## Section: Required Sections Rule
+1. Each skill includes: **Purpose**, **When to invoke**, **Prerequisites**, **Relevant files / areas**, **Step-by-step method**, **Command examples**, **Validation checklist**, **Common failure modes**, **Handoff expectations**, **Related procedures**, **Related prompts**, **Related rules**.
+2. Stubs may mark body **`TODO`** but headings must exist.
+3. Steps are **numbered** and reference real **`make`** targets.
+4. Validation sections use **`- [ ]`** checklists.
 
-> CONTENT: Rules about mandatory section headings in skill files. Rules:
-> 1. Every skill `.md` file MUST contain these sections (in order): Purpose, When to invoke, Prerequisites, Relevant files/areas, Step-by-step method, Command examples, Validation checklist, Common failure modes, Handoff expectations, Related procedures, Related prompts, Related rules
-> 2. Stub skills may have `TODO` as section body but MUST have all headings present
-> 3. Full skills (≥10 required per spec §6.1) have all sections with production-usable content
-> 4. Steps must be numbered, actionable, and use exact `make` target names where applicable
-> 5. Validation checklist uses `- [ ]` checkbox format
+## Machinery
 
-## Section: Machinery Code Reference Rule
+1. If a **`.py`** accompanies the skill, add a **Machinery** subsection: purpose, how to run, inputs/outputs.
+2. Machinery follows **`PYTHON_PROCEDURES.md`** (typing, boundaries, tests where feasible).
+3. Wire scripts to **`scripts/README.md`** and the **Makefile** when exposed as commands.
 
-> CONTENT: Rules about skill machinery files. Rules:
-> 1. Skills with supporting code (`.py` files) MUST have a `## Machinery` section in the `.md` file
-> 2. The `## Machinery` section must: name the file, explain what it does, show how to invoke it
-> 3. Machinery code MUST begin with the file title comment per §1.7
-> 4. Machinery code MUST follow PYTHON_PROCEDURES.md (typed, boundary-validated, testable)
-> 5. Machinery invoked by Make targets must be documented in both the skill and scripts/README.md
+## Cross-references
 
-## Section: Cross-Reference Requirements
-
-> CONTENT: Rules for cross-referencing between skills and other artifacts. Rules:
-> 1. Every skill MUST list at least one related procedure in `docs/procedures/`
-> 2. Every skill MUST list at least one related prompt in `prompts/` OR state "No specific prompt — use generic implementation_agent"
-> 3. Every skill MUST list applicable cursor rules in `.cursor/rules/`
-> 4. Skills index (`skills/README.md`) MUST be updated when a new skill is added
-> 5. When a skill is updated, verify that all cross-references are still accurate
+1. Link at least **one** **`docs/procedures/`** entry.
+2. Link **prompts** (or state to use **`prompts/implementation_agent.md`** when generic).
+3. List relevant **`.cursor/rules/`** files.
+4. Update **`skills/README.md`** when adding discoverable skills.

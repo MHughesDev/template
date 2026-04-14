@@ -1,45 +1,29 @@
 # .cursor/commands/audit.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Links to: skills/agent-ops/repo-self-audit.md, skills/agent-ops/repo-self-audit.py -->
-<!-- - Make target: make audit:self -->
+Run the **repository self-audit** before merge or on a schedule.
 
-> PURPOSE: Reusable Cursor command for comprehensive repo self-audit. Runs all audit checks and surfaces findings for remediation. Per spec §28.9 item 338.
-
-## Command Metadata
-
-> CONTENT: Command metadata block. Fields:
-> - name: "Repo Self-Audit"
-> - description: "Run comprehensive repo self-audit: spec compliance, file inventory, skill format, prompt metadata, procedure structure, queue schema, Make target documentation, file title comments."
-> - trigger: "Invoke before any PR, after major changes, or on cadence (weekly/monthly)"
-> - prerequisites:
->   - .venv activated
->   - All services running (for smoke check portion)
-> - linked_skill: skills/agent-ops/repo-self-audit.md
-> - linked_machinery: skills/agent-ops/repo-self-audit.py
-> - make_target: audit:self
+| Field | Value |
+|-------|--------|
+| **Name** | Repo self-audit |
+| **Description** | Inventory, spec-aligned checks, file title comments, queue schema, docs links — surface **blockers** and **warnings**. |
+| **When to use** | Before opening a PR, after large refactors, or periodically. |
+| **Prerequisites** | Virtualenv / deps installed per `setup.sh`. |
+| **Skill** | [`skills/agent-ops/repo-self-audit.md`](../skills/agent-ops/repo-self-audit.md) |
+| **Machinery** | [`skills/agent-ops/repo-self-audit.py`](../skills/agent-ops/repo-self-audit.py) |
+| **Make target** | `make audit:self` → `scripts/audit-self.sh` |
 
 ## Steps
 
-> CONTENT: Ordered execution steps:
-> 1. Read skills/agent-ops/repo-self-audit.md completely
-> 2. Run `make audit:self` which invokes scripts/audit-self.sh
-> 3. Review audit report: identifies missing files, format violations, broken links
-> 4. For each finding: categorize as BLOCKING (spec-required file missing) or WARNING (format issue)
-> 5. BLOCKING findings must be resolved before any PR is merged
-> 6. WARNING findings create new queue items or GitHub issues for later resolution
-> 7. If all checks pass: include audit output in PR description as evidence
+1. Read [`skills/agent-ops/repo-self-audit.md`](../skills/agent-ops/repo-self-audit.md) and run **mandatory skill search** if this is your first pass today.
+2. Run **`make audit:self`** and capture **stdout/stderr**.
+3. Classify findings: **BLOCKING** (missing required artifact, broken invariant) vs **WARNING** (style, stale link).
+4. Fix **blocking** issues before merge; file issues or queue rows for **warnings** when not immediate.
+5. Paste summarized audit evidence into the PR description.
 
-## Audit Checks Performed
+## Typical checks
 
-> CONTENT: List of what the audit covers (populated from scripts/audit-self.sh and skills/agent-ops/repo-self-audit.py):
-> - Inventory check: all spec §26 required files exist on disk
-> - File title comment: all non-JSON files start with a path/title comment (§1.7)
-> - Skill format: all skills have the §6.2 required section headings
-> - Prompt metadata: all prompts have §7.2 YAML front matter fields
-> - Procedure structure: all procedures have §8.3 required sections
-> - Queue schema: queue.csv and queuearchive.csv have correct column headers
-> - Make targets: all §10.2 catalog targets are present in Makefile
-> - Documentation links: no broken internal links in docs/
-> - Rules format: all .cursor/rules files have frontmatter
+- Implementation plan / inventory vs disk
+- File title comments (spec §1.7) where enforced
+- Queue CSV headers and row constraints
+- Makefile targets referenced from docs still exist
+- Internal doc links not obviously broken (when the script checks them)

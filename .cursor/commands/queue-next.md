@@ -1,40 +1,29 @@
 # .cursor/commands/queue-next.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Links to: docs/procedures/start-queue-item.md, queue/QUEUE_INSTRUCTIONS.md -->
-<!-- - Make targets: queue:peek, queue:validate -->
+Claim and start the **current** queue item (top row) in single-lane mode.
 
-> PURPOSE: Optional reusable Cursor command to claim and begin processing the next queue item. Guides the agent through reading the queue, checking readiness, creating a branch, and beginning work. Per spec §26.2 item 18.
-
-## Command Metadata
-
-> CONTENT: Command metadata block. Fields:
-> - name: "Queue Next"
-> - description: "Claim and begin processing the next ready queue item. Reads top row, checks dependencies, creates branch, reads linked docs, confirms understanding."
-> - trigger: "When ready to start new queue work. Use after previous item is archived."
-> - linked_procedure: docs/procedures/start-queue-item.md
-> - linked_skill: skills/agent-ops/queue-triage.md
+| Field | Value |
+|-------|--------|
+| **Name** | Queue next |
+| **Description** | Read **`queue/queue.csv`**, verify dependencies, branch, plan, then implement per SOP. |
+| **When to use** | Starting new queue work after the previous item is archived or not in progress. |
+| **Procedure** | [`docs/procedures/start-queue-item.md`](../docs/procedures/start-queue-item.md) |
+| **Skill** | [`skills/agent-ops/queue-triage.md`](../skills/agent-ops/queue-triage.md) |
+| **Read-only helper** | `make queue:peek` |
 
 ## Steps
 
-> CONTENT: Ordered steps:
-> 1. Run `make queue:peek` — read the current top row of queue.csv
-> 2. Read the COMPLETE summary column of the top row — this is the contract
-> 3. Check dependencies: verify all listed dependency IDs appear in queuearchive.csv with status=done
-> 4. If dependencies not met: document in notes column as `blocked_by: [Q-XXX, ...]` and STOP
-> 5. Run `make queue:validate` to ensure queue integrity before starting
-> 6. Create branch: `git checkout -b queue/<id>-short-slug`
-> 7. Read all files referenced in the summary
-> 8. Run mandatory skill search: `make skills:list` → find relevant skills → read them in full
-> 9. Produce a plan: files to change, acceptance criteria, risks, scope bounds
-> 10. Document the plan in PR description draft or queue notes
-> 11. Begin implementation per docs/procedures/implement-change.md
+1. Run **`make queue:peek`** — read the **full** top row; **`summary`** is the contract.
+2. Parse **`dependencies`** — every listed ID must be **done** in **`queuearchive.csv`** (or empty).
+3. If blocked: update **`notes`** with reason and next step; **stop**.
+4. Run **`make queue:validate`** before modifying queue files.
+5. Create branch **`git checkout -b queue/<id>-short-slug`** including the queue **`id`**.
+6. Mandatory skill search: **`make skills:list`**, read relevant skills fully.
+7. Write a plan: files, acceptance criteria, risks, **out-of-scope** — paste into PR draft or queue **`notes`**.
+8. Implement per [`docs/procedures/implement-change.md`](../docs/procedures/implement-change.md).
 
-## Expected Output
+## Expected output
 
-> CONTENT: What this command produces:
-> - A new branch named `queue/<id>-short-slug`
-> - A documented plan (acceptance criteria, files, risks, scope)
-> - Understanding of all relevant skills
-> - Ready to begin implementation
+- Branch **`queue/<id>-...`**
+- Written plan aligned with the **`summary`** column
+- No work started on blocked dependencies
