@@ -11,7 +11,7 @@ API endpoint catalog. Auto-generated or manually maintained list of all routes w
 
 ## Examples (teaching module)
 
-Base path: `/api/v1/examples` (requires `Authorization: Bearer <access_token>`).
+Base path: `/api/v1/examples` (requires `Authorization: Bearer <access_token>`). List and CRUD apply to **examples owned by the authenticated user** (`owner_user_id`).
 
 | Method | Path | Description |
 |--------|------|-------------|

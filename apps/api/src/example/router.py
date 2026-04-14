@@ -26,10 +26,10 @@ def _handle(exc: AppError) -> HTTPException:
 async def list_examples(
     params: PaginationParams = Depends(get_pagination_params),
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(require_auth),
+    user: User = Depends(require_auth),
 ) -> PaginatedResponse[ExampleResponse]:
     try:
-        return await service.list(params)
+        return await service.list(params, user)
     except AppError as exc:
         raise _handle(exc) from exc
 
@@ -42,10 +42,10 @@ async def list_examples(
 async def create_example(
     body: ExampleCreate,
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(require_auth),
+    user: User = Depends(require_auth),
 ) -> ExampleResponse:
     try:
-        row = await service.create(body)
+        row = await service.create(body, user)
         return ExampleResponse.model_validate(row)
     except AppError as exc:
         raise _handle(exc) from exc
@@ -55,10 +55,10 @@ async def create_example(
 async def get_example(
     example_id: uuid.UUID,
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(require_auth),
+    user: User = Depends(require_auth),
 ) -> ExampleResponse:
     try:
-        row = await service.get(example_id)
+        row = await service.get(example_id, user)
         return ExampleResponse.model_validate(row)
     except AppError as exc:
         raise _handle(exc) from exc
@@ -69,10 +69,10 @@ async def update_example(
     example_id: uuid.UUID,
     body: ExampleUpdate,
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(require_auth),
+    user: User = Depends(require_auth),
 ) -> ExampleResponse:
     try:
-        row = await service.update(example_id, body)
+        row = await service.update(example_id, body, user)
         return ExampleResponse.model_validate(row)
     except AppError as exc:
         raise _handle(exc) from exc
@@ -82,10 +82,10 @@ async def update_example(
 async def delete_example(
     example_id: uuid.UUID,
     service: ExampleService = Depends(get_example_service),
-    _user: User = Depends(require_auth),
+    user: User = Depends(require_auth),
 ) -> Response:
     try:
-        await service.delete(example_id)
+        await service.delete(example_id, user)
     except AppError as exc:
         raise _handle(exc) from exc
     return Response(status_code=status.HTTP_204_NO_CONTENT)

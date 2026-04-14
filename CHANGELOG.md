@@ -24,6 +24,8 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 ### Fixed
 
 - Docker image build: `.dockerignore` had excluded `*.md`, so `COPY README.md` in `apps/api/Dockerfile` failed; root `README.md` is now un-ignored for hatchling (`readme = "README.md"` in `pyproject.toml`).
+- **Examples API:** list/get/update/delete are scoped to the authenticated user via `owner_user_id` (fixes `test_list_examples_empty` on shared Postgres CI DBs). Alembic migration `c2d3e4f5a6b7_add_example_owner_user_id`.
+- **CI:** Trivy action uses tag `v0.33.1` (valid `uses:` ref); CD workflow logs into GHCR before push; dependency-review job uses `continue-on-error` when Dependency graph is disabled.
 
 ### Removed
 

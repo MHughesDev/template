@@ -21,15 +21,32 @@ class ExampleRepository:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def get_by_id(self, example_id: uuid.UUID) -> Example | None:
-        return await self._session.get(Example, example_id)
+    async def get_by_id(
+        self, example_id: uuid.UUID, owner_user_id: uuid.UUID
+    ) -> Example | None:
+        stmt = select(Example).where(
+            Example.id == example_id,
+            Example.owner_user_id == owner_user_id,
+        )
+        result = await self._session.execute(stmt)
+        return result.scalars().first()
 
-    async def list_all(self, params: PaginationParams) -> tuple[list[Example], int]:
-        """Rows (limit page_size+1 for has_next) and total count."""
+    async def list_all(
+        self, params: PaginationParams, owner_user_id: uuid.UUID
+    ) -> tuple[list[Example], int]:
+        """Rows (limit page_size+1 for has_next) and total count for one owner."""
 
-        count_stmt = select(func.count()).select_from(Example)
+        count_stmt = (
+            select(func.count())
+            .select_from(Example)
+            .where(Example.owner_user_id == owner_user_id)
+        )
         total = int((await self._session.execute(count_stmt)).scalar_one())
-        base = select(Example).order_by(Example.id)
+        base = (
+            select(Example)
+            .where(Example.owner_user_id == owner_user_id)
+            .order_by(Example.id)
+        )
         id_col = cast(Column[Any], Example.__table__.c.id)
         stmt = paginate_query(base, params, id_col)
         result = await self._session.execute(stmt)
@@ -47,8 +64,8 @@ class ExampleRepository:
         await self._session.refresh(example)
         return example
 
-    async def delete(self, example_id: uuid.UUID) -> bool:
-        row = await self.get_by_id(example_id)
+    async def delete(self, example_id: uuid.UUID, owner_user_id: uuid.UUID) -> bool:
+        row = await self.get_by_id(example_id, owner_user_id)
         if row is None:
             return False
         await self._session.delete(row)

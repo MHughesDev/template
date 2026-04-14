@@ -8,6 +8,7 @@ from datetime import UTC, datetime
 
 from packages.contracts.pagination import PageInfo, PaginatedResponse, PaginationParams
 
+from apps.api.src.auth.models import User
 from apps.api.src.config import Settings
 from apps.api.src.example.models import Example
 from apps.api.src.example.repository import ExampleRepository
@@ -22,16 +23,16 @@ class ExampleService:
         self._repo = repo
         self._settings = settings
 
-    async def get(self, example_id: uuid.UUID) -> Example:
-        row = await self._repo.get_by_id(example_id)
+    async def get(self, example_id: uuid.UUID, user: User) -> Example:
+        row = await self._repo.get_by_id(example_id, user.id)
         if row is None:
             raise NotFoundError("Example", str(example_id))
         return row
 
     async def list(
-        self, params: PaginationParams
+        self, params: PaginationParams, user: User
     ) -> PaginatedResponse[ExampleResponse]:
-        rows, total = await self._repo.list_all(params)
+        rows, total = await self._repo.list_all(params, user.id)
         has_next = len(rows) > params.page_size
         page_rows = rows[: params.page_size]
         items = [ExampleResponse.model_validate(r) for r in page_rows]
@@ -44,20 +45,23 @@ class ExampleService:
         )
         return PaginatedResponse(items=items, page_info=page_info)
 
-    async def create(self, data: ExampleCreate) -> Example:
+    async def create(self, data: ExampleCreate, user: User) -> Example:
         now = datetime.now(UTC)
         row = Example(
             title=data.title,
             description=data.description,
             status="draft",
+            owner_user_id=user.id,
             tenant_id=None,
             created_at=now,
             updated_at=now,
         )
         return await self._repo.create(row)
 
-    async def update(self, example_id: uuid.UUID, data: ExampleUpdate) -> Example:
-        row = await self._repo.get_by_id(example_id)
+    async def update(
+        self, example_id: uuid.UUID, data: ExampleUpdate, user: User
+    ) -> Example:
+        row = await self._repo.get_by_id(example_id, user.id)
         if row is None:
             raise NotFoundError("Example", str(example_id))
         if data.title is not None:
@@ -69,7 +73,7 @@ class ExampleService:
         row.updated_at = datetime.now(UTC)
         return await self._repo.update(row)
 
-    async def delete(self, example_id: uuid.UUID) -> None:
-        ok = await self._repo.delete(example_id)
+    async def delete(self, example_id: uuid.UUID, user: User) -> None:
+        ok = await self._repo.delete(example_id, user.id)
         if not ok:
             raise NotFoundError("Example", str(example_id))
