@@ -1,83 +1,84 @@
 # apps/api/src/config.py
-"""
-BLUEPRINT: apps/api/src/config.py
+"""Application settings loaded from environment (single source for env access)."""
 
-PURPOSE:
-Single Pydantic BaseSettings class for all application configuration. Reads from
-environment variables only. Validates on startup. The ONLY place os.getenv() is
-allowed in this codebase. Per PYTHON_PROCEDURES.md §10 and spec §26.8 item 214.
+from __future__ import annotations
 
-DEPENDS ON:
-- pydantic-settings — BaseSettings, Field
-- pydantic — field_validator
-- functools — lru_cache for get_settings()
+from functools import lru_cache
 
-DEPENDED ON BY:
-- apps.api.src.main — imports settings for app configuration
-- apps.api.src.database — imports settings for DATABASE_URL
-- apps.api.src.dependencies — provides get_settings() as Depends()
-- apps.api.src.auth.service — imports settings for JWT config
-- All tests that need config override
+from pydantic import Field, field_validator, model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-CLASSES:
 
-  Settings(BaseSettings):
-    PURPOSE: All application configuration loaded from environment variables.
-    FIELDS (grouped by section):
+class Settings(BaseSettings):
+    """Runtime configuration for the API process."""
 
-      Database:
-      - database_url: str = "sqlite+aiosqlite:///./dev.db" — database connection string
-      - database_pool_size: int = 10 — connection pool size (PostgreSQL only)
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", frozen=True
+    )
 
-      Auth/JWT:
-      - jwt_secret_key: str — JWT signing secret (no default, required)
-      - jwt_algorithm: str = "HS256" — signing algorithm
-      - jwt_access_token_expire_minutes: int = 30 — access token expiry
-      - jwt_refresh_token_expire_days: int = 30 — refresh token expiry
+    database_url: str = Field(
+        default="sqlite+aiosqlite:///./dev.db",
+        description="SQLAlchemy async database URL",
+    )
+    database_pool_size: int = Field(default=10, ge=1, le=100)
 
-      API:
-      - api_host: str = "0.0.0.0" — server bind host
-      - api_port: int = 8000 — server bind port
-      - api_debug: bool = False — debug mode (never True in production)
-      - api_cors_origins: list[str] = ["http://localhost:3000"] — allowed CORS origins
-      - api_prefix: str = "/api/v1" — API route prefix
-      - project_name: str = "{{PROJECT_NAME}}" — project display name
+    jwt_secret_key: str = Field(
+        default="change-me-in-production",
+        min_length=8,
+        description="Secret used to sign JWT access tokens",
+    )
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = Field(default=30, ge=1, le=24 * 60)
+    jwt_refresh_token_expire_days: int = Field(default=30, ge=1, le=365)
 
-      Optional: AI/RAG:
-      - ai_enabled: bool = False — kill switch for AI features
-      - chroma_host: str = "chroma" — ChromaDB host
-      - chroma_port: int = 8001 — ChromaDB port
+    api_host: str = "0.0.0.0"  # noqa: S104
+    api_port: int = Field(default=8000, ge=1, le=65535)
+    api_debug: bool = False
+    api_cors_origins: list[str] = Field(
+        default_factory=lambda: ["http://localhost:3000"]
+    )
+    api_prefix: str = "/api/v1"
+    project_name: str = "Template API"
 
-      Optional: Workers:
-      - broker_url: str | None = None — task broker URL
+    ai_enabled: bool = False
+    chroma_host: str = "chroma"
+    chroma_port: int = 8001
 
-      Observability:
-      - log_level: str = "INFO" — log level (DEBUG/INFO/WARNING/ERROR/CRITICAL)
-      - log_format: str = "text" — log format (text | json)
+    broker_url: str | None = None
 
-      Feature flags:
-      - multi_tenancy_enabled: bool = False — enable tenant middleware enforcement
-      - rate_limiting_enabled: bool = False — enable rate limiting middleware
+    log_level: str = "INFO"
+    log_format: str = "text"
 
-    VALIDATORS:
-      - field_validator("api_cors_origins", mode="before") — parse comma-separated string → list
-      - field_validator("jwt_secret_key") — ensure not empty or default value
-      - field_validator("database_url") — validate URL format
-      - model_validator(mode="after") — cross-field: api_debug must be False if not sqlite
+    multi_tenancy_enabled: bool = False
+    rate_limiting_enabled: bool = False
 
-    NOTES: model_config = ConfigDict(env_file=".env", env_file_encoding="utf-8", frozen=True)
+    @field_validator("api_cors_origins", mode="before")
+    @classmethod
+    def _split_origins(cls, value: str | list[str]) -> list[str]:
+        if isinstance(value, list):
+            return value
+        if not value:
+            return []
+        return [part.strip() for part in str(value).split(",") if part.strip()]
 
-FUNCTIONS:
+    @field_validator("jwt_secret_key")
+    @classmethod
+    def _reject_placeholder_secret(cls, value: str) -> str:
+        if value in {"change-me", "changeme", "secret"}:
+            msg = "JWT secret must be changed from the insecure placeholder value"
+            raise ValueError(msg)
+        return value
 
-  get_settings() -> Settings:
-    PURPOSE: Cached settings factory for use with FastAPI Depends().
-    STEPS: lru_cache-wrapped Settings() instantiation.
-    RETURNS: Settings singleton instance
-    NOTES: @lru_cache() ensures settings are loaded once at startup
+    @model_validator(mode="after")
+    def _debug_policy(self) -> Settings:
+        if self.api_debug and not self.database_url.startswith("sqlite"):
+            msg = "api_debug is only allowed for local sqlite development"
+            raise ValueError(msg)
+        return self
 
-DESIGN DECISIONS:
-- frozen=True: configuration never changes at runtime
-- @lru_cache() on get_settings(): single instantiation across application lifetime
-- env_file=".env": supports loading from .env in development without code change
-- No fallback for jwt_secret_key: absence of a secret key = deployment error, fail fast
-"""
+
+@lru_cache(maxsize=1)
+def get_settings() -> Settings:
+    """Return cached settings for FastAPI ``Depends``."""
+
+    return Settings()

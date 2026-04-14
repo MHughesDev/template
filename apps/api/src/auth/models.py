@@ -1,55 +1,75 @@
 # apps/api/src/auth/models.py
-"""
-BLUEPRINT: apps/api/src/auth/models.py
+"""User accounts and refresh token storage."""
 
-PURPOSE:
-Auth database models: User and RefreshToken. SQLAlchemy async-compatible models
-inheriting from Base. Per spec §26.8 item 221.
+from __future__ import annotations
 
-DEPENDS ON:
-- sqlalchemy — Column, String, Boolean, DateTime, ForeignKey, Index
-- sqlalchemy.dialects.postgresql — UUID (PostgreSQL-specific)
-- sqlalchemy.orm — relationship, Mapped, mapped_column
-- apps.api.src.database — Base
+import uuid
+from datetime import UTC, datetime
 
-DEPENDED ON BY:
-- apps.api.src.auth.service — queries User and RefreshToken
-- apps.api.src.tenancy.models — User has optional tenant_id FK
-- alembic env.py — must import this module for autogenerate
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, Uuid
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-CLASSES:
+from apps.api.src.database import Base
 
-  User(Base):
-    PURPOSE: Registered user account with hashed credentials.
-    FIELDS:
-      - id: UUID (primary key, default=uuid4)
-      - email: str (unique, not null) — indexed for login lookup
-      - hashed_password: str (not null) — bcrypt hash, never raw password
-      - is_active: bool = True — soft disable without deletion
-      - tenant_id: UUID | None — FK to Tenant.id (nullable for non-multi-tenant deployments)
-      - created_at: datetime (server_default=utcnow)
-      - updated_at: datetime (onupdate=utcnow)
-    RELATIONSHIPS:
-      - refresh_tokens: list[RefreshToken] (one-to-many)
-    TABLE: users
-    INDEXES: email (unique), tenant_id
 
-  RefreshToken(Base):
-    PURPOSE: Stored refresh token for server-side revocation tracking.
-    FIELDS:
-      - id: UUID (primary key)
-      - user_id: UUID (FK to User.id, cascade delete)
-      - token: str (unique) — the opaque refresh token value
-      - expires_at: datetime — when the token expires
-      - revoked: bool = False — True if explicitly revoked (logout)
-      - created_at: datetime
-    TABLE: refresh_tokens
-    INDEXES: token (unique), user_id, expires_at
+class User(Base):
+    """Application user with hashed password."""
 
-DESIGN DECISIONS:
-- UUID primary keys: globally unique, no information leakage, safe to expose in APIs
-- Hashed passwords only: service is responsible for hashing; model never sees plaintext
-- soft delete via is_active: never delete users, just deactivate (audit trail)
-- RefreshToken table: enables server-side revocation without shared state
-- tenant_id nullable: supports non-multi-tenant deployments without schema change
-"""
+    __tablename__ = "users"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    email: Mapped[str] = mapped_column(
+        String(320), unique=True, nullable=False, index=True
+    )
+    hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    tenant_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("tenants.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
+    )
+
+    refresh_tokens: Mapped[list[RefreshToken]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+
+class RefreshToken(Base):
+    """Opaque refresh token persisted for revocation."""
+
+    __tablename__ = "refresh_tokens"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    token: Mapped[str] = mapped_column(
+        String(255), unique=True, nullable=False, index=True
+    )
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    revoked: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
+    )
+
+    user: Mapped[User] = relationship(back_populates="refresh_tokens")

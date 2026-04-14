@@ -1,52 +1,81 @@
 # apps/api/src/database.py
-"""
-BLUEPRINT: apps/api/src/database.py
+"""Async SQLAlchemy engine, session factory, and declarative base."""
 
-PURPOSE:
-Database connection and session management. Creates the async SQLAlchemy engine
-from DATABASE_URL, provides the session factory, the request-scoped session
-dependency for FastAPI, and the Base declarative class for all models.
-Supports both SQLite (aiosqlite) and PostgreSQL (asyncpg).
+from __future__ import annotations
 
-DEPENDS ON:
-- sqlalchemy.ext.asyncio — create_async_engine, AsyncSession, async_sessionmaker
-- sqlalchemy.orm — declarative_base
-- apps.api.src.config — get_settings() for DATABASE_URL
+from collections.abc import AsyncGenerator
 
-DEPENDED ON BY:
-- apps.api.src.main — engine.dispose() in lifespan
-- apps.api.src.dependencies — get_db() uses AsyncSession
-- apps.api.src.auth.models — User, RefreshToken inherit Base
-- apps.api.src.tenancy.models — Tenant inherits Base
-- apps.api.src.*/models.py — all domain models inherit Base
-- alembic env.py — target_metadata = Base.metadata
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+from sqlalchemy.orm import DeclarativeBase
 
-CLASSES:
+from apps.api.src.config import get_settings
 
-  Base (DeclarativeBase):
-    PURPOSE: Base class for all SQLAlchemy models. Provides metadata for Alembic autogenerate.
-    NOTES: All model classes in models.py files must inherit from this Base.
 
-CONSTANTS:
-  - engine: AsyncEngine — module-level engine created from DATABASE_URL at import time
-  - AsyncSessionLocal: async_sessionmaker — session factory configured with engine
+class Base(DeclarativeBase):
+    """Declarative base for ORM models."""
 
-FUNCTIONS:
+    pass
 
-  get_db() -> AsyncGenerator[AsyncSession, None]:
-    PURPOSE: FastAPI dependency that provides a request-scoped async DB session.
-    STEPS:
-      1. Create AsyncSession from AsyncSessionLocal
-      2. yield session (used within the request lifecycle)
-      3. Close session after request (finally block)
-    RETURNS: AsyncSession (via generator)
-    RAISES: Propagates any SQLAlchemy errors from query execution
-    NOTES: Used as `Depends(get_db)` in route handlers
 
-DESIGN DECISIONS:
-- Async engine: required for non-blocking DB operations in async FastAPI handlers
-- SQLite connect_args={"check_same_thread": False}: required for SQLite in async context
-- PostgreSQL: no special connect_args needed, asyncpg is async-native
-- Session closed in finally: ensures cleanup even on exceptions
-- engine at module level: created once, reused across all requests
-"""
+_engine: AsyncEngine | None = None
+_session_factory: async_sessionmaker[AsyncSession] | None = None
+
+
+def _build_engine() -> AsyncEngine:
+    settings = get_settings()
+    url = settings.database_url
+    connect_args: dict[str, object] = {}
+    if url.startswith("sqlite"):
+        connect_args["check_same_thread"] = False
+    return create_async_engine(
+        url,
+        echo=settings.api_debug,
+        pool_pre_ping=True,
+        connect_args=connect_args,
+    )
+
+
+def get_engine() -> AsyncEngine:
+    """Return the process-wide async engine, building it on first use."""
+
+    global _engine
+    if _engine is None:
+        _engine = _build_engine()
+    return _engine
+
+
+def get_session_factory() -> async_sessionmaker[AsyncSession]:
+    """Return a cached async sessionmaker bound to :func:`get_engine`."""
+
+    global _session_factory
+    if _session_factory is None:
+        _session_factory = async_sessionmaker(
+            get_engine(), expire_on_commit=False, class_=AsyncSession
+        )
+    return _session_factory
+
+
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    """Yield a request-scoped async session."""
+
+    session_factory = get_session_factory()
+    async with session_factory() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
+
+
+async def dispose_engine() -> None:
+    """Dispose the async engine (used on shutdown/tests)."""
+
+    global _engine, _session_factory
+    if _engine is not None:
+        await _engine.dispose()
+        _engine = None
+    _session_factory = None

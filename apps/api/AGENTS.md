@@ -1,49 +1,42 @@
 # apps/api/AGENTS.md
 
-<!-- BLUEPRINT: Composer 2 implements from this structure -->
-<!-- CROSS-REFERENCES -->
-<!-- - Overrides: AGENTS.md (root) for API-specific concerns (never contradicts root) -->
-<!-- - Rules: .cursor/rules/apps-api.md -->
+Scoped instructions for **`apps/api/`**. Root **[AGENTS.md](../../AGENTS.md)** is supreme — this file only narrows scope for the FastAPI app.
 
-> PURPOSE: Scoped agent instructions for the API application. Narrows scope to API concerns; never contradicts root AGENTS.md. Per spec §26.8 item 206.
+## Module layout
 
-## API Scope
+Each bounded context under **`apps/api/src/<context>/`** should include:
 
-> CONTENT: This AGENTS.md file narrows the agent's scope to apps/api/ concerns. It does not grant additional authority beyond the root AGENTS.md — it only narrows. For all repo-wide policy: read AGENTS.md (root) first.
+| File | Role |
+|------|------|
+| `__init__.py` | Export `router` and key public types |
+| `router.py` | HTTP endpoints only — no business rules |
+| `models.py` | SQLAlchemy models |
+| `schemas.py` | Pydantic request/response models |
+| `service.py` | Domain logic and orchestration |
+| `dependencies.py` | `Depends()` factories (optional per module) |
 
-## Module Structure
+Contexts today: **`health/`**, **`auth/`**, **`tenancy/`**.
 
-> CONTENT: The canonical module layout under apps/api/src/<context>/:
-> - `__init__.py` — exports router and key types
-> - `router.py` — FastAPI router with endpoints (thin — no business logic)
-> - `models.py` — SQLAlchemy models inheriting Base
-> - `schemas.py` — Pydantic request/response models (frozen=True for inputs)
-> - `service.py` — business logic (no DB queries, no HTTP concerns)
-> - `dependencies.py` — FastAPI Depends() factories
->
-> Current modules: health/, auth/, tenancy/
+## Routers
 
-## Router Registration Pattern
+Register routers in **`main.py`** under **`api_prefix`** (default `/api/v1`). Health checks stay **without** that prefix.
 
-> CONTENT: All routers registered in apps/api/src/main.py via `app.include_router()`. New routers: add import and registration in alphabetical order. Prefix: `/api/v1`. Router prefix must NOT duplicate the main.py prefix.
+## Dependencies
 
-## Dependency Injection Patterns
+| Need | Use |
+|------|-----|
+| DB session | `Depends(get_db)` from **`dependencies.py`** |
+| Settings | `Depends(get_settings)` |
+| Current user | `Depends(get_current_user)` from **`auth/dependencies.py`** |
 
-> CONTENT: Required dependencies:
-> - DB session: `Depends(get_db)` from apps/api/src/dependencies.py
-> - Current user: `Depends(get_current_user)` from apps/api/src/auth/dependencies.py
-> - Settings: `Depends(get_settings)` from apps/api/src/dependencies.py
-> Never instantiate services directly in route handlers.
+Do not construct services inline in handlers.
 
-## Testing Requirements
+## Tests
 
-> CONTENT:
-> - Every new endpoint: at minimum one happy-path test and one auth failure test
-> - Every new service function: unit tests with mocked dependencies
-> - Tests live in apps/api/tests/ (not co-located with source)
-> - Use httpx.AsyncClient for API tests (not TestClient)
-> - All tests follow: `test_<unit>_<scenario>_<expected>` naming convention
+- Location: **`apps/api/tests/`**
+- Client: **`httpx.AsyncClient`** with ASGI transport
+- Naming: `test_<unit>_<scenario>_<outcome>`
 
-## Import Conventions
+## Imports
 
-> CONTENT: Import direction strictly enforced: router → service → repository. Circular imports are structural errors — fix the structure. Shared types go in packages/contracts/.
+**`router → service → repository`** only. Shared types live in **`packages/contracts/`**.

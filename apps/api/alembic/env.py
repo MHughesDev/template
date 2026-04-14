@@ -1,43 +1,78 @@
 # apps/api/alembic/env.py
-"""
-BLUEPRINT: apps/api/alembic/env.py
+"""Alembic environment for async SQLAlchemy."""
 
-PURPOSE:
-Alembic environment configuration. Supports both SQLite and PostgreSQL
-connection strings via DATABASE_URL environment variable. Used by all
-migration commands. Configures target_metadata from models for autogenerate.
+from __future__ import annotations
 
-DEPENDS ON:
-- sqlalchemy (installed) — engine and session
-- alembic (installed) — MigrationContext, Operations
-- apps.api.src.database — Base (for target_metadata)
-- apps.api.src.config — settings (for DATABASE_URL)
-- All model modules must be imported here for autogenerate to detect them
+import asyncio
+from logging.config import fileConfig
 
-DEPENDED ON BY:
-- alembic upgrade head / downgrade / revision --autogenerate
+from alembic import context
 
-FUNCTIONS:
+# Import models so metadata is populated
+from apps.api.src.auth import models as auth_models  # noqa: F401
+from apps.api.src.config import get_settings
+from apps.api.src.database import Base
+from apps.api.src.tenancy import models as tenancy_models  # noqa: F401
+from sqlalchemy import pool
+from sqlalchemy.engine import Connection
+from sqlalchemy.ext.asyncio import async_engine_from_config
 
-  run_migrations_offline() -> None:
-    PURPOSE: Run migrations in offline mode (SQL script output without DB connection).
-    STEPS:
-      1. Get URL from config
-      2. Configure context with literal SQL output mode
-      3. Run migrations
-    USED BY: alembic upgrade head --sql
+config = context.config
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
 
-  run_migrations_online() -> None:
-    PURPOSE: Run migrations with active DB connection.
-    STEPS:
-      1. Create engine from DATABASE_URL
-      2. Connect and begin transaction
-      3. Configure context with connection
-      4. Run migrations
-    USED BY: alembic upgrade head (default)
+target_metadata = Base.metadata
 
-DESIGN DECISIONS:
-- Both SQLite and Postgres supported via the same env.py
-- target_metadata = Base.metadata (autogenerate reads all registered models)
-- All model modules imported at top of file for autogenerate completeness
-"""
+
+def get_url() -> str:
+    return get_settings().database_url
+
+
+def run_migrations_offline() -> None:
+    """Run migrations in 'offline' mode."""
+
+    url = get_url()
+    context.configure(
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
+        compare_type=True,
+    )
+
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+def do_run_migrations(connection: Connection) -> None:
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        compare_type=True,
+    )
+
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+async def run_migrations_online() -> None:
+    """Run migrations in 'online' mode."""
+
+    configuration = config.get_section(config.config_ini_section) or {}
+    configuration["sqlalchemy.url"] = get_url()
+    connectable = async_engine_from_config(
+        configuration,
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
+
+    async with connectable.connect() as connection:
+        await connection.run_sync(do_run_migrations)
+
+    await connectable.dispose()
+
+
+if context.is_offline_mode():
+    run_migrations_offline()
+else:
+    asyncio.run(run_migrations_online())

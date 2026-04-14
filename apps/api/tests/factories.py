@@ -1,60 +1,71 @@
 # apps/api/tests/factories.py
-"""
-BLUEPRINT: apps/api/tests/factories.py
+"""Test data helpers for ORM models."""
 
-PURPOSE:
-Test data factories using factory patterns (factory_boy-inspired or simple factory
-functions). Creates test instances of User, Tenant, and other models with sensible
-defaults that can be overridden per-test. Per spec §26.12 item 372.
+from __future__ import annotations
 
-DEPENDS ON:
-- uuid — UUID4 generation
-- datetime — for created_at fields
-- passlib.context — CryptContext for password hashing in test users
-- apps.api.src.auth.models — User, RefreshToken
-- apps.api.src.tenancy.models — Tenant
+import secrets
+import uuid
+from datetime import UTC, datetime, timedelta
+from uuid import UUID
 
-DEPENDED ON BY:
-- apps.api.tests.conftest — uses UserFactory, TenantFactory in fixtures
-- apps.api.tests.test_*.py — test files use factories for test data
+from passlib.context import CryptContext
 
-FUNCTIONS:
+from apps.api.src.auth.models import RefreshToken, User
+from apps.api.src.tenancy.models import Tenant
 
-  create_test_user(
-    email: str = "test@example.com",
-    password: str = "testpassword123",
-    is_active: bool = True,
+_pwd = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+
+
+def hash_password(password: str) -> str:
+    """Hash a password with reduced rounds for faster tests."""
+
+    return _pwd.hash(password, rounds=4)
+
+
+def create_test_tenant(
+    *,
+    name: str = "Test Org",
+    slug: str | None = None,
+) -> Tenant:
+    """Build a ``Tenant`` row (caller persists)."""
+
+    now = datetime.now(UTC)
+    return Tenant(
+        name=name,
+        slug=slug or f"t-{uuid.uuid4().hex[:8]}",
+        is_active=True,
+        created_at=now,
+        updated_at=now,
+    )
+
+
+def create_test_user(
+    *,
+    email: str | None = None,
+    password: str = "testpassword1!",
     tenant_id: UUID | None = None,
-  ) -> User:
-    PURPOSE: Create a User ORM instance with hashed password (not yet persisted).
-    STEPS:
-      1. Hash password with bcrypt (test-appropriate rounds=4 for speed)
-      2. Create User with provided fields and defaults
-      3. Return User instance (caller adds to session)
-    RETURNS: User instance
-    NOTES: rounds=4 (not production 12) for fast tests
+) -> User:
+    """Build a ``User`` row (caller persists)."""
 
-  create_test_tenant(
-    name: str = "Test Organization",
-    slug: str = "test-org",
-    is_active: bool = True,
-  ) -> Tenant:
-    PURPOSE: Create a Tenant ORM instance (not yet persisted).
-    RETURNS: Tenant instance
+    now = datetime.now(UTC)
+    return User(
+        email=email or f"user-{uuid.uuid4().hex[:8]}@example.com",
+        hashed_password=hash_password(password),
+        is_active=True,
+        tenant_id=tenant_id,
+        created_at=now,
+        updated_at=now,
+    )
 
-  create_test_refresh_token(
-    user: User,
-    token: str | None = None,
-    revoked: bool = False,
-    expires_days: int = 30,
-  ) -> RefreshToken:
-    PURPOSE: Create a RefreshToken ORM instance.
-    RETURNS: RefreshToken instance
 
-DESIGN DECISIONS:
-- Factory functions (not factory_boy classes): simpler dependency tree
-- Passwords NOT hardcoded: each factory call can specify; defaults are clearly fake
-- Low bcrypt rounds in tests: 4 vs 12 production = 8x faster test execution
-- instances returned (not persisted): caller controls when to add to session
-- Unique defaults via uuid: email = f"test-{uuid4().hex[:8]}@example.com" prevents conflicts
-"""
+def create_test_refresh_token(*, user: User, token: str | None = None) -> RefreshToken:
+    """Build a refresh token row (caller persists)."""
+
+    now = datetime.now(UTC)
+    return RefreshToken(
+        user_id=user.id,
+        token=token or secrets.token_urlsafe(32),
+        expires_at=now + timedelta(days=30),
+        revoked=False,
+        created_at=now,
+    )
