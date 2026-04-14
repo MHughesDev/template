@@ -4,43 +4,71 @@
 <!-- - Related rule: .cursor/rules/testing.md -->
 <!-- - Related docs: docs/quality/testing-strategy.md -->
 
-> PURPOSE: Operational skill for this topic. Follow the sections below, AGENTS.md, and PYTHON_PROCEDURES.md.
+**Purpose:** How to use snapshot testing for API responses and data structures: when to use, update workflow.
 
 ## Purpose
-> CONTENT: What this testing skill enables.
+
+How to use snapshot testing for API responses and data structures: when to use, update workflow.
 
 ## When to Invoke
-> CONTENT: Specific trigger conditions.
+
+- You are adding or changing async tests, HTTP client tests, or pytest-asyncio configuration.
+- You are implementing or testing a change that matches the summary above.
+- You need a checklist before merging or handing off work in this area.
 
 ## Prerequisites
-> CONTENT: Required reads and tool setup.
+
+- Read root `AGENTS.md` and complete the mandatory skill search (`make skills-list` or `skills/README.md`).
+- Install dev dependencies: `pip install -e ".[dev]"` (or use `./setup.sh`).
+- `make test` runs clean locally before you push.
 
 ## Relevant Files/Areas
-> CONTENT: Test directories and related files.
+
+- This skill file and `skills/README.md`
+- `docs/procedures/implement-change.md` and `docs/procedures/validate-change.md`
+- `apps/api/tests/`
+- `pyproject.toml` (pytest / asyncio)
+- `docs/quality/testing-strategy.md`
 
 ## Step-by-Step Method
-> CONTENT: Numbered testing procedure steps.
+
+1. Read the **Purpose** and **When to Invoke** sections above — confirm this skill applies.
+2. Inspect the code and docs listed under **Relevant Files/Areas**.
+3. Apply the change in small commits; keep scope aligned with `AGENTS.md` §6.
+4. Run `make lint`, `make fmt`, `make typecheck`, and `make test` (add focused pytest if needed).
+5. Update user-facing or operator docs if behavior changed.
 
 ## Command Examples
-> CONTENT: make test variants and pytest commands.
+
+- `make lint` — Ruff
+- `make fmt` — format check
+- `make typecheck` — mypy
+- `make test` — full suite
+- `pytest apps/api/tests/ -q` — focused run
 
 ## Validation Checklist
-> CONTENT:
-> - [ ] Tests written following naming convention
-> - [ ] Tests are deterministic
-> - [ ] make test passes
+
+- [ ] Change matches the skill summary and acceptance criteria for the task
+- [ ] `make lint`, `make fmt`, `make typecheck`, and `make test` pass
+- [ ] Docs or queue notes updated if required by the change
 
 ## Common Failure Modes
-> CONTENT: Common testing mistakes and fixes.
+
+- **Scope creep**: fix unrelated issues in the same PR — split work per `AGENTS.md` §6.
+- **Skipping validation**: run the full `make` checks above before handoff.
 
 ## Handoff Expectations
-> CONTENT: Tests committed, passing, coverage maintained.
+
+- List files changed, commands run with key output, risks, and follow-ups (see `skills/agent-ops/implementation-handoff.md`).
 
 ## Related Procedures
-> CONTENT: docs/procedures/implement-change.md
+
+`docs/procedures/implement-change.md`, `docs/procedures/validate-change.md`
 
 ## Related Prompts
-> CONTENT: prompts/test_writer.md
+
+`prompts/implementation_agent.md`, `prompts/task_planner.md`
 
 ## Related Rules
-> CONTENT: .cursor/rules/testing.md, PYTHON_PROCEDURES.md §15
+
+`.cursor/rules/global.md`, `PYTHON_PROCEDURES.md` where applicable

@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/security/README.md, AGENTS.md §11 (Escalation) -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Threat model template. Identifies assets, threat actors, attack surfaces, and mitigations. Stub to be filled per deployment.
 
 ## Overview
 
-> CONTENT: Security documentation covering threat-model-stub. Per spec §26.5, this file must include the sections defined in the spec's Structure column.
+Threat model template. Identifies assets, threat actors, attack surfaces, and mitigations. Stub to be filled per deployment. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

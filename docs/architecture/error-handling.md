@@ -2,20 +2,20 @@
 
 <!-- Optional per spec §26.12 item 400 -->
 
-> PURPOSE: Cross-cutting error handling strategy. Per spec §26.12 item 400.
+**Purpose:** Cross-cutting error handling strategy. Per spec §26.12 item 400.
 
 ## Error Hierarchy
 
-> CONTENT: AppError hierarchy from apps/api/src/exceptions.py. Base class structure, HTTP status mappings, stable error codes.
+AppError hierarchy from apps/api/src/exceptions.py. Base class structure, HTTP status mappings, stable error codes.
 
 ## Error Response Shape
 
-> CONTENT: Standard JSON error envelope: {"error": {"code": "...", "message": "..."}}. Never expose stack traces externally.
+Standard JSON error envelope: {"error": {"code": "...", "message": "..."}}. Never expose stack traces externally.
 
 ## Error Propagation
 
-> CONTENT: Service raises AppError subclass → global exception handler in middleware.py translates → structured JSON response. Layer responsibilities: repositories translate SQLAlchemy errors at the adapter boundary.
+Service raises AppError subclass → global exception handler in middleware.py translates → structured JSON response. Layer responsibilities: repositories translate SQLAlchemy errors at the adapter boundary.
 
 ## Client Handling Guide
 
-> CONTENT: How API clients should handle each error category: 401 (re-auth), 429 (backoff), 503 (retry with backoff), 422 (fix request).
+How API clients should handle each error category: 401 (re-auth), 429 (backoff), 503 (retry with backoff), 422 (fix request).

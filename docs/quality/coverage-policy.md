@@ -2,4 +2,8 @@
 
 <!-- Per spec §26.5 items 183-186 -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Coverage floor definition and ratcheting mechanism.
+
+## Overview
+
+Coverage floor definition and ratcheting mechanism. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

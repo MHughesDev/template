@@ -8,7 +8,7 @@ labels: ["type:feature"]
 
 ## Problem Statement
 
-> CONTENT: What problem does this feature solve? Who experiences this problem?
+What problem does this feature solve? Who experiences this problem?
 
 **Problem:**
 <!-- Describe the problem or gap this addresses -->

@@ -4,8 +4,8 @@
 <!-- - Referenced by: docs/agents/README.md -->
 <!-- - Per spec §26.5 and §9.3 (Maintainer Supervision) -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** How a human maintainer supervises agent work: monitoring, intervention triggers, review cadence.
 
 ## Overview
 
-> CONTENT: This document covers supervision-guide for human maintainers supervising agent work. Per spec §9.3, this file must address: how humans supervise agents, review AI diffs, audit PRs, ratchet quality, and evolve from incidents.
+How a human maintainer supervises agent work: monitoring, intervention triggers, review cadence. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

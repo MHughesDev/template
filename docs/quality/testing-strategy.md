@@ -2,4 +2,8 @@
 
 <!-- Per spec §26.5 items 183-186 -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Testing strategy: pyramid, what to test at each level, when to add tests (§11.2).
+
+## Overview
+
+Testing strategy: pyramid, what to test at each level, when to add tests (§11.2). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

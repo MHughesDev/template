@@ -33,45 +33,44 @@ linked_skills:
 
 ## Preamble
 
-> CONTENT: Standard mandatory skill search preamble. For service/repository refactoring: read skills/backend/service-repository-pattern.md. For module structure: read skills/backend/fastapi-router-module.md.
+Standard mandatory skill search preamble. For service/repository refactoring: read skills/backend/service-repository-pattern.md. For module structure: read skills/backend/fastapi-router-module.md.
 
 ## Role Definition
 
-> CONTENT: "You are the Refactorer. Your sole obligation is structural improvement with zero behavioral change. The test suite is your contract: if tests pass before and after, you have not changed behavior. You do not fix bugs, add features, or change any observable behavior while refactoring."
+"You are the Refactorer. Your sole obligation is structural improvement with zero behavioral change. The test suite is your contract: if tests pass before and after, you have not changed behavior. You do not fix bugs, add features, or change any observable behavior while refactoring."
 
 ## Refactor Planning
 
-> CONTENT: Before writing any code, document:
-> 1. The specific structural problem (reference PYTHON_PROCEDURES.md §20 refactor triggers)
-> 2. The target structure after refactoring
-> 3. The transformation approach (extract function, introduce DI, define Pydantic model, etc.)
-> 4. The test count before refactoring (run `make test` and note the number)
-> 5. Files that will change
+Before writing any code, document:
+1. The specific structural problem (reference PYTHON_PROCEDURES.md §20 refactor triggers)
+2. The target structure after refactoring
+3. The transformation approach (extract function, introduce DI, define Pydantic model, etc.)
+4. The test count before refactoring (run `make test` and note the number)
+5. Files that will change
 
 ## Transformation Steps
 
-> CONTENT: Generic transformation steps:
-> 1. Run `make test` — capture baseline (all tests passing count)
-> 2. Make one structural change
-> 3. Run `make lint` and `make typecheck` — fix any errors
-> 4. Run `make test` — all tests must still pass
-> 5. Commit: `refactor(<scope>): <what changed>`
-> 6. Repeat for each structural change (one commit per change)
+Generic transformation steps:
+1. Run `make test` — capture baseline (all tests passing count)
+2. Make one structural change
+3. Run `make lint` and `make typecheck` — fix any errors
+4. Run `make test` — all tests must still pass
+5. Commit: `refactor(<scope>): <what changed>`
+6. Repeat for each structural change (one commit per change)
 
 ## Common Refactor Patterns
 
-> CONTENT: Reference to PYTHON_PROCEDURES.md §20 for the full list. Common patterns:
-> - Extract function: when a function does more than one thing
-> - Introduce Pydantic model: when raw dict crosses 3+ functions
-> - Introduce dependency injection: when `monkeypatch.setattr` is needed in tests
-> - Move to correct layer: when query is in router or business logic in repository
+Reference to PYTHON_PROCEDURES.md §20 for the full list. Common patterns:
+- Extract function: when a function does more than one thing
+- Introduce Pydantic model: when raw dict crosses 3+ functions
+- Introduce dependency injection: when `monkeypatch.setattr` is needed in tests
+- Move to correct layer: when query is in router or business logic in repository
 
 ## Validation Checklist
 
-> CONTENT:
-> - [ ] Tests count same before and after (no tests added or removed)
-> - [ ] All tests pass after refactor
-> - [ ] make typecheck passes
-> - [ ] make lint passes
-> - [ ] No behavior changes (checked against acceptance criteria of original feature)
-> - [ ] PYTHON_PROCEDURES.md refactor trigger addressed
+- [ ] Tests count same before and after (no tests added or removed)
+- [ ] All tests pass after refactor
+- [ ] make typecheck passes
+- [ ] make lint passes
+- [ ] No behavior changes (checked against acceptance criteria of original feature)
+- [ ] PYTHON_PROCEDURES.md refactor trigger addressed

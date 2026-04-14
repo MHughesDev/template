@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/operations/README.md -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Observability setup: structured logging, metrics, tracing, dashboards (§21).
 
 ## Overview
 
-> CONTENT: Operations documentation covering observability. Includes commands, troubleshooting, and relevant Make targets.
+Observability setup: structured logging, metrics, tracing, dashboards (§21). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

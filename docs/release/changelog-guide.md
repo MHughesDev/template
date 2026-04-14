@@ -4,4 +4,8 @@
 <!-- - Referenced by: docs/release/README.md -->
 <!-- - Per spec §26.5 items 174-177 -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** How to maintain the changelog: format (Keep a Changelog), automation, release notes.
+
+## Overview
+
+How to maintain the changelog: format (Keep a Changelog), automation, release notes. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

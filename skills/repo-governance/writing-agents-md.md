@@ -4,77 +4,74 @@
 <!-- - Related procedure: docs/procedures/update-or-create-rule.md -->
 <!-- - Spec reference: spec §4 -->
 
-> PURPOSE: [FULL SKILL] How to author or update AGENTS.md per §4. Covers all 14 required sections, navigation guidance, and machine interface. Per spec §26.4 item 48.
+**Purpose:** [FULL SKILL] How to author or update AGENTS.md per §4. Covers all 14 required sections, navigation guidance, and machine interface. Per spec §26.4 item 48.
 
 ## Purpose
 
-> CONTENT: One paragraph. AGENTS.md is the most important file in the repository. It is the default policy surface for all agents. Writing it correctly means every required section has substantive content (not just a heading), the instruction hierarchy is accurate, and all 14 sections per spec §4.1 are present.
+One paragraph. AGENTS.md is the most important file in the repository. It is the default policy surface for all agents. Writing it correctly means every required section has substantive content (not just a heading), the instruction hierarchy is accurate, and all 14 sections per spec §4.1 are present.
 
 ## When to Invoke
 
-> CONTENT:
-> - When initializing a new repository (updating the mission section with project-specific context)
-> - When adding a new policy or anti-pattern
-> - When the instruction hierarchy changes (new scoped AGENTS.md added)
-> - When a new canonical workflow is established
-> - After an incident that reveals a missing policy
+- When initializing a new repository (updating the mission section with project-specific context)
+- When adding a new policy or anti-pattern
+- When the instruction hierarchy changes (new scoped AGENTS.md added)
+- When a new canonical workflow is established
+- After an incident that reveals a missing policy
 
 ## Prerequisites
 
-> CONTENT: spec/spec.md §4 read completely. All 14 required sections known. Current AGENTS.md read. The change to make is clearly defined.
+spec/spec.md §4 read completely. All 14 required sections known. Current AGENTS.md read. The change to make is clearly defined.
 
 ## Relevant Files/Areas
 
-> CONTENT: AGENTS.md (root), apps/api/AGENTS.md, packages/*/AGENTS.md, spec/spec.md §4
+AGENTS.md (root), apps/api/AGENTS.md, packages/*/AGENTS.md, spec/spec.md §4
 
 ## Step-by-Step Method
 
-> CONTENT: Numbered steps:
-> 1. Read spec/spec.md §4.1 — memorize all 14 required sections
-> 2. Read the current AGENTS.md completely
-> 3. Identify the section to add/update (which of the 14 requires change)
-> 4. For section 1 (Mission): write one paragraph per project from idea.md §2
-> 5. For section 2 (Hierarchy): ensure all 8 levels listed with correct precedence
-> 6. For section 3 (Workflow): all 12 steps including mandatory skill search
-> 7. For section 13 (Mandatory skill search): the complete 6-step procedure
-> 8. For all other sections: substantive content (not just a heading)
-> 9. For navigation guidance (§4.2): cover repo layout, canonical commands, validation workflow, handoff format
-> 10. Verify no section contradicts another
-> 11. Run `make rules:check` (AGENTS.md is not a rules file but similar validation)
-> 12. PR with rationale
+Numbered steps:
+1. Read spec/spec.md §4.1 — memorize all 14 required sections
+2. Read the current AGENTS.md completely
+3. Identify the section to add/update (which of the 14 requires change)
+4. For section 1 (Mission): write one paragraph per project from idea.md §2
+5. For section 2 (Hierarchy): ensure all 8 levels listed with correct precedence
+6. For section 3 (Workflow): all 12 steps including mandatory skill search
+7. For section 13 (Mandatory skill search): the complete 6-step procedure
+8. For all other sections: substantive content (not just a heading)
+9. For navigation guidance (§4.2): cover repo layout, canonical commands, validation workflow, handoff format
+10. Verify no section contradicts another
+11. Run `make rules:check` (AGENTS.md is not a rules file but similar validation)
+12. PR with rationale
 
 ## Command Examples
 
-> CONTENT: No specific make targets for AGENTS.md editing, but: `make audit:self` after changes to verify consistency
+No specific make targets for AGENTS.md editing, but: `make audit:self` after changes to verify consistency
 
 ## Validation Checklist
 
-> CONTENT:
-> - [ ] All 14 §4.1 sections present with substantive content
-> - [ ] Instruction hierarchy table complete and correct (8 levels)
-> - [ ] Mandatory skill search procedure complete in section 13
-> - [ ] Navigation section covers: repo layout, canonical commands, validation, handoff format
-> - [ ] No contradictions between sections
-> - [ ] Scoped AGENTS.md files (if any) not contradicting root
+- [ ] All 14 §4.1 sections present with substantive content
+- [ ] Instruction hierarchy table complete and correct (8 levels)
+- [ ] Mandatory skill search procedure complete in section 13
+- [ ] Navigation section covers: repo layout, canonical commands, validation, handoff format
+- [ ] No contradictions between sections
+- [ ] Scoped AGENTS.md files (if any) not contradicting root
 
 ## Common Failure Modes
 
-> CONTENT:
-> - Missing section 13 (mandatory skill search) — agents skip the skill library. Fix: verify it's present with the full 6-step procedure.
-> - Vague section 1 (Mission) — agents don't understand project context. Fix: fill with project-specific content from idea.md §2.
+- Missing section 13 (mandatory skill search) — agents skip the skill library. Fix: verify it's present with the full 6-step procedure.
+- Vague section 1 (Mission) — agents don't understand project context. Fix: fill with project-specific content from idea.md §2.
 
 ## Handoff Expectations
 
-> CONTENT: Updated AGENTS.md committed, no contradictions, all 14 sections verified.
+Updated AGENTS.md committed, no contradictions, all 14 sections verified.
 
 ## Related Procedures
 
-> CONTENT: docs/procedures/update-or-create-rule.md (policy for AGENTS.md updates)
+docs/procedures/update-or-create-rule.md (policy for AGENTS.md updates)
 
 ## Related Prompts
 
-> CONTENT: prompts/rule_authoring_agent.md
+prompts/rule_authoring_agent.md
 
 ## Related Rules
 
-> CONTENT: AGENTS.md itself (the document being updated)
+AGENTS.md itself (the document being updated)

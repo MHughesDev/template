@@ -3,43 +3,73 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Related procedures: docs/operations/ -->
 
-> PURPOSE: Operational skill for this topic. Follow the sections below, AGENTS.md, and PYTHON_PROCEDURES.md.
+**Purpose:** How to promote releases through environments: dev → staging → prod gates, verification steps, approval flows.
 
 ## Purpose
-> CONTENT: What this DevOps skill enables.
+
+How to promote releases through environments: dev → staging → prod gates, verification steps, approval flows.
 
 ## When to Invoke
-> CONTENT: Specific trigger conditions.
+
+- You are changing Docker, Kubernetes, CI workflows, or release automation.
+- You are implementing or testing a change that matches the summary above.
+- You need a checklist before merging or handing off work in this area.
 
 ## Prerequisites
-> CONTENT: Required tools and reads.
+
+- Read root `AGENTS.md` and complete the mandatory skill search (`make skills-list` or `skills/README.md`).
+- Install dev dependencies: `pip install -e ".[dev]"` (or use `./setup.sh`).
+- Docker and/or `kubectl` available if you touch deploy manifests.
 
 ## Relevant Files/Areas
-> CONTENT: Relevant deploy, scripts, and workflow files.
+
+- This skill file and `skills/README.md`
+- `docs/procedures/implement-change.md` and `docs/procedures/validate-change.md`
+- `deploy/docker/`
+- `deploy/k8s/`
+- `.github/workflows/`
 
 ## Step-by-Step Method
-> CONTENT: Numbered DevOps procedure steps.
+
+1. Read the **Purpose** and **When to Invoke** sections above — confirm this skill applies.
+2. Inspect the code and docs listed under **Relevant Files/Areas**.
+3. Apply the change in small commits; keep scope aligned with `AGENTS.md` §6.
+4. Run `make lint`, `make fmt`, `make typecheck`, and `make test` (add focused pytest if needed).
+4b. Run `make k8s-validate` or `make image-build` when deploy artifacts change.
+5. Update user-facing or operator docs if behavior changed.
 
 ## Command Examples
-> CONTENT: Relevant make targets.
+
+- `make lint` — Ruff
+- `make fmt` — format check
+- `make typecheck` — mypy
+- `make test` — full suite
+- `make docker-up` / `make docker-down`
+- `make k8s-validate`
 
 ## Validation Checklist
-> CONTENT:
-> - [ ] Operation completed successfully
-> - [ ] Health check passing
-> - [ ] Documentation updated
+
+- [ ] Change matches the skill summary and acceptance criteria for the task
+- [ ] `make lint`, `make fmt`, `make typecheck`, and `make test` pass
+- [ ] Docs or queue notes updated if required by the change
 
 ## Common Failure Modes
-> CONTENT: Common DevOps failures and fixes.
+
+- **Scope creep**: fix unrelated issues in the same PR — split work per `AGENTS.md` §6.
+- **Skipping validation**: run the full `make` checks above before handoff.
 
 ## Handoff Expectations
-> CONTENT: Operation documented, system healthy.
+
+- List files changed, commands run with key output, risks, and follow-ups (see `skills/agent-ops/implementation-handoff.md`).
 
 ## Related Procedures
-> CONTENT: docs/procedures/incident-rollback.md, docs/operations/rollback.md
+
+`docs/procedures/implement-change.md`, `docs/procedures/validate-change.md`
 
 ## Related Prompts
-> CONTENT: prompts/implementation_agent.md
+
+`prompts/implementation_agent.md`, `prompts/task_planner.md`
 
 ## Related Rules
-> CONTENT: .cursor/rules/global.md
+
+`.cursor/rules/global.md`, `PYTHON_PROCEDURES.md` where applicable

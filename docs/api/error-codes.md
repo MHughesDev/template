@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Source: generated from FastAPI OpenAPI (make docs:generate) -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** Error code taxonomy. Stable codes with descriptions, HTTP status mappings, and client handling guidance.
 
 ## Overview
 
-> CONTENT: API documentation for error-codes. This file is generated from FastAPI OpenAPI spec and exceptions.py. See docs/development/docs-generation.md for how to regenerate.
+Error code taxonomy. Stable codes with descriptions, HTTP status mappings, and client handling guidance. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

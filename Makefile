@@ -190,3 +190,35 @@ clean:
 ## health-check: curl /health
 health-check:
 	@scripts/health-check.sh
+
+# --- Colon-style aliases (spec §10.2 and docs). GNU Make needs escaped colons in target names.
+.PHONY: skills\:list queue\:peek queue\:validate queue\:archive queue\:graph queue\:analyze audit\:self rules\:check \
+        docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
+        health\:check idea\:validate profile\:enable idea\:queue scaffold\:module test\:unit test\:integration \
+        test\:smoke fmt\:fix
+
+skills\:list: skills-list
+queue\:peek: queue-peek
+queue\:validate: queue-validate
+queue\:archive: queue-archive
+queue\:graph: queue-graph
+queue\:analyze: queue-analyze
+audit\:self: audit-self
+rules\:check: rules-check
+docs\:check: docs-check
+docs\:generate: docs-generate
+docs\:index: docs-index
+security\:scan: security-scan
+release\:prepare: release-prepare
+release\:verify: release-verify
+docker\:up: docker-up
+docker\:down: docker-down
+health\:check: health-check
+idea\:validate: idea-validate
+profile\:enable: profile-enable
+idea\:queue: idea-queue
+scaffold\:module: scaffold-module
+test\:unit: test-unit
+test\:integration: test-integration
+test\:smoke: test-smoke
+fmt\:fix: fmt-fix

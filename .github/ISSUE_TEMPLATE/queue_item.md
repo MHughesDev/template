@@ -8,7 +8,7 @@ labels: ["type:queue"]
 
 ## Summary (Elaborative — ≥100 chars required)
 
-> CONTENT: Elaborate summary following the queue contract: goal, acceptance criteria, definition of done, out-of-scope, dependencies. This text goes directly into queue.csv summary column.
+Elaborate summary following the queue contract: goal, acceptance criteria, definition of done, out-of-scope, dependencies. This text goes directly into queue.csv summary column.
 
 **Goal:**
 <!-- What must be accomplished -->
@@ -27,7 +27,7 @@ labels: ["type:queue"]
 
 ## Category
 
-> CONTENT: Select from docs/queue/queue-categories.md
+Select from docs/queue/queue-categories.md
 
 - [ ] core-api
 - [ ] infrastructure
@@ -40,7 +40,7 @@ labels: ["type:queue"]
 
 ## Priority
 
-> CONTENT: Where in the queue should this item appear?
+Where in the queue should this item appear?
 
 - [ ] High (top of queue — next item to process)
 - [ ] Normal (add after current in-progress batch)

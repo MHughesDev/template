@@ -3,8 +3,8 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/security/README.md, AGENTS.md §11 (Escalation) -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** JWT token lifecycle details: issuance parameters, refresh windows, revocation mechanism, key rotation (§14).
 
 ## Overview
 
-> CONTENT: Security documentation covering token-lifecycle. Per spec §26.5, this file must include the sections defined in the spec's Structure column.
+JWT token lifecycle details: issuance parameters, refresh windows, revocation mechanism, key rotation (§14). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

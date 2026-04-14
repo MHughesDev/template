@@ -3,12 +3,26 @@
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/development/README.md, README.md -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** How Python dependencies are declared, upgraded, and reviewed in this repo.
 
 ## Overview
 
-> CONTENT: Development documentation for dependency-management. Per spec §26.5, this file covers the specific development topic for this repository.
+How Python dependencies are declared, upgraded, and reviewed in this repo. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
 
-## Content
+## Where dependencies live
 
-> CONTENT: Key content for dependency-management including commands, conventions, examples, and links to related Make targets.
+- **Runtime and dev:** `pyproject.toml` (`[project.dependencies]` and `[project.optional-dependencies] dev`).
+- **Locking:** Use committed constraints in `pyproject.toml`; pin major upgrades deliberately.
+
+## Upgrade workflow
+
+1. Edit version constraints in `pyproject.toml`.
+2. Reinstall: `pip install -e ".[dev]"`.
+3. Run `make lint`, `make typecheck`, `make test`.
+4. Run `make security-scan` / `make security:scan` for dependency-related security review.
+5. Document notable upgrades in `CHANGELOG.md` when behavior or operators are affected.
+
+## Related
+
+- [docs/procedures/dependency-upgrade.md](../procedures/dependency-upgrade.md)
+- [skills/security/dependency-review.md](../../skills/security/dependency-review.md)

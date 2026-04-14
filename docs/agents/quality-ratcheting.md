@@ -4,8 +4,8 @@
 <!-- - Referenced by: docs/agents/README.md -->
 <!-- - Per spec §26.5 and §9.3 (Maintainer Supervision) -->
 
-> PURPOSE: Reference material for this topic. Align changes with spec/spec.md and AGENTS.md.
+**Purpose:** How to ratchet quality over time: increasing coverage floors, adding rules, tightening procedures.
 
 ## Overview
 
-> CONTENT: This document covers quality-ratcheting for human maintainers supervising agent work. Per spec §9.3, this file must address: how humans supervise agents, review AI diffs, audit PRs, ratchet quality, and evolve from incidents.
+How to ratchet quality over time: increasing coverage floors, adding rules, tightening procedures. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.

@@ -8,7 +8,7 @@ labels: ["type:bug"]
 
 ## Bug Description
 
-> CONTENT: Clear description of what the bug is and what was expected. Include error messages verbatim.
+Clear description of what the bug is and what was expected. Include error messages verbatim.
 
 **Description:**
 <!-- A clear and concise description of what the bug is -->
