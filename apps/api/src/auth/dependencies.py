@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from apps.api.src.auth import models
 from apps.api.src.auth.service import AuthService
 from apps.api.src.config import Settings, get_settings
-from apps.api.src.dependencies import get_db
+from apps.api.src.database import get_db
 from apps.api.src.exceptions import AppError, AuthenticationError, AuthorizationError
 
 http_bearer = HTTPBearer(auto_error=False)
@@ -53,6 +53,14 @@ async def get_current_user(
         raise AuthenticationError("User not found or inactive")
 
     request.state.user_id = user.id
+    return user
+
+
+async def require_auth(
+    user: models.User = Depends(get_current_user),
+) -> models.User:
+    """Require an authenticated user (alias for ``get_current_user``)."""
+
     return user
 
 

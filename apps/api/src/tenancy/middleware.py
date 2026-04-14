@@ -12,6 +12,7 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from apps.api.src.config import get_settings
+from apps.api.src.exceptions import TenantIsolationError
 
 
 class TenantContextMiddleware(BaseHTTPMiddleware):
@@ -43,4 +44,29 @@ class TenantContextMiddleware(BaseHTTPMiddleware):
                 request.state.tenant_id = UUID(str(tenant_raw))
             except ValueError:
                 request.state.tenant_id = None
+        return cast(Response, await call_next(request))
+
+
+class TenantEnforcementMiddleware(BaseHTTPMiddleware):
+    """Require JWT ``tenant_id`` when multi-tenancy is on and Bearer is sent."""
+
+    async def dispatch(self, request: Request, call_next: Any) -> Response:
+        settings = get_settings()
+        if not settings.multi_tenancy_enabled:
+            return cast(Response, await call_next(request))
+
+        auth_header = request.headers.get("Authorization")
+        if not auth_header or not auth_header.lower().startswith("bearer "):
+            return cast(Response, await call_next(request))
+
+        if getattr(request.state, "tenant_id", None) is None:
+            exc = TenantIsolationError(
+                "Tenant context required when multi-tenancy is enabled",
+                tenant_id=None,
+                attempted_resource=request.url.path,
+            )
+            from apps.api.src.middleware import app_error_handler
+
+            return await app_error_handler(request, exc)
+
         return cast(Response, await call_next(request))

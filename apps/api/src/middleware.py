@@ -86,5 +86,6 @@ async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
             extra={"correlation_id": correlation_id, "code": exc.code},
             exc_info=True,
         )
-    body = {"error": {"code": exc.code, "message": exc.message}}
+    err_body: dict[str, Any] = exc.to_dict()
+    body = {"error": err_body}
     return JSONResponse(status_code=exc.status_code, content=body)

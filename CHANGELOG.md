@@ -9,6 +9,7 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 ### Added
 
 - Makefile aliases for colon-style targets documented in `spec/spec.md` (e.g. `make skills:list`, `make queue:peek`, `make audit:self`) delegating to existing hyphenated targets.
+- **Content depth pass** (`spec/CONTENT_DEPTH_PASS.md`): expanded domain exceptions (`TenantIsolationError`, `StateTransitionError`, structured `AppError.detail` / `to_dict()`), SQLAlchemy pagination helpers, `PageInfo` / `PaginatedResponse` in contracts, central `dependencies.py` re-exports, tenant enforcement middleware for tests, real tenancy tests, queue intelligence CLI (`graph`, `analyze`, `ready`, `blocked`), docs generator pipeline (`skills/repo-governance/docs-generator.py` + `scripts/docs-generate.sh`), expanded `scripts/repo_self_audit.py`, multi-stage API Dockerfile (Python 3.12), seed rows in `queue/queue.csv`, bootstrap scripts (`setup.sh` / `setup.bat` / `run.sh` / `run.bat`), CI matrix (SQLite + Postgres), and AGENTS §15 + global canonical-commands rule.
 
 ### Changed
 

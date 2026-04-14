@@ -1,22 +1,24 @@
 # apps/api/Dockerfile
-# Build from repository root: docker build -f apps/api/Dockerfile .
-
-FROM python:3.14-slim
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y --no-install-recommends curl \
-  && rm -rf /var/lib/apt/lists/*
-
+FROM python:3.12-slim AS builder
+WORKDIR /build
 COPY pyproject.toml README.md ./
 COPY apps apps
 COPY packages packages
-
 RUN pip install --no-cache-dir --upgrade pip \
-  && pip install --no-cache-dir .
+ && pip install --no-cache-dir .
 
-RUN useradd --create-home --uid 1000 app
+FROM python:3.12-slim AS runner
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+ && rm -rf /var/lib/apt/lists/* \
+ && useradd --create-home --uid 1000 app
+
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /build/apps /app/apps
+COPY --from=builder /build/packages /app/packages
+
 USER app
-
 ENV PYTHONPATH=/app
 EXPOSE 8000
 

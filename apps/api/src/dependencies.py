@@ -1,17 +1,46 @@
 # apps/api/src/dependencies.py
-"""Shared FastAPI dependencies."""
+"""Central FastAPI dependencies — routers should import from here."""
 
 from __future__ import annotations
 
-from fastapi import Request
+import uuid
+from collections.abc import AsyncGenerator
 
-from apps.api.src.config import get_settings
+from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.requests import Request
+
+from apps.api.src.auth.dependencies import get_current_user, require_auth
+from apps.api.src.config import Settings, get_settings
 from apps.api.src.database import get_db
 
-__all__ = ["get_db", "get_settings", "get_correlation_id"]
+__all__ = [
+    "get_app_settings",
+    "get_correlation_id",
+    "get_current_user",
+    "get_db",
+    "get_db_session",
+    "get_settings",
+    "require_auth",
+]
+
+
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+    """Re-export ``get_db`` for explicit naming in routers."""
+
+    async for session in get_db():
+        yield session
+
+
+def get_app_settings() -> Settings:
+    """Thin wrapper for ``Depends()`` consistency."""
+
+    return get_settings()
 
 
 def get_correlation_id(request: Request) -> str:
-    """Return the correlation id for the active request."""
+    """Correlation ID from middleware, or a new UUID string if missing."""
 
-    return getattr(request.state, "correlation_id", "unknown")
+    cid = getattr(request.state, "correlation_id", None)
+    if isinstance(cid, str) and cid:
+        return cid
+    return str(uuid.uuid4())

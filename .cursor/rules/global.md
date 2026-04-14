@@ -57,6 +57,14 @@ Universal constraints for **every** agent session: commits, scope, evidence, fil
 6. Record which skills you used in the PR or queue notes.
 7. Missing skill for a **recurring** pattern → add or extend a skill (see **`docs/procedures/update-or-create-skill.md`**).
 
+## Canonical commands
+
+1. **Always use `make` targets** over ad hoc shell commands. Run `make help` to see all targets.
+2. If a `make` target exists for an operation, use it. Do not run the underlying script directly unless debugging the script itself.
+3. Colon-form targets (`make queue:validate`) and hyphen-form (`make queue-validate`) are equivalent aliases. Either form is acceptable.
+4. If you need a command that has no target, **propose adding one** (new script in `scripts/` + Makefile entry) rather than running a one-off.
+5. Document all commands you run in PR descriptions using the Make target form.
+
 ## Forbidden patterns
 
 1. No secrets, tokens, passwords, or API keys in the repo.

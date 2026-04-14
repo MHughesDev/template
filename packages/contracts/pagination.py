@@ -1,5 +1,5 @@
 # packages/contracts/pagination.py
-"""Pagination parameters and cursor helpers."""
+"""Pagination parameters, cursor helpers, and list response envelopes."""
 
 from __future__ import annotations
 
@@ -18,6 +18,26 @@ class PaginationParams(BaseModel):
     page: int = Field(1, ge=1)
     page_size: int = Field(20, ge=1, le=100)
     cursor: str | None = None
+    offset: int | None = Field(None, ge=0)
+
+
+class PageInfo(BaseModel):
+    """Pagination metadata returned with every list response."""
+
+    model_config = {"frozen": True}
+
+    has_next: bool
+    has_previous: bool = False
+    next_cursor: str | None = None
+    previous_cursor: str | None = None
+    total_count: int | None = None
+
+
+class PaginatedResponse[T](BaseModel):
+    """Standard envelope for all paginated list endpoints."""
+
+    items: list[T]
+    page_info: PageInfo
 
 
 def encode_cursor(payload: dict[str, Any]) -> str:
@@ -39,6 +59,18 @@ def decode_cursor(cursor: str) -> dict[str, Any] | None:
 
 
 def calculate_offset(params: PaginationParams) -> int:
-    """Compute SQL OFFSET from page/page_size."""
+    """Compute SQL OFFSET from page/page_size or explicit offset."""
 
+    if params.offset is not None:
+        return params.offset
     return (params.page - 1) * params.page_size
+
+
+__all__ = [
+    "PageInfo",
+    "PaginatedResponse",
+    "PaginationParams",
+    "calculate_offset",
+    "decode_cursor",
+    "encode_cursor",
+]

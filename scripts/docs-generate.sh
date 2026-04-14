@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # scripts/docs-generate.sh
-# Regenerate docs from source when generators exist (placeholder for OpenAPI export).
+# Run documentation generation pipeline (skills/repo-governance/docs-generator.py).
 
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-echo "docs:generate — no generators configured in template; export OpenAPI manually if needed."
-exit 0
+exec python3 "$ROOT/skills/repo-governance/docs-generator.py" --mode generate --repo-root "$ROOT"

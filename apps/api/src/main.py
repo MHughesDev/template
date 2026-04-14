@@ -21,7 +21,10 @@ from apps.api.src.middleware import (
     app_error_handler,
     configure_cors,
 )
-from apps.api.src.tenancy.middleware import TenantContextMiddleware
+from apps.api.src.tenancy.middleware import (
+    TenantContextMiddleware,
+    TenantEnforcementMiddleware,
+)
 
 
 @asynccontextmanager
@@ -39,6 +42,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app = FastAPI(title=resolved.project_name, lifespan=lifespan)
 
     # Starlette runs last-registered middleware first. Put CORS outermost.
+    app.add_middleware(TenantEnforcementMiddleware)
     app.add_middleware(TenantContextMiddleware)
     app.add_middleware(RequestLoggingMiddleware)
     app.add_middleware(CorrelationIdMiddleware)

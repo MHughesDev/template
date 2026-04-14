@@ -233,6 +233,23 @@ Prompt authors follow **`docs/procedures/add-prompt-template.md`**.
 
 ---
 
+## 15. Python implementation procedures
+
+All Python code in this repository MUST follow **[PYTHON_PROCEDURES.md](PYTHON_PROCEDURES.md)** — the 18 implementation procedures that govern type safety, boundary definitions, import direction, error handling, configuration, async patterns, and testing.
+
+Key rules enforced:
+
+- Every public function is fully typed (params, return, errors).
+- Boundary shapes (requests, responses, config) defined as Pydantic models before logic.
+- Import direction: `router` → `service` → `repository`. Never reverse.
+- No `os.getenv()` outside `apps/api/src/config.py`.
+- State modeled with `Enum` and explicit transition maps where applicable.
+- `None` handled explicitly; never used as an error signal.
+
+See the full document for all 18 procedures, the condensed 12-point rule set, and refactor triggers. Code review (procedure 18) checks compliance with all of these.
+
+---
+
 ## Navigation and machine interface
 
 ### Directory navigation

@@ -22,12 +22,16 @@ from apps.api.src.main import create_app
 
 @pytest_asyncio.fixture
 async def test_engine() -> AsyncIterator[AsyncEngine]:
-    """In-memory SQLite database shared across a test."""
+    """Test database: SQLite in-memory by default; Postgres when ``DATABASE_URL`` is set."""
 
     await dispose_engine()
-    os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
+    db_url = os.environ.get("DATABASE_URL", "")
+    if db_url.startswith("postgresql"):
+        os.environ["API_DEBUG"] = "false"
+    else:
+        os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
+        os.environ["API_DEBUG"] = "true"
     os.environ["JWT_SECRET_KEY"] = "test-jwt-secret-key-for-ci-only"
-    os.environ["API_DEBUG"] = "true"
     get_settings.cache_clear()
 
     engine = create_async_engine(os.environ["DATABASE_URL"], future=True)

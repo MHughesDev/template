@@ -94,3 +94,4 @@ temp/
 # Local SQLite files (dev / tests)
 apps/api/*.db
 *.db
+docs/generated/

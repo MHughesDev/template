@@ -16,6 +16,17 @@ need() {
 
 need python3
 need make
+need docker
+need git
+
+if docker compose version >/dev/null 2>&1; then
+  COMPOSE="docker compose"
+elif command -v docker-compose >/dev/null 2>&1; then
+  COMPOSE="docker-compose"
+else
+  echo "Missing: docker compose (v2 plugin or docker-compose standalone)" >&2
+  exit 1
+fi
 
 if [[ ! -d .venv ]]; then
   python3 -m venv .venv
@@ -31,6 +42,16 @@ if [[ ! -f .env ]]; then
 fi
 
 export PYTHONPATH="$ROOT"
+
+echo "Starting Docker Compose services..."
+$COMPOSE up -d
+
+echo "Waiting for Compose to settle..."
+sleep 5
+if ! $COMPOSE ps --status running 2>/dev/null | grep -q .; then
+  echo "Warning: no running Compose services — check docker-compose.yml" >&2
+fi
+
 make migrate
 make lint
 make fmt
