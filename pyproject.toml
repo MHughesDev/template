@@ -25,6 +25,7 @@ dependencies = [
   "httpx>=0.28.0",
   "email-validator>=2.3.0",
   "celery[redis]>=5.4.0",
+  "fastapi-mcp>=0.2",
 ]
 
 [project.optional-dependencies]
@@ -83,6 +84,10 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "apps.api.src.worker"
 disable_error_code = ["untyped-decorator"]
+
+[[tool.mypy.overrides]]
+module = ["fastapi_mcp", "fastapi_mcp.*"]
+ignore_missing_imports = true
 
 [tool.pydantic-mypy]
 init_forbid_extra = true
