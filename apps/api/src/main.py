@@ -13,6 +13,7 @@ from starlette.requests import Request
 from apps.api.src.auth.router import router as auth_router
 from apps.api.src.config import Settings, get_settings
 from apps.api.src.database import dispose_engine
+# SCAFFOLD: module imports — do not remove this line
 from apps.api.src.example.router import router as example_router
 from apps.api.src.exceptions import AppError
 from apps.api.src.health.router import router as health_router
@@ -70,6 +71,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app.include_router(health_router)
     app.include_router(auth_router, prefix=resolved.api_prefix)
+    # SCAFFOLD: router includes — do not remove this line
     app.include_router(example_router, prefix=resolved.api_prefix)
 
     # --- MCP MODULE START ---

@@ -181,7 +181,59 @@ def _compose_active_service_names(root: Path, profiles_csv: str) -> list[str]:
     return [ln.strip() for ln in proc.stdout.splitlines() if ln.strip()]
 
 
+def _verify_manifest_hash(manifest: dict[str, Any], manifest_path: Path) -> list[str]:
+    """Re-compute SHA-256 of manifest (sans hash field) and compare to stored value."""
+    stored_hash = (manifest.get("meta") or {}).get("init_manifest_hash")
+    if not stored_hash:
+        return ["init-manifest.json: init_manifest_hash is missing — re-run 'make idea:parse'."]
+    meta_without_hash = dict(manifest.get("meta") or {})
+    meta_without_hash.pop("init_manifest_hash", None)
+    manifest_for_hash = {**manifest, "meta": meta_without_hash}
+    raw = json.dumps(manifest_for_hash, sort_keys=True, ensure_ascii=False).encode()
+    computed = hashlib.sha256(raw).hexdigest()
+    if computed != stored_hash:
+        return [
+            f"init-manifest.json hash mismatch — file may have been edited after parsing.\n"
+            f"  stored:   {stored_hash}\n"
+            f"  computed: {computed}\n"
+            "Re-run 'make idea:parse' to regenerate a clean manifest."
+        ]
+    return []
+
+
+def _pr_already_exists(root: Path, branch: str) -> bool:
+    """Return True if a PR for this branch already exists (via gh CLI)."""
+    gh = shutil.which("gh")
+    if not gh:
+        return False
+    result = subprocess.run(
+        [gh, "pr", "list", "--head", branch, "--json", "number"],
+        cwd=str(root),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return False
+    try:
+        items = json.loads(result.stdout or "[]")
+        return len(items) > 0
+    except json.JSONDecodeError:
+        return False
+
+
 def main() -> int:
+    import argparse as _argparse
+
+    ap = _argparse.ArgumentParser(description="Execute init-manifest.json resolved decisions")
+    ap.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print planned actions without modifying any files",
+    )
+    args = ap.parse_args()
+    dry_run: bool = args.dry_run
+
     root = Path(__file__).resolve().parent.parent
     os.chdir(root)
     log_path = root / "init-manifest.log"
@@ -189,9 +241,10 @@ def main() -> int:
 
     def log(msg: str) -> None:
         line = f"{datetime.now(tz=UTC).isoformat()} {msg}\n"
-        with log_path.open("a", encoding="utf-8") as f:
-            f.write(line)
-        print(msg, flush=True)
+        if not dry_run:
+            with log_path.open("a", encoding="utf-8") as f:
+                f.write(line)
+        print(("[DRY-RUN] " if dry_run else "") + msg, flush=True)
 
     if not manifest_path.is_file():
         print("Run 'make idea:parse' first.", file=sys.stderr)
@@ -202,6 +255,14 @@ def main() -> int:
     except json.JSONDecodeError as e:
         print(f"Invalid JSON in init-manifest.json: {e}", file=sys.stderr)
         return 1
+
+    # Verify manifest integrity before executing anything
+    hash_errors = _verify_manifest_hash(manifest, manifest_path)
+    if hash_errors:
+        for err in hash_errors:
+            print(f"✗ {err}", file=sys.stderr)
+        return 1
+    log("Manifest hash verified OK")
 
     rd = manifest.get("resolved_decisions") or {}
     meta = manifest.get("meta") or {}
@@ -218,6 +279,20 @@ def main() -> int:
 
     deps_added: list[str] = []
     env_keys_added: list[str] = []
+
+    if dry_run:
+        print("\n--- DRY-RUN: planned actions ---")
+        print(f"STEP 2: source enable scripts for: {', '.join(profiles_enabled)}")
+        print(f"STEP 2: source discard scripts for: {', '.join(profiles_discarded)}")
+        print(f"STEP 4: append python deps: {', '.join(py_deps) or '(none)'}")
+        print(f"STEP 5: append env vars: {', '.join(sorted(env_vars)) or '(none)'}")
+        print(f"STEP 6: scaffold modules: {', '.join(modules) or '(none)'}")
+        print(f"STEP 7: seed {len(queue_rows)} queue row(s)")
+        print("STEP 8: make codebase-summary")
+        print("STEP 9: make lint fmt-check typecheck test queue-validate audit-self")
+        print("STEP 10: git commit + open PR")
+        print("--- end dry-run ---")
+        return 0
 
     log("STEP 2: profile scripts")
     profiles_dir = root / "scripts" / "profiles"
@@ -335,10 +410,18 @@ def main() -> int:
         f"Manifest hash: {mhash}\n"
     )
     subprocess.run(["git", "-C", str(root), "add", "-A"], check=False)
-    subprocess.run(
-        ["git", "-C", str(root), "commit", "-m", commit_msg],
-        check=False,
+    # Only commit if there are staged changes (idempotency guard)
+    status = subprocess.run(
+        ["git", "-C", str(root), "status", "--porcelain"],
+        capture_output=True, text=True, check=False,
     )
+    if status.stdout.strip():
+        subprocess.run(
+            ["git", "-C", str(root), "commit", "-m", commit_msg],
+            check=False,
+        )
+    else:
+        print("Nothing to commit — working tree clean after initialization.")
 
     pr_body = f"""## Initialization PR — {display_name}
 
@@ -394,30 +477,36 @@ git push origin --delete feature/idea-init-engine
 ```
 """
     gh = shutil.which("gh")
+    current_branch = subprocess.check_output(
+        ["git", "-C", str(root), "branch", "--show-current"],
+        text=True,
+    ).strip()
     if gh:
-        pr_cmd = [
-            gh,
-            "pr",
-            "create",
-            "--title",
-            f"feat: initialize repository from idea.md — {display_name}",
-            "--body",
-            pr_body,
-            "--base",
-            "main",
-            "--label",
-            "initialization",
-            "--label",
-            "automated",
-        ]
-        subprocess.run(pr_cmd, cwd=str(root), check=False)
+        if _pr_already_exists(root, current_branch):
+            print(
+                f"PR already exists for branch '{current_branch}' — skipping PR creation. "
+                "Run 'gh pr list' to see it."
+            )
+        else:
+            pr_cmd = [
+                gh,
+                "pr",
+                "create",
+                "--title",
+                f"feat: initialize repository from idea.md — {display_name}",
+                "--body",
+                pr_body,
+                "--base",
+                "main",
+                "--label",
+                "initialization",
+                "--label",
+                "automated",
+            ]
+            subprocess.run(pr_cmd, cwd=str(root), check=False)
     else:
         print(
-            "gh CLI not found — open a PR manually from branch "
-            + subprocess.check_output(
-                ["git", "-C", str(root), "branch", "--show-current"],
-                text=True,
-            ).strip(),
+            f"gh CLI not found — open a PR manually from branch '{current_branch}'"
         )
 
     print("✓ Profiles enabled     :", ", ".join(profiles_enabled))
