@@ -12,6 +12,27 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+PARSER_VERSION = "2.0"
+MIN_IDEA_VERSION = "2.0"
+
+# Profiles that, when enabled, scaffold into packages/ (via enable-<stem>.sh)
+PACKAGE_PROFILE_STEMS: set[str] = {
+    "workers", "ai-rag", "billing", "email", "file-storage",
+    "search", "analytics", "scheduled-jobs",
+}
+
+# Declarative profile constraint rules
+PROFILE_REQUIRES: dict[str, list[str]] = {
+    "billing": ["multi_tenancy"],
+    "multi_tenancy": [],
+    "websocket": [],
+    "ai_rag": [],
+}
+
+PROFILE_CONFLICTS: dict[str, list[str]] = {
+    # No hard conflicts currently — used for future extension
+}
+
 ARCHETYPE_DEFAULTS: dict[str, dict[str, bool]] = {
     "api_service": {
         "web_frontend": False,
@@ -178,6 +199,25 @@ def _parse_init_meta(text: str) -> dict[str, str | None]:
         else:
             out[k] = v.strip('"').strip("'")
     return out
+
+
+def _check_version_compat(meta: dict[str, str | None]) -> list[str]:
+    """Warn when idea.md declares an init_version older than this parser supports."""
+    errs: list[str] = []
+    raw = meta.get("init_version")
+    if not raw:
+        return errs
+    try:
+        major_idea = int(str(raw).split(".")[0])
+        major_parser = int(PARSER_VERSION.split(".")[0])
+        if major_idea < major_parser:
+            errs.append(
+                f"INIT_META init_version is '{raw}' but this parser requires >= {MIN_IDEA_VERSION}. "
+                "Update your idea.md template to the current version before re-initializing."
+            )
+    except ValueError:
+        errs.append(f"INIT_META init_version '{raw}' is not a valid version string.")
+    return errs
 
 
 def _table_after_heading(text: str, heading_re: re.Pattern[str]) -> list[list[str]]:
@@ -486,6 +526,102 @@ def _resolve_profile_states(
     return enabled, source, resolved_fields
 
 
+def _validate_profile_constraints(
+    enabled_map: dict[str, bool],
+) -> list[str]:
+    """Check PROFILE_REQUIRES and PROFILE_CONFLICTS rules against resolved profile map."""
+    errs: list[str] = []
+    for profile, required in PROFILE_REQUIRES.items():
+        if not enabled_map.get(profile):
+            continue
+        for dep in required:
+            if not enabled_map.get(dep):
+                errs.append(
+                    f"Profile '{profile}' requires '{dep}' to also be enabled — "
+                    f"enable '{dep}' in §5 or disable '{dep}' in §5."
+                )
+    for profile, conflicts in PROFILE_CONFLICTS.items():
+        if not enabled_map.get(profile):
+            continue
+        for conflict in conflicts:
+            if enabled_map.get(conflict):
+                errs.append(
+                    f"Profile '{profile}' conflicts with '{conflict}' — "
+                    "they cannot both be enabled."
+                )
+    return errs
+
+
+def _resolve_module_placement(
+    contexts: list[dict[str, str]],
+    profiles_enabled: list[str],
+) -> list[dict[str, Any]]:
+    """
+    Assign module_placement ('api_module' or 'shared_package') to each bounded context.
+
+    When a context name matches a profile that scaffolds into packages/, mark it as
+    'shared_package' so the orchestrator skips double-scaffolding into apps/api/src/.
+    """
+    result: list[dict[str, Any]] = []
+    for ctx in contexts:
+        name = ctx["name"].strip().lower().replace(" ", "_")
+        name_dash = name.replace("_", "-")
+        # Profile script stems that create packages/ (e.g. 'billing', 'search')
+        overlaps_package_profile = (
+            name_dash in PACKAGE_PROFILE_STEMS or name in PACKAGE_PROFILE_STEMS
+        ) and (name_dash in profiles_enabled or any(
+            s.replace("-", "_") == name for s in profiles_enabled
+        ))
+        placement = "shared_package" if overlaps_package_profile else "api_module"
+        result.append({**ctx, "module_placement": placement})
+    return result
+
+
+def _infer_queue_dependencies(
+    queue_rows: list[dict[str, Any]],
+    contexts: list[dict[str, str]],
+) -> list[dict[str, Any]]:
+    """
+    Infer dependency edges between queue rows from domain relationships.
+
+    If context B's entities or description mentions context A's name,
+    add context A's queue ID as a dependency of context B's queue ID.
+    """
+    if len(queue_rows) < 2:
+        return queue_rows
+
+    # Build a map: context name → queue row index (0-based)
+    ctx_names = [c["name"].strip().lower() for c in contexts]
+    id_for_name: dict[str, str] = {}
+    for i, ctx in enumerate(contexts):
+        name = ctx["name"].strip().lower()
+        if i < len(queue_rows):
+            id_for_name[name] = queue_rows[i]["id"]
+
+    updated: list[dict[str, Any]] = []
+    for i, row in enumerate(queue_rows):
+        ctx = contexts[i] if i < len(contexts) else None
+        if ctx is None:
+            updated.append(row)
+            continue
+        description = (ctx.get("entities", "") + " " + ctx.get("description", "")).lower()
+        deps: list[str] = []
+        for j, other_name in enumerate(ctx_names):
+            if j == i:
+                continue
+            if other_name in description and j < len(queue_rows):
+                dep_id = queue_rows[j]["id"]
+                if dep_id not in deps:
+                    deps.append(dep_id)
+        new_row = dict(row)
+        if deps:
+            existing = new_row.get("dependencies", "").strip()
+            merged = (existing + " " + " ".join(deps)).strip() if existing else " ".join(deps)
+            new_row["dependencies"] = merged
+        updated.append(new_row)
+    return updated
+
+
 def _empty_resolved_decisions() -> dict[str, Any]:
     return {
         "compose_services": ["api"],
@@ -726,6 +862,9 @@ def build_manifest(
         errors.append("INIT_META block is missing (expected <!-- INIT_META ... -->).")
 
     init_meta_errors: list[str] = []
+    if meta:
+        init_meta_errors.extend(_check_version_compat(meta))
+
     init_val = meta.get("initialized", "false") if meta else None
     if init_val is not None and str(init_val).lower() not in ("false", "no", "0"):
         init_meta_errors.append(
@@ -784,6 +923,12 @@ def build_manifest(
         archetype_key, profile_states
     )
 
+    # Profile constraint validation (requires/conflicts)
+    constraint_errors = _validate_profile_constraints(enabled_map)
+    if constraint_errors:
+        errors.extend(constraint_errors)
+        return None, errors
+
     decisions = _empty_resolved_decisions()
     decisions["archetype_resolved_fields"] = arche_resolved
     decisions["open_questions"] = open_q
@@ -805,10 +950,19 @@ def build_manifest(
 
     apply_primary_db_decisions(primary_db == "postgresql", decisions)
 
-    mod_names = [c["name"].strip().lower().replace(" ", "_") for c in contexts]
+    # Resolve module placement: skip scaffolding into apps/api/src/ when a profile
+    # already creates packages/<name>/ for the same bounded context
+    contexts_with_placement = _resolve_module_placement(contexts, profiles_enabled)
+    mod_names = [
+        c["name"].strip().lower().replace(" ", "_")
+        for c in contexts_with_placement
+        if c.get("module_placement") == "api_module"
+    ]
     decisions["modules_to_scaffold"] = [m for m in mod_names if m]
 
-    decisions["queue_seed_rows"] = _build_queue_seed_rows(queue_items)
+    # Build queue rows then infer dependency edges from domain relationships
+    raw_queue_rows = _build_queue_seed_rows(queue_items)
+    decisions["queue_seed_rows"] = _infer_queue_dependencies(raw_queue_rows, contexts)
 
     profile_details: list[dict[str, Any]] = []
     for key, script_stem in PROFILE_ROW_KEYS:
@@ -839,7 +993,7 @@ def build_manifest(
         "archetype": archetype_key,
         "primary_database": primary_db,
         "profiles": profile_details,
-        "bounded_contexts": contexts,
+        "bounded_contexts": contexts_with_placement,
         "resolved_decisions": decisions,
     }
 

@@ -185,6 +185,10 @@ idea-plan:
 idea-execute:
 	@scripts/init-from-idea.sh
 
+## idea-execute-dry-run: preview orchestrator actions without modifying files
+idea-execute-dry-run:
+	@python3 scripts/init-from-idea.py --dry-run
+
 ## init-from-idea: validate + parse + execute in one command
 init-from-idea: idea-validate idea-parse idea-execute
 
@@ -251,7 +255,7 @@ health-check:
 # --- Colon-style aliases (spec §10.2 and docs). GNU Make needs escaped colons in target names.
 .PHONY: skills\:list queue\:peek queue\:validate queue\:archive queue\:graph queue\:analyze audit\:self rules\:check \
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
-        health\:check idea\:validate idea\:parse idea\:plan idea\:execute init\:from-idea profile\:enable idea\:queue \
+        health\:check idea\:validate idea\:parse idea\:plan idea\:execute idea\:execute-dry-run init\:from-idea profile\:enable idea\:queue \
         scaffold\:module test\:unit test\:integration \
         test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed ci\:migrate-dry-run image\:build image\:scan \
         k8s\:render k8s\:validate env\:generate inventory\:check skill\:docs-gen \
@@ -278,6 +282,7 @@ idea\:validate: idea-validate
 idea\:parse: idea-parse
 idea\:plan: idea-plan
 idea\:execute: idea-execute
+idea\:execute-dry-run: idea-execute-dry-run
 init\:from-idea: init-from-idea
 profile\:enable: profile-enable
 idea\:queue: idea-queue

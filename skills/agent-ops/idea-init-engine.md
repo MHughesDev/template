@@ -43,11 +43,12 @@ env updates, and queue seeding in one auditable pass.
 
 ## Command examples
 
-- `make idea:validate`
-- `make idea:parse`
-- `make idea:plan`
-- `make idea:execute`
-- `make init:from-idea`
+- `make idea:validate`             — full pre-parse validation (placeholders, archetype, profiles, coherence, name conflicts, summary lengths)
+- `make idea:parse`                — produce `init-manifest.json` (includes hash + profile constraint check)
+- `make idea:plan`                 — parser dry-run: print resolved decisions JSON without writing manifest
+- `make idea:execute-dry-run`      — orchestrator dry-run: print each planned action without touching files
+- `make idea:execute`              — execute all decisions; opens PR when done
+- `make init:from-idea`            — validate + parse + execute in one command
 
 ## Validation checklist
 
@@ -61,9 +62,15 @@ env updates, and queue seeding in one auditable pass.
 
 - **Archetype not selected** — fix `idea.md` §3 so exactly one `[x]` appears in the Select column.
 - **Profile checkbox invalid** — each row must be `[x] yes`, `[x] no`, or `[ ]` for archetype fill-in.
+- **Profile constraint error** — e.g. `billing` requires `multi_tenancy`; fix §5 profile choices.
+- **Coherence error** — e.g. `multi-tenancy + sqlite`: switch primary DB to PostgreSQL in §7.
+- **Queue summary too short** — §12 summaries must be ≥ 100 characters; expand before running.
+- **Bounded context name conflicts** — reserved Python word or name matches a protected module; rename in §4.2.
+- **Context/profile name overlap** — a bounded context name matching a profile (e.g. `billing`) produces a warning; rename context (e.g. `subscriptions`) to avoid packages/ vs apps/api/src/ duplication.
 - **Module already exists** — orchestrator skips scaffolding; expected on re-run.
-- **Queue validation fails** — check duplicate IDs or summaries under 100 characters in `queue/queue.csv`.
+- **Manifest hash mismatch** — `init-manifest.json` was edited after parsing; re-run `make idea:parse`.
 - **Pyproject.toml parse error after dependency append** — fix TOML manually; re-run orchestrator.
+- **SCAFFOLD_MARKER missing** — if `main.py` was refactored and the marker comments removed, add them back before scaffolding.
 
 ## Handoff expectations
 

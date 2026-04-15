@@ -13,41 +13,111 @@ def _title_case_snake(name: str) -> str:
     return name.replace("_", " ").title().replace(" ", "")
 
 
+_IMPORT_MARKER = "# SCAFFOLD: module imports — do not remove this line"
+_INCLUDE_MARKER = "# SCAFFOLD: router includes — do not remove this line"
+
+
 def _wire_main_py(repo_root: Path, name: str) -> None:
     main_py = repo_root / "apps" / "api" / "src" / "main.py"
     text = main_py.read_text(encoding="utf-8")
     import_line = f"from apps.api.src.{name}.router import router as {name}_router"
-    if import_line in text:
-        return
     include_line = f"    app.include_router({name}_router, prefix=resolved.api_prefix)"
-    if include_line in text:
+
+    if import_line in text and include_line in text:
+        print(f"main.py already wired for module: {name}")
         return
-    # Insert import after example_router import
-    anchor = "from apps.api.src.example.router import router as example_router\n"
-    if anchor not in text:
-        raise RuntimeError("Could not find example_router import anchor in main.py")
-    text = text.replace(
-        anchor,
-        anchor + import_line + "\n",
-        1,
-    )
-    # Insert include after example_router include
-    inc_anchor = "    app.include_router(example_router, prefix=resolved.api_prefix)\n"
-    if inc_anchor not in text:
-        raise RuntimeError("Could not find example_router include anchor in main.py")
-    text = text.replace(
-        inc_anchor,
-        inc_anchor
-        + f"    app.include_router({name}_router, prefix=resolved.api_prefix)\n",
-        1,
-    )
+
+    # Insert import after SCAFFOLD_MARKER (preferred) or after example_router import (fallback)
+    if _IMPORT_MARKER in text:
+        text = text.replace(
+            _IMPORT_MARKER + "\n",
+            _IMPORT_MARKER + "\n" + import_line + "\n",
+            1,
+        )
+    elif "from apps.api.src.example.router import router as example_router\n" in text:
+        text = text.replace(
+            "from apps.api.src.example.router import router as example_router\n",
+            "from apps.api.src.example.router import router as example_router\n"
+            + import_line + "\n",
+            1,
+        )
+    else:
+        raise RuntimeError(
+            "Could not find SCAFFOLD_MARKER or fallback import anchor in main.py. "
+            f"Add '# SCAFFOLD: module imports — do not remove this line' before router imports."
+        )
+
+    # Insert router include after SCAFFOLD_MARKER (preferred) or after example_router include (fallback)
+    if _INCLUDE_MARKER in text:
+        text = text.replace(
+            _INCLUDE_MARKER + "\n",
+            _INCLUDE_MARKER + "\n" + include_line + "\n",
+            1,
+        )
+    elif "    app.include_router(example_router, prefix=resolved.api_prefix)\n" in text:
+        text = text.replace(
+            "    app.include_router(example_router, prefix=resolved.api_prefix)\n",
+            "    app.include_router(example_router, prefix=resolved.api_prefix)\n"
+            + include_line + "\n",
+            1,
+        )
+    else:
+        raise RuntimeError(
+            "Could not find SCAFFOLD_MARKER or fallback include anchor in main.py. "
+            f"Add '# SCAFFOLD: router includes — do not remove this line' before router includes."
+        )
+
     main_py.write_text(text, encoding="utf-8")
+
+
+def _validate_syntax(root: Path, name: str) -> list[str]:
+    """Import each generated Python file to catch syntax errors immediately."""
+    import subprocess as _sp
+
+    module_dir = root / "apps" / "api" / "src" / name
+    py_files = list(module_dir.rglob("*.py"))
+    failures: list[str] = []
+    for f in py_files:
+        result = _sp.run(
+            [sys.executable, "-c", f"import ast; ast.parse(open({str(f)!r}).read())"],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            failures.append(f"{f.relative_to(root)}: {result.stderr.strip()}")
+    return failures
+
+
+def _auto_migrate(root: Path, name: str) -> bool:
+    """Run alembic revision --autogenerate for the new module. Returns True on success."""
+    import subprocess as _sp
+
+    api_dir = root / "apps" / "api"
+    result = _sp.run(
+        [
+            sys.executable,
+            "-m",
+            "alembic",
+            "revision",
+            "--autogenerate",
+            "-m",
+            f"add_{name}_table",
+        ],
+        cwd=str(api_dir),
+        capture_output=False,
+    )
+    return result.returncode == 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Scaffold bounded context module")
     parser.add_argument("--module", required=True, help="snake_case module name")
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
+    parser.add_argument(
+        "--auto-migrate",
+        action="store_true",
+        help="Run alembic revision --autogenerate after scaffolding",
+    )
     args = parser.parse_args()
     name = args.module.strip().lower()
     if not re.match(r"^[a-z][a-z0-9_]*$", name):
@@ -406,6 +476,22 @@ def test_service_stub_instantiation() -> None:
             ct = ct.replace(anchor, anchor + import_line, 1)
             conftest.write_text(ct, encoding="utf-8")
             print(f"Updated apps/api/tests/conftest.py — import {name} models")
+
+    # Syntax validation — catch codegen errors immediately
+    syntax_errors = _validate_syntax(root, name)
+    if syntax_errors:
+        print("\nSyntax errors in generated files:", file=sys.stderr)
+        for err in syntax_errors:
+            print(f"  ✗ {err}", file=sys.stderr)
+        return 1
+    print("✓ Syntax validation passed for all generated files")
+
+    if args.auto_migrate:
+        print(f"\nRunning alembic autogenerate for {name}...")
+        if _auto_migrate(root, name):
+            print("✓ Migration generated — review it before applying")
+        else:
+            print("⚠ Migration generation failed — run manually: make migrate:create MESSAGE=add_{name}_table", file=sys.stderr)
 
     print()
     print("Next: make migrate && make test")
