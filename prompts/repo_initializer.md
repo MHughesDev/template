@@ -42,6 +42,30 @@ linked_skills:
   - "skills/backend/fastapi-router-module.md"
 ---
 
+## PRE-EXECUTION CHECKLIST (agent reads this before any other step)
+
+1. Verify `init-manifest.json` exists in the repo root.
+   - If missing: STOP. Tell the user to run `make idea:parse` first and re-invoke.
+   - If present: read it in full before proceeding.
+
+2. Read `init-manifest.json` completely. Your decisions are BOUND to the manifest.
+   You do not infer from idea.md directly — the manifest is the resolved contract.
+   If you disagree with a manifest decision, surface it as an open question in the PR.
+   Do not silently override it.
+
+3. Search `skills/` for relevant skills before executing any step (AGENTS.md §4.1 #13).
+   Minimum skills to read: `skills/agent-ops/queue-triage.md`,
+   `skills/agent-ops/task-planning.md`, `skills/agent-ops/implementation-handoff.md`,
+   `skills/backend/fastapi-router-module.md`, `skills/backend/service-repository-pattern.md`.
+
+4. The orchestrator script (`scripts/init-from-idea.sh`) handles mechanical execution.
+   Your role as the repo_initializer agent is ARCHITECTURAL REVIEW AND COORDINATION:
+   - Confirm the manifest decisions are coherent (flag any that seem wrong)
+   - Ensure profile stubs are wired correctly into main.py
+   - Ensure queue items have rich, agent-executable summaries
+   - Ensure .env.example is complete and correctly commented
+   - Write the initialization PR description evidence
+
 # prompts/repo_initializer.md
 
 <!-- CROSS-REFERENCES -->
