@@ -11,7 +11,8 @@ SHELL := /usr/bin/env bash
         security-scan secret-scan image-build image-scan \
         release-prepare release-verify \
         k8s-render k8s-validate docker-up docker-down \
-        init idea-validate scaffold-module profile-enable idea-queue env-generate inventory-check \
+        init idea-validate idea-parse idea-plan idea-execute init-from-idea \
+        scaffold-module profile-enable idea-queue env-generate inventory-check \
         codebase-summary skill-docs-gen \
         test-scaffold env-sync coverage-ratchet rule-lint adr-index \
         clean health-check
@@ -172,6 +173,21 @@ init:
 idea-validate:
 	@scripts/validate-idea.sh
 
+## idea-parse: parse idea.md into init-manifest.json
+idea-parse:
+	@python3 scripts/idea-parser.py
+
+## idea-plan: parse idea.md and print resolved decisions (dry-run, no files written)
+idea-plan:
+	@python3 scripts/idea-parser.py --dry-run
+
+## idea-execute: run full initialization from init-manifest.json (run idea-parse first)
+idea-execute:
+	@scripts/init-from-idea.sh
+
+## init-from-idea: validate + parse + execute in one command
+init-from-idea: idea-validate idea-parse idea-execute
+
 ## scaffold-module: MODULE= name
 scaffold-module:
 	@MODULE="$(MODULE)" scripts/scaffold-module.sh
@@ -235,7 +251,8 @@ health-check:
 # --- Colon-style aliases (spec §10.2 and docs). GNU Make needs escaped colons in target names.
 .PHONY: skills\:list queue\:peek queue\:validate queue\:archive queue\:graph queue\:analyze audit\:self rules\:check \
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
-        health\:check idea\:validate profile\:enable idea\:queue scaffold\:module test\:unit test\:integration \
+        health\:check idea\:validate idea\:parse idea\:plan idea\:execute init\:from-idea profile\:enable idea\:queue \
+        scaffold\:module test\:unit test\:integration \
         test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed ci\:migrate-dry-run image\:build image\:scan \
         k8s\:render k8s\:validate env\:generate inventory\:check skill\:docs-gen \
         secret\:scan test\:scaffold env\:sync coverage\:ratchet rule\:lint adr\:index
@@ -258,6 +275,10 @@ docker\:up: docker-up
 docker\:down: docker-down
 health\:check: health-check
 idea\:validate: idea-validate
+idea\:parse: idea-parse
+idea\:plan: idea-plan
+idea\:execute: idea-execute
+init\:from-idea: init-from-idea
 profile\:enable: profile-enable
 idea\:queue: idea-queue
 scaffold\:module: scaffold-module
