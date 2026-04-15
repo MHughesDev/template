@@ -3,9 +3,7 @@
 
 from __future__ import annotations
 
-import csv
 import hashlib
-import io
 import json
 import os
 import re
@@ -125,35 +123,6 @@ def _update_idea_md(
     idea.write_text(text, encoding="utf-8")
 
 
-def _seed_queue(root: Path, rows: list[dict[str, str]]) -> int:
-    qpath = root / "queue" / "queue.csv"
-    raw = qpath.read_text(encoding="utf-8").splitlines()
-    start = 1 if raw and raw[0].startswith("#") else 0
-    comment = (raw[0] + "\n") if start else ""
-    reader = csv.DictReader(io.StringIO("\n".join(raw[start:])))
-    fieldnames = list(reader.fieldnames or [])
-    existing = list(reader)
-    have = {r.get("id", "") for r in existing}
-    added = 0
-    for r in rows:
-        rid = r.get("id", "")
-        if rid in have:
-            print(f"skip queue row (exists): {rid}")
-            continue
-        row = {k: r.get(k, "") for k in fieldnames}
-        existing.append(row)
-        have.add(rid)
-        added += 1
-    buf = io.StringIO()
-    if comment:
-        buf.write(comment)
-    w = csv.DictWriter(buf, fieldnames=fieldnames)
-    w.writeheader()
-    w.writerows(existing)
-    qpath.write_text(buf.getvalue(), encoding="utf-8")
-    return added
-
-
 def _compose_profiles_from_services(services: list[str]) -> str:
     parts: list[str] = []
     if "db" in services:
@@ -180,6 +149,36 @@ def _set_compose_profiles_env(root: Path, profiles_csv: str) -> None:
     else:
         env_path.write_text("# Added by init-from-idea\n" + line, encoding="utf-8")
     print(f"Set COMPOSE_PROFILES={profiles_csv} in .env")
+
+
+def _compose_active_service_names(root: Path, profiles_csv: str) -> list[str]:
+    """Resolve active service names via `docker compose config --services` (Step 3 visibility)."""
+
+    env = os.environ.copy()
+    if profiles_csv:
+        env["COMPOSE_PROFILES"] = profiles_csv
+    try:
+        proc = subprocess.run(
+            ["docker", "compose", "config", "--services"],
+            cwd=str(root),
+            env=env,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=120,
+        )
+    except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
+        log_msg = f"STEP 3: could not list Compose services (docker unavailable): {exc}"
+        print(log_msg, flush=True)
+        return []
+    if proc.returncode != 0:
+        err = (proc.stderr or "").strip()
+        print(
+            f"STEP 3: docker compose config --services failed: {err}",
+            flush=True,
+        )
+        return []
+    return [ln.strip() for ln in proc.stdout.splitlines() if ln.strip()]
 
 
 def main() -> int:
@@ -230,7 +229,17 @@ def main() -> int:
     prof_csv = _compose_profiles_from_services(compose_services)
     if prof_csv:
         _set_compose_profiles_env(root, prof_csv)
-    log(f"Compose services (logical): {', '.join(compose_services)}")
+    log(f"Compose services (logical from manifest): {', '.join(compose_services)}")
+    active = _compose_active_service_names(root, prof_csv)
+    if active:
+        log(
+            "STEP 3: active Compose service names (docker compose config --services): "
+            + ", ".join(active)
+        )
+    else:
+        log(
+            "STEP 3: active Compose services — (skipped: Docker CLI unavailable or compose failed)"
+        )
 
     log("STEP 4: Python dependencies")
     pyproject = root / "pyproject.toml"
@@ -262,7 +271,32 @@ def main() -> int:
     log("STEP 7: queue seeding")
     seeded = 0
     if queue_rows:
-        seeded = _seed_queue(root, queue_rows)
+        qproc = subprocess.run(
+            [
+                sys.executable,
+                str(root / "skills" / "init" / "queue-seeder.py"),
+                "--repo-root",
+                str(root),
+                "--from-manifest",
+                str(manifest_path),
+            ],
+            cwd=str(root),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if qproc.stdout:
+            print(qproc.stdout, end="")
+        if qproc.stderr:
+            print(qproc.stderr, end="", file=sys.stderr)
+        if qproc.returncode != 0:
+            print(
+                "queue-seeder.py --from-manifest failed — fix manifest or queue.csv",
+                file=sys.stderr,
+            )
+            return 1
+        m = re.search(r"Appended (\d+) row", qproc.stdout or "")
+        seeded = int(m.group(1)) if m else len(queue_rows)
     _run(["make", "-C", str(root), "queue-validate"], root)
 
     log("STEP 8: codebase summary")
@@ -342,13 +376,22 @@ See `idea.md` §16.
 - [x] `make audit:self` — passed
 
 ### Merge instructions
+
 Review the diff carefully. Pay special attention to:
+
 1. Module scaffolding under `apps/api/src/`
 2. New env vars in `.env.example`
 3. Queue state in `queue/queue.csv`
 4. Open questions in `idea.md` §16 — resolve before building
 
-After merging: `git branch -d feature/idea-init-engine && git push origin --delete feature/idea-init-engine`
+**After merge — delete the initialization branch locally and on the remote:**
+
+```bash
+git checkout main
+git pull origin main
+git branch -d feature/idea-init-engine
+git push origin --delete feature/idea-init-engine
+```
 """
     gh = shutil.which("gh")
     if gh:

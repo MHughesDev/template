@@ -50,27 +50,72 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 
 ## Example: `saas_product` with billing, email, workers
 
-This annotated example illustrates typical keys; values are illustrative.
+**Scenario:** B2B SaaS with React web UI, Celery workers, Stripe billing, and transactional email. Primary DB is PostgreSQL.
+
+**Annotations (read alongside the JSON):**
+
+- **`meta`**: `init_manifest_hash` is computed by the parser (omit when hand-drafting; parser fills it).
+- **`archetype`**: `saas_product` turns on web, multi-tenancy, workers, scheduled jobs, file storage, email, billing, analytics by default in `ARCHETYPE_DEFAULTS`; explicit `[x] no` in §5 overrides.
+- **`resolved_decisions.compose_services`**: Logical services the orchestrator activates — `api` always; `db` when Postgres; `redis`+`worker` when workers profile applies; `nginx` when web frontend applies.
+- **`queue_seed_rows`**: Each object must match `queue/queue.csv` columns; `summary` must be empty or ≥ 100 characters for `make queue:validate`.
 
 ```json
 {
   "meta": {
     "init_version": "2.0",
+    "idea_path": "/path/to/repo/idea.md",
+    "parsed_at": "2026-04-15T12:00:00+00:00",
     "initialized": false,
-    "init_manifest_hash": "…"
+    "init_manifest_hash": "ab12cd34…"
   },
   "project": {
     "project_name": "acme-saas",
     "display_name": "Acme SaaS",
-    "one_line_pitch": "Multi-tenant B2B billing and onboarding.",
+    "one_line_pitch": "Multi-tenant B2B subscriptions with Stripe and email onboarding.",
     "repository_slug": "acme/saas"
   },
   "archetype": "saas_product",
   "primary_database": "postgresql",
-  "profiles": [],
-  "bounded_contexts": [],
+  "profiles": [
+    {
+      "profile_key": "web_frontend",
+      "script": "web",
+      "enabled": true,
+      "source": "resolved_by_archetype"
+    },
+    {
+      "profile_key": "email_notifications",
+      "script": "email",
+      "enabled": true,
+      "source": "resolved_by_archetype"
+    },
+    {
+      "profile_key": "workers",
+      "script": "workers",
+      "enabled": true,
+      "source": "resolved_by_archetype"
+    },
+    {
+      "profile_key": "billing",
+      "script": "billing",
+      "enabled": true,
+      "source": "resolved_by_archetype"
+    }
+  ],
+  "bounded_contexts": [
+    {
+      "name": "billing",
+      "entities": "Subscription, Invoice",
+      "description": "Stripe-backed billing and invoices."
+    },
+    {
+      "name": "customers",
+      "entities": "Customer, Organization",
+      "description": "Customer and org records."
+    }
+  ],
   "resolved_decisions": {
-    "compose_services": ["api", "db", "redis", "worker", "nginx"],
+    "compose_services": ["api", "db", "nginx", "redis", "worker"],
     "python_dependencies": [
       "asyncpg",
       "celery[redis]",
@@ -80,18 +125,49 @@ This annotated example illustrates typical keys; values are illustrative.
     ],
     "env_vars": {
       "DATABASE_URL": "postgresql+asyncpg://user:password@localhost:5432/dbname",
-      "CELERY_BROKER_URL": "redis://localhost:6379/0",
       "VITE_API_URL": "http://localhost:8000",
-      "STRIPE_SECRET_KEY": "sk_test_REPLACE_ME"
+      "CELERY_BROKER_URL": "redis://localhost:6379/0",
+      "CELERY_RESULT_BACKEND": "redis://localhost:6379/1",
+      "TENANT_ISOLATION_MODEL": "row_level",
+      "EMAIL_PROVIDER": "smtp",
+      "SMTP_HOST": "localhost",
+      "SMTP_PORT": "1025",
+      "SMTP_FROM": "noreply@example.com",
+      "STRIPE_SECRET_KEY": "sk_test_REPLACE_ME",
+      "STRIPE_WEBHOOK_SECRET": "whsec_REPLACE_ME",
+      "STRIPE_PUBLISHABLE_KEY": "pk_test_REPLACE_ME",
+      "ANALYTICS_ENABLED": "false",
+      "ANALYTICS_WRITE_KEY": "REPLACE_ME"
     },
     "modules_to_scaffold": ["billing", "customers"],
-    "profiles_enabled": ["web", "workers", "email", "billing"],
-    "profiles_discarded": ["mobile", "ai-rag"],
-    "queue_seed_rows": [],
+    "profiles_enabled": ["web", "workers", "email", "billing", "multi-tenancy", "scheduled-jobs", "file-storage", "search", "analytics"],
+    "profiles_discarded": ["mobile", "ai-rag", "websocket"],
+    "queue_seed_rows": [
+      {
+        "id": "IDEA-001",
+        "batch": "1",
+        "phase": "1",
+        "category": "core-api",
+        "summary": "Implement tenant-scoped Customer CRUD in apps/api/src/customers/: models with TenantMixin, repository, service, router, Pydantic schemas, and pytest coverage. Acceptance: list/create/get return correct HTTP status codes; integration test proves row-level isolation between tenants.",
+        "dependencies": "",
+        "notes": "seeded from init-manifest",
+        "created_date": "2026-04-15"
+      },
+      {
+        "id": "IDEA-002",
+        "batch": "1",
+        "phase": "2",
+        "category": "billing",
+        "summary": "Wire Stripe webhooks in packages/billing: verify signatures, persist subscription state, idempotent event handling. Acceptance: webhook tests with stripe-cli fixtures; invalid signature returns 400.",
+        "dependencies": "IDEA-001",
+        "notes": "seeded from init-manifest",
+        "created_date": "2026-04-15"
+      }
+    ],
     "ci_additions": ["tenant_isolation_integration_test"],
     "use_postgres": true,
-    "archetype_resolved_fields": [],
-    "open_questions": []
+    "archetype_resolved_fields": ["web_frontend", "email_notifications"],
+    "open_questions": ["Confirm Stripe price IDs for each plan tier before go-live."]
   }
 }
 ```
