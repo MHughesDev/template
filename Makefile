@@ -5,7 +5,7 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
 .PHONY: help dev lint fmt fmt-check fmt-fix typecheck test test-unit test-integration test-smoke \
-        migrate migrate\:create db-reset db-seed docs-check docs-generate docs-index \
+        migrate migrate\:create ci-migrate-dry-run db-reset db-seed docs-check docs-generate docs-index \
         queue-peek queue-validate queue-archive queue-graph queue-analyze \
         prompt-list skills-list rules-check audit-self \
         security-scan secret-scan image-build image-scan \
@@ -67,6 +67,10 @@ migrate:
 ## migrate\:create: alembic revision --autogenerate (MESSAGE= required)
 migrate\:create:
 	@MESSAGE="$(MESSAGE)" scripts/migrate.sh create
+
+## ci-migrate-dry-run: same SQLite migration checks as CI (preview + apply)
+ci-migrate-dry-run:
+	@scripts/ci-migrate-dry-run.sh
 
 ## db-reset: reset local sqlite + migrate
 db-reset:
@@ -232,7 +236,7 @@ health-check:
 .PHONY: skills\:list queue\:peek queue\:validate queue\:archive queue\:graph queue\:analyze audit\:self rules\:check \
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
         health\:check idea\:validate profile\:enable idea\:queue scaffold\:module test\:unit test\:integration \
-        test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed image\:build image\:scan \
+        test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed ci\:migrate-dry-run image\:build image\:scan \
         k8s\:render k8s\:validate env\:generate inventory\:check skill\:docs-gen \
         secret\:scan test\:scaffold env\:sync coverage\:ratchet rule\:lint adr\:index
 
@@ -265,6 +269,7 @@ fmt\:check: fmt-check
 prompt\:list: prompt-list
 db\:reset: db-reset
 db\:seed: db-seed
+ci\:migrate-dry-run: ci-migrate-dry-run
 image\:build: image-build
 image\:scan: image-scan
 k8s\:render: k8s-render

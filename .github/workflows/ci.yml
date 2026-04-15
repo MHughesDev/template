@@ -94,7 +94,11 @@ jobs:
           export DATABASE_URL="sqlite+aiosqlite:///./migration_ci.db"
           export JWT_SECRET_KEY="test-only-key-for-ci-migrations"
           export PYTHONPATH=.
-          cd apps/api && python3 -m alembic upgrade head --sql | head -n 50
+          set -euo pipefail
+          SQL_PREVIEW="$(mktemp)"
+          (cd apps/api && python3 -m alembic upgrade head --sql) >"$SQL_PREVIEW" 2>&1
+          head -n 50 "$SQL_PREVIEW"
+          rm -f "$SQL_PREVIEW"
       - name: Alembic apply to ephemeral SQLite
         run: |
           export DATABASE_URL="sqlite+aiosqlite:///./migration_ci_apply.db"

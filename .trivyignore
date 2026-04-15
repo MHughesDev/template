@@ -4,4 +4,10 @@
 
 # Transitive dependency of python-jose (JWT). Pure-Python ecdsa has no vendor fix for
 # side-channel concerns; see docs/security/accepted-risks.md.
-CVE-2024-23342N
+CVE-2024-23342
+
+# python:3.12-slim (Debian) — distro packages; fixes arrive via image rebuild / upstream.
+# Revisit when bumping the base image digest.
+CVE-2025-69720
+CVE-2026-27135
+CVE-2026-29111
