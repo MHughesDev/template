@@ -36,6 +36,7 @@ Environment variable reference. All vars documented with defaults, read by `apps
 | `RATE_LIMITING_ENABLED` | `false` | |
 | `AI_ENABLED` | `false` | Optional AI profile |
 | `CHROMA_HOST` / `CHROMA_PORT` | `chroma` / `8001` | When AI/Chroma is used |
+| `MCP_ENABLED` | (not read by Settings yet) | Documented in `.env.example` for operators; MCP mounts at `/mcp` when the integration is present |
 | `BROKER_URL` | unset | Optional worker profile |
 
 See `apps/api/src/config.py` for the authoritative list and validation rules.
