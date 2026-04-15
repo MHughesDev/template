@@ -39,6 +39,7 @@ Table of all init skills. Columns: Skill file, One-line description, Machinery. 
 
 ### Agent Operations (`skills/agent-ops/`)
 Table of agent-ops skills:
+- idea-init-engine.md — Deterministic init from idea.md via init-manifest.json | (scripts/idea-parser.py, scripts/init-from-idea.py)
 - queue-triage.md [FULL] — Read, interpret, and prioritize queue items | queue-triage.py
 - task-planning.md [FULL] — Decompose tasks with acceptance criteria and risks
 - implementation-handoff.md [FULL] — Write complete handoff documents | handoff-template-generator.py

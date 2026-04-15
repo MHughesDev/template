@@ -70,6 +70,12 @@ Desktop.ini
 *.log
 !queue/audit.log
 
+# Initialization engine
+init-manifest.log
+# NOTE: init-manifest.json should be committed (it is the audit trail)
+# If you want to exclude it from the repo, uncomment the line below:
+# init-manifest.json
+
 # Docker (local build artifacts)
 .docker/
 
