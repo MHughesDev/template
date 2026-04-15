@@ -17,6 +17,7 @@ from apps.api.src.example.router import router as example_router
 from apps.api.src.exceptions import AppError
 from apps.api.src.health.router import router as health_router
 from apps.api.src.logging_config import configure_logging
+from apps.api.src.mcp import mount_mcp
 from apps.api.src.middleware import (
     CorrelationIdMiddleware,
     RequestLoggingMiddleware,
@@ -70,6 +71,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(health_router)
     app.include_router(auth_router, prefix=resolved.api_prefix)
     app.include_router(example_router, prefix=resolved.api_prefix)
+
+    # --- MCP MODULE START ---
+    mount_mcp(app)
+    # --- MCP MODULE END ---
 
     return app
 

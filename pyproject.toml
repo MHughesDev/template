@@ -24,6 +24,7 @@ dependencies = [
   "passlib[bcrypt]>=1.7.4",
   "httpx>=0.28.0",
   "email-validator>=2.3.0",
+  "fastapi-mcp>=0.2",
 ]
 
 [project.optional-dependencies]
@@ -74,6 +75,10 @@ namespace_packages = true
 
 [[tool.mypy.overrides]]
 module = ["passlib.*", "jose.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["fastapi_mcp", "fastapi_mcp.*"]
 ignore_missing_imports = true
 
 [tool.pydantic-mypy]
