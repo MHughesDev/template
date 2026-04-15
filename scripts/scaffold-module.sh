@@ -12,4 +12,4 @@ if [[ -z "$MODULE" ]]; then
   exit 1
 fi
 
-exec python3 "$ROOT/skills/backend/module-scaffolder.py" --repo-root "$ROOT" --module "$MODULE"
+exec python3 "$ROOT/scripts/scaffold-module.py" --repo-root "$ROOT" --module "$MODULE"

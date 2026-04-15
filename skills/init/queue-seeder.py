@@ -106,10 +106,48 @@ def _append_rows_from_idea(
     return 0
 
 
+def _append_manifest_rows(repo_root: Path, manifest_path: Path) -> int:
+    import json
+
+    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    rd = data.get("resolved_decisions") or {}
+    rows_in = rd.get("queue_seed_rows") or []
+    if not rows_in:
+        print("manifest queue_seed_rows is empty", file=sys.stderr)
+        return 1
+
+    qpath = repo_root / "queue" / "queue.csv"
+    raw = qpath.read_text(encoding="utf-8")
+    lines = raw.splitlines()
+    start = 1 if lines and lines[0].startswith("#") else 0
+    comment = (lines[0] + "\n") if start else ""
+    reader = csv.DictReader(io.StringIO("\n".join(lines[start:])))
+    fieldnames = list(reader.fieldnames or [])
+    existing = list(reader)
+
+    for row in rows_in:
+        existing.append({k: row.get(k, "") for k in fieldnames})
+
+    buf = io.StringIO()
+    if comment:
+        buf.write(comment)
+    w = csv.DictWriter(buf, fieldnames=fieldnames)
+    w.writeheader()
+    w.writerows(existing)
+    qpath.write_text(buf.getvalue(), encoding="utf-8")
+    print(f"Wrote {len(rows_in)} rows from manifest to {qpath}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Seed queue from idea.md or spec file")
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--spec", type=Path, help="Lines: id|long summary text")
+    parser.add_argument(
+        "--from-manifest",
+        type=Path,
+        help="Use init-manifest.json resolved_decisions.queue_seed_rows",
+    )
     parser.add_argument(
         "--from-idea",
         action="store_true",
@@ -126,8 +164,24 @@ def main() -> int:
         print("Missing queue.csv", file=sys.stderr)
         return 1
 
+    manifest_default = args.repo_root / "init-manifest.json"
+    if args.from_manifest:
+        mp = args.from_manifest
+        if not mp.is_file():
+            print(f"Missing manifest: {mp}", file=sys.stderr)
+            return 1
+        rc = _append_manifest_rows(args.repo_root, mp)
+        if rc != 0:
+            return rc
+        return _run_queue_validate(args.repo_root)
+
     # Default: --from-idea when only --repo-root (matches scripts/idea-to-queue.sh).
     if not args.from_idea and args.spec is None:
+        if manifest_default.is_file():
+            rc = _append_manifest_rows(args.repo_root, manifest_default)
+            if rc != 0:
+                return rc
+            return _run_queue_validate(args.repo_root)
         args.from_idea = True
 
     if args.from_idea:
