@@ -8,6 +8,7 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Added
 
+- **`apps/mcp/`** — vendored [FastMCP](https://github.com/jlowin/fastmcp) library (`src/fastmcp/`), tests, docs, and examples; upstream agent/CI scaffolding removed; Python package name remains `fastmcp`.
 - **`example/` teaching module** — full CRUD under `/api/v1/examples` with repository/service layers, Alembic `examples` table, and integration tests; `make scaffold:module` now runs `module-scaffolder.py` with full file set; `idea-to-queue.sh` seeds from idea.md §12; `profile-resolver.py` supports `--profile` and `--apply`; skill machinery Make targets (`secret-scan`, `test-scaffold`, `env-sync`, `coverage-ratchet`, `rule-lint`, `adr-index`); regenerated `requirements.lock`; `CODEBASE_SUMMARY.md` full regeneration; exception unit tests (`test_exceptions.py`).
 - K8s `deploy/k8s/base/secret.yaml` template for `api-secrets`; structured logging (`logging_config.py`); `RequestContext` dependency; auth repositories; OpenAPI metadata; `make fmt-check`, `skill-docs-gen`, `codebase-summary`; CI jobs for migration SQL dry-run and implementation-plan inventory; `docs/procedures/add-make-target.md`; `requirements.lock` placeholder; expanded `repo_self_audit` prompt checks; wired queue graph/analyze to `queue-intelligence.py`.
 - Makefile aliases for colon-style targets documented in `spec/spec.md` (e.g. `make skills:list`, `make queue:peek`, `make audit:self`) delegating to existing hyphenated targets.
