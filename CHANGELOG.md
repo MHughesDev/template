@@ -25,13 +25,13 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 - Docker image build: `.dockerignore` had excluded `*.md`, so `COPY README.md` in `apps/api/Dockerfile` failed; root `README.md` is now un-ignored for hatchling (`readme = "README.md"` in `pyproject.toml`).
 - **Examples API:** list/get/update/delete are scoped to the authenticated user via `owner_user_id` (fixes `test_list_examples_empty` on shared Postgres CI DBs). Alembic migration `c2d3e4f5a6b7_add_example_owner_user_id`.
-- **CI:** Trivy action uses tag `v0.33.1` (valid `uses:` ref); CD workflow logs into GHCR before push; dependency-review job uses `continue-on-error` when Dependency graph is disabled.
+- **CI:** Trivy action `aquasecurity/trivy-action@v0.35.0` with explicit `version: v0.69.3` (avoids older default binary install failures); CD workflow logs into GHCR before push; dependency-review job uses `continue-on-error` when Dependency graph is disabled.
 
 ### Removed
 
 ### Security
 
-- Container scanning: API runner stage runs `apt-get upgrade -y` after installing `curl` so Debian base packages match security updates; Security workflow Trivy step uses `trivy.yaml`, `.trivyignore`, `exit-code: 1`, and pins `aquasecurity/trivy-action@0.33.1`. Transitive PyPI `ecdsa` CVE-2024-23342 is documented in `docs/security/accepted-risks.md` and listed in `.trivyignore` (no upstream fix for pure-Python timing class; see GHSA).
+- Container scanning: API runner stage runs `apt-get upgrade -y` after installing `curl` so Debian base packages match security updates; Security workflow Trivy step uses `trivy.yaml`, `.trivyignore`, `exit-code: 1`, and `aquasecurity/trivy-action@v0.35.0`. Transitive PyPI `ecdsa` CVE-2024-23342 is documented in `docs/security/accepted-risks.md` and listed in `.trivyignore` (no upstream fix for pure-Python timing class; see GHSA).
 
 ### Deprecated
 
