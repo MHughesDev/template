@@ -1,5 +1,14 @@
 # Idea Definition — Project Intake Form
 
+<!-- INIT_META
+initialized: false
+init_version: "2.0"
+init_completed_at: null
+init_branch: null
+init_pr_url: null
+init_manifest_hash: null
+-->
+
 > **Purpose:** This is the singular input document for initializing this repository into a working project. Fill out every applicable section. The initialization agent (`prompts/repo_initializer.md`) reads this file and uses it to configure, scaffold, and wire up the entire repository machine.
 >
 > **How to use:** Copy this template, fill in your answers, then invoke the repo initializer prompt in Cursor. The agent will read this file, map your idea to the correct project archetype, enable the right profiles, populate the queue, and scaffold domain modules.
@@ -12,10 +21,10 @@
 
 | Field | Your answer |
 |-------|-------------|
-| **Project name** | `<!-- short kebab-case name, e.g. invoice-engine -->` |
-| **Display name** | `<!-- human-readable, e.g. Invoice Engine -->` |
-| **One-line pitch** | `<!-- what it does in ≤15 words -->` |
-| **Repository slug** | `<!-- GitHub org/repo, e.g. acme/invoice-engine -->` |
+| **Project name** | `template-demo` |
+| **Display name** | `Template Demo` |
+| **One-line pitch** | `Demonstrates the agent-operated template repository and initialization engine.` |
+| **Repository slug** | `MHughesDev/template` |
 
 ---
 
@@ -42,7 +51,7 @@ Pick **one** primary archetype. The initializer uses this to select default modu
 
 | Archetype | Select | Description |
 |-----------|--------|-------------|
-| **API service** | `[ ]` | Backend REST/GraphQL API. No user-facing UI. Consumed by other services or clients. |
+| **API service** | `[x]` | Backend REST/GraphQL API. No user-facing UI. Consumed by other services or clients. |
 | **Full-stack web app** | `[ ]` | Backend API + web frontend (React). Users interact via browser. |
 | **Full-stack with mobile** | `[ ]` | Backend API + web + mobile (Expo/React Native). |
 | **Platform / internal tool** | `[ ]` | Internal APIs, admin dashboards, data pipelines. No external consumer UI. |
@@ -53,7 +62,7 @@ Pick **one** primary archetype. The initializer uses this to select default modu
 
 **If none fit exactly:** describe your archetype below.
 
-<!-- custom archetype description if needed -->
+N/A — a listed archetype was selected.
 
 ---
 
@@ -65,9 +74,7 @@ List the primary domain objects. These become database models, API resources, an
 
 | Entity | Description | Key fields | Relationships |
 |--------|-------------|------------|---------------|
-| `<!-- e.g. Invoice -->` | `<!-- what it represents -->` | `<!-- id, amount, status, due_date -->` | `<!-- belongs_to: Customer, has_many: LineItems -->` |
-| `<!-- e.g. Customer -->` | `<!-- ... -->` | `<!-- ... -->` | `<!-- ... -->` |
-| `<!-- add rows as needed -->` | | | |
+| DemoRecord | Sample entity for template validation | id, label, timestamps | Standalone for CI |
 
 ### 4.2 Bounded contexts
 
@@ -75,17 +82,15 @@ Group entities into bounded contexts. Each context becomes a module in `apps/api
 
 | Context name | Entities | Description |
 |-------------|----------|-------------|
-| `<!-- e.g. billing -->` | `<!-- Invoice, Payment, LineItem -->` | `<!-- handles invoicing and payment processing -->` |
-| `<!-- e.g. customers -->` | `<!-- Customer, Organization -->` | `<!-- customer management and profiles -->` |
-| `<!-- add rows as needed -->` | | |
+| demo | DemoRecord | Demonstrates bounded-context scaffolding for the template repository. |
 
 ### 4.3 Key workflows
 
 Describe the critical user/system workflows. These become the basis for smoke tests and queue items.
 
-1. `<!-- e.g. "Customer creates invoice → system validates → invoice enters pending state → payment received → invoice marked paid" -->`
-2. `<!-- e.g. "Admin onboards new tenant → system provisions isolated data → first user invited" -->`
-3. `<!-- add as needed -->`
+1. Client calls health and authenticated CRUD endpoints on the demo module; tests assert status codes and persistence.
+2. N/A for template smoke scope.
+3. N/A.
 
 ---
 
@@ -95,18 +100,18 @@ Enable or disable optional system profiles. The initializer uses these to scaffo
 
 | Profile | Enable? | Notes |
 |---------|---------|-------|
-| **Web frontend** (React) | `[ ] yes / [ ] no` | `<!-- any framework preferences, e.g. Next.js, Vite -->` |
-| **Mobile app** (Expo) | `[ ] yes / [ ] no` | `<!-- platforms: iOS, Android, both -->` |
-| **Background workers** | `[ ] yes / [ ] no` | `<!-- broker preference: Redis, RabbitMQ, or defer -->` |
-| **AI / RAG (ChromaDB)** | `[ ] yes / [ ] no` | `<!-- use case: search, recommendations, content gen -->` |
-| **Multi-tenancy** | `[ ] yes / [ ] no` | `<!-- isolation model: row-level, schema-level, database-level -->` |
-| **WebSocket / real-time** | `[ ] yes / [ ] no` | `<!-- what needs real-time: notifications, chat, live updates -->` |
-| **Scheduled jobs / cron** | `[ ] yes / [ ] no` | `<!-- what runs on schedule: reports, cleanup, sync -->` |
-| **File uploads / storage** | `[ ] yes / [ ] no` | `<!-- storage target: S3-compatible, local, cloud-native -->` |
-| **Email / notifications** | `[ ] yes / [ ] no` | `<!-- provider preference: SMTP, SendGrid, SES, or defer -->` |
-| **Search (full-text)** | `[ ] yes / [ ] no` | `<!-- engine: PostgreSQL FTS, Elasticsearch, Meilisearch -->` |
-| **Billing / payments** | `[ ] yes / [ ] no` | `<!-- provider: Stripe, custom, or defer -->` |
-| **Analytics / events** | `[ ] yes / [ ] no` | `<!-- what to track, where to send -->` |
+| **Web frontend** (React) | `[x] no` | Template default: API-only. |
+| **Mobile app** (Expo) | `[x] no` | Template default: API-only. |
+| **Background workers** | `[x] no` | Enable when Celery/Redis is required. |
+| **AI / RAG (ChromaDB)** | `[x] no` | Optional Chroma profile. |
+| **Multi-tenancy** | `[x] no` | Use TenantMixin when product needs isolation. |
+| **WebSocket / real-time** | `[x] no` | Optional realtime module. |
+| **Scheduled jobs / cron** | `[x] no` | Optional APScheduler profile. |
+| **File uploads / storage** | `[x] no` | Optional S3/local storage package. |
+| **Email / notifications** | `[x] no` | Optional notifications package. |
+| **Search (full-text)** | `[x] no` | Optional Meilisearch or FTS. |
+| **Billing / payments** | `[x] no` | Optional Stripe integration. |
+| **Analytics / events** | `[x] no` | Optional analytics env flags. |
 
 ---
 
@@ -114,12 +119,12 @@ Enable or disable optional system profiles. The initializer uses these to scaffo
 
 | Field | Your answer |
 |-------|-------------|
-| **Auth model** | `<!-- email/password, OAuth2/SSO, API keys, magic links, or combination -->` |
-| **User types / roles** | `<!-- e.g. admin, member, viewer; or buyer, seller -->` |
-| **Permission model** | `<!-- RBAC, ABAC, simple role check, or custom -->` |
-| **SSO / IdP integration** | `<!-- e.g. Google, Okta, Auth0, none, defer -->` |
-| **API key support** | `<!-- yes/no — for service-to-service or external developer access -->` |
-| **Multi-tenant auth** | `<!-- shared user pool, tenant-scoped users, or N/A -->` |
+| **Auth model** | JWT access tokens with email/password registration (template default). |
+| **User types / roles** | Registered user; admin role deferred. |
+| **Permission model** | Authenticated vs anonymous for MVP; RBAC later. |
+| **SSO / IdP integration** | Deferred — add when product requires SSO. |
+| **API key support** | Deferred for MVP. |
+| **Multi-tenant auth** | N/A until multi-tenancy profile is enabled. |
 
 ---
 
@@ -127,12 +132,12 @@ Enable or disable optional system profiles. The initializer uses these to scaffo
 
 | Field | Your answer |
 |-------|-------------|
-| **Primary database** | `<!-- SQLite (dev/MVP) or PostgreSQL (production) — or both with migration path -->` |
-| **Expected data volume** | `<!-- rows/GB estimate for first year — helps sizing decisions -->` |
-| **Read/write ratio** | `<!-- e.g. 80/20 read-heavy, 50/50 balanced, 20/80 write-heavy -->` |
-| **Caching needs** | `<!-- Redis, in-process, none, or defer -->` |
-| **External data sources** | `<!-- APIs, feeds, imports that the system ingests -->` |
-| **Data retention policy** | `<!-- how long to keep data, archival rules, or defer -->` |
+| **Primary database** | SQLite for local development and CI. Optional containerized relational database for production parity is documented under deployment (use the `db` Compose profile). |
+| **Expected data volume** | Small — template and demo data only until product launch. |
+| **Read/write ratio** | Read-heavy for API demos; exact ratio TBD per product. |
+| **Caching needs** | In-process first; Redis when workers profile is enabled. |
+| **External data sources** | None for template bootstrap. |
+| **Data retention policy** | Default SQLite file lifecycle; formal policy when product ships. |
 
 ---
 
@@ -153,11 +158,11 @@ List every external system this project will communicate with.
 
 | Field | Your answer |
 |-------|-------------|
-| **API style** | `<!-- REST, GraphQL, gRPC, or hybrid -->` |
-| **Versioning strategy** | `<!-- URL prefix (/v1/), header, or query param -->` |
-| **Pagination style** | `<!-- cursor-based, offset-based, or keyset -->` |
-| **Rate limiting** | `<!-- per-user, per-tenant, per-endpoint, global, or defer -->` |
-| **OpenAPI / docs** | `<!-- auto-generated (default), custom, or both -->` |
+| **API style** | REST JSON over HTTP (FastAPI). |
+| **Versioning strategy** | URL prefix `/api/v1/` (configurable via `API_PREFIX`). |
+| **Pagination style** | Cursor-based for list endpoints where needed; offset for small demos. |
+| **Rate limiting** | Deferred — enable `RATE_LIMITING_ENABLED` when exposing public internet. |
+| **OpenAPI / docs** | Auto-generated OpenAPI and Swagger when `API_DEBUG=true`. |
 
 ### 9.1 Key endpoints (sketch)
 
@@ -165,9 +170,9 @@ List the most important API endpoints to scaffold during initialization.
 
 | Method | Path | Description | Auth required? |
 |--------|------|-------------|----------------|
-| `<!-- GET -->` | `<!-- /v1/invoices -->` | `<!-- list invoices for current tenant -->` | `<!-- yes -->` |
-| `<!-- POST -->` | `<!-- /v1/invoices -->` | `<!-- create new invoice -->` | `<!-- yes -->` |
-| `<!-- add rows as needed -->` | | | |
+| GET | `/api/v1/demo/` | List demo records | yes |
+| POST | `/api/v1/demo/` | Create demo record | yes |
+| GET | `/api/v1/demo/{id}` | Fetch demo record | yes |
 
 ---
 
@@ -205,10 +210,9 @@ Seed the queue with the first batch of work items. These become the initializati
 
 | Priority | Category | Summary |
 |----------|----------|---------|
-| 1 | `<!-- e.g. core-api -->` | `<!-- e.g. "Implement Customer CRUD: models, service, router, schemas, tests. Accept criteria: all endpoints return correct status codes, tenant-scoped, integration tests pass." -->` |
-| 2 | `<!-- e.g. core-api -->` | `<!-- e.g. "Implement Invoice domain: models with line items, status state machine, service layer, router, tests." -->` |
-| 3 | `<!-- e.g. infrastructure -->` | `<!-- e.g. "Configure production PostgreSQL connection with connection pooling and health checks." -->` |
-| `<!-- add rows -->` | | |
+| 1 | core-api | Implement the `demo` bounded context end-to-end: SQLAlchemy model with UUID primary key, repository, service, Pydantic schemas, FastAPI router with list/create/get, and pytest coverage including 401/404 paths. Acceptance: all routes return documented status codes; `make test` passes; no raw SQL in routers. Definition of done: router registered under `api_prefix`, migration or metadata create_all verified in CI. |
+| 2 | infrastructure | Add optional PostgreSQL smoke test job documentation and verify `docker compose --profile db up` works with asyncpg `DATABASE_URL`. Acceptance: connection health check passes against the container; pool settings documented in `docs/architecture/data-layer.md`. |
+| 3 | testing | Raise coverage floor incrementally: add integration tests for auth edge cases and tenant middleware when multi-tenancy is enabled. Acceptance: coverage ratchet target met; no flaky tests in CI. |
 
 ---
 
@@ -267,6 +271,22 @@ List anything you are unsure about. The initialization agent will flag these for
 Attach or link any additional context: wireframes, ERDs, existing API docs, competitor references, design docs, Slack threads.
 
 <!-- paste links, descriptions, or inline content here -->
+
+---
+
+## 18. Initialization log
+
+> This section is auto-populated by `make idea:execute`. Do not edit manually.
+
+| Field              | Value |
+| ------------------ | ----- |
+| Status             | `not initialized` |
+| Manifest version   | — |
+| Executed at        | — |
+| Profiles enabled   | — |
+| Contexts scaffolded| — |
+| Queue rows seeded  | — |
+| Init PR            | — |
 
 ---
 

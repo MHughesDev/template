@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "init_version": "2.0",
+    "idea_path": "/workspace/idea.md",
+    "parsed_at": "2026-04-15T07:16:58.639737+00:00",
+    "initialized": false,
+    "init_manifest_hash": "2f8739c1689218b454f9b5c9f60a31db6d837bd7cce8c1dc5fd7b1c4b8ad7d44"
+  },
+  "project": {
+    "project_name": "template-demo",
+    "display_name": "Template Demo",
+    "one_line_pitch": "Demonstrates the agent-operated template repository and initialization engine.",
+    "repository_slug": "MHughesDev/template"
+  },
+  "archetype": "api_service",
+  "primary_database": "sqlite",
+  "profiles": [
+    {
+      "profile_key": "web_frontend",
+      "script": "web",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "mobile",
+      "script": "mobile",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "workers",
+      "script": "workers",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "ai_rag",
+      "script": "ai-rag",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "multi_tenancy",
+      "script": "multi-tenancy",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "websocket",
+      "script": "websocket",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "scheduled_jobs",
+      "script": "scheduled-jobs",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "file_storage",
+      "script": "file-storage",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "email_notifications",
+      "script": "email",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "search",
+      "script": "search",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "billing",
+      "script": "billing",
+      "enabled": false,
+      "source": "explicit"
+    },
+    {
+      "profile_key": "analytics",
+      "script": "analytics",
+      "enabled": false,
+      "source": "explicit"
+    }
+  ],
+  "bounded_contexts": [
+    {
+      "name": "demo",
+      "entities": "DemoRecord",
+      "description": "Demonstrates bounded-context scaffolding for the template repository."
+    }
+  ],
+  "resolved_decisions": {
+    "compose_services": [
+      "api"
+    ],
+    "python_dependencies": [],
+    "env_vars": {
+      "DATABASE_URL": "sqlite+aiosqlite:///./dev.db"
+    },
+    "modules_to_scaffold": [
+      "demo"
+    ],
+    "profiles_enabled": [],
+    "profiles_discarded": [
+      "web",
+      "mobile",
+      "workers",
+      "ai-rag",
+      "multi-tenancy",
+      "websocket",
+      "scheduled-jobs",
+      "file-storage",
+      "email",
+      "search",
+      "billing",
+      "analytics"
+    ],
+    "queue_seed_rows": [
+      {
+        "id": "IDEA-001",
+        "batch": "1",
+        "phase": "1",
+        "category": "core-api",
+        "summary": "Implement the `demo` bounded context end-to-end: SQLAlchemy model with UUID primary key, repository, service, Pydantic schemas, FastAPI router with list/create/get, and pytest coverage including 401/404 paths. Acceptance: all routes return documented status codes; `make test` passes; no raw SQL in routers. Definition of done: router registered under `api_prefix`, migration or metadata create_all verified in CI.",
+        "dependencies": "",
+        "notes": "seeded from idea.md §12 via init-manifest",
+        "created_date": "2026-04-15"
+      },
+      {
+        "id": "IDEA-002",
+        "batch": "1",
+        "phase": "2",
+        "category": "infrastructure",
+        "summary": "Add optional PostgreSQL smoke test job documentation and verify `docker compose --profile db up` works with asyncpg `DATABASE_URL`. Acceptance: connection health check passes against the container; pool settings documented in `docs/architecture/data-layer.md`.",
+        "dependencies": "",
+        "notes": "seeded from idea.md §12 via init-manifest",
+        "created_date": "2026-04-15"
+      },
+      {
+        "id": "IDEA-003",
+        "batch": "1",
+        "phase": "3",
+        "category": "testing",
+        "summary": "Raise coverage floor incrementally: add integration tests for auth edge cases and tenant middleware when multi-tenancy is enabled. Acceptance: coverage ratchet target met; no flaky tests in CI.",
+        "dependencies": "",
+        "notes": "seeded from idea.md §12 via init-manifest",
+        "created_date": "2026-04-15"
+      }
+    ],
+    "ci_additions": [],
+    "use_postgres": false,
+    "archetype_resolved_fields": [],
+    "open_questions": [
+      "`<!-- e.g. \"Should invoices support multiple currencies?\" -->`",
+      "`<!-- e.g. \"What is the billing provider — Stripe or custom?\" -->`",
+      "`<!-- add as needed -->`"
+    ]
+  }
+}

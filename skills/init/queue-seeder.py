@@ -106,10 +106,58 @@ def _append_rows_from_idea(
     return 0
 
 
+def _append_manifest_rows(repo_root: Path, manifest_path: Path) -> tuple[int, int]:
+    """Append manifest queue_seed_rows; skip IDs already in queue.csv. Returns (exit_code, added_count)."""
+
+    import json
+
+    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    rd = data.get("resolved_decisions") or {}
+    rows_in = rd.get("queue_seed_rows") or []
+    if not rows_in:
+        print("manifest queue_seed_rows is empty", file=sys.stderr)
+        return (1, 0)
+
+    qpath = repo_root / "queue" / "queue.csv"
+    raw = qpath.read_text(encoding="utf-8")
+    lines = raw.splitlines()
+    start = 1 if lines and lines[0].startswith("#") else 0
+    comment = (lines[0] + "\n") if start else ""
+    reader = csv.DictReader(io.StringIO("\n".join(lines[start:])))
+    fieldnames = list(reader.fieldnames or [])
+    existing = list(reader)
+    have = {r.get("id", "") for r in existing}
+    added = 0
+    for row in rows_in:
+        rid = (row.get("id") or "").strip()
+        if rid and rid in have:
+            print(f"skip queue row (exists): {rid}")
+            continue
+        existing.append({k: row.get(k, "") for k in fieldnames})
+        if rid:
+            have.add(rid)
+        added += 1
+
+    buf = io.StringIO()
+    if comment:
+        buf.write(comment)
+    w = csv.DictWriter(buf, fieldnames=fieldnames)
+    w.writeheader()
+    w.writerows(existing)
+    qpath.write_text(buf.getvalue(), encoding="utf-8")
+    print(f"Appended {added} row(s) from manifest to {qpath} ({len(rows_in)} in manifest)")
+    return 0, added
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Seed queue from idea.md or spec file")
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--spec", type=Path, help="Lines: id|long summary text")
+    parser.add_argument(
+        "--from-manifest",
+        type=Path,
+        help="Use init-manifest.json resolved_decisions.queue_seed_rows",
+    )
     parser.add_argument(
         "--from-idea",
         action="store_true",
@@ -126,8 +174,37 @@ def main() -> int:
         print("Missing queue.csv", file=sys.stderr)
         return 1
 
-    # Default: --from-idea when only --repo-root (matches scripts/idea-to-queue.sh).
+    manifest_default = args.repo_root / "init-manifest.json"
+    if args.from_manifest:
+        mp = args.from_manifest
+        if not mp.is_file():
+            print(f"Missing manifest: {mp}", file=sys.stderr)
+            return 1
+        rc, _added = _append_manifest_rows(args.repo_root, mp)
+        if rc != 0:
+            return rc
+        return _run_queue_validate(args.repo_root)
+
+    # Default: prefer init-manifest.json when present and queue_seed_rows non-empty; else idea.md §12.
     if not args.from_idea and args.spec is None:
+        if manifest_default.is_file():
+            import json
+
+            try:
+                data = json.loads(manifest_default.read_text(encoding="utf-8"))
+                rows_in = (data.get("resolved_decisions") or {}).get("queue_seed_rows") or []
+            except (OSError, json.JSONDecodeError) as exc:
+                print(f"Could not read manifest: {exc}", file=sys.stderr)
+                rows_in = []
+            if rows_in:
+                rc, _added = _append_manifest_rows(args.repo_root, manifest_default)
+                if rc != 0:
+                    return rc
+                return _run_queue_validate(args.repo_root)
+            print(
+                "init-manifest.json has no queue_seed_rows — falling back to idea.md §12",
+                file=sys.stderr,
+            )
         args.from_idea = True
 
     if args.from_idea:

@@ -24,6 +24,7 @@ dependencies = [
   "passlib[bcrypt]>=1.7.4",
   "httpx>=0.28.0",
   "email-validator>=2.3.0",
+  "celery[redis]>=5.4.0",
   "fastapi-mcp>=0.2",
 ]
 
@@ -50,7 +51,7 @@ packages = ["apps/api/src", "packages/contracts", "packages/tasks"]
 [tool.ruff]
 target-version = "py312"
 line-length = 88
-src = ["apps/api/src", "packages/contracts", "packages/tasks"]
+src = ["apps/api/src", "packages"]
 extend-exclude = ["skills", "packages/ai", "apps/api/alembic"]
 
 [tool.ruff.lint]
@@ -61,6 +62,9 @@ ignore = ["S101", "B008"]
 "apps/api/tests/**" = ["S101", "S105", "E501"]
 "**/alembic/**" = ["INP001", "E501"]
 "packages/contracts/errors.py" = ["S105"]
+"scripts/idea-parser.py" = ["E501", "T201"]
+"scripts/init-from-idea.py" = ["E501", "T201", "S603", "S607"]
+"scripts/scaffold-module.py" = ["E501", "T201", "S608"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -74,8 +78,12 @@ explicit_package_bases = true
 namespace_packages = true
 
 [[tool.mypy.overrides]]
-module = ["passlib.*", "jose.*"]
+module = ["passlib.*", "jose.*", "celery.*", "chromadb.*"]
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "apps.api.src.worker"
+disable_error_code = ["untyped-decorator"]
 
 [[tool.mypy.overrides]]
 module = ["fastapi_mcp", "fastapi_mcp.*"]
@@ -86,7 +94,7 @@ init_forbid_extra = true
 init_typed = true
 
 [tool.pytest.ini_options]
-testpaths = ["apps/api/tests"]
+testpaths = ["apps/api/tests", "apps/api/src"]
 asyncio_mode = "auto"
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
