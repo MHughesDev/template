@@ -29,7 +29,7 @@ Table mapping each script to its Make target and purpose:
 | `docs-index.sh` | `make docs:index` | Update auto-index block in `docs/README.md` |
 | `queue-peek.sh` | `make queue:peek` | Read top queue item |
 | `queue-validate.sh` | `make queue:validate` | Validate queue schema |
-| `queue-archive.sh` | `make queue:archive` | Move row to archive |
+| `queue-archive.sh` | `make queue:archive`, `make queue:archive-top` | Move row to archive by id, or archive top open row (no id) |
 | `queue-graph.sh` | `make queue:graph` | Render dependency graph |
 | `queue-analyze.sh` | `make queue:analyze` | Full queue intelligence analysis |
 | `prompt-list.sh` | `make prompt:list` | List prompt templates |

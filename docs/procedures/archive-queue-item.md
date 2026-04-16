@@ -20,12 +20,13 @@ PR merged (for done items). Queue item ID known. queuearchive.csv exists with co
 
 ## Exact Commands
 
-`make queue:archive` (scripted move) or manual CSV editing, then `make queue:validate`.
+- **`make queue:archive-top`** — archives the **top** (first) open row; no `QUEUE_ID` (preferred when that row is the completed item — less token use).
+- `make queue:archive QUEUE_ID=<id>` (scripted move by id) or manual CSV editing, then `make queue:validate`.
 
 ## Ordered Steps
 
 1. Verify the PR is merged and all acceptance criteria confirmed
-2. Run `make queue:archive QUEUE_ID=<id>` — scripted move from queue.csv to queuearchive.csv
+2. Run **`make queue:archive-top`** (if the completed item is the top open row) **or** `make queue:archive QUEUE_ID=<id>` — scripted move from queue.csv to queuearchive.csv
    OR manually: copy the full row from queue.csv to queuearchive.csv, add status, completed_date, PR URL
 3. Verify in queuearchive.csv: row has status=done, completed_date=YYYY-MM-DD, PR URL in notes
 4. Remove the row from queue.csv

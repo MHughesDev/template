@@ -61,11 +61,12 @@ Every PR must have:
 
 ## Archive Procedure
 
-After PR merged:
-1. Run `make queue:archive QUEUE_ID=<id>`
-2. Verify in queuearchive.csv: status=done, completed_date=YYYY-MM-DD, PR URL in notes
-3. Run `make queue:validate`
-4. Confirm queue.csv no longer contains this row
+After PR merged (single-lane policy: the item you finished is the **top** row):
+1. Prefer **`make queue:archive-top`** — archives the first open row without typing the id (saves tokens; no CSV rewrite).
+2. Or run `make queue:archive QUEUE_ID=<id>` when you must archive a specific id (non-top row or automation).
+3. Verify in queuearchive.csv: status=done, completed_date=YYYY-MM-DD, PR URL in notes
+4. Run `make queue:validate`
+5. Confirm queue.csv no longer contains this row
 
 ## Blocked Handling
 

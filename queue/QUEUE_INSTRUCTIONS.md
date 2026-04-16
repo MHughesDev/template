@@ -93,11 +93,14 @@ Protocol for blocked items (do NOT archive):
 ## Archiving
 
 How to archive a completed item:
-1. Run `make queue:archive QUEUE_ID=<id>` (scripted) or manually:
+1. **Token-friendly (recommended for single-lane):** run **`make queue:archive-top`** — moves the **first data row** in `queue.csv` to `queuearchive.csv` with `status=done` and today's `completed_date`. No queue id in the command; use when the top row is the item you just merged.
+2. Or run `make queue:archive QUEUE_ID=<id>` (scripted) or manually:
    - Copy row to queuearchive.csv
    - Add: status=done, completed_date=YYYY-MM-DD, PR URL in notes
    - Remove from queue.csv
-2. Run `make queue:validate` — must pass
+3. Run `make queue:validate` — must pass
+
+**Warning:** `queue:archive-top` archives by **position**, not by id. Only use when the top open row is the item you intend to close (default single-lane policy).
 
 ## Batch/Phase Policy
 

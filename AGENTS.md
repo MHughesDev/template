@@ -277,7 +277,7 @@ Prefer **`make`** targets over ad hoc commands. See the **Makefile** for the ful
 
 **Validation:** `make audit:self` runs a comprehensive check — use before merging substantial work.
 
-**Queue:** `make queue:peek` (read-only), `make queue:validate`, `make queue:archive` where implemented.
+**Queue:** `make queue:peek` (read-only), `make queue:validate`, **`make queue:archive-top`** (archive first open row — no id), `make queue:archive` where implemented.
 
 ### Handoff format
 

@@ -50,12 +50,9 @@ def _write_queue(path: Path, comment: str, rows: list[dict[str, str]]) -> None:
     path.write_text(buf.getvalue(), encoding="utf-8")
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Archive a queue row by id")
-    parser.add_argument("queue_id")
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
-    args = parser.parse_args()
-    root = args.root
+def archive_by_id(root: Path, queue_id: str, *, status: str = "done") -> int:
+    """Remove the row with ``queue_id`` from queue.csv and append to queuearchive.csv."""
+
     q_path = root / "queue" / "queue.csv"
     a_path = root / "queue" / "queuearchive.csv"
 
@@ -68,19 +65,19 @@ def main() -> int:
     found: dict[str, str] | None = None
     kept: list[dict[str, str]] = []
     for row in rows:
-        if row.get("id") == args.queue_id:
+        if row.get("id") == queue_id:
             found = row
         else:
             kept.append(row)
 
     if found is None:
-        print(f"id {args.queue_id!r} not found in queue.csv", file=sys.stderr)
+        print(f"id {queue_id!r} not found in queue.csv", file=sys.stderr)
         return 1
 
     _write_queue(q_path, comment, kept)
 
     arch_row = {k: found.get(k, "") for k in OPEN_FIELDS}
-    arch_row["status"] = "done"
+    arch_row["status"] = status
     arch_row["completed_date"] = date.today().isoformat()
 
     a_path.parent.mkdir(parents=True, exist_ok=True)
@@ -92,8 +89,65 @@ def main() -> int:
             writer.writeheader()
         writer.writerow(arch_row)
 
-    print(f"Archived {args.queue_id}")
+    print(f"Archived {queue_id}")
     return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Archive a queue row: by id, or --top for the first open row",
+    )
+    parser.add_argument(
+        "queue_id",
+        nargs="?",
+        default=None,
+        help="Queue item id (e.g. Q-001). Omit when using --top.",
+    )
+    parser.add_argument(
+        "--top",
+        action="store_true",
+        help="Archive the first data row in queue.csv (active single-lane item).",
+    )
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=Path(__file__).resolve().parent.parent,
+    )
+    args = parser.parse_args()
+    root = args.root
+    q_path = root / "queue" / "queue.csv"
+
+    if args.top and args.queue_id:
+        print("Use either QUEUE_ID or --top, not both.", file=sys.stderr)
+        return 2
+    if not args.top and not args.queue_id:
+        print(
+            "Usage: queue_archive.py <QUEUE_ID> [--root PATH]\n"
+            "       queue_archive.py --top [--root PATH]\n"
+            "  --top  Archive the top (first) open row — no id to paste.",
+            file=sys.stderr,
+        )
+        return 2
+
+    target_id = args.queue_id
+    if args.top:
+        try:
+            _comment, rows = _load_queue(q_path)
+        except ValueError as exc:
+            print(exc, file=sys.stderr)
+            return 1
+        if not rows:
+            print("queue.csv has no data rows to archive.", file=sys.stderr)
+            return 1
+        target_id = (rows[0].get("id") or "").strip()
+        if not target_id:
+            print("Top queue row has empty id.", file=sys.stderr)
+            return 1
+
+    if not target_id:
+        print("No queue id resolved.", file=sys.stderr)
+        return 2
+    return archive_by_id(root, target_id)
 
 
 if __name__ == "__main__":

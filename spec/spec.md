@@ -520,7 +520,8 @@ Document all targets in `README.md` and `docs/development/local-setup.md`.
 | `docs:index` | Regenerate doc index if applicable |
 | `queue:peek` | Read-only: header + first open row |
 | `queue:validate` | Schema + invariants |
-| `queue:archive` | Scripted move row open→archive (optional but recommended) |
+| `queue:archive` | Scripted move row open→archive by id (optional but recommended) |
+| `queue:archive-top` | Scripted move **top** open row open→archive (no id; single-lane) |
 | `prompt:list` | List prompt templates |
 | `skills:list` | List skills |
 | `rules:check` | Validate rule files present/parsable |
@@ -1162,7 +1163,7 @@ Skills are organized by coverage category (§6.3). Each skill file follows the s
 | 142 | `docs/procedures/validate-change.md` | REQUIRED | SOP: Run full validation matrix before opening PR. | Per §8.3: Purpose, Trigger, Prerequisites, Commands (`make lint`, `make fmt`, `make typecheck`, `make test`, `make test:integration`, `make security:scan`), Ordered steps (run each target → capture output → verify all green → document results), Expected artifacts (validation report), Validation, Failure handling, Handoff. |
 | 143 | `docs/procedures/open-pull-request.md` | REQUIRED | SOP: Create PR with title, description template, evidence, labels, queue linkage. | Per §8.3: Purpose, Trigger, Prerequisites (all validation passing), Commands, Ordered steps (create PR → fill template → link queue ID → add labels → request review), Expected artifacts (PR URL), Validation (CI green), Failure handling, Handoff. |
 | 144 | `docs/procedures/handoff.md` | REQUIRED | SOP: Complete handoff documentation — files changed, commands run, results, risks, follow-ups. | Per §8.3: Purpose, Trigger, Prerequisites, Commands, Ordered steps (list files changed → list commands run with output → document risks → document follow-ups → update queue notes → post PR link), Expected artifacts, Validation, Failure handling, Handoff. |
-| 145 | `docs/procedures/archive-queue-item.md` | REQUIRED | SOP: Move completed queue row to archive with required fields. | Per §8.3: Purpose, Trigger, Prerequisites (PR merged or item cancelled), Commands (`make queue:archive`), Ordered steps (verify completion → copy row to archive → add status/date/PR URL → remove from queue.csv → validate), Expected artifacts, Validation (`make queue:validate`), Failure handling, Handoff. |
+| 145 | `docs/procedures/archive-queue-item.md` | REQUIRED | SOP: Move completed queue row to archive with required fields. | Per §8.3: Purpose, Trigger, Prerequisites (PR merged or item cancelled), Commands (`make queue:archive-top`, `make queue:archive`), Ordered steps (verify completion → copy row to archive → add status/date/PR URL → remove from queue.csv → validate), Expected artifacts, Validation (`make queue:validate`), Failure handling, Handoff. |
 | 146 | `docs/procedures/handle-blocked-work.md` | REQUIRED | SOP: Document blockers, escalate, optionally requeue lower items. | Per §8.3: Purpose, Trigger, Prerequisites, Commands, Ordered steps (identify blocker → document in queue notes → escalate → optionally reorder queue → do not archive), Expected artifacts, Validation, Failure handling, Handoff. |
 | 147 | `docs/procedures/update-documentation.md` | REQUIRED | SOP: When and how to update docs alongside code changes. | Per §8.3: Purpose, Trigger (behavior change, new env var, new endpoint, ops change), Prerequisites, Commands (`make docs:check`), Ordered steps (identify affected docs → edit → verify links → update indexes → commit with code), Expected artifacts, Validation, Failure handling, Handoff. |
 | 148 | `docs/procedures/update-or-create-skill.md` | REQUIRED | SOP: Skill lifecycle — creating new skills or updating existing ones to the standard format. | Per §8.3: Purpose, Trigger (repeated work pattern, new capability), Prerequisites, Commands (`make skills:list`), Ordered steps (identify need → choose category → create file with all §6.2 sections → link procedures/prompts/rules → add to index → PR), Expected artifacts, Validation, Failure handling, Handoff. |
@@ -1403,7 +1404,7 @@ Each script implements one or more `Makefile` targets (§10.2). Scripts are the 
 | 263 | `scripts/docs-index.sh` | RECOMMENDED | Regenerate documentation indexes. Corresponds to `make docs:index`. |
 | 264 | `scripts/queue-peek.sh` | REQUIRED | Read-only: display header + first open row of queue.csv. Corresponds to `make queue:peek`. |
 | 265 | `scripts/queue-validate.sh` | REQUIRED | Validate queue schema, invariants, no duplicate IDs, top-row contract. Corresponds to `make queue:validate`. |
-| 266 | `scripts/queue-archive.sh` | RECOMMENDED | Scripted move of a queue row from open to archive. Corresponds to `make queue:archive`. |
+| 266 | `scripts/queue-archive.sh` | RECOMMENDED | Scripted move of a queue row from open to archive. Corresponds to `make queue:archive` (by id) and `make queue:archive-top` (first open row). |
 | 267 | `scripts/prompt-list.sh` | REQUIRED | List all prompt templates with metadata summary. Corresponds to `make prompt:list`. |
 | 268 | `scripts/skills-list.sh` | REQUIRED | List all skills with category and completion status. Corresponds to `make skills:list`. |
 | 269 | `scripts/rules-check.sh` | REQUIRED | Validate rule files are present and parsable. Corresponds to `make rules:check`. |
@@ -2706,7 +2707,7 @@ repo-root/
 | 263 | `scripts/docs-index.sh` | Regenerate doc indexes → `make docs:index` (recommended) | §10.2 |
 | 264 | `scripts/queue-peek.sh` | Read-only queue peek → `make queue:peek` | §10.2 |
 | 265 | `scripts/queue-validate.sh` | Validate queue schema and invariants → `make queue:validate` | §10.2 |
-| 266 | `scripts/queue-archive.sh` | Scripted queue archive move → `make queue:archive` (recommended) | §10.2 |
+| 266 | `scripts/queue-archive.sh` | Scripted queue archive move → `make queue:archive`, `make queue:archive-top` | §10.2 |
 | 267 | `scripts/prompt-list.sh` | List prompt templates → `make prompt:list` | §10.2 |
 | 268 | `scripts/skills-list.sh` | List skills by category → `make skills:list` | §10.2 |
 | 269 | `scripts/rules-check.sh` | Validate rule files → `make rules:check` | §10.2 |
