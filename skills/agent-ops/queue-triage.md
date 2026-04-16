@@ -41,14 +41,15 @@ Files involved:
 Numbered steps:
 1. Run `make queue:peek` — read the header and first data row
 2. Read the COMPLETE `summary` column — this is the work contract
-3. Check `dependencies` column: parse comma-separated IDs
-4. For each dependency ID: verify it exists in `queuearchive.csv` with `status=done`
-5. If any dependency not met: item is NOT READY — document `blocked_by: [IDs]` in notes
-6. Check `category` column: verify it is in the valid set from `docs/queue/queue-categories.md`
-7. Check `summary` length ≥ 100 characters with goal, acceptance criteria, definition of done
-8. Run `skills/agent-ops/queue-triage.py` for automated triage report
-9. If top item is not ready: identify the next ready item (scan remaining rows)
-10. Document your triage decision in PR notes or queue notes
+3. Check `related_files` column: parse comma-separated repo paths; agents must read these before completing the item
+4. Check `dependencies` column: parse comma-separated IDs
+5. For each dependency ID: verify it exists in `queuearchive.csv` with `status=done`
+6. If any dependency not met: item is NOT READY — document `blocked_by: [IDs]` in notes
+7. Check `category` column: verify it is in the valid set from `docs/queue/queue-categories.md`
+8. Check `summary` length ≥ 100 characters with goal, acceptance criteria, definition of done
+9. Run `skills/agent-ops/queue-triage.py` for automated triage report
+10. If top item is not ready: identify the next ready item (scan remaining rows)
+11. Document your triage decision in PR notes or queue notes
 
 ## Command Examples
 
@@ -61,6 +62,7 @@ Exact commands:
 ## Validation Checklist
 
 - [ ] Top item read completely (not just the first column)
+- [ ] `related_files` paths noted (agents must read before completing the item)
 - [ ] All dependencies verified in queuearchive.csv
 - [ ] Summary quality assessed (≥100 chars, includes goal + criteria + done definition)
 - [ ] Category is valid

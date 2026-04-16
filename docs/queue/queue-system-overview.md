@@ -13,7 +13,7 @@ One paragraph. The queue is the agent work orchestration lane — NOT a product 
 ## File Roles
 
 Table explaining each queue file:
-- queue/queue.csv — Open items; top row = active work item for single-lane processing
+- queue/queue.csv — Open items; top row = active work item for single-lane processing. Each row includes **`related_files`**: comma-separated repo paths agents must read before completing the item.
 - queue/queuearchive.csv — Historical record; append-only; completed/cancelled/superseded
 - queue/QUEUE_INSTRUCTIONS.md — Human + agent SOP for all queue operations
 - queue/QUEUE_AGENT_PROMPT.md — Executable behavior contract for agents processing queue items

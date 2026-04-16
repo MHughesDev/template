@@ -17,8 +17,9 @@ Ordered list of what must be read before processing begins:
 1. This file (QUEUE_AGENT_PROMPT.md) — complete
 2. queue/QUEUE_INSTRUCTIONS.md — complete
 3. The top data row of queue/queue.csv — complete (every column)
-4. All files/docs referenced in the summary column
-5. Skills (mandatory search — see below)
+4. **related_files column** — every comma-separated path (repo-relative); read each file or directory before coding and before marking the item complete
+5. All files/docs referenced in the summary column (if not already covered by related_files)
+6. Skills (mandatory search — see below)
 
 ## MANDATORY SKILL SEARCH (Non-Negotiable)
 

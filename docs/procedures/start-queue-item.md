@@ -27,14 +27,15 @@ queue/QUEUE_INSTRUCTIONS.md read. Previous queue item archived (or confirmed non
 1. Run `make queue:peek` — read the header row + first data row completely
 2. Read the COMPLETE summary column — this is the work contract; do not skip
 3. Parse the `dependencies` column — check each ID against queuearchive.csv
-4. Run `make queue:validate` — verify queue schema before starting
-5. If any dependency not in archive with status=done: update notes with `blocked_by: [IDs]` and STOP (see handle-blocked-work.md)
-6. Run `make skills:list` — identify relevant skills for the task domain
-7. Read ALL relevant skills in full
-8. Read all files referenced in the summary
-9. Create branch: `git checkout -b queue/<id>-short-slug`
-10. Document understanding: list acceptance criteria, files to change, risks
-11. Store plan in PR description draft or queue notes
+4. Parse the `related_files` column — read every comma-separated path (mandatory pre-read before implementation)
+5. Run `make queue:validate` — verify queue schema before starting
+6. If any dependency not in archive with status=done: update notes with `blocked_by: [IDs]` and STOP (see handle-blocked-work.md)
+7. Run `make skills:list` — identify relevant skills for the task domain
+8. Read ALL relevant skills in full
+9. Read all files referenced in the summary (if not already covered by `related_files`)
+10. Create branch: `git checkout -b queue/<id>-short-slug`
+11. Document understanding: list acceptance criteria, files to change, risks
+12. Store plan in PR description draft or queue notes
 
 ## Expected Artifacts / Outputs
 
@@ -44,6 +45,7 @@ Branch created with correct naming. Plan documented. Relevant skills read and no
 
 - [ ] Top item read completely
 - [ ] Dependencies verified in queuearchive.csv
+- [ ] Every path in `related_files` read (or directory listing understood)
 - [ ] Mandatory skill search completed
 - [ ] Branch named queue/<id>-slug
 - [ ] Plan documented

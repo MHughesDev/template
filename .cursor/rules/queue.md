@@ -10,13 +10,14 @@ Invariants for **`queue/queue.csv`** and **`queue/queuearchive.csv`**. Canonical
 
 ## Schema
 
-1. **`queue.csv`** header (order): **`id,batch,phase,category,summary,dependencies,notes,created_date`** (adjust only if **`queue-validate`** and docs agree).
+1. **`queue.csv`** header (order): **`id,batch,phase,category,summary,dependencies,related_files,notes,created_date`** (adjust only if **`queue-validate`** and docs agree).
 2. **`queuearchive.csv`** includes the same columns **plus** **`status`** and **`completed_date`**.
 3. **`id`**: unique; prefer stable IDs such as **`Q-001`**.
 4. **`category`**: must match **`docs/queue/queue-categories.md`**.
 5. **`summary`**: long enough to be a **contract** (goal, acceptance criteria, done definition) — typically **≥ 100 characters** when enforced by tooling.
 6. **`dependencies`**: comma-separated queue **`id`** values or empty.
-7. **`notes`**: blockers, PR URLs, completion metadata — never delete history casually.
+7. **`related_files`**: comma-separated repo-relative paths; agents MUST read these before completing the item (quote the field in CSV if paths contain commas).
+8. **`notes`**: blockers, PR URLs, completion metadata — never delete history casually.
 
 ## Lifecycle
 

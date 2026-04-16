@@ -30,6 +30,7 @@ Table defining each column in queue.csv:
 | category | string | yes | Work category — must be in docs/queue/queue-categories.md |
 | summary | string | yes | Elaborative work contract ≥100 chars. Must include: goal, acceptance criteria, definition of done, out-of-scope, dependencies |
 | dependencies | string | no | Comma-separated IDs of items that must be done before this one |
+| related_files | string | no | Comma-separated repo-relative paths (code and docs) the agent MUST read before completing the item; use quoted CSV fields if paths contain commas |
 | notes | string | no | Agent notes: blockers, in-progress branch, PR URLs, completion info |
 | created_date | date | yes | ISO 8601 date (YYYY-MM-DD) |
 
@@ -61,9 +62,10 @@ Rules for single-lane processing:
 How to claim a queue item:
 1. Run `make queue:peek` — read the complete top row
 2. Verify dependencies met (all IDs in queuearchive.csv with status=done)
-3. Create branch: `git checkout -b queue/<id>-short-slug`
-4. Update notes column (optional but recommended): "in_progress | branch: queue/<id>-slug"
-5. Run mandatory skill search before starting implementation
+3. Read every path in `related_files` (split on commas; trim whitespace) before implementation and again before PR/handoff — treat as mandatory context alongside the summary
+4. Create branch: `git checkout -b queue/<id>-short-slug`
+5. Update notes column (optional but recommended): "in_progress | branch: queue/<id>-slug"
+6. Run mandatory skill search before starting implementation
 
 ## Branch Naming
 

@@ -32,7 +32,10 @@ def main() -> int:
         if not row.get("id"):
             continue
         deps = [d.strip() for d in (row.get("dependencies") or "").split(",") if d.strip()]
-        print(f"  {row.get('id')} | {row.get('category')} | deps={len(deps)}")
+        rf = [p.strip() for p in (row.get("related_files") or "").split(",") if p.strip()]
+        print(
+            f"  {row.get('id')} | {row.get('category')} | deps={len(deps)} | related_files={len(rf)}"
+        )
     return 0
 
 

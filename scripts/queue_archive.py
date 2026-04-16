@@ -17,6 +17,7 @@ OPEN_FIELDS = [
     "category",
     "summary",
     "dependencies",
+    "related_files",
     "notes",
     "created_date",
 ]
