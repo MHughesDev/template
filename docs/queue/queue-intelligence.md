@@ -24,7 +24,7 @@ How batch suggestions are made: same module context, shared prerequisites, schem
 
 ## Conflict Detection (§17.11.4)
 
-How file overlap is detected across open items. How merge conflict risk is flagged. Ordering suggestions (fewer shared files second).
+How file overlap is detected across open items: paths are extracted from each item’s **`summary`** and **`related_files`** columns (in addition to dependency edges). How merge conflict risk is flagged. Ordering suggestions (fewer shared files second).
 
 ## Using the Intelligence Tools
 

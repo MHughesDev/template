@@ -13,7 +13,7 @@ One paragraph. The queue is the agent work orchestration lane — NOT a product 
 ## File Roles
 
 Table explaining each queue file:
-- queue/queue.csv — Open items; top row = active work item for single-lane processing
+- queue/queue.csv — Open items; top row = active work item for single-lane processing. Each row includes **`related_files`**: comma-separated repo paths agents must read before completing the item.
 - queue/queuearchive.csv — Historical record; append-only; completed/cancelled/superseded
 - queue/QUEUE_INSTRUCTIONS.md — Human + agent SOP for all queue operations
 - queue/QUEUE_AGENT_PROMPT.md — Executable behavior contract for agents processing queue items
@@ -49,6 +49,7 @@ Brief overview of the intelligence layer (§17.11): dependency DAG, complexity e
 Table of queue-related make targets and their purpose:
 - make queue:peek — Read top item (read-only)
 - make queue:validate — Schema + invariants
-- make queue:archive — Move row from open to archive
+- make queue:archive — Move a row by id from open to archive
+- make queue:archive-top — Move the **top** open row to archive (no id; token-friendly for single-lane)
 - make queue:graph — Visualize dependency DAG
 - make queue:analyze — Full queue intelligence analysis

@@ -846,6 +846,7 @@ def _build_queue_seed_rows(
                 "category": item.get("category", "init") or "init",
                 "summary": item["summary"],
                 "dependencies": "",
+                "related_files": "",
                 "notes": "seeded from idea.md §12 via init-manifest",
                 "created_date": datetime.now(tz=UTC).date().isoformat(),
             }

@@ -57,7 +57,7 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 - **`meta`**: `init_manifest_hash` is computed by the parser (omit when hand-drafting; parser fills it).
 - **`archetype`**: `saas_product` turns on web, multi-tenancy, workers, scheduled jobs, file storage, email, billing, analytics by default in `ARCHETYPE_DEFAULTS`; explicit `[x] no` in §5 overrides.
 - **`resolved_decisions.compose_services`**: Logical services the orchestrator activates — `api` always; `db` when Postgres; `redis`+`worker` when workers profile applies; `nginx` when web frontend applies.
-- **`queue_seed_rows`**: Each object must match `queue/queue.csv` columns; `summary` must be empty or ≥ 100 characters for `make queue:validate`.
+- **`queue_seed_rows`**: Each object must match `queue/queue.csv` columns (including **`related_files`**: comma-separated repo-relative paths, or empty); `summary` must be empty or ≥ 100 characters for `make queue:validate`.
 
 ```json
 {

@@ -21,6 +21,7 @@ constraints:
 linked_commands:
   - "make queue:peek"
   - "make queue:validate"
+  - "make queue:archive-top"
   - "make queue:archive"
   - "make audit:self"
 linked_procedures:
@@ -52,8 +53,10 @@ The preamble for queue processing is more extensive than other prompts because i
 3. Run `make queue:peek` to see the current top row
 4. Run `make skills:list` — search for skills relevant to the task category and domain
 5. Read ALL relevant skills in full before planning
-6. Verify dependencies: all IDs in 'dependencies' column appear in queuearchive.csv with status=done
-7. If dependencies not met: document blocked_by in notes, STOP
+6. Read every path in the 'related_files' column (comma-separated) before coding and before closing the item
+7. Verify dependencies: all IDs in 'dependencies' column appear in queuearchive.csv with status=done
+8. If dependencies not met: document blocked_by in notes, STOP
+9. After merge: archive with **`make queue:archive-top`** when the completed item is the top row (no id to type)
 This is mandatory per AGENTS.md §13."
 
 ## Role Definition
@@ -63,17 +66,18 @@ This is mandatory per AGENTS.md §13."
 ## Execution Flow
 
 The queue processor follows these phases:
-1. **Claim**: run make queue:peek, read full row, check dependencies
+1. **Claim**: run make queue:peek, read full row, read related_files, check dependencies
 2. **Plan**: use task_planner.md approach — acceptance criteria, file list, risks, steps
 3. **Branch**: git checkout -b queue/<id>-short-slug
 4. **Implement**: use implementation_agent.md approach — small increments, validate after each
 5. **Validate**: run make audit:self — all checks green
 6. **PR**: open PR with [<id>] in title, full evidence in description
-7. **Archive**: after PR merged, run make queue:archive or move row manually to queuearchive.csv
+7. **Archive**: after PR merged, run **`make queue:archive-top`** (top row = item you finished; no id) or `make queue:archive QUEUE_ID=<id>`, or move row manually to queuearchive.csv
 8. **Handoff**: write handoff document per skills/agent-ops/implementation-handoff.md
 
 ## Validation Checklist
 
+- [ ] All related_files paths read
 - [ ] Dependencies verified in queuearchive.csv with status=done
 - [ ] Branch named queue/<id>-slug
 - [ ] Acceptance criteria from summary all met

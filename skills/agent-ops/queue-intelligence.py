@@ -69,6 +69,7 @@ class QueueItem:
     category: str
     summary: str
     dependencies: list[str]
+    related_files: str
     notes: str
     created_date: str
     status: str = ""
@@ -202,7 +203,8 @@ class ConflictDetector:
     def detect(self, items: list[QueueItem]) -> list[ConflictReport]:
         refs: dict[str, list[str]] = {}
         for it in items:
-            refs[it.id] = PATH_RE.findall(it.summary)
+            combined = f"{it.summary}\n{it.related_files}"
+            refs[it.id] = PATH_RE.findall(combined)
         reports: list[ConflictReport] = []
         ids = list(refs.keys())
         for i, a in enumerate(ids):
@@ -248,6 +250,7 @@ def load_items(path: Path) -> list[QueueItem]:
                 category=(row.get("category") or "").strip(),
                 summary=(row.get("summary") or "").strip(),
                 dependencies=deps,
+                related_files=(row.get("related_files") or "").strip(),
                 notes=(row.get("notes") or "").strip(),
                 created_date=(row.get("created_date") or "").strip(),
             )

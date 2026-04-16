@@ -17,8 +17,9 @@ Ordered list of what must be read before processing begins:
 1. This file (QUEUE_AGENT_PROMPT.md) — complete
 2. queue/QUEUE_INSTRUCTIONS.md — complete
 3. The top data row of queue/queue.csv — complete (every column)
-4. All files/docs referenced in the summary column
-5. Skills (mandatory search — see below)
+4. **related_files column** — every comma-separated path (repo-relative); read each file or directory before coding and before marking the item complete
+5. All files/docs referenced in the summary column (if not already covered by related_files)
+6. Skills (mandatory search — see below)
 
 ## MANDATORY SKILL SEARCH (Non-Negotiable)
 
@@ -60,11 +61,12 @@ Every PR must have:
 
 ## Archive Procedure
 
-After PR merged:
-1. Run `make queue:archive QUEUE_ID=<id>`
-2. Verify in queuearchive.csv: status=done, completed_date=YYYY-MM-DD, PR URL in notes
-3. Run `make queue:validate`
-4. Confirm queue.csv no longer contains this row
+After PR merged (single-lane policy: the item you finished is the **top** row):
+1. Prefer **`make queue:archive-top`** — archives the first open row without typing the id (saves tokens; no CSV rewrite).
+2. Or run `make queue:archive QUEUE_ID=<id>` when you must archive a specific id (non-top row or automation).
+3. Verify in queuearchive.csv: status=done, completed_date=YYYY-MM-DD, PR URL in notes
+4. Run `make queue:validate`
+5. Confirm queue.csv no longer contains this row
 
 ## Blocked Handling
 

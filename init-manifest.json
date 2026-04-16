@@ -4,7 +4,7 @@
     "idea_path": "/workspace/idea.md",
     "parsed_at": "2026-04-15T07:16:58.639737+00:00",
     "initialized": false,
-    "init_manifest_hash": "2f8739c1689218b454f9b5c9f60a31db6d837bd7cce8c1dc5fd7b1c4b8ad7d44"
+    "init_manifest_hash": "6706bd07ce95fcf4b159e8d127af55eae64b010fc95761706895d2e974be798f"
   },
   "project": {
     "project_name": "template-demo",
@@ -129,6 +129,7 @@
         "category": "core-api",
         "summary": "Implement the `demo` bounded context end-to-end: SQLAlchemy model with UUID primary key, repository, service, Pydantic schemas, FastAPI router with list/create/get, and pytest coverage including 401/404 paths. Acceptance: all routes return documented status codes; `make test` passes; no raw SQL in routers. Definition of done: router registered under `api_prefix`, migration or metadata create_all verified in CI.",
         "dependencies": "",
+        "related_files": "",
         "notes": "seeded from idea.md §12 via init-manifest",
         "created_date": "2026-04-15"
       },
@@ -139,6 +140,7 @@
         "category": "infrastructure",
         "summary": "Add optional PostgreSQL smoke test job documentation and verify `docker compose --profile db up` works with asyncpg `DATABASE_URL`. Acceptance: connection health check passes against the container; pool settings documented in `docs/architecture/data-layer.md`.",
         "dependencies": "",
+        "related_files": "",
         "notes": "seeded from idea.md §12 via init-manifest",
         "created_date": "2026-04-15"
       },
@@ -149,6 +151,7 @@
         "category": "testing",
         "summary": "Raise coverage floor incrementally: add integration tests for auth edge cases and tenant middleware when multi-tenancy is enabled. Acceptance: coverage ratchet target met; no flaky tests in CI.",
         "dependencies": "",
+        "related_files": "",
         "notes": "seeded from idea.md §12 via init-manifest",
         "created_date": "2026-04-15"
       }
