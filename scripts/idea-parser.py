@@ -600,11 +600,13 @@ def _infer_queue_dependencies(
 
     updated: list[dict[str, Any]] = []
     for i, row in enumerate(queue_rows):
-        ctx = contexts[i] if i < len(contexts) else None
-        if ctx is None:
+        row_ctx = contexts[i] if i < len(contexts) else None
+        if row_ctx is None:
             updated.append(row)
             continue
-        description = (ctx.get("entities", "") + " " + ctx.get("description", "")).lower()
+        description = (
+            row_ctx.get("entities", "") + " " + row_ctx.get("description", "")
+        ).lower()
         deps: list[str] = []
         for j, other_name in enumerate(ctx_names):
             if j == i:

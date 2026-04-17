@@ -39,6 +39,7 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Fixed
 
+- **CI (Q-003 follow-up):** Ruff cleanups for `scripts/scaffold-module.py` (F541, S603), `typing.Any` import in `scripts/init-from-idea.py`, mypy fix in `scripts/idea-parser.py` (`row_ctx` vs outer-loop `ctx` narrowing), and `scripts/repo_self_audit.py` now accepts Markdown files that start with YAML front matter (`---`) as satisfying the first-line title rule.
 - **Trivy:** `.trivyignore` had a typo (`CVE-2024-23342N`) so PyPI `ecdsa` was not ignored; corrected. Documented Debian base-image CVEs in `docs/security/accepted-risks.md` and listed them in `.trivyignore` until `python:3.12-slim` ships fixes.
 - **Migrations (SQLite):** `c2d3e4f5a6b7` uses `batch_alter_table(..., copy_from=...)` for SQLite FK add; CI `migrate-dry-run` SQL step no longer uses a pipe to `head` (avoids BrokenPipeError). Added `make ci-migrate-dry-run`.
 - Docker image build: `.dockerignore` had excluded `*.md`, so `COPY README.md` in `apps/api/Dockerfile` failed; root `README.md` is now un-ignored for hatchling (`readme = "README.md"` in `pyproject.toml`).
