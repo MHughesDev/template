@@ -1,15 +1,23 @@
-# docs/security/accepted-risks.md
+---
+doc_id: "16.1"
+title: "accepted risks"
+section: "Security"
+summary: "Accepted CVEs and review dates; links to dependency audit."
+updated: "2026-04-17"
+---
+
+# 16.1 — accepted risks
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/security/README.md, AGENTS.md §11 (Escalation) -->
 
 **Purpose:** Accepted CVEs and review dates; links to dependency audit.
 
-## Overview
+## 16.1.1 Overview
 
 Accepted CVEs and review dates; links to dependency audit. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
 
-## Accepted findings
+## 16.1.2 Accepted findings
 
 | CVE / ID | Component | Rationale | Review |
 |----------|-----------|-----------|--------|

@@ -1,11 +1,19 @@
-# docs/security/threat-model-stub.md
+---
+doc_id: "16.5"
+title: "threat model stub"
+section: "Security"
+summary: "Generic threat model for FastAPI applications built on this template. Identifies assets, threat actors, attack surfaces, and mitigations...."
+updated: "2026-04-17"
+---
+
+# 16.5 — threat model stub
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/security/README.md, AGENTS.md §11 (Escalation) -->
 
 **Purpose:** Generic threat model for FastAPI applications built on this template. Identifies assets, threat actors, attack surfaces, and mitigations. Customise per deployment in §9.
 
-## 1. Assets
+## 16.5.1 1. Assets
 
 | Asset | Classification | Location |
 |-------|---------------|----------|
@@ -19,7 +27,7 @@
 | CI/CD secrets (deployment keys, registry credentials) | Critical | GitHub Actions secrets store |
 | Audit logs / queue history | Medium | `queue/queue.csv`, CI logs |
 
-## 2. Threat actors
+## 16.5.2 2. Threat actors
 
 | Actor | Motivation | Capability |
 |-------|-----------|------------|
@@ -30,7 +38,7 @@
 | **Insider (developer/agent)** | Accidental data leak, misconfig | Direct repo and infra access |
 | **Automated scanner** | Exploit known CVEs, brute force | High volume, low precision |
 
-## 3. Attack surfaces
+## 16.5.3 3. Attack surfaces
 
 ### 3.1 HTTP API (FastAPI)
 
@@ -78,7 +86,7 @@
 | Transitive Python packages | CVE exploit, typosquat | `pip-audit` in CI; `dependabot` alerts enabled |
 | Frontend npm packages | Prototype pollution, XSS via bundled code | `npm audit`; lock file committed |
 
-## 4. Mitigations inventory
+## 16.5.4 4. Mitigations inventory
 
 | Mitigation | Status | Implementation location |
 |-----------|--------|------------------------|
@@ -98,7 +106,7 @@
 
 **Required** mitigations are not yet implemented and must be completed before production deployment.
 
-## 5. Data flow diagram (simplified)
+## 16.5.5 5. Data flow diagram (simplified)
 
 ```
 Browser / Mobile App
@@ -118,14 +126,14 @@ Browser / Mobile App
 
 All external calls use HTTPS. Internal services communicate over the private network only.
 
-## 6. Security boundaries
+## 16.5.6 6. Security boundaries
 
 1. **Authentication boundary** — every route behind `Depends(get_current_user)` requires a valid JWT.
 2. **Tenant boundary** — every DB query filters by `tenant_id` extracted from the JWT; cross-tenant reads are a P0 security bug.
 3. **Admin boundary** — routes under `/api/v1/admin/` require `current_user.is_superuser == True`.
 4. **Infrastructure boundary** — the DB is not publicly accessible; only the API container has a DB connection.
 
-## 7. Incident response
+## 16.5.7 7. Incident response
 
 See `docs/security/incident-response.md` for the full incident response playbook.
 
@@ -136,11 +144,11 @@ See `docs/security/incident-response.md` for the full incident response playbook
 4. Preserve logs before any remediation that would overwrite them.
 5. File a P0 incident issue; notify maintainers.
 
-## 8. Accepted risks
+## 16.5.8 8. Accepted risks
 
 Risks accepted with rationale are documented in `docs/security/accepted-risks.md`. Review quarterly or after any significant architectural change.
 
-## 9. Deployment-specific customisation
+## 16.5.9 9. Deployment-specific customisation
 
 This is a **template** threat model. When deploying for a real project, add:
 
