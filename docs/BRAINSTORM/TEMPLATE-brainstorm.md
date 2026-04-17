@@ -1,10 +1,18 @@
-# Brainstorm: <short title>
+---
+doc_id: "19.4"
+title: "Brainstorm template"
+section: "BRAINSTORM"
+summary: "Structured template for one whole idea; expect many queue rows and list them in section 10."
+updated: "2026-04-20"
+---
+
+# 19.4 — Brainstorm template
 
 <!-- Copy this file to ideas/YYYY-MM-DD-<slug>.md and replace angle-bracket placeholders. -->
 
----
+**One file = one complete idea.** Implementation is **not** one queue row per file by default: add **multiple** `queue/queue.csv` rows and track each ID in **Section 10** below. See [`PIPELINE-from-brainstorm-to-queue.md`](PIPELINE-from-brainstorm-to-queue.md).
 
-## Metadata
+## 19.4.1 Metadata
 
 | Field | Value |
 |-------|--------|
@@ -15,54 +23,52 @@
 | **Last updated** | `<YYYY-MM-DD>` |
 | **Supersedes / superseded by** | `<none or links to other brainstorm files>` |
 
----
-
-## 1. Problem / opportunity
+## 19.4.2 Problem / opportunity
 
 **What is wrong or missing today?** (Facts, pain, constraints.)
 
 -
 
-## 2. Goal
+## 19.4.3 Goal
 
 **What success looks like** in one or two sentences.
 
 -
 
-## 3. Non-goals
+## 19.4.4 Non-goals
 
 **Explicitly out of scope** so the idea does not sprawl.
 
 -
 
-## 4. Users and stakeholders
+## 19.4.5 Users and stakeholders
 
 Who is affected (operators, end users, other agents)?
 
 -
 
-## 5. Proposed direction
+## 19.4.6 Proposed direction
 
 **High-level approach** — options considered, preferred option, and why.
 
-### 5.1 Options considered
+### 19.4.6.1 Options considered
 
 | Option | Pros | Cons |
 |--------|------|------|
 | A | | |
 | B | | |
 
-### 5.2 Preferred approach
+### 19.4.6.2 Preferred approach
 
 -
 
-## 6. Acceptance criteria (draft)
+## 19.4.7 Acceptance criteria (draft)
 
 Bullet list of **testable** outcomes. Refine when moving to queue items.
 
 -
 
-## 7. Impact and risks
+## 19.4.8 Impact and risks
 
 | Area | Risk or impact | Mitigation |
 |------|----------------|------------|
@@ -71,25 +77,27 @@ Bullet list of **testable** outcomes. Refine when moving to queue items.
 | API contract | | |
 | Ops / rollout | | |
 
-## 8. Open questions
+## 19.4.9 Open questions
 
 Numbered list. Resolve before or during implementation.
 
 1. 
 
-## 9. References
+## 19.4.10 References
 
 Links to code paths, docs, issues, prior ADRs (optional).
 
 -
 
-## 10. Implementation tracking (fill when work starts)
+## 19.4.11 Implementation tracking (fill when work starts)
 
-| Queue ID | Summary | PR | Notes |
-|----------|---------|-----|-------|
+**One brainstorm → many queue rows.** Add a row for **each** `queue/queue.csv` item that implements this idea. Put the same brainstorm path in `related_files` on every corresponding queue row.
+
+| Queue ID | Summary (scope of this row) | PR | Notes |
+|----------|----------------------------|-----|-------|
 | | | | |
 
-## 11. Changelog (within this brainstorm)
+## 19.4.12 Changelog (within this brainstorm)
 
 Append-only lines when the idea evolves.
 

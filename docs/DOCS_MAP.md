@@ -3,7 +3,7 @@ doc_id: "0"
 title: "Documentation Map"
 section: "Root"
 summary: "Canonical index of every documentation file in this repository."
-updated: "2026-04-17"
+updated: "2026-04-20"
 ---
 
 # 0 — Documentation Map
@@ -253,6 +253,18 @@ Purpose: Hub entry and ubiquitous language: the docs index and domain glossary.
 | --- | --- | --- | --- |
 | 18.0 | Docs overview | `docs/README.md` | Documentation hub. Index of all doc sections with one-line descriptions and links. |
 | 18.1 | glossary | `docs/glossary.md` | Ubiquitous language and domain glossary. Defines terms used consistently across spec, code, and documentation. |
+
+### Section 19 — BRAINSTORM
+
+Purpose: Read-only ideation; one brainstorm file holds the whole idea and typically maps to **many** queue rows.
+
+| ID | Title | Path | Summary |
+| --- | --- | --- | --- |
+| 19.0 | BRAINSTORM overview | `docs/BRAINSTORM/README.md` | Read-only ideation space; one brainstorm file is the whole idea and may spawn many queue rows. |
+| 19.1 | BRAINSTORM agent contract | `docs/BRAINSTORM/AGENTS.md` | Scoped agent rules for docs/BRAINSTORM: read-only vs code; one idea file maps to many queue items. |
+| 19.2 | Pipeline brainstorm to queue | `docs/BRAINSTORM/PIPELINE-from-brainstorm-to-queue.md` | Steps from a ready brainstorm to many queue rows, then code, then spec and docs alignment. |
+| 19.3 | Brainstorm idea files | `docs/BRAINSTORM/ideas/README.md` | One Markdown file per whole idea; implementation splits into many queue rows via the pipeline. |
+| 19.4 | Brainstorm template | `docs/BRAINSTORM/TEMPLATE-brainstorm.md` | Structured template for one whole idea; expect many queue rows and list them in section 10. |
 
 ## 0.3 Retired IDs
 

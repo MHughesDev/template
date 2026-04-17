@@ -34,7 +34,7 @@ Ordered list of every docs/ subdirectory with description and link to its README
 
 **Agent and human governance:**
 - [procedures/](procedures/README.md) — Canonical SOPs for recurring workflows (agents first)
-- [BRAINSTORM/](BRAINSTORM/README.md) — Read-only ideation space; structured brainstorms and handoff pipeline to the queue
+- [BRAINSTORM/](BRAINSTORM/README.md) — Read-only ideation space; one brainstorm file = whole idea; pipeline splits into **many** queue rows
 - [agents/](agents/README.md) — Human supervision of agent work
 - [prompts/](prompts/README.md) — Prompt library conventions and index
 - [adr/](adr/README.md) — Architecture Decision Records
