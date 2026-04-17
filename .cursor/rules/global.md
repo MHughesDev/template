@@ -9,8 +9,9 @@ Universal constraints for **every** agent session: commits, scope, evidence, fil
 
 ## Mandatory reads (every session)
 
-1. **[README.md](../../README.md)** — repository map, quickstart, essential commands.
-2. **[AGENTS.md](../../AGENTS.md)** — full policy; do not skip. Consult it again before **merge**, **handoff**, or whenever instructions conflict.
+1. **MicroFast dev MCP** — before **README.md** or other repo reads, satisfy **[AGENTS.md](../../AGENTS.md)** section 3 step 1 (`microfast-dev` connected if your client supports MCP; skip only when impossible — note in handoff).
+2. **[README.md](../../README.md)** — repository map, quickstart, essential commands.
+3. **[AGENTS.md](../../AGENTS.md)** — full policy; do not skip. Consult it again before **merge**, **handoff**, or whenever instructions conflict.
 
 ## Commit standards
 
