@@ -1,8 +1,16 @@
-# docs/architecture/README.md
+---
+doc_id: "2.0"
+title: "Architecture overview"
+section: "Architecture"
+summary: "Architecture documentation index."
+updated: "2026-04-17"
+---
+
+# 2.0 — Architecture overview
 
 **Purpose:** Architecture documentation index. Per spec §26.5 item 115.
 
-## Contents
+## 2.0.1 Contents
 Link list to architecture docs:
 - [modular-monolith.md](modular-monolith.md) — Bounded contexts, extraction criteria
 - [data-layer.md](data-layer.md) — SQLite/PostgreSQL strategy, migration path
