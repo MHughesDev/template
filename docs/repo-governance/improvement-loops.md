@@ -1,10 +1,18 @@
-# docs/repo-governance/improvement-loops.md
+---
+doc_id: "14.3"
+title: "improvement loops"
+section: "Repo Governance"
+summary: "Post-task retrospectives and encoding learnings into durable artifacts — skills, rules, procedures, and queue items."
+updated: "2026-04-17"
+---
+
+# 14.3 — improvement loops
 
 <!-- Per spec §20 and §26.5 items 178-182 -->
 
 **Purpose:** Post-task retrospectives and encoding learnings into durable artifacts — skills, rules, procedures, and queue items.
 
-## The improvement loop model
+## 14.3.1 The improvement loop model
 
 Every significant incident, failed deployment, prolonged debugging session, or architectural rethink is a source of learning. The improvement loop ensures that learning is **encoded into the repo** rather than lost in chat history.
 
@@ -20,7 +28,7 @@ Verification (audit confirms the artifact is present and correct)
 Next event is handled better
 ```
 
-## When to run a retrospective
+## 14.3.2 When to run a retrospective
 
 Run a retrospective (even a brief one) after:
 
@@ -31,30 +39,30 @@ Run a retrospective (even a brief one) after:
 - An initialization (post-`make idea:execute`) to capture what went wrong or was surprising.
 - End of quarter (scheduled — see below).
 
-## Retrospective format
+## 14.3.3 Retrospective format
 
 Document findings in `docs/repo-governance/retrospectives/YYYY-QN.md` (create the file if it doesn't exist):
 
 ```markdown
-# Retrospective: YYYY-QN (or event description)
+# 14.3 — improvement loops
 
 **Date:** YYYY-MM-DD
 **Participants:** (agent names / human handles)
 
-## What happened
+## 14.3.4 What happened
 One paragraph summary of the event or quarter.
 
-## What went well
+## 14.3.5 What went well
 - Bullet points of things to preserve.
 
-## What went wrong
+## 14.3.6 What went wrong
 - Bullet points of problems encountered.
 
-## Root causes
+## 14.3.7 Root causes
 - Cause A → led to problem X
 - Cause B → led to problem Y
 
-## Actions
+## 14.3.8 Actions
 | Action | Artifact type | Owner | Due |
 |--------|--------------|-------|-----|
 | Add skill for X pattern | `skills/` | Agent | Q+1 |
@@ -62,7 +70,7 @@ One paragraph summary of the event or quarter.
 | Add queue item for Z | `queue/queue.csv` | Agent | This sprint |
 ```
 
-## Encoding learnings into artifacts
+## 14.3.9 Encoding learnings into artifacts
 
 ### Decision: which artifact type?
 
@@ -103,7 +111,7 @@ Promote a sequence to a procedure when:
 2. It has rollback steps that differ from normal operation.
 3. It should be audited (who ran it, when, with what outcome).
 
-## Queue items from retrospectives
+## 14.3.10 Queue items from retrospectives
 
 Any learning that requires future work must become a queue item:
 
@@ -113,7 +121,7 @@ Q-XXX,open,improvement,<title>,<summary 100+ chars>,<due-date>,,
 
 Label improvement-loop-sourced items with a comment in the summary referencing the retrospective file.
 
-## Quarterly improvement loop
+## 14.3.11 Quarterly improvement loop
 
 At the end of each quarter:
 
@@ -126,7 +134,7 @@ At the end of each quarter:
 7. **Add resulting queue items** to `queue/queue.csv`.
 8. **Update `docs/repo-governance/documentation-freshness.md`** with any new staleness indicators discovered.
 
-## Measuring loop effectiveness
+## 14.3.12 Measuring loop effectiveness
 
 Track in each quarterly retrospective:
 - **Mean time to encode** — time from event to artifact committed (goal: < 1 sprint).

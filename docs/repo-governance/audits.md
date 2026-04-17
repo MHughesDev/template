@@ -1,10 +1,18 @@
-# docs/repo-governance/audits.md
+---
+doc_id: "14.1"
+title: "audits"
+section: "Repo Governance"
+summary: "Scheduled repository self-audits using `make audit:self` — what is checked, how to interpret results, and how to remediate failures."
+updated: "2026-04-17"
+---
+
+# 14.1 — audits
 
 <!-- Per spec §20 and §26.5 items 178-182 -->
 
 **Purpose:** Scheduled repository self-audits using `make audit:self` — what is checked, how to interpret results, and how to remediate failures.
 
-## What `make audit:self` checks
+## 14.1.1 What `make audit:self` checks
 
 The audit script (`scripts/repo_self_audit.py`) runs seven checks and prints a pass/fail report:
 
@@ -20,7 +28,7 @@ The audit script (`scripts/repo_self_audit.py`) runs seven checks and prints a p
 
 Exit code 0 = all pass. Exit code 1 = one or more failures. CI blocks on exit code 1.
 
-## When to run
+## 14.1.2 When to run
 
 ```bash
 make audit:self          # run locally at any time
@@ -34,24 +42,24 @@ CI runs `audit-self` as a separate job on every PR and push to main (see `.githu
 - Added a Makefile target
 - Renamed or moved files
 
-## How to interpret results
+## 14.1.3 How to interpret results
 
 ```
-# Repository self-audit
+# 14.1 — audits
 
-## required_files: PASS
+## 14.1.4 required_files: PASS
 
-## queue_validate: FAIL
+## 14.1.5 queue_validate: FAIL
   - queue/queue.csv row 3: summary must be empty or >= 100 chars (got 42)
 
-## file_title_comments: FAIL
+## 14.1.6 file_title_comments: FAIL
   - scripts/new-tool.sh
   - apps/api/src/mymodule/helpers.py
 ```
 
 Each `FAIL` section lists the offending files or messages. Fix all failures before merging.
 
-## Remediation guide
+## 14.1.7 Remediation guide
 
 ### `required_files` failure
 
@@ -85,12 +93,12 @@ Prompt templates must begin with `# prompts/<filename>` then a `---` YAML block 
 Every Makefile target needs a `## target: description` line directly before it:
 
 ```makefile
-## my-target: What this target does
+## 14.1.8 my-target: What this target does
 my-target:
     @scripts/my-script.sh
 ```
 
-## Audit schedule
+## 14.1.9 Audit schedule
 
 | Frequency | Who | Scope |
 |-----------|-----|-------|
@@ -98,7 +106,7 @@ my-target:
 | Weekly | On-call agent | Review audit trends in CI history |
 | Quarterly | Human maintainer | Review REQUIRED_PATHS for completeness; add newly-critical files |
 
-## Adding new checks
+## 14.1.10 Adding new checks
 
 To add a check to the audit:
 1. Write a `check_<name>(root: Path) -> list[str]` function in `scripts/repo_self_audit.py` returning a list of violation strings.

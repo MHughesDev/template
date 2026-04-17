@@ -1,10 +1,18 @@
-# docs/repo-governance/procedure-drift-detection.md
+---
+doc_id: "14.4"
+title: "procedure drift detection"
+section: "Repo Governance"
+summary: "Detecting and fixing drift between documented procedures and the actual CI/operations reality."
+updated: "2026-04-17"
+---
+
+# 14.4 — procedure drift detection
 
 <!-- Per spec §20 and §26.5 items 178-182 -->
 
 **Purpose:** Detecting and fixing drift between documented procedures and the actual CI/operations reality.
 
-## What is procedure drift?
+## 14.4.1 What is procedure drift?
 
 **Procedure drift** occurs when a documented procedure describes steps that no longer match what the codebase, CI, or infrastructure actually does. Examples:
 
@@ -16,7 +24,7 @@
 
 Drifted procedures cause agents and engineers to follow stale instructions — producing errors or, worse, silently wrong state.
 
-## Detection methods
+## 14.4.2 Detection methods
 
 ### 1. Automated link checking (`make docs:check`)
 
@@ -31,13 +39,13 @@ make docs:check
 Check that every `make <target>` referenced in `docs/procedures/` still exists:
 
 ```bash
-# List all make targets
+# 14.4 — procedure drift detection
 grep -E '^[a-zA-Z0-9_:-]+:' Makefile | cut -d: -f1 | sort > /tmp/actual_targets.txt
 
-# List all make references in procedures
+# 14.4 — procedure drift detection
 grep -roh 'make [a-zA-Z0-9_:-]*' docs/procedures/ | awk '{print $2}' | sort -u > /tmp/doc_targets.txt
 
-# Show targets mentioned in docs but missing from Makefile
+# 14.4 — procedure drift detection
 comm -23 /tmp/doc_targets.txt /tmp/actual_targets.txt
 ```
 
@@ -60,7 +68,7 @@ Check that env vars referenced in docs exist in `.env.example`:
 ```bash
 grep -roh '[A-Z_]\{3,\}' docs/procedures/ | sort -u > /tmp/doc_vars.txt
 grep -oh '^[A-Z_]*=' .env.example | tr -d '=' | sort > /tmp/env_vars.txt
-# Review /tmp/doc_vars.txt entries not in /tmp/env_vars.txt — some are expected, but investigate unfamiliar ones
+# 14.4 — procedure drift detection
 ```
 
 ### 5. CI workflow diff
@@ -69,7 +77,7 @@ When a `.github/workflows/` file changes, search for procedures that describe th
 
 ```bash
 git diff --name-only HEAD~1 HEAD | grep '.github/workflows/'
-# For each changed workflow, grep docs/ for its name and review
+# 14.4 — procedure drift detection
 ```
 
 ### 6. Quarterly procedure walk-through
@@ -80,7 +88,7 @@ Once per quarter, a human maintainer or on-call agent walks through each procedu
 - Does the output of step N match what step N+1 expects?
 - Are there new required steps not in the procedure?
 
-## Drift categories and severity
+## 14.4.3 Drift categories and severity
 
 | Category | Example | Severity |
 |----------|---------|----------|
@@ -91,7 +99,7 @@ Once per quarter, a human maintainer or on-call agent walks through each procedu
 | **Changed output format** | Script output parsing instructions are wrong | Medium — downstream steps may break |
 | **Outdated context** | Architectural description no longer accurate | Low — misleads understanding only |
 
-## Remediation workflow
+## 14.4.4 Remediation workflow
 
 When drift is detected:
 
@@ -110,13 +118,13 @@ When renaming a Makefile target:
 3. Add the old target as a deprecated alias (prints a warning) for one sprint before removal.
 
 ```makefile
-## old-target: DEPRECATED — use make new-target instead
+## 14.4.5 old-target: DEPRECATED — use make new-target instead
 old-target:
     @echo "WARNING: 'make old-target' is deprecated. Use 'make new-target'." >&2
     @$(MAKE) new-target
 ```
 
-## Prevention
+## 14.4.6 Prevention
 
 The best way to handle drift is to prevent it:
 
@@ -126,7 +134,7 @@ The best way to handle drift is to prevent it:
 - **When renaming a target**, update all procedure references in the same commit.
 - **Use stable target names** — prefer `make migrate` over `make db:migrate:run:now` to reduce surface area.
 
-## Related
+## 14.4.7 Related
 
 - `docs/repo-governance/documentation-freshness.md` — staleness indicators and `make docs:check`
 - `docs/repo-governance/improvement-loops.md` — encoding drift findings into skills and rules
