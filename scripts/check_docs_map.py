@@ -157,7 +157,8 @@ def main() -> None:
         if path_to_id[rel] != doc_id:
             _err(
                 "error: map doc_id "
-                f"{doc_id} does not match file frontmatter for {rel} ({path_to_id[rel]})",
+                f"{doc_id} does not match file frontmatter for {rel} "
+                f"({path_to_id[rel]})",
             )
             sys.exit(1)
 
