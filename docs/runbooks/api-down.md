@@ -1,25 +1,33 @@
-# docs/runbooks/api-down.md
+---
+doc_id: "15.1"
+title: "api down"
+section: "Runbooks"
+summary: "Runbook: API service is down or unresponsive (§21)."
+updated: "2026-04-17"
+---
+
+# 15.1 — api down
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/runbooks/README.md, AGENTS.md §11 (Escalation) -->
 
 **Purpose:** Runbook: API service is down or unresponsive (§21).
 
-## Overview
+## 15.1.1 Overview
 
 Runbook: API service is down or unresponsive (§21). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
 
-## Symptoms
+## 15.1.2 Symptoms
 How to detect this failure condition.
 
-## Diagnosis Steps
+## 15.1.3 Diagnosis Steps
 Step-by-step diagnosis commands and what to look for.
 
-## Resolution Steps
+## 15.1.4 Resolution Steps
 How to resolve the issue.
 
-## Escalation Path
+## 15.1.5 Escalation Path
 Who to escalate to if resolution steps fail.
 
-## Post-Resolution
+## 15.1.6 Post-Resolution
 What to do after the issue is resolved (documentation, post-mortem).

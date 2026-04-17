@@ -1,25 +1,33 @@
-# docs/runbooks/chroma-unavailable.md
+---
+doc_id: "15.2"
+title: "chroma unavailable"
+section: "Runbooks"
+summary: "Runbook: ChromaDB unavailable — graceful degradation via kill switch."
+updated: "2026-04-17"
+---
+
+# 15.2 — chroma unavailable
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/runbooks/README.md, AGENTS.md §11 (Escalation) -->
 
 **Purpose:** Runbook: ChromaDB unavailable — graceful degradation via kill switch.
 
-## Overview
+## 15.2.1 Overview
 
 Runbook: ChromaDB unavailable — graceful degradation via kill switch. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
 
-## Symptoms
+## 15.2.2 Symptoms
 How to detect this failure condition.
 
-## Diagnosis Steps
+## 15.2.3 Diagnosis Steps
 Step-by-step diagnosis commands and what to look for.
 
-## Resolution Steps
+## 15.2.4 Resolution Steps
 How to resolve the issue.
 
-## Escalation Path
+## 15.2.5 Escalation Path
 Who to escalate to if resolution steps fail.
 
-## Post-Resolution
+## 15.2.6 Post-Resolution
 What to do after the issue is resolved (documentation, post-mortem).
