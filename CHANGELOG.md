@@ -9,6 +9,7 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 ### Added
 
 - **Agent onboarding** — README and AGENTS.md explicitly require every agent session to read both; AGENTS.md adds re-read before merge/handoff when policy applies; branch cleanup after merge documented. PR template checkboxes for README/AGENTS.md reads and post-merge branch deletion.
+- **`make queue:top-item`** — prints the first open row in `queue/queue.csv` as **one line** of JSON (all columns). Agents must run this when processing queue work. Scripts: `scripts/queue_top_item.py`, `scripts/queue-top-item.sh`.
 - **`make queue:pr-merge`** — runs `gh pr merge --merge --delete-branch` (optional `PR_NUMBER=<n>`); for queue completion, run **after** `queue:archive` and `queue:validate` to sync GitHub. Script: `scripts/queue-pr-merge.sh`.
 
 - **`make queue:archive-top`** — archives the first (top) open row in `queue/queue.csv` without passing `QUEUE_ID` (`scripts/queue_archive.py --top`). Documented in queue agent SOP for token-efficient completion workflows.

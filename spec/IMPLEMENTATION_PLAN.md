@@ -419,6 +419,8 @@ This file is the **implementation checklist** for the template repository descri
 | [x] | `scripts/queue-archive.sh` | recommended |
 | [x] | `scripts/queue-graph.sh` |  |
 | [x] | `scripts/queue-peek.sh` |  |
+| [x] | `scripts/queue-top-item.sh` |  |
+| [x] | `scripts/queue_top_item.py` |  |
 | [x] | `scripts/queue-validate.sh` |  |
 | [x] | `scripts/release-prepare.sh` |  |
 | [x] | `scripts/release-verify.sh` |  |

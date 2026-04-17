@@ -16,7 +16,7 @@ State the agent's role and authority scope: "You are processing a queue item fro
 Ordered list of what must be read before processing begins:
 1. This file (QUEUE_AGENT_PROMPT.md) — complete
 2. queue/QUEUE_INSTRUCTIONS.md — complete
-3. The top data row of queue/queue.csv — complete (every column)
+3. Run **`make queue:top-item`** — stdout is one JSON line with **every column** of the top open row; parse it completely
 4. **related_files column** — every comma-separated path (repo-relative); read each file or directory before coding and before marking the item complete
 5. All files/docs referenced in the summary column (if not already covered by related_files)
 6. Skills (mandatory search — see below)

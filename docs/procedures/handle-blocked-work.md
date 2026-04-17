@@ -20,7 +20,7 @@ Blocker clearly identified. queue.csv writable.
 
 ## Exact Commands
 
-`make queue:validate` (after updating notes), `make queue:peek` (to see next ready item)
+`make queue:validate` (after updating notes), **`make queue:top-item`** (next ready item as JSON)
 
 ## Ordered Steps
 

@@ -519,6 +519,7 @@ Document all targets in `README.md` and `docs/development/local-setup.md`.
 | `docs:check` | Link check or docs build **and** verify generated docs match `docs:generate --check` |
 | `docs:index` | Regenerate doc index if applicable |
 | `queue:peek` | Read-only: header + first open row |
+| `queue:top-item` | Read-only: first open row as **one JSON line** (all columns — for agents) |
 | `queue:validate` | Schema + invariants |
 | `queue:archive` | Scripted move row open→archive by id (optional but recommended) |
 | `queue:archive-top` | Scripted move **top** open row open→archive (no id; single-lane) |
@@ -738,7 +739,7 @@ The queue adds an **intelligence layer** (machinery in `skills/agent-ops/`, invo
 
 #### 17.11.2 Complexity estimation
 
-Each item may receive an **advisory** complexity score (S/M/L/XL or 1–10) from: file-impact hints in `summary`; git history (change frequency / conflict risk); historical queue archive timings and PR file counts; transitive dependency depth; category heuristics (infrastructure/security higher than documentation). Exposed via `make queue:peek` and triage reports; **does not** reorder the CSV.
+Each item may receive an **advisory** complexity score (S/M/L/XL or 1–10) from: file-impact hints in `summary`; git history (change frequency / conflict risk); historical queue archive timings and PR file counts; transitive dependency depth; category heuristics (infrastructure/security higher than documentation). Exposed via `make queue:top-item`, `make queue:peek`, and triage reports; **does not** reorder the CSV.
 
 #### 17.11.3 Automatic batching of related items
 
@@ -934,7 +935,7 @@ Every file that MUST or SHOULD exist in a generated template is enumerated below
 | 15 | `.cursor/rules/testing.md` | RECOMMENDED | Testing standards. Coverage expectations, naming conventions, fixture patterns, mock boundaries. | Frontmatter: `globs: ["**/tests/**", "**/test_*"]`. Body: Test naming (`test_<unit>_<scenario>_<expected>`), fixture scope rules, mock boundary policy, async test patterns. |
 | 16 | `.cursor/rules/documentation.md` | RECOMMENDED | Documentation update triggers. When docs MUST be updated alongside code changes. | Frontmatter: `alwaysApply: true`. Body: Trigger conditions (new env var → `.env.example` + docs, new endpoint → API docs, behavior change → relevant docs, new error code → error taxonomy). |
 | 17 | `.cursor/commands/validate.md` | OPTIONAL | Reusable command: run full validation suite (lint + typecheck + test + queue:validate). | Command metadata: name, description, steps (ordered list of make targets to run), expected output summary. |
-| 18 | `.cursor/commands/queue-next.md` | OPTIONAL | Reusable command: claim and begin processing the next queue item. | Command metadata: name, description, steps (queue:peek → read row → create branch → begin work), links to `docs/procedures/start-queue-item.md`. |
+| 18 | `.cursor/commands/queue-next.md` | OPTIONAL | Reusable command: claim and begin processing the next queue item. | Command metadata: name, description, steps (queue:top-item → parse JSON → create branch → begin work), links to `docs/procedures/start-queue-item.md`. |
 
 ---
 
@@ -1402,7 +1403,7 @@ Each script implements one or more `Makefile` targets (§10.2). Scripts are the 
 | 261 | `scripts/migrate.sh` | REQUIRED | Apply database migrations (alembic upgrade head). Accepts `create` arg for `make migrate:create`. Corresponds to `make migrate`, `make migrate:create`. |
 | 262 | `scripts/docs-check.sh` | REQUIRED | Check documentation: link validation, build if applicable. Corresponds to `make docs:check`. |
 | 263 | `scripts/docs-index.sh` | RECOMMENDED | Regenerate documentation indexes. Corresponds to `make docs:index`. |
-| 264 | `scripts/queue-peek.sh` | REQUIRED | Read-only: display header + first open row of queue.csv. Corresponds to `make queue:peek`. |
+| 264 | `scripts/queue-peek.sh` | REQUIRED | Read-only: display header + first open row of queue.csv. Corresponds to `make queue:peek`. Companion: `scripts/queue_top_item.py` + `queue-top-item.sh` — first open row as one JSON line → `make queue:top-item`. |
 | 265 | `scripts/queue-validate.sh` | REQUIRED | Validate queue schema, invariants, no duplicate IDs, top-row contract. Corresponds to `make queue:validate`. |
 | 266 | `scripts/queue-archive.sh` | RECOMMENDED | Scripted move of a queue row from open to archive. Corresponds to `make queue:archive` (by id) and `make queue:archive-top` (first open row). |
 | 267 | `scripts/prompt-list.sh` | REQUIRED | List all prompt templates with metadata summary. Corresponds to `make prompt:list`. |
@@ -2331,6 +2332,8 @@ repo-root/
     ├── docs-check.sh
     ├── docs-index.sh                               # recommended
     ├── queue-peek.sh
+    ├── queue-top-item.sh
+    ├── queue_top_item.py
     ├── queue-validate.sh
     ├── queue-archive.sh                            # recommended
     ├── prompt-list.sh
@@ -2706,6 +2709,7 @@ repo-root/
 | 262 | `scripts/docs-check.sh` | Check documentation links and build → `make docs:check` | §10.2 |
 | 263 | `scripts/docs-index.sh` | Regenerate doc indexes → `make docs:index` (recommended) | §10.2 |
 | 264 | `scripts/queue-peek.sh` | Read-only queue peek → `make queue:peek` | §10.2 |
+| 264a | `scripts/queue-top-item.sh` / `queue_top_item.py` | Top row as one JSON line → `make queue:top-item` | §10.2 |
 | 265 | `scripts/queue-validate.sh` | Validate queue schema and invariants → `make queue:validate` | §10.2 |
 | 266 | `scripts/queue-archive.sh` | Scripted queue archive move → `make queue:archive`, `make queue:archive-top` | §10.2 |
 | 267 | `scripts/prompt-list.sh` | List prompt templates → `make prompt:list` | §10.2 |

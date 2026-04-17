@@ -32,7 +32,7 @@ When implementation is complete: CI green, PR open, PR URL in queue notes, and y
 2. Run **`make queue:archive-top`** (if the completed item is the top open row) **or** **`make queue:archive QUEUE_ID=<id>`** — move the row to `queuearchive.csv` with `status=done`, `completed_date`, PR URL in notes; remove from `queue.csv`.
 3. Run **`make queue:validate`** — must pass.
 4. Update GitHub: run **`make queue:pr-merge`** (or merge in the GitHub UI). Optional: **`PR_NUMBER=<n> make queue:pr-merge`** if not on the PR branch.
-5. Run **`make queue:peek`** — verify the next item is at the top of `queue.csv`.
+5. Run **`make queue:top-item`** — verify the next item JSON (or `make queue:peek` for raw CSV).
 
 ## Expected Artifacts / Outputs
 

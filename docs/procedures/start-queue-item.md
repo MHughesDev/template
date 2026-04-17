@@ -20,11 +20,11 @@ queue/QUEUE_INSTRUCTIONS.md read. Previous queue item archived (or confirmed non
 
 ## Exact Commands
 
-`make queue:peek`, `make queue:validate`, `make skills:list`, `git checkout -b queue/<id>-slug`
+`make queue:top-item`, `make queue:validate`, `make skills:list`, `git checkout -b queue/<id>-slug`
 
 ## Ordered Steps
 
-1. Run `make queue:peek` — read the header row + first data row completely
+1. Run **`make queue:top-item`** — read the JSON line (full top row; all columns). Use `make queue:peek` if you need raw CSV lines.
 2. Read the COMPLETE summary column — this is the work contract; do not skip
 3. Parse the `dependencies` column — check each ID against queuearchive.csv
 4. Parse the `related_files` column — read every comma-separated path (mandatory pre-read before implementation)
