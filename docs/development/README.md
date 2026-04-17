@@ -1,15 +1,23 @@
-# docs/development/README.md
+---
+doc_id: "3.0"
+title: "Development overview"
+section: "Development"
+summary: "Index of developer documentation: setup, workflow, testing, and standards."
+updated: "2026-04-17"
+---
+
+# 3.0 — Development overview
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/development/README.md, README.md -->
 
 **Purpose:** Index of developer documentation: setup, workflow, testing, and standards.
 
-## Overview
+## 3.0.1 Overview
 
 Index of developer documentation: setup, workflow, testing, and standards. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
 
-## Contents
+## 3.0.2 Contents
 
 | Document | Description |
 |----------|-------------|

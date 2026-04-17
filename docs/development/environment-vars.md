@@ -1,21 +1,29 @@
-# docs/development/environment-vars.md
+---
+doc_id: "3.4"
+title: "environment vars"
+section: "Development"
+summary: "Environment variable reference. All vars documented with defaults, read by `apps/api/src/config.py` via Pydantic Settings (§10.3)."
+updated: "2026-04-17"
+---
+
+# 3.4 — environment vars
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/development/README.md, README.md -->
 
 **Purpose:** Environment variable reference. All vars documented with defaults, read by `apps/api/src/config.py` via Pydantic Settings (§10.3).
 
-## Overview
+## 3.4.1 Overview
 
 Environment variable reference. All vars documented with defaults, read by `apps/api/src/config.py` via Pydantic Settings (§10.3). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
 
-## Rules
+## 3.4.2 Rules
 
 - **Never** read the environment with `os.getenv()` outside `apps/api/src/config.py`.
 - Copy `.env.example` to `.env` for local development; do not commit real secrets.
 - After adding or renaming a variable in code, update **both** `.env.example` and this file.
 
-## Core variables
+## 3.4.3 Core variables
 
 | Variable | Default (if unset in code) | Notes |
 |----------|----------------------------|--------|
@@ -41,7 +49,7 @@ Environment variable reference. All vars documented with defaults, read by `apps
 
 See `apps/api/src/config.py` for the authoritative list and validation rules.
 
-## Related
+## 3.4.4 Related
 
 - [.env.example](../../.env.example)
 - [operations/configuration.md](../operations/configuration.md)

@@ -1,6 +1,14 @@
-# docs/development/init-manifest-schema.md
+---
+doc_id: "3.6"
+title: "Init manifest schema"
+section: "Development"
+summary: "Defines init-manifest.json fields produced from idea.md for deterministic initialization."
+updated: "2026-04-17"
+---
 
-## Overview
+# 3.6 — Init manifest schema
+
+## 3.6.1 Overview
 
 `init-manifest.json` is produced by `scripts/idea-parser.py` from structured fields in
 `idea.md`. It is the **contract** for `scripts/init-from-idea.py` and for agents using
@@ -10,7 +18,7 @@ The manifest is **write-once per initialization** for a given project decision s
 change profile decisions after init, update `idea.md`, delete `init-manifest.json`, set
 INIT_META `initialized: false`, and re-run `make init:from-idea`.
 
-## Top-level keys
+## 3.6.2 Top-level keys
 
 | Key | Type | Description |
 |-----|------|-------------|
@@ -32,7 +40,7 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 | `initialized` | boolean | Always `false` at parse time; orchestrator updates `idea.md` when done. |
 | `init_manifest_hash` | string | SHA-256 of canonical JSON (without the hash field), hex digest. |
 
-## `resolved_decisions` sub-schema
+## 3.6.3 `resolved_decisions` sub-schema
 
 | Key | Type | Description |
 |-----|------|-------------|
@@ -48,7 +56,7 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 | `archetype_resolved_fields` | string[] | Profile keys filled from archetype defaults (`[ ]` in §5). |
 | `open_questions` | string[] | Non-blocking items from §16. |
 
-## Example: `saas_product` with billing, email, workers
+## 3.6.4 Example: `saas_product` with billing, email, workers
 
 **Scenario:** B2B SaaS with React web UI, Celery workers, Stripe billing, and transactional email. Primary DB is PostgreSQL.
 
@@ -172,7 +180,7 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 }
 ```
 
-## Reading order for agents
+## 3.6.5 Reading order for agents
 
 1. Read `meta.init_version` and `init_manifest_hash` for traceability.
 2. Read `resolved_decisions` in full — **no inference from prose in `idea.md`** during execution.
