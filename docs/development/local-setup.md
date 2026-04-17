@@ -70,6 +70,10 @@ Colon forms (e.g. `make queue:peek`) are aliases to the hyphenated targets in th
 
 Use your editor’s Python integration pointed at `.venv`. The repo uses Ruff and mypy; matching the versions in `pyproject.toml` avoids CI drift.
 
+### MicroFast dev MCP (optional)
+
+After `pip install -e ".[dev]"`, run `./scripts/dev-mcp.sh` (stdio) or use Cursor’s registered server from `.cursor/mcp.json`. Full tool and resource list: [microfast-dev-mcp.md](../procedures/microfast-dev-mcp.md).
+
 ## 3.7.6 Related
 
 - [environment-vars.md](environment-vars.md) — settings reference

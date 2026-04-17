@@ -1,0 +1,8 @@
+# dev_mcp/__init__.py
+"""Development-only MCP server for coding agents (stdio). See ``dev_mcp.server``."""
+
+from __future__ import annotations
+
+__all__ = ["__version__"]
+
+__version__ = "0.1.0"

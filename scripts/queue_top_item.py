@@ -3,38 +3,11 @@
 
 from __future__ import annotations
 
-import csv
-import io
 import json
 import sys
 from pathlib import Path
 
-OPEN_FIELDS = [
-    "id",
-    "batch",
-    "phase",
-    "category",
-    "summary",
-    "agent_instructions",
-    "dependencies",
-    "related_files",
-    "notes",
-    "created_date",
-]
-
-
-def _load_open_rows(path: Path) -> list[dict[str, str]]:
-    raw = path.read_text(encoding="utf-8")
-    lines = raw.splitlines()
-    start = 0
-    if lines and lines[0].startswith("#"):
-        start = 1
-    body = "\n".join(lines[start:])
-    reader = csv.DictReader(io.StringIO(body))
-    if list(reader.fieldnames or []) != OPEN_FIELDS:
-        msg = f"{path}: expected columns {OPEN_FIELDS}, got {reader.fieldnames}"
-        raise ValueError(msg)
-    return list(reader)
+from queue_ops import OPEN_FIELDS, load_open_rows
 
 
 def main() -> int:
@@ -45,7 +18,7 @@ def main() -> int:
         print(json.dumps(err, ensure_ascii=False), file=sys.stderr)
         return 1
     try:
-        rows = _load_open_rows(path)
+        rows = load_open_rows(path)
     except ValueError as e:
         err = {"error": "invalid_csv", "detail": str(e)}
         print(json.dumps(err, ensure_ascii=False), file=sys.stderr)

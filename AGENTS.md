@@ -291,7 +291,7 @@ See the full document for all 18 procedures, the condensed 12-point rule set, an
 | Prompts | `prompts/` — **`prompts/README.md`** |
 | Queue (open / archive) | `queue/queue.csv`, `queue/queuearchive.csv` |
 | Scripts (Make backends) | `scripts/` |
-| Machine control | `.cursor/rules/`, `.cursor/commands/` |
+| Machine control | `.cursor/rules/`, `.cursor/commands/`, `.cursor/mcp.json` (MicroFast dev MCP — see [docs/procedures/microfast-dev-mcp.md](docs/procedures/microfast-dev-mcp.md)) |
 
 ### Canonical commands
 

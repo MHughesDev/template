@@ -26,6 +26,7 @@ dependencies = [
   "email-validator>=2.3.0",
   "celery[redis]>=5.4.0",
   "fastapi-mcp>=0.2",
+  "mcp>=1.8",
 ]
 
 [project.optional-dependencies]
@@ -46,12 +47,12 @@ ai = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["apps/api/src", "packages/contracts", "packages/tasks"]
+packages = ["apps/api/src", "packages/contracts", "packages/tasks", "queue_ops", "dev_mcp"]
 
 [tool.ruff]
 target-version = "py312"
 line-length = 88
-src = ["apps/api/src", "packages"]
+src = ["apps/api/src", "packages", "queue_ops", "dev_mcp"]
 extend-exclude = ["skills", "packages/ai", "apps/api/alembic"]
 
 [tool.ruff.lint]
@@ -59,6 +60,7 @@ select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20", "SIM", "RET
 ignore = ["S101", "B008"]
 
 [tool.ruff.lint.per-file-ignores]
+"dev_mcp/**" = ["S603", "S607"]
 "apps/api/tests/**" = ["S101", "S105", "E501"]
 "**/alembic/**" = ["INP001", "E501"]
 "packages/contracts/errors.py" = ["S105"]
@@ -89,12 +91,16 @@ disable_error_code = ["untyped-decorator"]
 module = ["fastapi_mcp", "fastapi_mcp.*"]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = ["mcp", "mcp.*"]
+ignore_missing_imports = true
+
 [tool.pydantic-mypy]
 init_forbid_extra = true
 init_typed = true
 
 [tool.pytest.ini_options]
-testpaths = ["apps/api/tests", "apps/api/src"]
+testpaths = ["apps/api/tests", "apps/api/src", "packages", "queue_ops"]
 asyncio_mode = "auto"
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
@@ -108,7 +114,7 @@ addopts = "--cov=apps/api/src --cov=packages --cov-report=term-missing --cov-rep
 
 [tool.coverage.run]
 source = ["apps/api/src", "packages"]
-omit = ["*/alembic/*", "*/__init__.py", "packages/ai/*"]
+omit = ["*/alembic/*", "*/__init__.py", "packages/ai/*", "dev_mcp/*"]
 
 [tool.coverage.report]
 fail_under = 55

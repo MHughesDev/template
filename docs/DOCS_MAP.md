@@ -99,6 +99,7 @@ Purpose: Canonical agent SOPs: queue work, implementation, validation, init, mig
 | 5.24 | update or create skill | `docs/procedures/update-or-create-skill.md` | SOP: Skill lifecycle — creating new skills or updating existing ones to the standard format. |
 | 5.25 | validate change | `docs/procedures/validate-change.md` | SOP: Run full validation matrix before opening PR. |
 | 5.26 | validate idea md | `docs/procedures/validate-idea-md.md` | SOP for validate-idea-md. |
+| 5.27 | MicroFast development MCP server | `docs/procedures/microfast-dev-mcp.md` | stdio MCP for agents: queue tools, repo resources, canonical make targets (dev-only). |
 | 5.3 | add optional app profile | `docs/procedures/add-optional-app-profile.md` | SOP for add-optional-app-profile. |
 | 5.4 | add prompt template | `docs/procedures/add-prompt-template.md` | SOP for add-prompt-template. |
 | 5.5 | add queue category | `docs/procedures/add-queue-category.md` | SOP for add-queue-category. |
