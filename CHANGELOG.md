@@ -6,6 +6,10 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ## [Unreleased]
 
+### Changed
+
+- **API tests (Q-003):** expanded auth and tenancy coverage — JWT edge cases via `/api/v1/examples/` (expired, malformed, wrong signing key, invalid `sub`, unknown user), password-strength 422, unauthenticated list 403/401, multi-tenancy malformed Bearer returns `TENANT_ISOLATION_VIOLATION`.
+
 ### Added
 
 - **`agent_instructions` column** — `queue/queue.csv` and `queuearchive.csv` include optional per-row instructions for implementation executors (after `summary`). `make queue:top-item` JSON includes it. Validators and archive scripts updated (`scripts/queue_validate.py`, `queue_top_item.py`, `queue_archive.py`); seeders and `idea-parser` emit empty `agent_instructions` by default.

@@ -10,15 +10,14 @@ from unittest.mock import patch
 import pytest
 from httpx import ASGITransport, AsyncClient
 from jose import jwt
+from sqlalchemy import Integer
+from sqlalchemy.orm import Mapped, mapped_column
 from starlette.requests import Request
 
 from apps.api.src.config import get_settings
 from apps.api.src.database import Base
 from apps.api.src.main import create_app
 from apps.api.src.tenancy.middleware import TenantContextMiddleware
-from sqlalchemy import Integer
-from sqlalchemy.orm import Mapped, mapped_column
-
 from apps.api.src.tenancy.models import Tenant, TenantMixin
 
 
@@ -83,6 +82,31 @@ async def test_tenant_middleware_sets_request_state() -> None:
 
     assert received is not None
     assert received.state.tenant_id == uuid.UUID(tid)
+
+
+@pytest.mark.asyncio
+async def test_tenant_middleware_malformed_bearer_returns_403() -> None:
+    """With multi-tenancy enabled, unreadable Bearer token cannot set tenant — enforcement returns 403."""
+
+    prev = os.environ.get("MULTI_TENANCY_ENABLED")
+    os.environ["MULTI_TENANCY_ENABLED"] = "true"
+    get_settings.cache_clear()
+    try:
+        app = create_app(get_settings())
+        transport = ASGITransport(app=app)
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            response = await client.get(
+                "/health",
+                headers={"Authorization": "Bearer not-a-jwt"},
+            )
+        assert response.status_code == 403
+        assert response.json()["error"]["code"] == "TENANT_ISOLATION_VIOLATION"
+    finally:
+        if prev is None:
+            os.environ.pop("MULTI_TENANCY_ENABLED", None)
+        else:
+            os.environ["MULTI_TENANCY_ENABLED"] = prev
+        get_settings.cache_clear()
 
 
 @pytest.mark.asyncio
