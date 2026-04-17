@@ -72,7 +72,7 @@ Use your editor’s Python integration pointed at `.venv`. The repo uses Ruff an
 
 ### MicroFast dev MCP (optional)
 
-After `pip install -e ".[dev]"`, run `./scripts/dev-mcp.sh` (stdio) or use Cursor’s registered server from `.cursor/mcp.json`. Full tool and resource list: [microfast-dev-mcp.md](../procedures/microfast-dev-mcp.md).
+After `pip install -e ".[dev]"`, run `./dev_mcp/run.sh` (stdio) or use Cursor’s registered server from `.cursor/mcp.json`. Full tool and resource list: [microfast-dev-mcp.md](../procedures/microfast-dev-mcp.md).
 
 ## 3.7.6 Related
 

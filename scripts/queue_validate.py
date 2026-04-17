@@ -6,7 +6,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from queue_ops import validate_archive, validate_open
+from dev_mcp.queue_ops import validate_archive, validate_open
 
 
 def main() -> int:

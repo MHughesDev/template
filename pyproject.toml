@@ -47,12 +47,12 @@ ai = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["apps/api/src", "packages/contracts", "packages/tasks", "queue_ops", "dev_mcp"]
+packages = ["apps/api/src", "packages/contracts", "packages/tasks", "dev_mcp"]
 
 [tool.ruff]
 target-version = "py312"
 line-length = 88
-src = ["apps/api/src", "packages", "queue_ops", "dev_mcp"]
+src = ["apps/api/src", "packages", "dev_mcp"]
 extend-exclude = ["skills", "packages/ai", "apps/api/alembic"]
 
 [tool.ruff.lint]
@@ -100,7 +100,7 @@ init_forbid_extra = true
 init_typed = true
 
 [tool.pytest.ini_options]
-testpaths = ["apps/api/tests", "apps/api/src", "packages", "queue_ops"]
+testpaths = ["apps/api/tests", "apps/api/src", "packages", "dev_mcp"]
 asyncio_mode = "auto"
 python_files = ["test_*.py"]
 python_functions = ["test_*"]

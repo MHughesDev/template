@@ -28,7 +28,7 @@ Table mapping each script to its Make target and purpose:
 | `docs-generate.sh` | `make docs:generate` | Generate docs from source |
 | `docs-index.sh` | `make docs:index` | Update auto-index block in `docs/README.md` |
 | `queue-peek.sh` | `make queue:peek` | Raw CSV: header + first data row |
-| `queue-top-item.sh` | `make queue:top-item` | First open row as one JSON line (`queue_top_item.py`) |
+| `queue-top-item.sh` | `make queue:top-item` | First open row as one JSON line (`queue_top_item.py` → `dev_mcp.queue_ops`) |
 | `queue-validate.sh` | `make queue:validate` | Validate queue schema |
 | `queue-archive.sh` | `make queue:archive`, `make queue:archive-top` | Move row to archive by id, or archive top open row (no id) |
 | `queue-pr-merge.sh` | `make queue:pr-merge` | After `queue:archive` + `queue:validate` — `gh pr merge --merge --delete-branch` (optional `PR_NUMBER=`) |
@@ -56,7 +56,8 @@ Table mapping each script to its Make target and purpose:
 | `idea-to-queue.sh` | `make idea:queue` | Seed queue from idea.md |
 | `generate-env.sh` | `make env:generate` | Generate .env |
 | `inventory-check.sh` | `make inventory:check` | Verify spec-required files |
-| `queue_validate.py` | (via `queue-validate.sh`) | CSV schema validation |
+| `queue_top_item.py` | (via `queue-top-item.sh`) | First open row as JSON (`dev_mcp.queue_ops`) |
+| `queue_validate.py` | (via `queue-validate.sh`) | CSV schema validation (`dev_mcp.queue_ops`) |
 | `queue_archive.py` | (via `queue-archive.sh`) | Move queue row to archive |
 | `repo_self_audit.py` | (via `audit-self.sh`) | Lightweight audit runner |
 | `inventory_check.py` | (via `inventory-check.sh`) | Check IMPLEMENTATION_PLAN paths |

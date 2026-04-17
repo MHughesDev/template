@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the MicroFast development MCP server (stdio). Use from Cursor MCP config.
+# Run the MicroFast development MCP server (stdio). Prefer this path in Cursor MCP config.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"

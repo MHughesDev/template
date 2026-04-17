@@ -1,12 +1,12 @@
-# queue_ops/test_queue_ops.py
-"""Tests for shared queue CSV helpers."""
+# dev_mcp/queue_ops/test_queue_ops.py
+"""Tests for queue CSV helpers used by MCP and scripts."""
 
 from __future__ import annotations
 
 import csv
 from pathlib import Path
 
-from queue_ops import OPEN_FIELDS, load_open_rows, validate_open
+from dev_mcp.queue_ops import OPEN_FIELDS, load_open_rows, validate_open
 
 
 def test_load_open_rows_roundtrip(tmp_path: Path) -> None:

@@ -27,22 +27,23 @@ Queue CSV files are **read-only** through this server (same policy as [prompts/q
 After `pip install -e ".[dev]"` (or `./setup.sh`):
 
 ```bash
-./scripts/dev-mcp.sh
+./dev_mcp/run.sh
 ```
 
 Or: `make dev-mcp` (prints the command). The process speaks **stdio** MCP; configure your client to launch this command.
 
-**Cursor:** `.cursor/mcp.json` registers the `microfast-dev` server using `bash` and `${workspaceFolder}/scripts/dev-mcp.sh`.
+**Cursor:** `.cursor/mcp.json` registers the `microfast-dev` server using `bash` and `${workspaceFolder}/dev_mcp/run.sh`.
 
 ## 5.3.4 Implementation layout
 
 | Path | Role |
 |------|------|
-| `dev_mcp/` | FastMCP server (`server.py`, `__main__.py`) |
-| `queue_ops/` | Shared queue CSV logic (stdlib only; used by `scripts/queue_top_item.py`, `scripts/queue_validate.py`) |
+| `dev_mcp/server.py` | FastMCP server (tools, resources, prompts) |
+| `dev_mcp/run.sh` | Launcher for stdio MCP |
+| `dev_mcp/queue_ops/` | Queue CSV logic (stdlib only; used by MCP tools and `scripts/queue_top_item.py`, `scripts/queue_validate.py`) |
 
 ## 5.3.5 Validation checklist
 
 - [ ] `make lint`, `make typecheck`, `make test` pass
-- [ ] `./scripts/dev-mcp.sh` starts without import errors (Ctrl+C to exit)
+- [ ] `./dev_mcp/run.sh` starts without import errors (Ctrl+C to exit)
 - [ ] MCP client lists tools and resources for `microfast-dev`

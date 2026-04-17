@@ -9,7 +9,7 @@ from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
-from queue_ops import peek_queue_csv_head, top_item_json_line, validate_queue_files
+from dev_mcp.queue_ops import peek_queue_csv_head, top_item_json_line, validate_queue_files
 
 _HERE = Path(__file__).resolve()
 _REPO_ROOT = _HERE.parents[1]
