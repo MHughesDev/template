@@ -46,16 +46,16 @@ For **every** task, follow this sequence:
 1. Read **[README.md](README.md)** (repository map, quickstart, key resources — required for every agent session).
 2. Read this **[AGENTS.md](AGENTS.md)** completely (the authoritative agent contract).
 3. **Discover relevant docs (each turn):** use **semantic / vector similarity search**, **@** references, or your environment’s **codebase search** over this repository to surface **any** relevant **skills**, **`docs/procedures/`**, **`prompts/`**, **`docs/`**, or **rules** that match the user’s query or your current step — then **read** the best-matching files. Do not skip obvious procedures or skills because you only used keyword grep. See **section 16**.
-4. Read the task description or queue item. **For queue work:** run **`make queue:top-item`** first — stdout is **one line** of JSON with every column of the top open row in **`queue/queue.csv`** (`id`, `batch`, `phase`, `category`, `summary`, `dependencies`, `related_files`, `notes`, `created_date`). Parse it; **`summary`** is the contract.
-5. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`**.
+4. Read the task description or queue item. **For queue work:** run **`make queue:top-item`** first — stdout is **one line** of JSON with every column of the top open row in **`queue/queue.csv`** (`id`, `batch`, `phase`, `category`, `summary`, `agent_instructions`, `dependencies`, `related_files`, `notes`, `created_date`). Parse it; **`summary`** is the contract; follow **`agent_instructions`** when non-empty.
+5. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`** and **`queue/QUEUE_AGENT_PROMPT.md`**, and follow **`prompts/queue_worker_executor.md`** — implementation agents **do not** edit **`queue/queue.csv`** or **`queue/queuearchive.csv`** (operators own the ledger; see QUEUE_AGENT_PROMPT §Executor vs operator).
 6. **Mandatory — search `skills/` for relevant skills:** run `make skills:list` or read **`skills/README.md`**; scan titles and every **When to invoke** section; read every relevant skill in full **before** planning or writing code.
 7. Read relevant **`docs/procedures/`** for the task type.
 8. Read relevant source files and tests.
 9. **Plan** — files to touch, acceptance criteria, scope bounds, risks.
 10. **Implement** in small validated increments.
-11. **Validate** — `make lint`, `make fmt`, `make typecheck`, `make test`; if queue files changed, `make queue:validate`.
+11. **Validate** — `make lint`, `make fmt`, `make typecheck`, `make test`; if **you** changed queue CSV/docs as **operator**, `make queue:validate`.
 12. **Update documentation** if behavior or operational assumptions changed.
-13. **Update queue state** when finishing queue items (per `queue/QUEUE_INSTRUCTIONS.md`).
+13. **Queue state** — **implementation executors** do not edit `queue.csv` / `queuearchive.csv`; **operators** archive and validate per `queue/QUEUE_INSTRUCTIONS.md` after merge. Executors hand off with PR URL and evidence.
 14. **Hand off** — commands run with key output, files changed, PR link, risks, follow-ups.
 
 The mandatory skill search in step 6 is **non-negotiable** for every invocation (queue item, prompt template, Cursor command, manual instruction, or any other trigger). **Section 16** complements it: similarity-style search finds files the index alone might miss.
@@ -149,16 +149,17 @@ Update docs alongside code when:
 
 ## 9. Queue interaction rules
 
-Canonical reference: **`queue/QUEUE_INSTRUCTIONS.md`**.
+Canonical reference: **`queue/QUEUE_INSTRUCTIONS.md`**. Executor contract: **`prompts/queue_worker_executor.md`**.
 
 Summary:
 
 - The **top data row** of `queue/queue.csv` is the **active** work item for single-lane processing.
 - Read the **entire** top row — the summary is the contract and must be actionable without guesswork.
+- **Implementation agents** MUST **read** `QUEUE_INSTRUCTIONS.md` and **`queue/QUEUE_AGENT_PROMPT.md`** and MUST **not** edit **`queue/queue.csv`** or **`queue/queuearchive.csv`** or run **`make queue:archive-top`** / **`make queue:archive`** (operators own the ledger).
 - **Never delete** a queue row without archiving per procedure.
-- **Blocked** items stay in `queue.csv` with clear notes.
-- **Done** items move to **`queue/queuearchive.csv`** with status, completion metadata, and PR URL in notes as required.
-- Run **`make queue:validate`** after any queue file change.
+- **Blocked** items stay in `queue.csv` with clear notes (updated by **operators**; executors document blockers in PR/issue/handoff).
+- **Done** items move to **`queue/queuearchive.csv`** with status, completion metadata, and PR URL in notes as required (**operator** action).
+- Run **`make queue:validate`** after any queue CSV change (**operators**).
 - Use **`make queue:top-item`** for the active item as **one JSON line** (all columns). Use **`make queue:peek`** for raw CSV lines (header + first row).
 - If two writers collide: stop, re-validate, reconcile using **`main`** as the integration truth.
 
@@ -201,6 +202,7 @@ Document in the PR or queue notes: what is unclear, options, what information is
 - Never commit secrets, credentials, API keys, or tokens.
 - Never bypass CI (`--no-verify`), force-push to `main`, or push directly to `main`.
 - Never delete queue rows without archiving per lifecycle rules.
+- Never edit **`queue/queue.csv`** or **`queue/queuearchive.csv`** as a **queue implementation executor** — use **`prompts/queue_worker_executor.md`**; operators update the ledger.
 - Never silently expand scope.
 - Never run ad hoc shell when a canonical **`make`** target exists.
 - Never use **`os.getenv()`** outside **`apps/api/src/config.py`** (single Settings object).

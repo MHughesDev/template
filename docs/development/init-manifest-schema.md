@@ -65,7 +65,7 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 - **`meta`**: `init_manifest_hash` is computed by the parser (omit when hand-drafting; parser fills it).
 - **`archetype`**: `saas_product` turns on web, multi-tenancy, workers, scheduled jobs, file storage, email, billing, analytics by default in `ARCHETYPE_DEFAULTS`; explicit `[x] no` in §5 overrides.
 - **`resolved_decisions.compose_services`**: Logical services the orchestrator activates — `api` always; `db` when Postgres; `redis`+`worker` when workers profile applies; `nginx` when web frontend applies.
-- **`queue_seed_rows`**: Each object must match `queue/queue.csv` columns (including **`related_files`**: comma-separated repo-relative paths, or empty); `summary` must be empty or ≥ 100 characters for `make queue:validate`.
+- **`queue_seed_rows`**: Each object must match `queue/queue.csv` columns (including **`agent_instructions`** and **`related_files`**; both may be empty strings); `summary` must be empty or ≥ 100 characters for `make queue:validate`.
 
 ```json
 {
@@ -157,7 +157,9 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
         "phase": "1",
         "category": "core-api",
         "summary": "Implement tenant-scoped Customer CRUD in apps/api/src/customers/: models with TenantMixin, repository, service, router, Pydantic schemas, and pytest coverage. Acceptance: list/create/get return correct HTTP status codes; integration test proves row-level isolation between tenants.",
+        "agent_instructions": "1) Scaffold module per module-patterns. 2) Add migrations and tests.",
         "dependencies": "",
+        "related_files": "",
         "notes": "seeded from init-manifest",
         "created_date": "2026-04-15"
       },
@@ -167,7 +169,9 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
         "phase": "2",
         "category": "billing",
         "summary": "Wire Stripe webhooks in packages/billing: verify signatures, persist subscription state, idempotent event handling. Acceptance: webhook tests with stripe-cli fixtures; invalid signature returns 400.",
+        "agent_instructions": "",
         "dependencies": "IDEA-001",
+        "related_files": "",
         "notes": "seeded from init-manifest",
         "created_date": "2026-04-15"
       }

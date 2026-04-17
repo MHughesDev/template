@@ -10,7 +10,7 @@ Invariants for **`queue/queue.csv`** and **`queue/queuearchive.csv`**. Canonical
 
 ## Schema
 
-1. **`queue.csv`** header (order): **`id,batch,phase,category,summary,dependencies,related_files,notes,created_date`** (adjust only if **`queue-validate`** and docs agree).
+1. **`queue.csv`** header (order): **`id,batch,phase,category,summary,agent_instructions,dependencies,related_files,notes,created_date`** (adjust only if **`queue-validate`** and docs agree).
 2. **`queuearchive.csv`** includes the same columns **plus** **`status`** and **`completed_date`**.
 3. **`id`**: unique; prefer stable IDs such as **`Q-001`**.
 4. **`category`**: must match **`docs/queue/queue-categories.md`**.
@@ -25,6 +25,10 @@ Invariants for **`queue/queue.csv`** and **`queue/queuearchive.csv`**. Canonical
 2. **Blocked** rows stay in **`queue.csv`** with explicit **`notes`**.
 3. **Done / cancelled / superseded** rows move to **`queuearchive.csv`** with **`status`** and dates — **append-only** archive.
 4. Never **delete** a row without an archived copy when the lifecycle requires retention.
+
+## Executor agents (implementation)
+
+Agents implementing queue items MUST follow **`prompts/queue_worker_executor.md`**: **read** `QUEUE_INSTRUCTIONS.md` and `QUEUE_AGENT_PROMPT.md`, use **`make queue:top-item`**, **never** edit **`queue.csv`** or **`queuearchive.csv`**, **never** run **`make queue:archive-top`** / **`make queue:archive`**. **Human operators** (or designated automation) perform CSV updates and archive commands.
 
 ## Branches and PRs
 

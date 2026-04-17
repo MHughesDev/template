@@ -13,6 +13,7 @@ OPEN_HEADER = [
     "phase",
     "category",
     "summary",
+    "agent_instructions",
     "dependencies",
     "related_files",
     "notes",

@@ -29,9 +29,10 @@ Table defining each column in queue.csv:
 | phase | string | no | Phase within batch for ordering (e.g., "1", "2") |
 | category | string | yes | Work category — must be in docs/queue/queue-categories.md |
 | summary | string | yes | Elaborative work contract ≥100 chars. Must include: goal, acceptance criteria, definition of done, out-of-scope, dependencies |
+| agent_instructions | string | no | Instructions for the **implementation executor** (see `prompts/queue_worker_executor.md`): numbered steps for sequence, or bullets/prose if order-free. Empty if none. |
 | dependencies | string | no | Comma-separated IDs of items that must be done before this one |
 | related_files | string | no | Comma-separated repo-relative paths (code and docs) the agent MUST read before completing the item; use quoted CSV fields if paths contain commas |
-| notes | string | no | Agent notes: blockers, in-progress branch, PR URLs, completion info |
+| notes | string | no | Operator notes: blockers, in-progress branch, PR URLs, completion info (executors do not edit) |
 | created_date | date | yes | ISO 8601 date (YYYY-MM-DD) |
 
 Archive-only columns:
@@ -62,7 +63,7 @@ Rules for single-lane processing:
 How to claim a queue item:
 1. Run **`make queue:top-item`** — stdout is **one line** of JSON with the full top row (all columns). Parse it; **`summary`** is the contract. Optional: `make queue:peek` for raw CSV (header + first data row).
 2. Verify dependencies met (all IDs in queuearchive.csv with status=done)
-3. Read every path in `related_files` (split on commas; trim whitespace) before implementation and again before PR/handoff — treat as mandatory context alongside the summary
+3. Read every path in `related_files` (split on commas; trim whitespace) before implementation and again before PR/handoff — treat as mandatory context alongside the summary. Read **`agent_instructions`** (if non-empty) and follow it together with the summary.
 4. Create branch: `git checkout -b queue/<id>-short-slug`
 5. Update notes column (optional but recommended): "in_progress | branch: queue/<id>-slug"
 6. Run mandatory skill search before starting implementation

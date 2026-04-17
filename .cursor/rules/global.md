@@ -32,7 +32,7 @@ Universal constraints for **every** agent session: commits, scope, evidence, fil
 ## Evidence and handoff
 
 1. PR descriptions include: **commands run** (with key output), **files changed**, **tests/docs** updates, **risks**.
-2. Queue **notes** updated before archive (PR URL, completion metadata per SOP).
+2. Queue **notes** (in `queue.csv`) are updated by a **human operator** before archive — implementation agents put PR URL and evidence in the **PR body** and **handoff**; see **`prompts/queue_worker_executor.md`**.
 3. If CI fails, paste **failure output** — do not only say "CI failed".
 4. After deploy or migration, capture **health check** output when relevant.
 5. Architectural decisions need an **ADR** and a link in the PR.
@@ -59,7 +59,7 @@ Universal constraints for **every** agent session: commits, scope, evidence, fil
 3. Note **machinery** (`.py` next to `.md`) as optional automation.
 4. For broad tasks, use **`prompts/skill_searcher.md`** as a subroutine.
 5. **Do not** start planning or implementation until this step is done.
-6. Record which skills you used in the PR or queue notes.
+6. Record which skills you used in the PR (or operator-pasted queue notes).
 7. Missing skill for a **recurring** pattern → add or extend a skill (see **`docs/procedures/update-or-create-skill.md`**).
 
 ## Semantic discovery of docs (spec §4.1 — see AGENTS.md §16)
@@ -88,3 +88,4 @@ Universal constraints for **every** agent session: commits, scope, evidence, fil
 10. No skipping the **mandatory skill search** or **semantic discovery** (AGENTS.md §13 and §16).
 11. No **`print()`** for production logging (use **`logging`**).
 12. No cross-request mutable globals — use request-scoped dependencies.
+13. **Queue executor agents** MUST NOT edit **`queue/queue.csv`** or **`queue/queuearchive.csv`** or run **`make queue:archive-top`** / **`make queue:archive`** as part of implementation work — use **`prompts/queue_worker_executor.md`**. Operators own the ledger.

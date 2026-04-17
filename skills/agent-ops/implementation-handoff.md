@@ -22,12 +22,12 @@ One paragraph. A handoff document is the evidence artifact that makes the next a
 
 - Implementation complete or explicitly blocked
 - All validation commands run (make lint, make typecheck, make test, or noting which failed)
-- Queue notes updated
+- Queue notes (operator updates CSV — executors do not)
 - PR opened (or in progress)
 
 ## Relevant Files/Areas
 
-- `queue/queue.csv` — notes column to update
+- `queue/queue.csv` — notes column (operators only; executors use PR + handoff)
 - `queue/queuearchive.csv` — where completed row goes
 - `.github/PULL_REQUEST_TEMPLATE.md` — the PR template this populates
 - `skills/agent-ops/handoff-template-generator.py` — machinery to auto-populate from git
@@ -42,7 +42,7 @@ Numbered steps:
 5. **Risks**: list any residual risks discovered during implementation
 6. **Follow-ups**: list any out-of-scope findings that became queue items or issues
 7. **PR link**: paste the PR URL
-8. **Queue state**: confirm the queue row's notes column has been updated with PR URL
+8. **Queue state**: for executors, list operator steps to archive; operators update notes / archive CSV
 
 ## Command Examples
 
