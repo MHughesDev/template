@@ -80,7 +80,7 @@ The mandatory skill search in step 7 is **non-negotiable** for every invocation 
 - PR **descriptions** should follow **`.github/PULL_REQUEST_TEMPLATE.md`**.
 - Include **evidence**: commands run (with key output), files changed, risks.
 
-**After merge:** Delete the **feature branch** on the remote (and locally) so the next run starts from a fresh branch off `main`. Do not accumulate long-lived agent branches.
+**After merge:** Land work on **`main`** only via pull request — **merge the PR into `main`** (integrate your feature branch into `main` through the PR; do not leave the fix only on a feature branch). Immediately **delete the feature branch** on the **remote** and **locally** (`git branch -d <branch>` after fetch) so the next run starts from a fresh branch off `main`. Use **`make queue:pr-merge`** when your workflow already follows queue archive + validate and you use GitHub CLI. Do not accumulate long-lived agent branches.
 
 **Branch protection:** `main` is protected — no direct push; changes land via PR and review.
 
@@ -308,7 +308,7 @@ Prefer **`make`** targets over ad hoc commands. See the **Makefile** for the ful
 
 ### Handoff format
 
-Include: files changed, commands run with key output, PR link, residual risks, follow-up issues or queue items.
+Include: files changed, commands run with key output, PR link, residual risks, follow-up issues or queue items. After the PR is merged into **`main`**, confirm **remote and local feature branch deletion** (or that you used automation that deletes them).
 
 ### After any meaningful change
 
