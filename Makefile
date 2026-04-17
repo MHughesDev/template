@@ -28,7 +28,7 @@ dev:
 
 ## dev-mcp: how to run the MicroFast dev MCP server (stdio)
 dev-mcp:
-	@echo "MicroFast dev MCP (stdio for Cursor / Claude / Codex): ./scripts/dev-mcp.sh"
+	@echo "MicroFast dev MCP (stdio for Cursor / Claude / Codex): ./dev_mcp/run.sh"
 	@echo "Repo config: .cursor/mcp.json"
 
 ## lint: Ruff lint

@@ -2,7 +2,7 @@
   "mcpServers": {
     "microfast-dev": {
       "command": "bash",
-      "args": ["${workspaceFolder}/scripts/dev-mcp.sh"],
+      "args": ["${workspaceFolder}/dev_mcp/run.sh"],
       "env": {}
     }
   }

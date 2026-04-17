@@ -21,7 +21,7 @@
 2. Read **[AGENTS.md](AGENTS.md)** completely — it is the **authoritative** policy for workflow, hierarchy, validation, and handoff. Re-read **`AGENTS.md`** whenever policy is unclear or you are merging or handing off work.
 3. Follow the mandatory skill search in **`AGENTS.md`** section 13 (`skills/README.md` or `make skills:list`).
 4. Land changes via **pull request**; after **merge**, **delete the feature branch** (remote and local).
-5. **Optional — MicroFast dev MCP:** enable the `microfast-dev` MCP server in Cursor (`.cursor/mcp.json`) or run `./scripts/dev-mcp.sh` for stdio clients. It exposes queue helpers, `AGENTS.md` / skills index as resources, and canonical `make` targets — see [docs/procedures/microfast-dev-mcp.md](docs/procedures/microfast-dev-mcp.md).
+5. **Optional — MicroFast dev MCP:** enable the `microfast-dev` MCP server in Cursor (`.cursor/mcp.json`) or run `./dev_mcp/run.sh` for stdio clients. It exposes queue helpers, `AGENTS.md` / skills index as resources, and canonical `make` targets — see [docs/procedures/microfast-dev-mcp.md](docs/procedures/microfast-dev-mcp.md).
 
 ---
 

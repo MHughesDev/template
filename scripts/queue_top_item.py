@@ -7,7 +7,7 @@ import json
 import sys
 from pathlib import Path
 
-from queue_ops import OPEN_FIELDS, load_open_rows
+from dev_mcp.queue_ops import OPEN_FIELDS, load_open_rows
 
 
 def main() -> int:
