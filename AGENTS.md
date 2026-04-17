@@ -1,6 +1,8 @@
 # AGENTS.md
 
-Root agent control plane. This is the default policy surface for all agents operating in this repository. It defines mission, instruction hierarchy, required workflows, validation, queue interaction, escalation, and anti-patterns. **Read this file before any other.** Per [spec/spec.md](spec/spec.md) section 4 — sections 1–14 below are all required.
+Root agent control plane. This is the default policy surface for all agents operating in this repository. It defines mission, instruction hierarchy, required workflows, validation, queue interaction, escalation, and anti-patterns. **Read [README.md](README.md) first for repository orientation, then read this file (`AGENTS.md`) completely before any other policy or code.** Per [spec/spec.md](spec/spec.md) section 4 — sections 1–14 below are all required.
+
+**Standing requirement:** Consult **`AGENTS.md` again** whenever the instruction hierarchy is unclear, a task touches policy (branch/PR, queue, security, docs), or you are about to **merge** or **hand off** — do not rely on memory from an earlier read.
 
 **Authoritative specification:** [spec/spec.md](spec/spec.md) (canonical full specification).
 
@@ -41,20 +43,21 @@ When instructions conflict, resolve in this order (higher overrides lower):
 
 For **every** task, follow this sequence:
 
-1. Read this **AGENTS.md** completely.
-2. Read the task description or queue item.
-3. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`**.
-4. **Mandatory — search `skills/` for relevant skills:** run `make skills:list` or read **`skills/README.md`**; scan titles and every **When to invoke** section; read every relevant skill in full **before** planning or writing code.
-5. Read relevant **`docs/procedures/`** for the task type.
-6. Read relevant source files and tests.
-7. **Plan** — files to touch, acceptance criteria, scope bounds, risks.
-8. **Implement** in small validated increments.
-9. **Validate** — `make lint`, `make fmt`, `make typecheck`, `make test`; if queue files changed, `make queue:validate`.
-10. **Update documentation** if behavior or operational assumptions changed.
-11. **Update queue state** when finishing queue items (per `queue/QUEUE_INSTRUCTIONS.md`).
-12. **Hand off** — commands run with key output, files changed, PR link, risks, follow-ups.
+1. Read **[README.md](README.md)** (repository map, quickstart, key resources — required for every agent session).
+2. Read this **[AGENTS.md](AGENTS.md)** completely (the authoritative agent contract).
+3. Read the task description or queue item.
+4. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`**.
+5. **Mandatory — search `skills/` for relevant skills:** run `make skills:list` or read **`skills/README.md`**; scan titles and every **When to invoke** section; read every relevant skill in full **before** planning or writing code.
+6. Read relevant **`docs/procedures/`** for the task type.
+7. Read relevant source files and tests.
+8. **Plan** — files to touch, acceptance criteria, scope bounds, risks.
+9. **Implement** in small validated increments.
+10. **Validate** — `make lint`, `make fmt`, `make typecheck`, `make test`; if queue files changed, `make queue:validate`.
+11. **Update documentation** if behavior or operational assumptions changed.
+12. **Update queue state** when finishing queue items (per `queue/QUEUE_INSTRUCTIONS.md`).
+13. **Hand off** — commands run with key output, files changed, PR link, risks, follow-ups.
 
-The mandatory skill search in step 4 is **non-negotiable** for every invocation (queue item, prompt template, Cursor command, manual instruction, or any other trigger).
+The mandatory skill search in step 5 is **non-negotiable** for every invocation (queue item, prompt template, Cursor command, manual instruction, or any other trigger).
 
 ---
 
@@ -74,6 +77,8 @@ The mandatory skill search in step 4 is **non-negotiable** for every invocation 
 - Queue-driven PR **titles** should reference the queue ID when applicable.
 - PR **descriptions** should follow **`.github/PULL_REQUEST_TEMPLATE.md`**.
 - Include **evidence**: commands run (with key output), files changed, risks.
+
+**After merge:** Delete the **feature branch** on the remote (and locally) so the next run starts from a fresh branch off `main`. Do not accumulate long-lived agent branches.
 
 **Branch protection:** `main` is protected — no direct push; changes land via PR and review.
 

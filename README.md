@@ -15,6 +15,15 @@
 
 ---
 
+## For coding agents (required every session)
+
+1. Read this **README.md** (you are here) for orientation, structure, and commands.
+2. Read **[AGENTS.md](AGENTS.md)** completely — it is the **authoritative** policy for workflow, hierarchy, validation, and handoff. Re-read **`AGENTS.md`** whenever policy is unclear or you are merging or handing off work.
+3. Follow the mandatory skill search in **`AGENTS.md`** section 13 (`skills/README.md` or `make skills:list`).
+4. Land changes via **pull request**; after **merge**, **delete the feature branch** (remote and local).
+
+---
+
 ## ✨ What you get
 
 | | Feature |

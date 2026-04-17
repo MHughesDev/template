@@ -5,6 +5,11 @@
 
 <!-- One paragraph: what this PR does and why -->
 
+## Agent onboarding (required)
+
+- [ ] I read **[README.md](../README.md)** this session.
+- [ ] I read **[AGENTS.md](../AGENTS.md)** this session (and again before merge if policy or handoff details apply).
+
 ## Queue Item ID (if applicable)
 
 <!-- Queue ID: Q-XXX — link to queue row or queuearchive entry -->
@@ -64,3 +69,4 @@ $ make audit:self
 - [ ] No scope creep (all changes are in the planned file list)
 - [ ] Docs updated where applicable
 - [ ] Queue item archived (or link to archive step)
+- [ ] After merge: delete this PR’s feature branch (remote and local per [AGENTS.md](../AGENTS.md) section 4)

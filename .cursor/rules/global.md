@@ -5,7 +5,12 @@ description: Universal constraints applied to every agent interaction in this re
 
 # .cursor/rules/global.md
 
-Universal constraints for **every** agent session: commits, scope, evidence, file title comments (spec §1.7), mandatory skill search (spec §4.1 item 13), and forbidden patterns. See **[AGENTS.md](../../AGENTS.md)**, **[PYTHON_PROCEDURES.md](../../PYTHON_PROCEDURES.md)**, and **`scripts/audit-self.sh`**.
+Universal constraints for **every** agent session: commits, scope, evidence, file title comments (spec §1.7), mandatory skill search (spec §4.1 item 13), and forbidden patterns. See **[README.md](../../README.md)** (orientation first), **[AGENTS.md](../../AGENTS.md)** (authoritative contract — read at **start of every task** and **again** before merge or when policy is unclear), **[PYTHON_PROCEDURES.md](../../PYTHON_PROCEDURES.md)**, and **`scripts/audit-self.sh`**.
+
+## Mandatory reads (every session)
+
+1. **[README.md](../../README.md)** — repository map, quickstart, essential commands.
+2. **[AGENTS.md](../../AGENTS.md)** — full policy; do not skip. Consult it again before **merge**, **handoff**, or whenever instructions conflict.
 
 ## Commit standards
 
