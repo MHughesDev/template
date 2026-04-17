@@ -13,6 +13,7 @@ from starlette.requests import Request
 from apps.api.src.auth.router import router as auth_router
 from apps.api.src.config import Settings, get_settings
 from apps.api.src.database import dispose_engine
+
 # SCAFFOLD: module imports — do not remove this line
 from apps.api.src.example.router import router as example_router
 from apps.api.src.exceptions import AppError
