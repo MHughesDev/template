@@ -1,11 +1,19 @@
-# docs/README.md
+---
+doc_id: "18.0"
+title: "Docs overview"
+section: "Root"
+summary: "Documentation hub. Index of all doc sections with one-line descriptions and links."
+updated: "2026-04-17"
+---
+
+# 18.0 — Docs overview
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: README.md (root), AGENTS.md §Navigation -->
 
 **Purpose:** Documentation hub. Index of all doc sections with one-line descriptions and links. Per spec §26.5 item 111.
 
-## Documentation Structure
+## 18.0.1 Documentation Structure
 
 Ordered list of every docs/ subdirectory with description and link to its README. Grouped by purpose:
 
@@ -41,7 +49,7 @@ Ordered list of every docs/ subdirectory with description and link to its README
 
 <!-- AUTO_INDEX_START -->
 
-## Auto-generated index
+## 18.0.2 Auto-generated index
 
 _Machine listing of top-level docs paths — see sections above for curated descriptions._
 

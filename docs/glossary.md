@@ -1,15 +1,23 @@
-# docs/glossary.md
+---
+doc_id: "18.1"
+title: "glossary"
+section: "Root"
+summary: "Ubiquitous language and domain glossary. Defines terms used consistently across spec, code, and documentation."
+updated: "2026-04-17"
+---
+
+# 18.1 — glossary
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §Navigation, docs/README.md -->
 
 **Purpose:** Ubiquitous language and domain glossary. Defines terms used consistently across spec, code, and documentation. Per spec §26.12 item 374.
 
-## Purpose
+## 18.1.1 Purpose
 
 This glossary is the single source of truth for term definitions in this repository. Agents and humans use these definitions when writing code, docs, and specs. Ambiguous terms are resolved here, not ad hoc.
 
-## Core Repository Terms
+## 18.1.2 Core Repository Terms
 
 Table of repository-specific terms. Columns: Term, Definition, Used In. Rows:
 
@@ -30,7 +38,7 @@ Table of repository-specific terms. Columns: Term, Definition, Used In. Rows:
 | **Handoff** | The evidence document produced when completing or blocking work | docs/procedures/handoff.md |
 | **Ratchet** | A mechanism that only allows coverage floor to increase, never decrease | docs/quality/coverage-policy.md |
 
-## Domain Model Terms (Placeholder)
+## 18.1.3 Domain Model Terms (Placeholder)
 
 Table for project-specific domain terms. Columns: Term, Definition, Module.
 Note: This section is populated during initialization from idea.md §4 domain model. Initialization agent fills in entity definitions here.
@@ -39,7 +47,7 @@ Note: This section is populated during initialization from idea.md §4 domain mo
 |------|-----------|--------|
 | _(filled during initialization)_ | | |
 
-## Technical Terms
+## 18.1.4 Technical Terms
 
 Table of technical abbreviations and concepts used in code comments and docs. Rows:
 - DAG: Directed Acyclic Graph — used in queue intelligence dependency resolution
