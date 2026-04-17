@@ -3,8 +3,12 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
+from uuid import uuid4
+
 import pytest
 from httpx import AsyncClient
+from jose import jwt
 
 
 @pytest.mark.asyncio
@@ -98,3 +102,100 @@ async def test_logout_revokes_refresh_token(client: AsyncClient) -> None:
 
     reuse = await client.post("/api/v1/auth/refresh", json={"refresh_token": tokens["refresh_token"]})
     assert reuse.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_register_password_all_letters_returns_422(client: AsyncClient) -> None:
+    response = await client.post(
+        "/api/v1/auth/register",
+        json={"email": "weak-pass@example.com", "password": "abcdefgh"},
+    )
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_examples_without_auth_returns_401(client: AsyncClient) -> None:
+    response = await client.get("/api/v1/examples/")
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_access_expired_jwt_returns_401(client: AsyncClient) -> None:
+    claims = {
+        "sub": str(uuid4()),
+        "exp": datetime.now(UTC) - timedelta(hours=1),
+        "iat": datetime.now(UTC) - timedelta(hours=2),
+    }
+    token = jwt.encode(
+        claims,
+        "test-jwt-secret-key-for-ci-only",
+        algorithm="HS256",
+    )
+    response = await client.get(
+        "/api/v1/examples/",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_access_malformed_jwt_returns_401(client: AsyncClient) -> None:
+    response = await client.get(
+        "/api/v1/examples/",
+        headers={"Authorization": "Bearer not-a-valid-jwt"},
+    )
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_access_jwt_wrong_signing_key_returns_401(client: AsyncClient) -> None:
+    claims = {
+        "sub": str(uuid4()),
+        "exp": datetime.now(UTC) + timedelta(hours=1),
+        "iat": datetime.now(UTC),
+    }
+    token = jwt.encode(claims, "different-secret-than-settings", algorithm="HS256")
+    response = await client.get(
+        "/api/v1/examples/",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_access_jwt_invalid_sub_claim_returns_401(client: AsyncClient) -> None:
+    claims = {
+        "sub": "not-a-valid-uuid",
+        "exp": datetime.now(UTC) + timedelta(hours=1),
+        "iat": datetime.now(UTC),
+    }
+    token = jwt.encode(
+        claims,
+        "test-jwt-secret-key-for-ci-only",
+        algorithm="HS256",
+    )
+    response = await client.get(
+        "/api/v1/examples/",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_access_jwt_unknown_user_returns_401(client: AsyncClient) -> None:
+    unknown_id = uuid4()
+    claims = {
+        "sub": str(unknown_id),
+        "exp": datetime.now(UTC) + timedelta(hours=1),
+        "iat": datetime.now(UTC),
+    }
+    token = jwt.encode(
+        claims,
+        "test-jwt-secret-key-for-ci-only",
+        algorithm="HS256",
+    )
+    response = await client.get(
+        "/api/v1/examples/",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 401
