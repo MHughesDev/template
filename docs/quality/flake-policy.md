@@ -1,10 +1,18 @@
-# docs/quality/flake-policy.md
+---
+doc_id: "11.2"
+title: "flake policy"
+section: "Quality"
+summary: "Flaky test policy — detection, quarantine, fix SLA, and root cause tracking."
+updated: "2026-04-17"
+---
+
+# 11.2 — flake policy
 
 <!-- Per spec §26.5 items 183-186 -->
 
 **Purpose:** Flaky test policy — detection, quarantine, fix SLA, and root cause tracking.
 
-## Definition
+## 11.2.1 Definition
 
 A **flaky test** passes on some runs and fails on others without any code change. Flaky tests:
 - Erode trust in CI — teams begin ignoring red builds.
@@ -13,7 +21,7 @@ A **flaky test** passes on some runs and fails on others without any code change
 
 Zero tolerance: every flaky test is a P1 defect against the test itself.
 
-## Detection
+## 11.2.2 Detection
 
 ### Automated detection
 
@@ -39,7 +47,7 @@ When CI re-running fixes the failure: open a tracking issue immediately before m
 
 Run the detector weekly (or gate on it in CI). Add to the queue as a recurring maintenance item.
 
-## Quarantine
+## 11.2.3 Quarantine
 
 When a flaky test is identified:
 
@@ -56,7 +64,7 @@ When a flaky test is identified:
 
 Do not quarantine more than 3 tests at once. If more than 3 tests are simultaneously flaky, stop feature work and fix them.
 
-## Fix SLA
+## 11.2.4 Fix SLA
 
 | Priority | Failure rate | SLA |
 |----------|-------------|-----|
@@ -66,7 +74,7 @@ Do not quarantine more than 3 tests at once. If more than 3 tests are simultaneo
 
 The quarantine `@pytest.mark.skip` **must be removed** when the fix is merged. Never leave a skipped test indefinitely.
 
-## Root cause categories
+## 11.2.5 Root cause categories
 
 Track the root cause in the issue to improve test design:
 
@@ -80,7 +88,7 @@ Track the root cause in the issue to improve test design:
 | **Fixture leak** | Session-scoped fixture modified inside a function-scoped test | Mark fixtures with correct scope; use `autouse=True` teardown |
 | **Coverage randomness** | `random` without seed | `random.seed(42)` in fixture or use deterministic data |
 
-## Metrics to track
+## 11.2.6 Metrics to track
 
 After each quarter, review:
 - Number of flaky tests detected

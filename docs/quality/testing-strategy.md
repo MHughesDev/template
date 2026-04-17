@@ -1,10 +1,18 @@
-# docs/quality/testing-strategy.md
+---
+doc_id: "11.3"
+title: "testing strategy"
+section: "Quality"
+summary: "Testing strategy — pyramid, what to test at each level, when to add tests, and coverage policy."
+updated: "2026-04-17"
+---
+
+# 11.3 — testing strategy
 
 <!-- Per spec §11.2 and §26.5 -->
 
 **Purpose:** Testing strategy — pyramid, what to test at each level, when to add tests, and coverage policy.
 
-## Testing pyramid
+## 11.3.1 Testing pyramid
 
 This project uses a three-layer pyramid. Each layer has a specific job; do not blur the boundaries.
 
@@ -54,7 +62,7 @@ async def test_create_invoice_returns_201(client: AsyncClient, auth_headers: dic
 **How:** Real HTTP against the deployed service. Minimal — should complete in < 30 s.
 **Location:** `apps/api/tests/test_smoke.py`
 
-## Running tests
+## 11.3.2 Running tests
 
 ```bash
 make test                    # all tests with coverage
@@ -63,21 +71,21 @@ make test-integration        # integration tests only
 make test-smoke              # smoke tests only
 ```
 
-## Coverage policy
+## 11.3.3 Coverage policy
 
 - **Floor:** 55% (enforced in `pyproject.toml` `[tool.coverage.report] fail_under`).
 - **Target:** 70% — tracked in `queue/queue.csv` (Q-003).
 - **Ratchet:** `make coverage-ratchet` reads `coverage.xml` and compares to the floor. Never lower the floor.
 - **Exclusions:** `skills/`, `packages/ai/`, `scripts/` (tools, not application logic).
 
-## What NOT to test
+## 11.3.4 What NOT to test
 
 - External API responses (mock them; test your handling of responses).
 - Framework internals (FastAPI routing, SQLAlchemy ORM internals).
 - Generated migration files (covered by `make ci-migrate-dry-run`).
 - `# pragma: no cover` — use sparingly and only for unreachable defensive paths.
 
-## Test file conventions
+## 11.3.5 Test file conventions
 
 | File | Marker | Scope |
 |------|--------|-------|
@@ -87,14 +95,14 @@ make test-smoke              # smoke tests only
 | `test_smoke.py` | `smoke` | Post-deploy health check |
 | `conftest.py` | — | Fixtures (no tests) |
 
-## Fixtures
+## 11.3.6 Fixtures
 
 - **`client`** — `AsyncClient` backed by in-memory SQLite + migrated schema. Defined in `apps/api/tests/conftest.py`.
 - **`auth_headers`** — JWT bearer token for a test user.
 - **`tenant_headers`** — JWT with `tenant_id` claim for multi-tenancy tests.
 - Module-local fixtures go in `apps/api/src/<module>/tests/conftest.py`.
 
-## When to add a test
+## 11.3.7 When to add a test
 
 Add a test when:
 1. You add a new route (at minimum: happy path + 401/403 without auth).
