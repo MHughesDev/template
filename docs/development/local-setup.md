@@ -40,6 +40,7 @@ Run `make help` for the full list. Common targets:
 | `make docker-down` / `make docker:down` | `docker compose down` |
 | `make skills-list` / `make skills:list` | List skills by category |
 | `make queue-peek` / `make queue:peek` | Read queue header + first row |
+| `make queue-pr-merge` / `make queue:pr-merge` | Merge open PR (`gh pr merge --merge --delete-branch`; optional `PR_NUMBER=`) |
 | `make queue-validate` / `make queue:validate` | Validate `queue/queue.csv` |
 | `make audit-self` / `make audit:self` | Repo self-audit |
 | `make docs-check` / `make docs:check` | Documentation link check |

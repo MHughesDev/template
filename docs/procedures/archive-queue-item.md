@@ -20,18 +20,20 @@ PR merged (for done items). Queue item ID known. queuearchive.csv exists with co
 
 ## Exact Commands
 
+- **`make queue:pr-merge`** — runs `gh pr merge --merge --delete-branch` for the open PR (requires [GitHub CLI](https://cli.github.com/) and `gh auth login`). Run from the PR branch, or set `PR_NUMBER=<n>` if you are on another branch. Use this to merge and delete the remote head branch before archiving the CSV row.
 - **`make queue:archive-top`** — archives the **top** (first) open row; no `QUEUE_ID` (preferred when that row is the completed item — less token use).
 - `make queue:archive QUEUE_ID=<id>` (scripted move by id) or manual CSV editing, then `make queue:validate`.
 
 ## Ordered Steps
 
-1. Verify the PR is merged and all acceptance criteria confirmed
-2. Run **`make queue:archive-top`** (if the completed item is the top open row) **or** `make queue:archive QUEUE_ID=<id>` — scripted move from queue.csv to queuearchive.csv
+1. Verify CI is green and all acceptance criteria confirmed; get PR approval per team policy
+2. Merge the PR: run **`make queue:pr-merge`** (or merge in the GitHub UI), then confirm the change is on `main`
+3. Run **`make queue:archive-top`** (if the completed item is the top open row) **or** `make queue:archive QUEUE_ID=<id>` — scripted move from queue.csv to queuearchive.csv
    OR manually: copy the full row from queue.csv to queuearchive.csv, add status, completed_date, PR URL
-3. Verify in queuearchive.csv: row has status=done, completed_date=YYYY-MM-DD, PR URL in notes
-4. Remove the row from queue.csv
-5. Run `make queue:validate` — must pass with no errors
-6. Run `make queue:peek` — verify next item is now the top row
+4. Verify in queuearchive.csv: row has status=done, completed_date=YYYY-MM-DD, PR URL in notes
+5. Remove the row from queue.csv
+6. Run `make queue:validate` — must pass with no errors
+7. Run `make queue:peek` — verify next item is now the top row
 
 ## Expected Artifacts / Outputs
 
