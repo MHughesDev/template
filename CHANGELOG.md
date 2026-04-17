@@ -8,6 +8,8 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Added
 
+- **AGENTS.md §16 — Semantic discovery** — agents must use vector/similarity search (or equivalent) each turn to find relevant skills, procedures, prompts, and docs for the user query; complements mandatory skill index search. §3 workflow includes a discovery step. `spec/spec.md` §4.1 updated with items 15–16.
+
 - **`make queue:archive-top`** — archives the first (top) open row in `queue/queue.csv` without passing `QUEUE_ID` (`scripts/queue_archive.py --top`). Documented in queue agent SOP for token-efficient completion workflows.
 - **Queue CSV `related_files` column** — between `dependencies` and `notes`; comma-separated repo-relative paths agents must read before completing an item. Validators (`scripts/queue_validate.py`), archive script, queue seeder, idea-parser manifest rows, and docs (`queue/QUEUE_INSTRUCTIONS.md`, `queue/QUEUE_AGENT_PROMPT.md`, `.cursor/rules/queue.md`) updated; conflict detection uses `summary` + `related_files`.
 - **MCP integration** — optional `fastapi-mcp` mount at `/mcp`, custom `mcp_health_check` OpenAPI tool under `/mcp-tools/health_check`, procedure [docs/procedures/add-mcp-tool.md](docs/procedures/add-mcp-tool.md), and lockfile pins for the new dependency tree.

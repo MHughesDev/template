@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Root agent control plane. This is the default policy surface for all agents operating in this repository. It defines mission, instruction hierarchy, required workflows, validation, queue interaction, escalation, and anti-patterns. **Read this file before any other.** Per [spec/spec.md](spec/spec.md) section 4 — sections 1–14 below are all required.
+Root agent control plane. This is the default policy surface for all agents operating in this repository. It defines mission, instruction hierarchy, required workflows, validation, queue interaction, escalation, and anti-patterns. **Read this file before any other.** Per [spec/spec.md](spec/spec.md) section 4 — sections 1–14 below are all required, plus sections 15–16 and navigation.
 
 **Authoritative specification:** [spec/spec.md](spec/spec.md) (canonical full specification).
 
@@ -43,18 +43,19 @@ For **every** task, follow this sequence:
 
 1. Read this **AGENTS.md** completely.
 2. Read the task description or queue item.
-3. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`**.
-4. **Mandatory — search `skills/` for relevant skills:** run `make skills:list` or read **`skills/README.md`**; scan titles and every **When to invoke** section; read every relevant skill in full **before** planning or writing code.
-5. Read relevant **`docs/procedures/`** for the task type.
-6. Read relevant source files and tests.
-7. **Plan** — files to touch, acceptance criteria, scope bounds, risks.
-8. **Implement** in small validated increments.
-9. **Validate** — `make lint`, `make fmt`, `make typecheck`, `make test`; if queue files changed, `make queue:validate`.
-10. **Update documentation** if behavior or operational assumptions changed.
-11. **Update queue state** when finishing queue items (per `queue/QUEUE_INSTRUCTIONS.md`).
-12. **Hand off** — commands run with key output, files changed, PR link, risks, follow-ups.
+3. **Discover relevant docs (each turn):** use **semantic / vector similarity search**, **@** references, or your environment’s **codebase search** over this repository to surface **any** relevant **skills**, **`docs/procedures/`**, **`prompts/`**, **`docs/`**, or **rules** that match the user’s query or your current step — then **read** the best-matching files. Do not skip obvious procedures or skills because you only used keyword grep. See **section 16**.
+4. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`**.
+5. **Mandatory — search `skills/` for relevant skills:** run `make skills:list` or read **`skills/README.md`**; scan titles and every **When to invoke** section; read every relevant skill in full **before** planning or writing code.
+6. Read relevant **`docs/procedures/`** for the task type.
+7. Read relevant source files and tests.
+8. **Plan** — files to touch, acceptance criteria, scope bounds, risks.
+9. **Implement** in small validated increments.
+10. **Validate** — `make lint`, `make fmt`, `make typecheck`, `make test`; if queue files changed, `make queue:validate`.
+11. **Update documentation** if behavior or operational assumptions changed.
+12. **Update queue state** when finishing queue items (per `queue/QUEUE_INSTRUCTIONS.md`).
+13. **Hand off** — commands run with key output, files changed, PR link, risks, follow-ups.
 
-The mandatory skill search in step 4 is **non-negotiable** for every invocation (queue item, prompt template, Cursor command, manual instruction, or any other trigger).
+The mandatory skill search in step 5 is **non-negotiable** for every invocation (queue item, prompt template, Cursor command, manual instruction, or any other trigger). **Section 16** complements it: similarity-style search finds files the index alone might miss.
 
 ---
 
@@ -248,6 +249,21 @@ Key rules enforced:
 - `None` handled explicitly; never used as an error signal.
 
 See the full document for all 18 procedures, the condensed 12-point rule set, and refactor triggers. Code review (procedure 18) checks compliance with all of these.
+
+---
+
+## 16. Semantic discovery of relevant documentation (every turn)
+
+**Goal:** Before (and while) you act, find **procedures, skills, prompts, ADRs, and other docs** that are **relevant to the user’s query** — not only what you already remember or what a single index lists.
+
+**What to do:**
+
+1. **Each turn** (or whenever the task pivots): run **vector / semantic similarity search**, **embedding-backed retrieval**, or your host product’s **natural-language codebase search** against this repo. Query text should reflect the **user’s ask** and your **current subgoal** (e.g. “FastAPI tenant isolation procedure”, “queue archive steps”, “skill for migrations”).
+2. **Prioritize** hits under **`skills/`**, **`docs/procedures/`**, **`prompts/`**, **`docs/`**, **`.cursor/rules/`**, and **`spec/spec.md`** when they match. Open and read what is relevant; **do not** ignore a strong match because it was not in `skills/README.md`.
+3. **Combine** with the **mandatory skill search** (section 13): use the index for completeness; use semantic search for **recall** (synonyms, related tasks, cross-domain docs).
+4. If your environment has **no** semantic search, use the closest equivalent: **broad keyword search**, **`@` file references**, or **`prompts/skill_searcher.md`** — still aim to surface **any** applicable procedure or skill before coding.
+
+**Failure mode:** Implementing from memory when a **procedure** or **skill** in this repo already defines the correct approach. **Fix:** search again with rephrased queries until diminishing returns.
 
 ---
 
