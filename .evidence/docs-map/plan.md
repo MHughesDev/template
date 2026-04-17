@@ -48,14 +48,16 @@ No duplicate docs, no deletes, no section over 50 files (largest: `docs/procedur
 
 | Category | Count |
 |----------|------:|
-| Markdown files under `docs/` (excl. `DOCS_MAP.md` in planning phase) | 109 |
+| Markdown files under `docs/` with stable `doc_id` (excl. `DOCS_MAP.md`, excl. `docs/generated/*`) | 109 |
 | New `docs/DOCS_MAP.md` | 1 |
 | New `scripts/check_docs_map.py` | 1 |
 | `Makefile` (one target) | 1 |
 | `README.md` (one table row) | 1 |
 | Evidence / plan | 2 |
 
-**Total doc body files:** 110 including `DOCS_MAP.md`.
+**Machine-generated:** `docs/generated/*.md` is produced by `make docs:generate`, listed in `DOCS_MAP.md` §0.5, and **excluded** from `doc_id` frontmatter so `make docs:check` stays green.
+
+**Total indexed with stable IDs:** 109 + map (`doc_id` `0`) = 110 rows in the numbered index.
 
 ---
 
