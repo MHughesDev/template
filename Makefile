@@ -109,7 +109,7 @@ queue-archive:
 queue-archive-top:
 	@ARCHIVE_TOP=1 scripts/queue-archive.sh
 
-## queue-pr-merge: gh pr merge --merge --delete-branch (PR_NUMBER= optional; requires gh CLI)
+## queue-pr-merge: after archive+validate — gh pr merge --merge --delete-branch (PR_NUMBER= optional)
 queue-pr-merge:
 	@PR_NUMBER="$(PR_NUMBER)" scripts/queue-pr-merge.sh
 

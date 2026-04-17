@@ -42,7 +42,7 @@ Archive-only columns:
 
 State transitions per spec §17.3. Each state with location, transition rules, and notes requirements:
 - **Open** → In Progress: agent creates branch named queue/<id>-slug
-- **In Progress** → Done: PR merged; agent archives with status=done, completed_date, PR URL
+- **In Progress** → Done: work complete; agent archives with status=done, completed_date, PR URL, then runs **`make queue:pr-merge`** (or merges in UI) to update GitHub
 - **In Progress** → Blocked: agent updates notes with blocker; stays in queue.csv
 - **Blocked** → In Progress: blocker resolved; agent updates notes, resumes
 - **Open/In Progress** → Cancelled: human decision; archive with status=cancelled
@@ -80,7 +80,7 @@ Branch naming convention: `queue/<id>-short-slug`
 Every queue-driven PR must:
 - Include the queue ID in the PR title: `[Q-001] type(scope): description`
 - Paste the PR URL in the queue item's notes column
-- After CI/review: merge with **`make queue:pr-merge`** (runs `gh pr merge --merge --delete-branch`; requires GitHub CLI) or merge in the GitHub UI, then archive the item with the PR URL in the archive notes
+- After CI/review and the work is complete: **archive the item** (see Archiving), **`make queue:validate`**, then update GitHub with **`make queue:pr-merge`** (`gh pr merge --merge --delete-branch`) or merge in the UI
 
 ## Blocked Items
 
@@ -92,14 +92,14 @@ Protocol for blocked items (do NOT archive):
 
 ## Archiving
 
-How to archive a completed item:
-1. **Merge the PR first** (queue items with status=done require a merged PR): from the PR branch run **`make queue:pr-merge`** — equivalent to `gh pr merge --merge --delete-branch` — or merge in the UI. Then update local `main` if needed (`git checkout main && git pull`).
-2. **Token-friendly (recommended for single-lane):** run **`make queue:archive-top`** — moves the **first data row** in `queue.csv` to `queuearchive.csv` with `status=done` and today's `completed_date`. No queue id in the command; use when the top row is the item you just merged.
-3. Or run `make queue:archive QUEUE_ID=<id>` (scripted) or manually:
+How to archive a completed item (then update GitHub):
+1. **Token-friendly (recommended for single-lane):** run **`make queue:archive-top`** — moves the **first data row** in `queue.csv` to `queuearchive.csv` with `status=done` and today's `completed_date`. No queue id in the command; use when the top row is the item you are closing.
+2. Or run `make queue:archive QUEUE_ID=<id>` (scripted) or manually:
    - Copy row to queuearchive.csv
    - Add: status=done, completed_date=YYYY-MM-DD, PR URL in notes
    - Remove from queue.csv
-4. Run `make queue:validate` — must pass
+3. Run **`make queue:validate`** — must pass
+4. **Update GitHub last:** from the PR branch run **`make queue:pr-merge`** — `gh pr merge --merge --delete-branch` — or merge in the GitHub UI. Optional: `PR_NUMBER=<n> make queue:pr-merge` if not on the PR branch. Then update local `main` if needed (`git checkout main && git pull`).
 
 **Warning:** `queue:archive-top` archives by **position**, not by id. Only use when the top open row is the item you intend to close (default single-lane policy).
 

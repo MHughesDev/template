@@ -30,7 +30,7 @@ Invariants for **`queue/queue.csv`** and **`queue/queuearchive.csv`**. Canonical
 
 1. Queue work branches: **`queue/<id>-short-slug`** including the **`id`**.
 2. PR title/body references the queue **`id`** and links to the row when possible.
-3. To merge and delete the remote head branch: **`make queue:pr-merge`** (requires **`gh`**) before archiving the row in CSV; then **`make queue:archive-top`** or **`make queue:archive`**.
+3. Close the item in CSV first: **`make queue:archive-top`** or **`make queue:archive`**, then **`make queue:validate`**. Then update GitHub: **`make queue:pr-merge`** (requires **`gh`**) — merge PR and delete remote head branch.
 
 ## Summary quality
 

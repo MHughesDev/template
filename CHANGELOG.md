@@ -8,7 +8,7 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Added
 
-- **`make queue:pr-merge`** — runs `gh pr merge --merge --delete-branch` (optional `PR_NUMBER=<n>`); for queue completion, merge the PR before archiving the CSV row. Script: `scripts/queue-pr-merge.sh`.
+- **`make queue:pr-merge`** — runs `gh pr merge --merge --delete-branch` (optional `PR_NUMBER=<n>`); for queue completion, run **after** `queue:archive` and `queue:validate` to sync GitHub. Script: `scripts/queue-pr-merge.sh`.
 
 - **`make queue:archive-top`** — archives the first (top) open row in `queue/queue.csv` without passing `QUEUE_ID` (`scripts/queue_archive.py --top`). Documented in queue agent SOP for token-efficient completion workflows.
 - **Queue CSV `related_files` column** — between `dependencies` and `notes`; comma-separated repo-relative paths agents must read before completing an item. Validators (`scripts/queue_validate.py`), archive script, queue seeder, idea-parser manifest rows, and docs (`queue/QUEUE_INSTRUCTIONS.md`, `queue/QUEUE_AGENT_PROMPT.md`, `.cursor/rules/queue.md`) updated; conflict detection uses `summary` + `related_files`.
