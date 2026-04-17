@@ -101,7 +101,9 @@ def file_title_comments(root: Path) -> list[str]:
         if path.suffix == ".py" and first and first[0].startswith("#"):
             ok = "/" in first[0] or path.name in first[0]
         elif path.suffix == ".md" and first and (
-            first[0].startswith("# ") or "<!--" in first[0]
+            first[0].startswith("# ")
+            or "<!--" in first[0]
+            or first[0].strip() == "---"
         ):
             ok = True
         elif path.suffix in {".sh", ".yml", ".yaml"} and len(first) > 1:

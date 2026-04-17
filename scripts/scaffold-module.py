@@ -44,7 +44,7 @@ def _wire_main_py(repo_root: Path, name: str) -> None:
     else:
         raise RuntimeError(
             "Could not find SCAFFOLD_MARKER or fallback import anchor in main.py. "
-            f"Add '# SCAFFOLD: module imports — do not remove this line' before router imports."
+            "Add '# SCAFFOLD: module imports — do not remove this line' before router imports."
         )
 
     # Insert router include after SCAFFOLD_MARKER (preferred) or after example_router include (fallback)
@@ -64,7 +64,7 @@ def _wire_main_py(repo_root: Path, name: str) -> None:
     else:
         raise RuntimeError(
             "Could not find SCAFFOLD_MARKER or fallback include anchor in main.py. "
-            f"Add '# SCAFFOLD: router includes — do not remove this line' before router includes."
+            "Add '# SCAFFOLD: router includes — do not remove this line' before router includes."
         )
 
     main_py.write_text(text, encoding="utf-8")
@@ -78,10 +78,11 @@ def _validate_syntax(root: Path, name: str) -> list[str]:
     py_files = list(module_dir.rglob("*.py"))
     failures: list[str] = []
     for f in py_files:
-        result = _sp.run(
+        result = _sp.run(  # noqa: S603 — path is under repo-generated module_dir only
             [sys.executable, "-c", f"import ast; ast.parse(open({str(f)!r}).read())"],
             capture_output=True,
             text=True,
+            check=False,
         )
         if result.returncode != 0:
             failures.append(f"{f.relative_to(root)}: {result.stderr.strip()}")
@@ -93,7 +94,7 @@ def _auto_migrate(root: Path, name: str) -> bool:
     import subprocess as _sp
 
     api_dir = root / "apps" / "api"
-    result = _sp.run(
+    result = _sp.run(  # noqa: S603 — alembic invoked with fixed args under repo apps/api
         [
             sys.executable,
             "-m",
@@ -105,6 +106,7 @@ def _auto_migrate(root: Path, name: str) -> bool:
         ],
         cwd=str(api_dir),
         capture_output=False,
+        check=False,
     )
     return result.returncode == 0
 
