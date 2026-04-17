@@ -31,7 +31,7 @@ PR merged (for done items). Queue item ID known. queuearchive.csv exists with co
 3. Verify in queuearchive.csv: row has status=done, completed_date=YYYY-MM-DD, PR URL in notes
 4. Remove the row from queue.csv
 5. Run `make queue:validate` — must pass with no errors
-6. Run `make queue:peek` — verify next item is now the top row
+6. Run **`make queue:top-item`** — verify the next item JSON (or `make queue:peek` for raw CSV)
 
 ## Expected Artifacts / Outputs
 

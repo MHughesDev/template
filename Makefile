@@ -6,7 +6,7 @@ SHELL := /usr/bin/env bash
 
 .PHONY: help dev lint fmt fmt-check fmt-fix typecheck test test-unit test-integration test-smoke \
         migrate migrate\:create ci-migrate-dry-run db-reset db-seed docs-check docs-generate docs-index \
-        queue-peek queue-validate queue-archive queue-archive-top queue-graph queue-analyze \
+        queue-peek queue-top-item queue-validate queue-archive queue-archive-top queue-graph queue-analyze \
         prompt-list skills-list rules-check audit-self \
         security-scan secret-scan image-build image-scan \
         release-prepare release-verify \
@@ -96,6 +96,10 @@ docs-index:
 ## queue-peek: show queue header + first row
 queue-peek:
 	@scripts/queue-peek.sh
+
+## queue-top-item: print first open row as one JSON line (full item for agents)
+queue-top-item:
+	@scripts/queue-top-item.sh
 
 ## queue-validate: validate queue CSV schema
 queue-validate:
@@ -257,7 +261,7 @@ health-check:
 	@scripts/health-check.sh
 
 # --- Colon-style aliases (spec §10.2 and docs). GNU Make needs escaped colons in target names.
-.PHONY: skills\:list queue\:peek queue\:validate queue\:archive queue\:archive-top queue\:graph queue\:analyze audit\:self rules\:check \
+.PHONY: skills\:list queue\:peek queue\:top-item queue\:validate queue\:archive queue\:archive-top queue\:graph queue\:analyze audit\:self rules\:check \
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
         health\:check idea\:validate idea\:parse idea\:plan idea\:execute idea\:execute-dry-run init\:from-idea profile\:enable idea\:queue \
         scaffold\:module test\:unit test\:integration \
@@ -267,6 +271,7 @@ health-check:
 
 skills\:list: skills-list
 queue\:peek: queue-peek
+queue\:top-item: queue-top-item
 queue\:validate: queue-validate
 queue\:archive: queue-archive
 queue\:archive-top: queue-archive-top

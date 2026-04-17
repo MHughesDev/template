@@ -19,6 +19,7 @@ constraints:
   - "Do not reorder the queue"
   - "Do not process a blocked item (dependencies not met)"
 linked_commands:
+  - "make queue:top-item"
   - "make queue:peek"
   - "make queue:validate"
   - "make queue:archive-top"
@@ -50,7 +51,7 @@ The preamble for queue processing is more extensive than other prompts because i
 "Before ANY action:
 1. Read queue/QUEUE_INSTRUCTIONS.md completely
 2. Read queue/QUEUE_AGENT_PROMPT.md completely (the primary behavior contract)
-3. Run `make queue:peek` to see the current top row
+3. Run **`make queue:top-item`** to load the full top row (one JSON line); optional `make queue:peek` for raw CSV
 4. Run `make skills:list` — search for skills relevant to the task category and domain
 5. Read ALL relevant skills in full before planning
 6. Read every path in the 'related_files' column (comma-separated) before coding and before closing the item
@@ -66,7 +67,7 @@ This is mandatory per AGENTS.md §13."
 ## Execution Flow
 
 The queue processor follows these phases:
-1. **Claim**: run make queue:peek, read full row, read related_files, check dependencies
+1. **Claim**: run **`make queue:top-item`**, parse JSON (full row), read related_files, check dependencies
 2. **Plan**: use task_planner.md approach — acceptance criteria, file list, risks, steps
 3. **Branch**: git checkout -b queue/<id>-short-slug
 4. **Implement**: use implementation_agent.md approach — small increments, validate after each

@@ -23,7 +23,7 @@ constraints:
   - "Does not expand scope beyond the task description"
 linked_commands:
   - "make skills:list"
-  - "make queue:peek"
+  - "make queue:top-item"
 linked_procedures:
   - "docs/procedures/plan-change.md"
   - "docs/procedures/start-queue-item.md"

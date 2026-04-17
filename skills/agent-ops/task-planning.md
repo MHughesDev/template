@@ -48,7 +48,7 @@ Numbered steps:
 
 ## Command Examples
 
-- `make queue:peek` — read top queue item
+- **`make queue:top-item`** — full top row as one JSON line
 - `make skills:list` — check for relevant skills
 - (No other commands — planning is a read+write-document activity)
 

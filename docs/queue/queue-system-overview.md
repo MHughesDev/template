@@ -47,7 +47,8 @@ Brief overview of the intelligence layer (§17.11): dependency DAG, complexity e
 ## Tooling
 
 Table of queue-related make targets and their purpose:
-- make queue:peek — Read top item (read-only)
+- make queue:top-item — First open row as **one JSON line** (all columns; agents use this first)
+- make queue:peek — Raw CSV: header + first row (read-only)
 - make queue:validate — Schema + invariants
 - make queue:archive — Move a row by id from open to archive
 - make queue:archive-top — Move the **top** open row to archive (no id; token-friendly for single-lane)

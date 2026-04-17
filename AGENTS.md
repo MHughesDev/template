@@ -42,7 +42,7 @@ When instructions conflict, resolve in this order (higher overrides lower):
 For **every** task, follow this sequence:
 
 1. Read this **AGENTS.md** completely.
-2. Read the task description or queue item.
+2. Read the task description or queue item. **For queue work:** run **`make queue:top-item`** first — stdout is **one line** of JSON with every column of the top open row in **`queue/queue.csv`** (`id`, `batch`, `phase`, `category`, `summary`, `dependencies`, `related_files`, `notes`, `created_date`). Parse it; **`summary`** is the contract.
 3. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`**.
 4. **Mandatory — search `skills/` for relevant skills:** run `make skills:list` or read **`skills/README.md`**; scan titles and every **When to invoke** section; read every relevant skill in full **before** planning or writing code.
 5. Read relevant **`docs/procedures/`** for the task type.
@@ -153,7 +153,7 @@ Summary:
 - **Blocked** items stay in `queue.csv` with clear notes.
 - **Done** items move to **`queue/queuearchive.csv`** with status, completion metadata, and PR URL in notes as required.
 - Run **`make queue:validate`** after any queue file change.
-- Use **`make queue:peek`** for a safe read-only view of the current item.
+- Use **`make queue:top-item`** for the active item as **one JSON line** (all columns). Use **`make queue:peek`** for raw CSV lines (header + first row).
 - If two writers collide: stop, re-validate, reconcile using **`main`** as the integration truth.
 
 ---
@@ -273,11 +273,11 @@ See the full document for all 18 procedures, the condensed 12-point rule set, an
 
 Prefer **`make`** targets over ad hoc commands. See the **Makefile** for the full catalog. Frequently used:
 
-`make dev`, `make lint`, `make fmt`, `make typecheck`, `make test`, `make migrate`, `make queue:peek`, `make queue:validate`, `make audit:self`, `make skills:list`, `make prompt:list`
+`make dev`, `make lint`, `make fmt`, `make typecheck`, `make test`, `make migrate`, `make queue:top-item`, `make queue:peek`, `make queue:validate`, `make audit:self`, `make skills:list`, `make prompt:list`
 
 **Validation:** `make audit:self` runs a comprehensive check — use before merging substantial work.
 
-**Queue:** `make queue:peek` (read-only), `make queue:validate`, **`make queue:archive-top`** (archive first open row — no id), `make queue:archive` where implemented.
+**Queue:** **`make queue:top-item`** (one JSON line — full top row), `make queue:peek` (raw CSV snippet), `make queue:validate`, **`make queue:archive-top`** / `make queue:archive` where implemented.
 
 ### Handoff format
 

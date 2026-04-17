@@ -20,7 +20,7 @@ Queue item read completely. Relevant skills read. Source files read. AGENTS.md Â
 
 ## Exact Commands
 
-No make targets for planning itself. All commands are for reading: `make queue:peek`, `make skills:list`.
+No make targets for planning itself. All commands are for reading: `make queue:top-item`, `make queue:peek`, `make skills:list`.
 
 ## Ordered Steps
 

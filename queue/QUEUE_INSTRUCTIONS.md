@@ -60,7 +60,7 @@ Rules for single-lane processing:
 ## Claiming Work
 
 How to claim a queue item:
-1. Run `make queue:peek` — read the complete top row
+1. Run **`make queue:top-item`** — stdout is **one line** of JSON with the full top row (all columns). Parse it; **`summary`** is the contract. Optional: `make queue:peek` for raw CSV (header + first data row).
 2. Verify dependencies met (all IDs in queuearchive.csv with status=done)
 3. Read every path in `related_files` (split on commas; trim whitespace) before implementation and again before PR/handoff — treat as mandatory context alongside the summary
 4. Create branch: `git checkout -b queue/<id>-short-slug`

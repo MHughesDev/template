@@ -27,7 +27,8 @@ Table mapping each script to its Make target and purpose:
 | `docs-check.sh` | `make docs:check` | Check documentation |
 | `docs-generate.sh` | `make docs:generate` | Generate docs from source |
 | `docs-index.sh` | `make docs:index` | Update auto-index block in `docs/README.md` |
-| `queue-peek.sh` | `make queue:peek` | Read top queue item |
+| `queue-peek.sh` | `make queue:peek` | Raw CSV: header + first data row |
+| `queue-top-item.sh` | `make queue:top-item` | First open row as one JSON line (`queue_top_item.py`) |
 | `queue-validate.sh` | `make queue:validate` | Validate queue schema |
 | `queue-archive.sh` | `make queue:archive`, `make queue:archive-top` | Move row to archive by id, or archive top open row (no id) |
 | `queue-graph.sh` | `make queue:graph` | Render dependency graph |

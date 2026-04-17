@@ -50,7 +50,7 @@ Steps:
 6. Run `make health:check` — verify /health, /ready, /live all return 200
 7. Run `make test` — verify all tests pass
 8. Run `make audit:self` — verify spec compliance
-9. Run `make queue:peek` — verify queue is accessible
+9. Run `make queue:top-item` or `make queue:peek` — verify queue is accessible
 10. Produce environment verification report
 
 ## Troubleshooting Guidance

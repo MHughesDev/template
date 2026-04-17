@@ -34,7 +34,7 @@ Numbered steps:
 
 ## Command Examples
 
-`make idea:queue`, `make queue:validate`, `make queue:peek`
+`make idea:queue`, `make queue:validate`, `make queue:top-item`
 
 ## Validation Checklist
 

@@ -34,7 +34,7 @@ Numbered steps:
 
 ## Command Examples
 
-`make queue:validate` (after updating notes), `make queue:peek` (to see next item)
+`make queue:validate` (after updating notes), **`make queue:top-item`** (next item as JSON)
 
 ## Validation Checklist
 

@@ -39,7 +39,8 @@ Run `make help` for the full list. Common targets:
 | `make docker-up` / `make docker:up` | `docker compose up -d` |
 | `make docker-down` / `make docker:down` | `docker compose down` |
 | `make skills-list` / `make skills:list` | List skills by category |
-| `make queue-peek` / `make queue:peek` | Read queue header + first row |
+| `make queue-top-item` / `make queue:top-item` | First open row as **one JSON line** (all columns — for agents) |
+| `make queue-peek` / `make queue:peek` | Raw CSV: header + first row |
 | `make queue-validate` / `make queue:validate` | Validate `queue/queue.csv` |
 | `make audit-self` / `make audit:self` | Repo self-audit |
 | `make docs-check` / `make docs:check` | Documentation link check |

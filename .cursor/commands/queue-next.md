@@ -9,11 +9,11 @@ Claim and start the **current** queue item (top row) in single-lane mode.
 | **When to use** | Starting new queue work after the previous item is archived or not in progress. |
 | **Procedure** | [`docs/procedures/start-queue-item.md`](../docs/procedures/start-queue-item.md) |
 | **Skill** | [`skills/agent-ops/queue-triage.md`](../skills/agent-ops/queue-triage.md) |
-| **Read-only helper** | `make queue:peek` |
+| **Read-only helper** | **`make queue:top-item`** (one JSON line — full row); optional `make queue:peek` (raw CSV) |
 
 ## Steps
 
-1. Run **`make queue:peek`** — read the **full** top row; **`summary`** is the contract.
+1. Run **`make queue:top-item`** — parse the **JSON** line; every column is present; **`summary`** is the contract.
 2. Parse **`dependencies`** — every listed ID must be **done** in **`queuearchive.csv`** (or empty).
 3. If blocked: update **`notes`** with reason and next step; **stop**.
 4. Run **`make queue:validate`** before modifying queue files.

@@ -33,13 +33,14 @@ Files involved:
 - `queue/queue.csv` — open items
 - `queue/queuearchive.csv` — completed items (for dependency verification)
 - `queue/QUEUE_INSTRUCTIONS.md` — full SOP
-- `scripts/queue-peek.sh` — read top item
+- `scripts/queue_top_item.py` — JSON line for top row (`make queue:top-item`)
+- `scripts/queue-peek.sh` — raw CSV peek
 - `skills/agent-ops/queue-triage.py` — triage analyzer machinery
 
 ## Step-by-Step Method
 
 Numbered steps:
-1. Run `make queue:peek` — read the header and first data row
+1. Run **`make queue:top-item`** — parse the one-line JSON (full top row); or `make queue:peek` for raw CSV
 2. Read the COMPLETE `summary` column — this is the work contract
 3. Check `related_files` column: parse comma-separated repo paths; agents must read these before completing the item
 4. Check `dependencies` column: parse comma-separated IDs
@@ -54,7 +55,8 @@ Numbered steps:
 ## Command Examples
 
 Exact commands:
-- `make queue:peek` — read top item
+- **`make queue:top-item`** — full top row as one JSON line
+- `make queue:peek` — raw header + first row
 - `make queue:validate` — validate entire queue schema
 - `make queue:analyze` — full intelligence analysis (deps, complexity)
 - `python skills/agent-ops/queue-triage.py` — automated triage report
