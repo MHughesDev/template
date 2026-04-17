@@ -1,4 +1,12 @@
-# docs/queue/queue-categories.md
+---
+doc_id: "12.1"
+title: "queue categories"
+section: "Queue"
+summary: "Registry of valid queue categories with descriptions, validation rules, and examples."
+updated: "2026-04-17"
+---
+
+# 12.1 — queue categories
 
 <!-- CROSS-REFERENCES -->
 <!-- - Enforced by: scripts/queue-validate.sh -->
@@ -6,7 +14,7 @@
 
 **Purpose:** Registry of valid queue categories with descriptions, validation rules, and examples. Per spec §17.10 and §28.4 item 294.
 
-## Default Categories
+## 12.1.1 Default Categories
 
 Table of default queue categories. Columns: Category, Description, Example Summary. Rows:
 | Category | Description | Example |
@@ -20,6 +28,6 @@ Table of default queue categories. Columns: Category, Description, Example Summa
 | security | Security hardening, CVE fixes, auth changes | "Rotate JWT signing key and verify all sessions invalidated." |
 | devops | CI/CD, monitoring, observability | "Add Prometheus metrics to API health endpoints." |
 
-## Adding a Category
+## 12.1.2 Adding a Category
 
 Brief reference to docs/procedures/add-queue-category.md for the full procedure. Summary: update this file, update queue validator, add example to QUEUE_INSTRUCTIONS.md.

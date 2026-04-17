@@ -1,4 +1,12 @@
-# docs/queue/queue-system-overview.md
+---
+doc_id: "12.3"
+title: "queue system overview"
+section: "Queue"
+summary: "Queue system conceptual overview: purpose, lifecycle, single-lane semantics, tooling."
+updated: "2026-04-17"
+---
+
+# 12.3 — queue system overview
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: queue/QUEUE_INSTRUCTIONS.md, docs/README.md -->
@@ -6,11 +14,11 @@
 
 **Purpose:** Queue system conceptual overview: purpose, lifecycle, single-lane semantics, tooling. Per spec §17 and §26.5 item 187.
 
-## Purpose
+## 12.3.1 Purpose
 
 One paragraph. The queue is the agent work orchestration lane — NOT a product backlog or PM system. It coordinates agent execution in a controlled, auditable way with strict lifecycle rules that prevent work from being dropped or duplicated.
 
-## File Roles
+## 12.3.2 File Roles
 
 Table explaining each queue file:
 - queue/queue.csv — Open items; top row = active work item for single-lane processing. Each row includes **`related_files`**: comma-separated repo paths agents must read before completing the item.
@@ -20,11 +28,11 @@ Table explaining each queue file:
 - queue/queue.lock — Optional mutex preventing concurrent processing
 - queue/audit.log — Append-only JSON lines for all queue operations
 
-## Single-Lane Semantics
+## 12.3.3 Single-Lane Semantics
 
 Explanation of the single-lane model: at most one processor claims the top row at a time. Top row = active item. Processors read the entire row and treat summary as the contract. Why: coordination between agents without complex locking.
 
-## Lifecycle States
+## 12.3.4 Lifecycle States
 
 Table per spec §17.3:
 | State | Location | Transition Rules |
@@ -36,15 +44,15 @@ Table per spec §17.3:
 | Cancelled | queuearchive.csv | status=cancelled, reason in notes |
 | Superseded | queuearchive.csv | status=superseded, successor ID in notes |
 
-## Branch Naming
+## 12.3.5 Branch Naming
 
 Pattern: `queue/<id>-short-slug`. The queue ID is mandatory. PR must reference queue ID in title or body.
 
-## Queue Intelligence
+## 12.3.6 Queue Intelligence
 
 Brief overview of the intelligence layer (§17.11): dependency DAG, complexity estimates, batch suggestions, conflict detection. Links to docs/queue/queue-intelligence.md for full conceptual docs.
 
-## Tooling
+## 12.3.7 Tooling
 
 Table of queue-related make targets and their purpose:
 - make queue:top-item — First open row as **one JSON line** (all columns; agents use this first)
