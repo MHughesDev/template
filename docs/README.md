@@ -44,6 +44,9 @@ Ordered list of every docs/ subdirectory with description and link to its README
 - [release/](release/README.md) — Versioning, promotion path, changelog guide
 - [repo-governance/](repo-governance/README.md) — Improvement loops, audits, procedure drift
 
+**Integrations (vendor / upstream):**
+- [integrations/](integrations/README.md) — Mechanical import workflows (git/rsync), SHA pins, ADR cross-links
+
 **Optional profiles:**
 - [optional-clients/](optional-clients/web.md) — Web and mobile profile documentation
 - [troubleshooting/](troubleshooting/README.md) — Common issues and solutions
@@ -71,6 +74,7 @@ _Machine listing of top-level docs paths — see sections above for curated desc
 - `queue/`
 - [release/](release/README.md)
 - [repo-governance/](repo-governance/README.md)
+- [integrations/](integrations/README.md)
 - [runbooks/](runbooks/README.md)
 - [security/](security/README.md)
 - [troubleshooting/](troubleshooting/README.md)

@@ -132,6 +132,7 @@ Purpose: Records architecture decisions: template, status, and the decision inde
 | --- | --- | --- | --- |
 | 7.0 | Adr overview | `docs/adr/README.md` | ADR index. Lists all decisions with status. |
 | 7.1 | template | `docs/adr/template.md` | ADR template for new decisions. |
+| 7.2 | ADR-001 full-stack template vendor | `docs/adr/ADR-001-full-stack-template-vendor.md` | Accepted baseline: mechanical import from fork, SHA pin, bulk-copy frontend, port backend into apps/api. |
 
 ### Section 8 — Agents
 
@@ -265,6 +266,15 @@ Purpose: Read-only ideation; one brainstorm file holds the whole idea and typica
 | 19.2 | Pipeline brainstorm to queue | `docs/BRAINSTORM/PIPELINE-from-brainstorm-to-queue.md` | Steps from a ready brainstorm to many queue rows, then code, then spec and docs alignment. |
 | 19.3 | Brainstorm idea files | `docs/BRAINSTORM/ideas/README.md` | One Markdown file per whole idea; implementation splits into many queue rows via the pipeline. |
 | 19.4 | Brainstorm template | `docs/BRAINSTORM/TEMPLATE-brainstorm.md` | Structured template for one whole idea; expect many queue rows and list them in section 10. |
+
+### Section 20 — Integrations
+
+Purpose: Vendor and upstream integration guides — mechanical git/rsync workflows, SHA pins, and copy-vs-port matrices.
+
+| ID | Title | Path | Summary |
+| --- | --- | --- | --- |
+| 20.0 | Full-stack FastAPI template integration | `docs/integrations/full-stack-fastapi-template.md` | Clone `MHughesDev/fastapi-template`, pin SHA, optional sparse-checkout, rsync matrix vs this repo; no wholesale apps/api replacement. |
+| 20.1 | Integrations overview | `docs/integrations/README.md` | Index of integration guides (vendor workflows). |
 
 ## 0.3 Retired IDs
 

@@ -6,12 +6,9 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ## [Unreleased]
 
-### Changed
-
-- **API tests (Q-003):** expanded auth and tenancy coverage — JWT edge cases via `/api/v1/examples/` (expired, malformed, wrong signing key, invalid `sub`, unknown user), password-strength 422, unauthenticated list 403/401, multi-tenancy malformed Bearer returns `TENANT_ISOLATION_VIOLATION`.
-
 ### Added
 
+- **Q-004 — Full-stack template integration docs:** `docs/integrations/full-stack-fastapi-template.md` (git clone, SHA pin `13652b51ea0acca7dfe243ac25e2bbdc066f3c4f`, optional sparse-checkout, rsync examples, copy-vs-port matrix), `docs/integrations/README.md`, ADR [docs/adr/ADR-001-full-stack-template-vendor.md](docs/adr/ADR-001-full-stack-template-vendor.md); cross-links from root `README.md`, `AGENTS.md` navigation, `docs/README.md`, `docs/adr/README.md`, and `docs/DOCS_MAP.md` section 20.
 - **`agent_instructions` column** — `queue/queue.csv` and `queuearchive.csv` include optional per-row instructions for implementation executors (after `summary`). `make queue:top-item` JSON includes it. Validators and archive scripts updated (`scripts/queue_validate.py`, `queue_top_item.py`, `queue_archive.py`); seeders and `idea-parser` emit empty `agent_instructions` by default.
 
 - **Queue worker executor policy** — `prompts/queue_worker_executor.md`: implementation agents read `QUEUE_INSTRUCTIONS.md` and `QUEUE_AGENT_PROMPT.md` but **must not** edit `queue/queue.csv` or `queue/queuearchive.csv` or run archive make targets; human operators own the ledger. `QUEUE_AGENT_PROMPT.md`, `AGENTS.md` §3/§9/§12, `prompts/queue_processor.md`, `.cursor/rules/global.md` and `queue.md` updated accordingly.
@@ -31,6 +28,7 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Changed
 
+- **API tests (Q-003):** expanded auth and tenancy coverage — JWT edge cases via `/api/v1/examples/` (expired, malformed, wrong signing key, invalid `sub`, unknown user), password-strength 422, unauthenticated list 403/401, multi-tenancy malformed Bearer returns `TENANT_ISOLATION_VIOLATION`.
 - Example module: `ExampleRepository.list_all` uses `paginate_query`; `ExampleService` takes `Settings`; routes use `require_auth`; `idea-to-queue.sh` matches prompt (`queue-seeder` defaults to idea §12); `env-var-sync` scans `os.getenv` / `os.environ` in Python sources.
 - `make fmt` now applies formatting; CI uses `make fmt-check`. `docs:check` runs generated-docs drift detection. Dockerfile copies full `/usr/local/lib/python3.12` from the builder. `/ready` returns HTTP 503 when the database check fails. Prompt templates use a `# prompts/<file>.md` title line before YAML front matter.
 - Consolidated open Dependabot updates: GitHub Actions (checkout, stale, docker/build-push-action, setup-buildx-action), API Docker base image to Python 3.14-slim, and Python dependency floors in `pyproject.toml` (asyncpg, bandit, email-validator, pydantic-settings, pytest-cov).

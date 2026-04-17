@@ -286,6 +286,7 @@ See the full document for all 18 procedures, the condensed 12-point rule set, an
 | AI/RAG (optional) | `packages/ai/` |
 | Deploy | `deploy/docker/`, `deploy/k8s/` (base + overlays) |
 | Documentation | `docs/` — start with **`docs/README.md`** |
+| Template vendor (mechanical import) | `docs/integrations/full-stack-fastapi-template.md` — fork SHA pin, `git`/`rsync` workflow |
 | Skills | `skills/` — **`skills/README.md`** |
 | Prompts | `prompts/` — **`prompts/README.md`** |
 | Queue (open / archive) | `queue/queue.csv`, `queue/queuearchive.csv` |

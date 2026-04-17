@@ -155,6 +155,7 @@ make help             # full target catalog
 | **Prompts** | [prompts/README.md](prompts/README.md) | Role-specific prompt templates |
 | **Security** | [docs/security/](docs/security/) | Threat model, secrets, CORS, incidents |
 | **API docs** | [docs/api/](docs/api/) | Endpoints and error catalog |
+| **Full-stack template vendor** | [docs/integrations/full-stack-fastapi-template.md](docs/integrations/full-stack-fastapi-template.md) | Clone, pin SHA, rsync/copy matrix (fork `MHughesDev/fastapi-template`) |
 
 ---
 
