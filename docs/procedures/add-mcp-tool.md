@@ -13,6 +13,9 @@ updated: "2026-04-17"
 Add a new MCP tool to the application, either by exposing a FastAPI endpoint
 or by adding a small route that maps to the behavior you need.
 
+For a **development-only** stdio MCP server (queue helpers, repo resources, `make`
+wrappers for coding agents), see [microfast-dev-mcp.md](microfast-dev-mcp.md) — separate from this FastAPI-integrated path.
+
 ## 5.2.2 Trigger
 
 - New AI-accessible capability needed

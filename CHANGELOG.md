@@ -8,6 +8,7 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Added
 
+- **MicroFast dev MCP** — stdio MCP server for coding agents (`dev_mcp/`, `python -m dev_mcp`), shared queue CSV helpers in `queue_ops/` (used by `scripts/queue_top_item.py` and `scripts/queue_validate.py`), launcher `scripts/dev-mcp.sh`, Cursor config `.cursor/mcp.json`, procedure [docs/procedures/microfast-dev-mcp.md](docs/procedures/microfast-dev-mcp.md), `mcp` dependency in `pyproject.toml`.
 - **Q-004 — Full-stack template integration docs:** `docs/integrations/full-stack-fastapi-template.md` (git clone, SHA pin `13652b51ea0acca7dfe243ac25e2bbdc066f3c4f`, optional sparse-checkout, rsync examples, copy-vs-port matrix), `docs/integrations/README.md`, ADR [docs/adr/ADR-001-full-stack-template-vendor.md](docs/adr/ADR-001-full-stack-template-vendor.md); cross-links from root `README.md`, `AGENTS.md` navigation, `docs/README.md`, `docs/adr/README.md`, and `docs/DOCS_MAP.md` section 20.
 - **`agent_instructions` column** — `queue/queue.csv` and `queuearchive.csv` include optional per-row instructions for implementation executors (after `summary`). `make queue:top-item` JSON includes it. Validators and archive scripts updated (`scripts/queue_validate.py`, `queue_top_item.py`, `queue_archive.py`); seeders and `idea-parser` emit empty `agent_instructions` by default.
 

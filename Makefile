@@ -4,7 +4,7 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-.PHONY: help dev lint fmt fmt-check fmt-fix typecheck test test-unit test-integration test-smoke \
+.PHONY: help dev dev-mcp lint fmt fmt-check fmt-fix typecheck test test-unit test-integration test-smoke \
         migrate migrate\:create ci-migrate-dry-run db-reset db-seed docs-check docs-map-check docs-generate docs-index \
         queue-peek queue-top-item queue-validate queue-archive queue-archive-top queue-pr-merge queue-graph queue-analyze \
         prompt-list skills-list rules-check audit-self \
@@ -25,6 +25,11 @@ help:
 ## dev: Run API with uvicorn --reload
 dev:
 	@scripts/dev.sh
+
+## dev-mcp: how to run the MicroFast dev MCP server (stdio)
+dev-mcp:
+	@echo "MicroFast dev MCP (stdio for Cursor / Claude / Codex): ./scripts/dev-mcp.sh"
+	@echo "Repo config: .cursor/mcp.json"
 
 ## lint: Ruff lint
 lint:
