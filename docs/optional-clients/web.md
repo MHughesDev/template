@@ -1,29 +1,37 @@
-# docs/optional-clients/web.md
+---
+doc_id: "9.2"
+title: "web"
+section: "Optional Clients"
+summary: "web profile documentation: when to enable, setup, env vars, operational burden."
+updated: "2026-04-17"
+---
+
+# 9.2 — web
 
 <!-- Per spec §26.5 items 188-189 and §9.2 -->
 
 **Purpose:** web profile documentation: when to enable, setup, env vars, operational burden. Per spec §9.2 and §15.
 
-## When to Enable
+## 9.2.1 When to Enable
 
 Conditions under which the web profile is appropriate.
 
-## When NOT to Enable
+## 9.2.2 When NOT to Enable
 
 Conditions under which adding web would not be appropriate.
 
-## Prerequisites
+## 9.2.3 Prerequisites
 
 Tools and skills required before enabling this profile.
 
-## Setup Steps
+## 9.2.4 Setup Steps
 
 Numbered steps to enable the web profile (reference docs/procedures/add-optional-app-profile.md).
 
-## Environment Variables
+## 9.2.5 Environment Variables
 
 All env vars added by this profile with descriptions.
 
-## Operational Burden
+## 9.2.6 Operational Burden
 
 Ongoing operational costs: monitoring, build times, additional CI steps, deployment complexity.
