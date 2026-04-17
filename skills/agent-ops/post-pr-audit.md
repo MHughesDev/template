@@ -48,7 +48,7 @@ Numbered steps:
 
 ## Common Failure Modes
 
-Queue item not archived → next agent thinks it's still open. Fix: always run make queue:archive after PR merge.
+Queue item not archived → next agent thinks it's still open. Fix: always archive with **`make queue:archive-top`** (or **`queue:archive`**) then **`make queue:validate`**; then **`make queue:pr-merge`** (or merge in UI) so GitHub matches the closed item.
 
 ## Handoff Expectations
 

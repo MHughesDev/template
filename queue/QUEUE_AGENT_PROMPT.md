@@ -62,12 +62,12 @@ Every PR must have:
 ## Archive Procedure
 
 After CI is green and the PR is approved per policy (single-lane policy: the item you finished is the **top** row):
-1. **Merge the PR:** run **`make queue:pr-merge`** from the PR branch (runs `gh pr merge --merge --delete-branch`; requires `gh`). Or merge in the GitHub UI. Optional: `PR_NUMBER=<n> make queue:pr-merge` if not on the PR branch.
-2. Prefer **`make queue:archive-top`** — archives the first open row without typing the id (saves tokens; no CSV rewrite).
-3. Or run `make queue:archive QUEUE_ID=<id>` when you must archive a specific id (non-top row or automation).
-4. Verify in queuearchive.csv: status=done, completed_date=YYYY-MM-DD, PR URL in notes
-5. Run `make queue:validate`
-6. Confirm queue.csv no longer contains this row
+1. Prefer **`make queue:archive-top`** — archives the first open row without typing the id (saves tokens; no CSV rewrite).
+2. Or run `make queue:archive QUEUE_ID=<id>` when you must archive a specific id (non-top row or automation).
+3. Verify in queuearchive.csv: status=done, completed_date=YYYY-MM-DD, PR URL in notes
+4. Run **`make queue:validate`**
+5. Confirm queue.csv no longer contains this row
+6. **Update GitHub:** run **`make queue:pr-merge`** from the PR branch (`gh pr merge --merge --delete-branch`; requires `gh`). Or merge in the GitHub UI. Optional: `PR_NUMBER=<n> make queue:pr-merge` if not on the PR branch.
 
 ## Blocked Handling
 

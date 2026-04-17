@@ -109,7 +109,7 @@ make typecheck        # mypy strict
 make migrate          # run Alembic migrations
 make audit:self       # 7-check repo self-audit
 make queue:peek       # view top queue task
-make queue:pr-merge   # merge open PR (gh) + delete branch — use before queue:archive-top
+make queue:pr-merge   # after archive+validate — gh merge + delete branch (GitHub sync)
 make docs:check       # verify doc link integrity
 make help             # full target catalog
 ```

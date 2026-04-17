@@ -4,51 +4,51 @@
 <!-- - Rule: .cursor/rules/queue.md (archive-before-delete policy) -->
 <!-- - Make target: make queue:archive -->
 
-**Purpose:** SOP: Move completed queue row to archive with required fields. Per spec §26.5 item 145 and §8.3.
+**Purpose:** SOP: Move completed queue row to archive with required fields, then update GitHub (merge PR + delete branch). Per spec §26.5 item 145 and §8.3.
 
 ## Purpose
 
-Proper archiving ensures queue history is preserved and the next queue item becomes the active one. Missing or partial archiving leads to queue confusion.
+Proper archiving ensures queue history is preserved and the next queue item becomes the active one. **`make queue:pr-merge`** runs **after** the row is archived and **`make queue:validate`** passes — it updates GitHub (`gh pr merge --merge --delete-branch`) so the open PR merges and the remote head branch is removed.
 
 ## Trigger / When to Use
 
-After PR is merged (or item is cancelled/superseded). Never archive before PR is merged for done items.
+When implementation is complete: CI green, PR open, PR URL in queue notes, and you are ready to close the item. **Cancelled/superseded** items: archive only (no `queue:pr-merge`).
 
 ## Prerequisites
 
-PR merged (for done items). Queue item ID known. queuearchive.csv exists with correct header.
+- Open PR for the work (branch pushed; PR URL in notes).
+- [GitHub CLI](https://cli.github.com/) installed and `gh auth login` for **`make queue:pr-merge`**.
 
 ## Exact Commands
 
-- **`make queue:pr-merge`** — runs `gh pr merge --merge --delete-branch` for the open PR (requires [GitHub CLI](https://cli.github.com/) and `gh auth login`). Run from the PR branch, or set `PR_NUMBER=<n>` if you are on another branch. Use this to merge and delete the remote head branch before archiving the CSV row.
-- **`make queue:archive-top`** — archives the **top** (first) open row; no `QUEUE_ID` (preferred when that row is the completed item — less token use).
-- `make queue:archive QUEUE_ID=<id>` (scripted move by id) or manual CSV editing, then `make queue:validate`.
+- **`make queue:archive-top`** — archives the **top** (first) open row; no `QUEUE_ID` (preferred when that row is the completed item).
+- **`make queue:archive QUEUE_ID=<id>`** — archive a specific id, or edit CSV manually per **`queue/QUEUE_INSTRUCTIONS.md`**.
+- **`make queue:validate`** — must pass after archive.
+- **`make queue:pr-merge`** — after validate: `gh pr merge --merge --delete-branch`. From the PR branch, or **`PR_NUMBER=<n> make queue:pr-merge`** from another branch.
 
 ## Ordered Steps
 
-1. Verify CI is green and all acceptance criteria confirmed; get PR approval per team policy
-2. Merge the PR: run **`make queue:pr-merge`** (or merge in the GitHub UI), then confirm the change is on `main`
-3. Run **`make queue:archive-top`** (if the completed item is the top open row) **or** `make queue:archive QUEUE_ID=<id>` — scripted move from queue.csv to queuearchive.csv
-   OR manually: copy the full row from queue.csv to queuearchive.csv, add status, completed_date, PR URL
-4. Verify in queuearchive.csv: row has status=done, completed_date=YYYY-MM-DD, PR URL in notes
-5. Remove the row from queue.csv
-6. Run `make queue:validate` — must pass with no errors
-7. Run `make queue:peek` — verify next item is now the top row
+1. Confirm CI green and acceptance criteria met; PR URL is in queue **notes**.
+2. Run **`make queue:archive-top`** (if the completed item is the top open row) **or** **`make queue:archive QUEUE_ID=<id>`** — move the row to `queuearchive.csv` with `status=done`, `completed_date`, PR URL in notes; remove from `queue.csv`.
+3. Run **`make queue:validate`** — must pass.
+4. Update GitHub: run **`make queue:pr-merge`** (or merge in the GitHub UI). Optional: **`PR_NUMBER=<n> make queue:pr-merge`** if not on the PR branch.
+5. Run **`make queue:peek`** — verify the next item is at the top of `queue.csv`.
 
 ## Expected Artifacts / Outputs
 
-Row in queuearchive.csv with all fields. Row removed from queue.csv. make queue:validate passing.
+Row in `queuearchive.csv` with all fields. Row removed from `queue.csv`. `make queue:validate` passing. PR merged on GitHub and head branch deleted (or merged via UI).
 
 ## Validation Checks
 
 - [ ] Row in queuearchive.csv with status=done, completed_date, PR URL in notes
 - [ ] Row removed from queue.csv
 - [ ] make queue:validate passes
+- [ ] PR merged on GitHub (queue:pr-merge or UI)
 
 ## Rollback or Failure Handling
 
-If queue:validate fails after archiving: check for schema errors in the archive row; fix and re-run.
+If `queue:validate` fails after archiving: fix CSV/schema and re-run. If **`queue:pr-merge`** fails after archive: the row is already archived — fix the PR/branch issue (permissions, conflicts) and merge via UI or re-run `make queue:pr-merge` when unblocked.
 
 ## Handoff Expectations
 
-Queue archived. Next queue item visible at top of queue.csv.
+Queue archived and validated; GitHub updated. Next queue item visible at top of `queue.csv`.

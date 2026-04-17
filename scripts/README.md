@@ -30,7 +30,7 @@ Table mapping each script to its Make target and purpose:
 | `queue-peek.sh` | `make queue:peek` | Read top queue item |
 | `queue-validate.sh` | `make queue:validate` | Validate queue schema |
 | `queue-archive.sh` | `make queue:archive`, `make queue:archive-top` | Move row to archive by id, or archive top open row (no id) |
-| `queue-pr-merge.sh` | `make queue:pr-merge` | `gh pr merge --merge --delete-branch` (optional `PR_NUMBER=`) |
+| `queue-pr-merge.sh` | `make queue:pr-merge` | After `queue:archive` + `queue:validate` — `gh pr merge --merge --delete-branch` (optional `PR_NUMBER=`) |
 | `queue-graph.sh` | `make queue:graph` | Render dependency graph |
 | `queue-analyze.sh` | `make queue:analyze` | Full queue intelligence analysis |
 | `prompt-list.sh` | `make prompt:list` | List prompt templates |
