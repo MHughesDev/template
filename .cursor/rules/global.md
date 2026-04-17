@@ -62,6 +62,10 @@ Universal constraints for **every** agent session: commits, scope, evidence, fil
 6. Record which skills you used in the PR or queue notes.
 7. Missing skill for a **recurring** pattern → add or extend a skill (see **`docs/procedures/update-or-create-skill.md`**).
 
+## Semantic discovery of docs (spec §4.1 — see AGENTS.md §16)
+
+**Each turn** (or when the task shifts): use **vector / similarity search**, **@** references, or **natural-language codebase search** to find relevant **skills**, **`docs/procedures/`**, **`prompts/`**, **`docs/`**, and **rules** for the user’s query. Read strong matches. This **adds recall** on top of the skill index; do not rely on grep alone.
+
 ## Canonical commands
 
 1. **Always use `make` targets** over ad hoc shell commands. Run `make help` to see all targets.
@@ -81,6 +85,6 @@ Universal constraints for **every** agent session: commits, scope, evidence, fil
 7. No hardcoded environment-specific URLs or IDs in application code.
 8. No **`except Exception: pass`**.
 9. No ad hoc shell when a **`make`** target exists.
-10. No skipping the **mandatory skill search**.
+10. No skipping the **mandatory skill search** or **semantic discovery** (AGENTS.md §13 and §16).
 11. No **`print()`** for production logging (use **`logging`**).
 12. No cross-request mutable globals — use request-scoped dependencies.

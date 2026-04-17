@@ -4,11 +4,11 @@
 <!-- - Related procedure: docs/procedures/update-or-create-rule.md -->
 <!-- - Spec reference: spec §4 -->
 
-**Purpose:** [FULL SKILL] How to author or update AGENTS.md per §4. Covers all 14 required sections, navigation guidance, and machine interface. Per spec §26.4 item 48.
+**Purpose:** [FULL SKILL] How to author or update AGENTS.md per §4. Covers all required sections (§4.1 items 1–16), navigation guidance, and machine interface. Per spec §26.4 item 48.
 
 ## Purpose
 
-One paragraph. AGENTS.md is the most important file in the repository. It is the default policy surface for all agents. Writing it correctly means every required section has substantive content (not just a heading), the instruction hierarchy is accurate, and all 14 sections per spec §4.1 are present.
+One paragraph. AGENTS.md is the most important file in the repository. It is the default policy surface for all agents. Writing it correctly means every required section has substantive content (not just a heading), the instruction hierarchy is accurate, and all §4.1 sections (including Python procedures and semantic discovery) are present.
 
 ## When to Invoke
 
@@ -20,7 +20,7 @@ One paragraph. AGENTS.md is the most important file in the repository. It is the
 
 ## Prerequisites
 
-spec/spec.md §4 read completely. All 14 required sections known. Current AGENTS.md read. The change to make is clearly defined.
+spec/spec.md §4 read completely. All §4.1 required sections known. Current AGENTS.md read. The change to make is clearly defined.
 
 ## Relevant Files/Areas
 
@@ -29,9 +29,9 @@ AGENTS.md (root), apps/api/AGENTS.md, packages/*/AGENTS.md, spec/spec.md §4
 ## Step-by-Step Method
 
 Numbered steps:
-1. Read spec/spec.md §4.1 — memorize all 14 required sections
+1. Read spec/spec.md §4.1 — memorize all required sections (items 1–16)
 2. Read the current AGENTS.md completely
-3. Identify the section to add/update (which of the 14 requires change)
+3. Identify the section to add/update (which §4.1 item requires change)
 4. For section 1 (Mission): write one paragraph per project from idea.md §2
 5. For section 2 (Hierarchy): ensure all 8 levels listed with correct precedence
 6. For section 3 (Workflow): all 12 steps including mandatory skill search
@@ -48,7 +48,7 @@ No specific make targets for AGENTS.md editing, but: `make audit:self` after cha
 
 ## Validation Checklist
 
-- [ ] All 14 §4.1 sections present with substantive content
+- [ ] All §4.1 sections present with substantive content
 - [ ] Instruction hierarchy table complete and correct (8 levels)
 - [ ] Mandatory skill search procedure complete in section 13
 - [ ] Navigation section covers: repo layout, canonical commands, validation, handoff format
@@ -62,7 +62,7 @@ No specific make targets for AGENTS.md editing, but: `make audit:self` after cha
 
 ## Handoff Expectations
 
-Updated AGENTS.md committed, no contradictions, all 14 sections verified.
+Updated AGENTS.md committed, no contradictions, all §4.1 sections verified.
 
 ## Related Procedures
 
