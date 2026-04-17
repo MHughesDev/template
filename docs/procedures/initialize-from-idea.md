@@ -1,17 +1,25 @@
-# docs/procedures/initialize-from-idea.md
+---
+doc_id: "5.15"
+title: "Initialize from idea"
+section: "Procedures"
+summary: "Runs structured repository initialization from idea.md using the initialization engine."
+updated: "2026-04-17"
+---
 
-## Purpose
+# 5.15 — Initialize from idea
+
+## 5.15.1 Purpose
 
 Execute structured repository initialization from a completed `idea.md` using the
 initialization engine. Produces a deterministic, auditable initialization PR.
 
-## Trigger / when to use
+## 5.15.2 Trigger / when to use
 
 - When cloning this template for a new project
 - After filling `idea.md` completely for the first time
 - When re-initializing after a significant archetype change (rare)
 
-## Prerequisites
+## 5.15.3 Prerequisites
 
 - `idea.md` filled out completely with no `<!--` placeholders in required sections
 - INIT_META block present in `idea.md` with `initialized: false`
@@ -19,18 +27,18 @@ initialization engine. Produces a deterministic, auditable initialization PR.
 - Docker and Docker Compose available
 - `make idea:validate` passes with zero errors
 
-## Exact commands
+## 5.15.4 Exact commands
 
 ```text
 make idea:validate       # must pass before proceeding
 make idea:parse          # produces init-manifest.json — review it
 make idea:plan           # dry-run: print decisions without executing (optional review step)
 make idea:execute        # execute all decisions; opens PR when done
-# OR the all-in-one:
+# 5.15 — Initialize from idea
 make init:from-idea      # validate + parse + execute sequentially
 ```
 
-## Ordered steps
+## 5.15.5 Ordered steps
 
 1. Fill `idea.md` completely. Validate: `make idea:validate`
 2. Review resolved decisions: `make idea:plan`
@@ -46,7 +54,7 @@ make init:from-idea      # validate + parse + execute sequentially
    `git branch -d feature/idea-init-engine && git push origin --delete feature/idea-init-engine`
 8. Run `./setup.sh` (or `./run.sh` if already set up) to boot the initialized project.
 
-## Expected artifacts / outputs
+## 5.15.6 Expected artifacts / outputs
 
 - `init-manifest.json` — the resolved initialization plan (commit it)
 - Modified `idea.md` §18 initialization log
@@ -57,14 +65,14 @@ make init:from-idea      # validate + parse + execute sequentially
 - Seeded `queue/queue.csv` with initial work items
 - Initialization PR on `feature/idea-init-engine`
 
-## Validation checks
+## 5.15.7 Validation checks
 
 - `make queue:validate` — queue schema and lifecycle
 - `make audit:self` — full repo self-audit
 - `make test` — all tests pass (stubs generate passing placeholder tests)
 - `make lint` — no lint errors in generated code
 
-## Rollback / failure handling
+## 5.15.8 Rollback / failure handling
 
 - Parser failures: fix `idea.md` validation errors, re-run `make idea:parse`
 - Profile script failures: check `init-manifest.log`, fix the failing script, re-run
@@ -74,7 +82,7 @@ make init:from-idea      # validate + parse + execute sequentially
 - To fully reset: delete `init-manifest.json`, reset `idea.md` INIT_META to
   `initialized: false`, and re-run.
 
-## Handoff expectations
+## 5.15.9 Handoff expectations
 
 After the initialization PR merges:
 
@@ -83,18 +91,18 @@ After the initialization PR merges:
 - Next agent reads queue top row and begins implementation work
 - `docs/agents/supervision-guide.md` reviewed by human maintainer
 
-## Related procedures
+## 5.15.10 Related procedures
 
 - `docs/procedures/scaffold-domain-module.md`
 - `docs/procedures/start-queue-item.md`
 - `docs/procedures/validate-idea-md.md`
 
-## Related prompts
+## 5.15.11 Related prompts
 
 - `prompts/repo_initializer.md`
 - `prompts/domain_modeler.md`
 
-## Related rules
+## 5.15.12 Related rules
 
 - `.cursor/rules/global.md` (mandatory skill search before execution)
 - `.cursor/rules/queue.md` (queue lifecycle)

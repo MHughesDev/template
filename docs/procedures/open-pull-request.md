@@ -1,4 +1,12 @@
-# docs/procedures/open-pull-request.md
+---
+doc_id: "5.17"
+title: "open pull request"
+section: "Procedures"
+summary: "SOP: Create PR with title, description template, evidence, labels, queue linkage."
+updated: "2026-04-17"
+---
+
+# 5.17 — open pull request
 
 <!-- CROSS-REFERENCES -->
 <!-- - Template: .github/PULL_REQUEST_TEMPLATE.md -->
@@ -6,23 +14,23 @@
 
 **Purpose:** SOP: Create PR with title, description template, evidence, labels, queue linkage. Per spec §26.5 item 143 and §8.3.
 
-## Purpose
+## 5.17.1 Purpose
 
 A well-formed PR provides all context needed for review without the reviewer asking questions. Evidence is embedded in the description.
 
-## Trigger / When to Use
+## 5.17.2 Trigger / When to Use
 
 After validate-change.md passes. All CI checks expected to be green.
 
-## Prerequisites
+## 5.17.3 Prerequisites
 
 All validation passing. Branch pushed to origin. PR template (.github/PULL_REQUEST_TEMPLATE.md) read.
 
-## Exact Commands
+## 5.17.4 Exact Commands
 
 `git push -u origin <branch>`, then open PR via GitHub UI or `gh pr create`.
 
-## Ordered Steps
+## 5.17.5 Ordered Steps
 
 1. Push branch: `git push -u origin queue/<id>-slug`
 2. Open PR targeting `main` branch
@@ -39,21 +47,21 @@ All validation passing. Branch pushed to origin. PR template (.github/PULL_REQUE
 5. Add labels: category (api, docs, infra), type (feature, fix, chore, security)
 6. Wait for CI to complete — if CI fails, fix before requesting review
 
-## Expected Artifacts / Outputs
+## 5.17.6 Expected Artifacts / Outputs
 
 Open PR with green CI, queue ID in title, full evidence in description.
 
-## Validation Checks
+## 5.17.7 Validation Checks
 
 - [ ] PR title contains queue ID
 - [ ] CI passing (all checks green)
 - [ ] Description has evidence (commands run, output)
 - [ ] Labels added
 
-## Rollback or Failure Handling
+## 5.17.8 Rollback or Failure Handling
 
 If CI fails after PR opened: fix on the same branch (add more commits), do not reopen.
 
-## Handoff Expectations
+## 5.17.9 Handoff Expectations
 
 PR URL in queue notes. Human reviewer can approve and merge.

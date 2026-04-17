@@ -1,4 +1,12 @@
-# docs/procedures/README.md
+---
+doc_id: "5.0"
+title: "Procedures overview"
+section: "Procedures"
+summary: "Procedures index. Lists all SOPs with one-line descriptions and links. These are canonical workflows written for agents first, usable by..."
+updated: "2026-04-17"
+---
+
+# 5.0 — Procedures overview
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §3 (Required Workflow), CONTRIBUTING.md -->
@@ -6,11 +14,11 @@
 
 **Purpose:** Procedures index. Lists all SOPs with one-line descriptions and links. These are canonical workflows written for agents first, usable by humans. Per spec §26.5 item 138.
 
-## What Are Procedures?
+## 5.0.1 What Are Procedures?
 
 Brief explanation: procedures (SOPs) are canonical workflows. Each is written in exactly-ordered steps with exact commands. Agents use them to navigate complex recurring tasks without guesswork. Linked from AGENTS.md §3 (Required Workflow step 5).
 
-## Index of All Procedures
+## 5.0.2 Index of All Procedures
 
 Ordered list of all procedure files with one-line descriptions and links. Ordered by most-commonly-used first:
 

@@ -1,48 +1,56 @@
-# docs/procedures/incident-rollback.md
+---
+doc_id: "5.14"
+title: "incident rollback"
+section: "Procedures"
+summary: "SOP for incident-rollback."
+updated: "2026-04-17"
+---
+
+# 5.14 — incident rollback
 
 <!-- CROSS-REFERENCES -->
 <!-- - Per spec §26.5 and §28.3 -->
 
 **Purpose:** SOP for incident-rollback. Per spec §8.3 required fields.
 
-## Purpose
+## 5.14.1 Purpose
 
 One paragraph describing what this procedure accomplishes and why it exists as a standalone SOP.
 
-## Trigger / When to Use
+## 5.14.2 Trigger / When to Use
 
 Specific conditions that trigger this procedure.
 
-## Prerequisites
+## 5.14.3 Prerequisites
 
 What must be true before starting this procedure.
 
-## Exact Commands
+## 5.14.4 Exact Commands
 
 All make targets and CLI commands used in this procedure:
 - `make <target>` — purpose
 
-## Ordered Steps
+## 5.14.5 Ordered Steps
 
 Numbered, exact, actionable steps. Reference exact make targets. Include checkpoints.
 1. Step one
 2. Step two
 CHECKPOINT: verification command
 
-## Expected Artifacts / Outputs
+## 5.14.6 Expected Artifacts / Outputs
 
 What is produced when this procedure completes successfully.
 
-## Validation Checks
+## 5.14.7 Validation Checks
 
 - [ ] Primary validation passes
 - [ ] make audit:self passes if applicable
 - [ ] Documentation updated if applicable
 
-## Rollback or Failure Handling
+## 5.14.8 Rollback or Failure Handling
 
 What to do if this procedure fails at any step.
 
-## Handoff Expectations
+## 5.14.9 Handoff Expectations
 
 What the next agent or human reviewer needs to continue from this procedure's output.

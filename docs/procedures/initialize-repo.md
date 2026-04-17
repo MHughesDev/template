@@ -1,4 +1,12 @@
-# docs/procedures/initialize-repo.md
+---
+doc_id: "5.16"
+title: "initialize repo"
+section: "Procedures"
+summary: "SOP for initializing the repo from idea.md. The canonical procedure that the repo_initializer prompt follows. Turns a blank template into..."
+updated: "2026-04-17"
+---
+
+# 5.16 — initialize repo
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: prompts/repo_initializer.md, .cursor/commands/initialize.md -->
@@ -6,15 +14,15 @@
 
 **Purpose:** SOP for initializing the repo from idea.md. The canonical procedure that the repo_initializer prompt follows. Turns a blank template into a configured project. Per spec §28.3 item 281 and §8.3.
 
-## Purpose
+## 5.16.1 Purpose
 
 Full sentence describing: this procedure turns the blank template repository into a configured, working project by reading idea.md, scaffolding domain modules, configuring profiles, seeding the queue, and producing an initialization PR.
 
-## Trigger / When to Use
+## 5.16.2 Trigger / When to Use
 
 When idea.md has been filled out completely (all 17 sections, no placeholder HTML comments) and the template needs to be initialized for a specific project.
 
-## Prerequisites
+## 5.16.3 Prerequisites
 
 - idea.md filled with real content (all 17 sections)
 - `make idea:validate` passes
@@ -24,7 +32,7 @@ When idea.md has been filled out completely (all 17 sections, no placeholder HTM
 
 **Related prompts and skills:** [`prompts/repo_initializer.md`](../../prompts/repo_initializer.md), [`skills/init/idea-validator.md`](../../skills/init/idea-validator.md), [`skills/init/archetype-mapper.md`](../../skills/init/archetype-mapper.md), [`skills/init/profile-resolver.md`](../../skills/init/profile-resolver.md), [`skills/init/queue-seeder.md`](../../skills/init/queue-seeder.md).
 
-## Exact Commands
+## 5.16.4 Exact Commands
 
 List of all make targets used in this procedure:
 - `make idea:validate` — Phase 1: validate idea.md
@@ -35,7 +43,7 @@ List of all make targets used in this procedure:
 - `make lint && make fmt && make typecheck && make test` — Phase 6: validate
 - `make audit:self` — Phase 6: spec compliance check
 
-## Ordered Steps
+## 5.16.5 Ordered Steps
 
 The 6-phase procedure per spec §27.4. Each phase with numbered sub-steps and checkpoint commands.
 
@@ -84,7 +92,7 @@ CHECKPOINT: queue:validate passes
 24. Run `make audit:self`
 25. Create initialization PR with full evidence per step 5-6 outputs
 
-## Expected Artifacts / Outputs
+## 5.16.6 Expected Artifacts / Outputs
 
 - Initialization PR with evidence of all 6 phases
 - Updated: README.md, pyproject.toml, .env.example, docker-compose.yml, AGENTS.md
@@ -93,7 +101,7 @@ CHECKPOINT: queue:validate passes
 - Seeded: queue/queue.csv with items from idea.md §12
 - Passing: all CI checks on the initialization PR
 
-## Validation Checks
+## 5.16.7 Validation Checks
 
 - [ ] make idea:validate passes
 - [ ] All bounded contexts from idea.md §4.2 have modules
@@ -103,10 +111,10 @@ CHECKPOINT: queue:validate passes
 - [ ] make queue:validate passes
 - [ ] make audit:self passes
 
-## Rollback or Failure Handling
+## 5.16.8 Rollback or Failure Handling
 
 If any phase fails: stop. Do not proceed to next phase. Fix the failing step and re-run the phase from the beginning. For Phase 6 failures: fix the lint/type/test error before creating the PR.
 
-## Handoff Expectations
+## 5.16.9 Handoff Expectations
 
 Initialization PR opened with full evidence. PR description includes: phases completed, commands run with output, files changed, CI results. First queue item identified and ready for next agent to process.

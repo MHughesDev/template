@@ -1,4 +1,12 @@
-# docs/procedures/start-queue-item.md
+---
+doc_id: "5.21"
+title: "start queue item"
+section: "Procedures"
+summary: "SOP: Claim top queue row, create branch, read relevant docs."
+updated: "2026-04-17"
+---
+
+# 5.21 — start queue item
 
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: AGENTS.md §9, prompts/queue_processor.md -->
@@ -6,23 +14,23 @@
 
 **Purpose:** SOP: Claim top queue row, create branch, read relevant docs. Per spec §26.5 item 139 and §8.3.
 
-## Purpose
+## 5.21.1 Purpose
 
 Correctly starting a queue item prevents the most common failure modes: starting blocked work, missing acceptance criteria, or skipping the mandatory skill search.
 
-## Trigger / When to Use
+## 5.21.2 Trigger / When to Use
 
 When ready to begin processing the next queue item. After any previous item is archived or when assigned to queue processing.
 
-## Prerequisites
+## 5.21.3 Prerequisites
 
 queue/QUEUE_INSTRUCTIONS.md read. Previous queue item archived (or confirmed none). make queue:validate passes.
 
-## Exact Commands
+## 5.21.4 Exact Commands
 
 `make queue:top-item`, `make queue:validate`, `make skills:list`, `git checkout -b queue/<id>-slug`
 
-## Ordered Steps
+## 5.21.5 Ordered Steps
 
 1. Run **`make queue:top-item`** — read the JSON line (full top row; all columns). Use `make queue:peek` if you need raw CSV lines.
 2. Read the COMPLETE summary column — this is the work contract; do not skip
@@ -37,11 +45,11 @@ queue/QUEUE_INSTRUCTIONS.md read. Previous queue item archived (or confirmed non
 11. Document understanding: list acceptance criteria, files to change, risks
 12. Store plan in PR description draft or queue notes
 
-## Expected Artifacts / Outputs
+## 5.21.6 Expected Artifacts / Outputs
 
 Branch created with correct naming. Plan documented. Relevant skills read and noted.
 
-## Validation Checks
+## 5.21.7 Validation Checks
 
 - [ ] Top item read completely
 - [ ] Dependencies verified in queuearchive.csv
@@ -50,10 +58,10 @@ Branch created with correct naming. Plan documented. Relevant skills read and no
 - [ ] Branch named queue/<id>-slug
 - [ ] Plan documented
 
-## Rollback or Failure Handling
+## 5.21.8 Rollback or Failure Handling
 
 If blocked: follow docs/procedures/handle-blocked-work.md. Do not start implementation on a blocked item.
 
-## Handoff Expectations
+## 5.21.9 Handoff Expectations
 
 Branch created, plan documented, ready to begin implementation.

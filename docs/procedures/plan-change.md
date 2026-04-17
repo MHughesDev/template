@@ -1,4 +1,12 @@
-# docs/procedures/plan-change.md
+---
+doc_id: "5.18"
+title: "plan change"
+section: "Procedures"
+summary: "SOP: Create implementation plan with acceptance criteria, file impact, risks, scope bounds."
+updated: "2026-04-17"
+---
+
+# 5.18 — plan change
 
 <!-- CROSS-REFERENCES -->
 <!-- - Skill: skills/agent-ops/task-planning.md -->
@@ -6,23 +14,23 @@
 
 **Purpose:** SOP: Create implementation plan with acceptance criteria, file impact, risks, scope bounds. Per spec §26.5 item 140 and §8.3.
 
-## Purpose
+## 5.18.1 Purpose
 
 The plan is the contract between planning and implementation. Without it, agents scope-creep, miss criteria, and produce unverifiable changes.
 
-## Trigger / When to Use
+## 5.18.2 Trigger / When to Use
 
 After start-queue-item.md (branch created, queue item read). Before any code is written.
 
-## Prerequisites
+## 5.18.3 Prerequisites
 
 Queue item read completely. Relevant skills read. Source files read. AGENTS.md §5 read.
 
-## Exact Commands
+## 5.18.4 Exact Commands
 
 No make targets for planning itself. All commands are for reading: `make queue:top-item`, `make queue:peek`, `make skills:list`.
 
-## Ordered Steps
+## 5.18.5 Ordered Steps
 
 1. Restate acceptance criteria VERBATIM from the queue summary — no paraphrasing
 2. Read every file mentioned in the summary (and their imports)
@@ -34,11 +42,11 @@ No make targets for planning itself. All commands are for reading: `make queue:t
 8. Write definition of done: verifiable criteria for "complete"
 9. Break into ordered, independently-committable steps
 
-## Expected Artifacts / Outputs
+## 5.18.6 Expected Artifacts / Outputs
 
 Plan document stored in PR description draft or queue notes. Format per skills/agent-ops/task-planning.md output section.
 
-## Validation Checks
+## 5.18.7 Validation Checks
 
 - [ ] Acceptance criteria verbatim from task
 - [ ] File list exhaustive (no surprises)
@@ -46,10 +54,10 @@ Plan document stored in PR description draft or queue notes. Format per skills/a
 - [ ] Scope bounds explicit (3+ non-goals)
 - [ ] Definition of done is verifiable
 
-## Rollback or Failure Handling
+## 5.18.8 Rollback or Failure Handling
 
 If plan reveals the task is larger than expected: split into smaller tasks, create additional queue items, get approval before proceeding.
 
-## Handoff Expectations
+## 5.18.9 Handoff Expectations
 
 Plan document complete and stored. Ready to begin implementation.

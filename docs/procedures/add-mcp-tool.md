@@ -1,29 +1,37 @@
-# Procedure: Add an MCP Tool
+---
+doc_id: "5.2"
+title: "Add an MCP Tool"
+section: "Procedures"
+summary: "Adds MCP tools by exposing FastAPI routes that surface as OpenAPI-derived MCP tools."
+updated: "2026-04-17"
+---
 
-## Purpose
+# 5.2 — Add an MCP Tool
+
+## 5.2.1 Purpose
 
 Add a new MCP tool to the application, either by exposing a FastAPI endpoint
 or by adding a small route that maps to the behavior you need.
 
-## Trigger
+## 5.2.2 Trigger
 
 - New AI-accessible capability needed
 - Existing endpoint needs MCP exposure with custom behavior
 
-## Prerequisites
+## 5.2.3 Prerequisites
 
 - `fastapi-mcp` installed (see `pyproject.toml`)
 - MCP module mounted in `apps/api/src/main.py`
 - Understanding of MCP tool design principles
 
-## How tools are built
+## 5.2.4 How tools are built
 
 `fastapi-mcp` generates MCP tools from the app's **OpenAPI** schema. Each
 operation becomes a tool named by its `operation_id`. There is no `@mcp.tool()`
 decorator in this library — add or reuse **FastAPI routes** with clear
 docstrings and type hints.
 
-## Method A: Expose an existing FastAPI endpoint
+## 5.2.5 Method A: Expose an existing FastAPI endpoint
 
 If you add a new FastAPI route anywhere under the mounted app, it becomes an MCP
 tool automatically (subject to optional tag/operation filtering in
@@ -54,7 +62,7 @@ mcp = FastApiMCP(
 )
 ```
 
-## Method B: Add a dedicated MCP-oriented route
+## 5.2.6 Method B: Add a dedicated MCP-oriented route
 
 Use this when the tool should not live in a domain module (e.g. a minimal
 connectivity check or an aggregation wrapper).
@@ -78,7 +86,7 @@ connectivity check or an aggregation wrapper).
    package free of business rules beyond wiring.
 4. Restart the server — the tool appears alongside auto-generated tools
 
-## Tool design rules
+## 5.2.7 Tool design rules
 
 1. **One action per tool.** Don't combine read-and-update or create-and-submit.
 2. **Clear docstrings.** The AI model reads these to decide when to call the tool.
@@ -86,7 +94,7 @@ connectivity check or an aggregation wrapper).
 4. **No generic tools.** Never expose `run_sql`, `execute_shell`, or `call_api`.
 5. **Declare side effects.** If the tool sends email or modifies external state, say so in the docstring.
 
-## Adding auth to MCP
+## 5.2.8 Adding auth to MCP
 
 Protect MCP endpoints using `AuthConfig` and FastAPI dependencies:
 
@@ -105,7 +113,7 @@ mcp = FastApiMCP(
 
 See `fastapi_mcp.types.AuthConfig` for OAuth and metadata options.
 
-## Validation
+## 5.2.9 Validation
 
 - [ ] Server starts without errors
 - [ ] `/mcp` endpoint is accessible
@@ -114,7 +122,7 @@ See `fastapi_mcp.types.AuthConfig` for OAuth and metadata options.
 - [ ] Tool docstring is clear and accurate
 - [ ] Auth works if enabled (unauthorized callers rejected)
 
-## Testing with MCP Inspector
+## 5.2.10 Testing with MCP Inspector
 
 ```bash
 npx @modelcontextprotocol/inspector http://localhost:8000/mcp
@@ -123,7 +131,7 @@ npx @modelcontextprotocol/inspector http://localhost:8000/mcp
 This opens a browser UI where you can see all registered tools, their schemas,
 and invoke them manually.
 
-## Removing MCP
+## 5.2.11 Removing MCP
 
 To remove MCP from the project entirely:
 

@@ -1,48 +1,56 @@
-# docs/procedures/database-migration.md
+---
+doc_id: "5.7"
+title: "database migration"
+section: "Procedures"
+summary: "SOP for database-migration."
+updated: "2026-04-17"
+---
+
+# 5.7 — database migration
 
 <!-- CROSS-REFERENCES -->
 <!-- - Per spec §26.5 and §28.3 -->
 
 **Purpose:** SOP for database-migration. Per spec §8.3 required fields.
 
-## Purpose
+## 5.7.1 Purpose
 
 One paragraph describing what this procedure accomplishes and why it exists as a standalone SOP.
 
-## Trigger / When to Use
+## 5.7.2 Trigger / When to Use
 
 Specific conditions that trigger this procedure.
 
-## Prerequisites
+## 5.7.3 Prerequisites
 
 What must be true before starting this procedure.
 
-## Exact Commands
+## 5.7.4 Exact Commands
 
 All make targets and CLI commands used in this procedure:
 - `make <target>` — purpose
 
-## Ordered Steps
+## 5.7.5 Ordered Steps
 
 Numbered, exact, actionable steps. Reference exact make targets. Include checkpoints.
 1. Step one
 2. Step two
 CHECKPOINT: verification command
 
-## Expected Artifacts / Outputs
+## 5.7.6 Expected Artifacts / Outputs
 
 What is produced when this procedure completes successfully.
 
-## Validation Checks
+## 5.7.7 Validation Checks
 
 - [ ] Primary validation passes
 - [ ] make audit:self passes if applicable
 - [ ] Documentation updated if applicable
 
-## Rollback or Failure Handling
+## 5.7.8 Rollback or Failure Handling
 
 What to do if this procedure fails at any step.
 
-## Handoff Expectations
+## 5.7.9 Handoff Expectations
 
 What the next agent or human reviewer needs to continue from this procedure's output.
