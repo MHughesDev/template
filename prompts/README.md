@@ -57,7 +57,8 @@ Table of all templates in this directory. Columns: Template file, Role, When to 
 - refactorer.md — Behavior-preserving refactoring
 - documentation_updater.md — Documentation sync
 - migration_author.md — Database migrations
-- queue_processor.md — Queue item execution
+- queue_processor.md — Queue item execution (implementation; pair with queue_worker_executor.md)
+- queue_worker_executor.md — **Canonical queue worker**: read QUEUE_INSTRUCTIONS + QUEUE_AGENT_PROMPT; **never** edit queue.csv / queuearchive.csv
 - release_manager.md — Release preparation
 - dependency_upgrade_agent.md — Dependency upgrades
 - security_review_agent.md — Security-focused review

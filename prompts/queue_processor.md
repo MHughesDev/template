@@ -1,15 +1,14 @@
 # prompts/queue_processor.md
 ---
-purpose: "Execute single top-row queue item: claim, branch, implement, validate, archive, handoff."
-when_to_use: "When processing the queue. Always read queue/QUEUE_AGENT_PROMPT.md first — that is the primary contract."
+purpose: "Execute single top-row queue item: claim, branch, implement, validate, handoff. (Queue CSV updates: operator-only — see prompts/queue_worker_executor.md.)"
+when_to_use: "When processing the queue. Read queue/QUEUE_AGENT_PROMPT.md and prompts/queue_worker_executor.md — executor must not edit queue.csv or queuearchive.csv."
 required_inputs:
   - name: "queue_top_row"
     description: "The full top data row of queue/queue.csv"
 expected_outputs:
   - "Completed implementation on queue/<id>-slug branch"
   - "PR opened with full evidence"
-  - "Queue row moved to queuearchive.csv"
-  - "Handoff document"
+  - "Handoff document with operator steps for archive (human runs make queue:archive*)"
 validation_expectations:
   - "All acceptance criteria in queue summary met"
   - "make audit:self passes"
@@ -18,20 +17,18 @@ constraints:
   - "Process ONE queue item at a time"
   - "Do not reorder the queue"
   - "Do not process a blocked item (dependencies not met)"
+  - "NEVER edit queue/queue.csv or queue/queuearchive.csv; NEVER run make queue:archive-top or make queue:archive as executor — use queue_worker_executor.md"
 linked_commands:
   - "make queue:top-item"
   - "make queue:peek"
-  - "make queue:validate"
-  - "make queue:archive-top"
-  - "make queue:archive"
   - "make audit:self"
 linked_procedures:
   - "docs/procedures/start-queue-item.md"
   - "docs/procedures/implement-change.md"
   - "docs/procedures/validate-change.md"
   - "docs/procedures/open-pull-request.md"
-  - "docs/procedures/archive-queue-item.md"
   - "docs/procedures/handoff.md"
+  - "docs/procedures/archive-queue-item.md (operator only)"
 linked_skills:
   - "skills/agent-ops/queue-triage.md"
   - "skills/agent-ops/task-planning.md"
@@ -42,6 +39,7 @@ linked_skills:
 
 <!-- CROSS-REFERENCES -->
 <!-- - PRIMARY CONTRACT: queue/QUEUE_AGENT_PROMPT.md (read that first) -->
+<!-- - EXECUTOR NO-CSV POLICY: prompts/queue_worker_executor.md -->
 <!-- - This prompt supplements QUEUE_AGENT_PROMPT.md with role and validation details -->
 
 ## Preamble (MANDATORY)
@@ -57,8 +55,8 @@ The preamble for queue processing is more extensive than other prompts because i
 6. Read every path in the 'related_files' column (comma-separated) before coding and before closing the item
 7. Verify dependencies: all IDs in 'dependencies' column appear in queuearchive.csv with status=done
 8. If dependencies not met: document blocked_by in notes, STOP
-9. After work is complete: archive with **`make queue:archive-top`**, **`make queue:validate`**, then **`make queue:pr-merge`** (GitHub sync) when the completed item is the top row
-This is mandatory per AGENTS.md §13."
+9. After work is complete: **stop** — a **human operator** archives (`make queue:archive-top`, `make queue:validate`, `make queue:pr-merge`). Executors do not edit CSV or run archive targets.
+This is mandatory per AGENTS.md §13 and **`prompts/queue_worker_executor.md`**."
 
 ## Role Definition
 
@@ -73,8 +71,8 @@ The queue processor follows these phases:
 4. **Implement**: use implementation_agent.md approach — small increments, validate after each
 5. **Validate**: run make audit:self — all checks green
 6. **PR**: open PR with [<id>] in title, full evidence in description
-7. **Archive + GitHub**: run **`make queue:archive-top`** (top row = item you finished; no id) or `make queue:archive QUEUE_ID=<id>`, **`make queue:validate`**, then **`make queue:pr-merge`** to merge the PR and delete the branch — or merge in the UI after archive
-8. **Handoff**: write handoff document per skills/agent-ops/implementation-handoff.md
+7. **Handoff + operator**: PR description lists evidence; handoff tells the operator to run **`make queue:archive-top`** (or `make queue:archive`) and **`make queue:pr-merge`** per `docs/procedures/archive-queue-item.md`
+8. **Handoff doc**: write per skills/agent-ops/implementation-handoff.md
 
 ## Validation Checklist
 
@@ -85,5 +83,5 @@ The queue processor follows these phases:
 - [ ] make audit:self passes
 - [ ] PR title contains queue ID
 - [ ] PR description has full evidence
-- [ ] Queue row archived with status=done, completed_date, PR URL in notes
+- [ ] Handoff lists operator archive steps (executor did not edit queue CSV)
 - [ ] Handoff document written
