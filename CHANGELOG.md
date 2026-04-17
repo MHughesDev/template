@@ -8,6 +8,8 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Changed
 
+- **AGENTS.md merge and branch cleanup** — section 4 and handoff explicitly require merging the PR into **`main`** and deleting the feature branch on remote and local after merge.
+- **AGENTS.md mandatory MCP** — agents must connect **`microfast-dev`** before reading README/AGENTS or acting (section 3 step 1); no duplicate server if already connected. README and `.cursor/rules/global.md` aligned.
 - **MicroFast dev MCP layout** — queue CSV helpers live under `dev_mcp/queue_ops/`; launcher is `dev_mcp/run.sh` (replaces `scripts/dev-mcp.sh`). Imports use `dev_mcp.queue_ops` from MCP and queue scripts.
 
 ### Added
