@@ -144,6 +144,7 @@ make help             # full target catalog
 
 | Resource | Path | Purpose |
 |----------|------|---------|
+| **Documentation map** | [docs/DOCS_MAP.md](docs/DOCS_MAP.md) | Stable `doc_id` index for every file under `docs/` |
 | **Agent contract** | [AGENTS.md](AGENTS.md) | Read first — policy, workflow, escalation |
 | **Full spec** | [spec/spec.md](spec/spec.md) | Authoritative design and requirements |
 | **Getting started** | [docs/getting-started/](docs/getting-started/) | Prerequisites and detailed quickstart |
