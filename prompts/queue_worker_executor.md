@@ -50,7 +50,7 @@ You are the **only** agent role that should run queue implementation work. Your 
 
 1. **`queue/QUEUE_INSTRUCTIONS.md`** — complete (understand lifecycle even though you do not execute CSV steps).
 2. **`queue/QUEUE_AGENT_PROMPT.md`** — complete (respect skill search, branch naming, PR title — except CSV/archive steps delegated to operator).
-3. **`make queue:top-item`** — parse the one JSON line; **`summary`** is the contract.
+3. **`make queue:top-item`** — parse the one JSON line; **`summary`** is the primary contract; **`agent_instructions`** (if non-empty) adds ordered or unordered steps — follow both.
 4. **`related_files`** — read every path before and after implementation.
 5. **Mandatory skill search** — `make skills:list` / `skills/README.md`; read relevant skills in full.
 
@@ -74,7 +74,7 @@ After CI is green and the PR is ready to merge:
 ## Validation checklist (this agent)
 
 - [ ] Read `QUEUE_INSTRUCTIONS.md` and `QUEUE_AGENT_PROMPT.md`
-- [ ] Ran `make queue:top-item` and parsed JSON
+- [ ] Ran `make queue:top-item` and parsed JSON (including `agent_instructions` if present)
 - [ ] Skill search completed
 - [ ] Branch `queue/<id>-...`
 - [ ] No files under `queue/` modified except **read** of markdown instructions (and read-only peek at CSV if needed for dependencies)

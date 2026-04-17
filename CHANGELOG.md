@@ -8,6 +8,8 @@ This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) versi
 
 ### Added
 
+- **`agent_instructions` column** — `queue/queue.csv` and `queuearchive.csv` include optional per-row instructions for implementation executors (after `summary`). `make queue:top-item` JSON includes it. Validators and archive scripts updated (`scripts/queue_validate.py`, `queue_top_item.py`, `queue_archive.py`); seeders and `idea-parser` emit empty `agent_instructions` by default.
+
 - **Queue worker executor policy** — `prompts/queue_worker_executor.md`: implementation agents read `QUEUE_INSTRUCTIONS.md` and `QUEUE_AGENT_PROMPT.md` but **must not** edit `queue/queue.csv` or `queue/queuearchive.csv` or run archive make targets; human operators own the ledger. `QUEUE_AGENT_PROMPT.md`, `AGENTS.md` §3/§9/§12, `prompts/queue_processor.md`, `.cursor/rules/global.md` and `queue.md` updated accordingly.
 
 - **Agent onboarding** — README and AGENTS.md explicitly require every agent session to read both; AGENTS.md adds re-read before merge/handoff when policy applies; branch cleanup after merge documented. PR template checkboxes for README/AGENTS.md reads and post-merge branch deletion.

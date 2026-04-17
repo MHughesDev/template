@@ -10,7 +10,7 @@ Invariants for **`queue/queue.csv`** and **`queue/queuearchive.csv`**. Canonical
 
 ## Schema
 
-1. **`queue.csv`** header (order): **`id,batch,phase,category,summary,dependencies,related_files,notes,created_date`** (adjust only if **`queue-validate`** and docs agree).
+1. **`queue.csv`** header (order): **`id,batch,phase,category,summary,agent_instructions,dependencies,related_files,notes,created_date`** (adjust only if **`queue-validate`** and docs agree).
 2. **`queuearchive.csv`** includes the same columns **plus** **`status`** and **`completed_date`**.
 3. **`id`**: unique; prefer stable IDs such as **`Q-001`**.
 4. **`category`**: must match **`docs/queue/queue-categories.md`**.

@@ -89,6 +89,7 @@ def _append_rows_from_idea(
                 "phase": str(priority).strip() or "1",
                 "category": category.strip() or "init",
                 "summary": summary.strip(),
+                "agent_instructions": "",
                 "dependencies": "",
                 "related_files": "",
                 "notes": "from idea.md §12",

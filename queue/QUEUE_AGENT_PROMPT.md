@@ -23,9 +23,10 @@ Ordered list of what must be read before processing begins:
 1. This file (QUEUE_AGENT_PROMPT.md) — complete
 2. queue/QUEUE_INSTRUCTIONS.md — complete
 3. Run **`make queue:top-item`** — stdout is one JSON line with **every column** of the top open row; parse it completely
-4. **related_files column** — every comma-separated path (repo-relative); read each file or directory before coding and before marking the item complete
-5. All files/docs referenced in the summary column (if not already covered by related_files)
-6. Skills (mandatory search — see below)
+4. **`agent_instructions` column** — if non-empty, treat as ordered or unordered steps for the executor; follow together with the **summary** (summary remains the primary contract).
+5. **related_files column** — every comma-separated path (repo-relative); read each file or directory before coding and before marking the item complete
+6. All files/docs referenced in the summary column (if not already covered by related_files)
+7. Skills (mandatory search — see below)
 
 ## MANDATORY SKILL SEARCH (Non-Negotiable)
 
@@ -45,7 +46,7 @@ Before planning or writing any code:
 
 Numbered rules for queue item execution:
 1. Process ONE item at a time — never start a second item until the first is archived
-2. Read the COMPLETE summary — it is the work contract; partial reads cause scope failures
+2. Read the COMPLETE **summary** and non-empty **agent_instructions** — together they form the work contract; partial reads cause scope failures
 3. Verify ALL dependencies in queuearchive.csv with status=done before starting
 4. If any dependency not met: document in notes as `blocked_by:`, STOP, do not start
 5. Plan before coding: acceptance criteria, file impact, risks, scope bounds

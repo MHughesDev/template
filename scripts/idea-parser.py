@@ -845,6 +845,7 @@ def _build_queue_seed_rows(
                 "phase": item.get("priority", "1") or "1",
                 "category": item.get("category", "init") or "init",
                 "summary": item["summary"],
+                "agent_instructions": "",
                 "dependencies": "",
                 "related_files": "",
                 "notes": "seeded from idea.md §12 via init-manifest",
