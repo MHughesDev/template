@@ -15,6 +15,7 @@ OPEN_FIELDS: list[str] = [
     "category",
     "summary",
     "agent_instructions",
+    "constraints",
     "dependencies",
     "related_files",
     "notes",

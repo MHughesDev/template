@@ -30,6 +30,7 @@ Table defining each column in queue.csv:
 | category | string | yes | Work category — must be in docs/queue/queue-categories.md |
 | summary | string | yes | Elaborative work contract ≥100 chars. Must include: goal, acceptance criteria, definition of done, out-of-scope, dependencies |
 | agent_instructions | string | no | Instructions for the **implementation executor** (see `prompts/queue_worker_executor.md`): numbered steps for sequence, or bullets/prose if order-free. Empty if none. |
+| constraints | string | no | Specific characteristics and implementation requirements that must be respected: UI/UX interaction behaviors, color hex codes, design system rules, API contracts, naming conventions, or any non-negotiable quality/style properties. Think of these as "characteristics" of the work. |
 | dependencies | string | no | Comma-separated IDs of items that must be done before this one |
 | related_files | string | no | Comma-separated repo-relative paths (code and docs) the agent MUST read before completing the item; use quoted CSV fields if paths contain commas |
 | notes | string | no | Operator notes: blockers, in-progress branch, PR URLs, completion info (executors do not edit) |

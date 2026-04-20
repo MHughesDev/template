@@ -24,9 +24,10 @@ Ordered list of what must be read before processing begins:
 2. queue/QUEUE_INSTRUCTIONS.md — complete
 3. Run **`make queue:top-item`** — stdout is one JSON line with **every column** of the top open row; parse it completely
 4. **`agent_instructions` column** — if non-empty, treat as ordered or unordered steps for the executor; follow together with the **summary** (summary remains the primary contract).
-5. **related_files column** — every comma-separated path (repo-relative); read each file or directory before coding and before marking the item complete
-6. All files/docs referenced in the summary column (if not already covered by related_files)
-7. Skills (mandatory search — see below)
+5. **`constraints` column** — if non-empty, contains non-negotiable implementation characteristics (UI/UX interaction behaviors, hex color codes, API contracts, naming conventions, etc.); MUST be respected throughout implementation.
+6. **related_files column** — every comma-separated path (repo-relative); read each file or directory before coding and before marking the item complete
+7. All files/docs referenced in the summary column (if not already covered by related_files)
+8. Skills (mandatory search — see below)
 
 ## MANDATORY SKILL SEARCH (Non-Negotiable)
 
