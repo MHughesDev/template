@@ -15,7 +15,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-python
       - run: make lint
       - run: make fmt-check
@@ -23,7 +23,7 @@ jobs:
   typecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-python
       - run: make typecheck
 
@@ -47,7 +47,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-python
       - name: Set DB URL
         run: |
@@ -72,14 +72,14 @@ jobs:
       - migrate-dry-run
       - implementation-plan-check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: make image-build
       - run: make image-scan || true
 
   docs-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-python
       - run: make docs-generate
       - run: make docs-check
@@ -87,7 +87,7 @@ jobs:
   migrate-dry-run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-python
       - name: Alembic SQL render (offline dry-run)
         run: |
@@ -109,27 +109,27 @@ jobs:
   implementation-plan-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-python
       - run: scripts/implementation-plan-ci.sh
 
   k8s-validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-python
       - run: make k8s-validate
 
   queue-validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-python
       - run: make queue-validate
 
   audit-self:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: ./.github/actions/setup-python
       - run: make audit-self
