@@ -27,6 +27,14 @@ Invariants for **`queue/queue.csv`** and **`queue/queuearchive.csv`**. Canonical
 3. **Done / cancelled / superseded** rows move to **`queuearchive.csv`** with **`status`** and dates — **append-only** archive.
 4. Never **delete** a row without an archived copy when the lifecycle requires retention.
 
+## New row insertion order (dependency-first)
+
+1. When adding an open row, enforce **dependency-first ordering** in `queue.csv`.
+2. A row must be inserted **after** any open rows listed in its `dependencies`.
+3. Do not place a row above an unresolved prerequisite, even if batch/phase/FIFO heuristics suggest otherwise.
+4. If there is an ordering tradeoff, dependency correctness wins; document the tradeoff in `notes`.
+5. Run **`make queue:validate`** immediately after adding the row.
+
 ## Executor agents (implementation)
 
 Agents implementing queue items MUST follow **`prompts/queue_worker_executor.md`**: **read** `QUEUE_INSTRUCTIONS.md` and `QUEUE_AGENT_PROMPT.md`, use **`make queue:top-item`**, **never** edit **`queue.csv`** or **`queuearchive.csv`**, **never** run **`make queue:archive-top`** / **`make queue:archive`**. **Human operators** (or designated automation) perform CSV updates and archive commands.

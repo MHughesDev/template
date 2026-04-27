@@ -32,6 +32,8 @@ Table explaining each queue file:
 
 Explanation of the single-lane model: at most one processor claims the top row at a time. Top row = active item. Processors read the entire row and treat summary as the contract. Why: coordination between agents without complex locking.
 
+When maintainers add new rows, ordering is dependency-first: insert a new row only after any open prerequisite rows listed in its `dependencies`. Batch/phase/FIFO conventions apply only after dependency ordering is satisfied.
+
 ## 12.3.4 Lifecycle States
 
 Table per spec §17.3:
