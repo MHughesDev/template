@@ -59,6 +59,16 @@ Rules for single-lane processing:
 4. Blocked top item: document blocker in notes; optionally process next ready item
 5. Never reorder queue.csv rows without human approval
 
+## Adding New Rows (Dependency-First Ordering)
+
+When adding a new row to `queue/queue.csv`, apply dependency-first ordering:
+1. Parse the new row's `dependencies` as queue IDs.
+2. Place the new row **after** every open prerequisite row it depends on.
+3. If all dependencies are already `status=done` in `queuearchive.csv`, place the row after existing currently-ready items in its batch/phase lane (or at the end of the open queue when no batch policy is active).
+4. Never insert a row above an open row that it depends on.
+5. If insertion cannot satisfy both dependency order and current FIFO/batch conventions, preserve dependency order first and add an explanatory note in `notes`.
+6. Run `make queue:validate` after insertion.
+
 ## Claiming Work
 
 How to claim a queue item:
