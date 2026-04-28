@@ -47,7 +47,7 @@ For **every** task, follow this sequence:
 2. Read **[README.md](README.md)** (repository map, quickstart, key resources — required for every agent session).
 3. Read this **[AGENTS.md](AGENTS.md)** completely (the authoritative agent contract).
 4. **Discover relevant docs (each turn):** use **semantic / vector similarity search**, **@** references, or your environment’s **codebase search** over this repository to surface **any** relevant **skills**, **`docs/procedures/`**, **`prompts/`**, **`docs/`**, or **rules** that match the user’s query or your current step — then **read** the best-matching files. Do not skip obvious procedures or skills because you only used keyword grep. See **section 16**.
-5. Read the task description or queue item. **For queue work:** run **`make queue:top-item`** first — stdout is **one line** of JSON with every column of the top open row in **`queue/queue.csv`** (`id`, `batch`, `phase`, `category`, `summary`, `agent_instructions`, `dependencies`, `related_files`, `notes`, `created_date`). Parse it; **`summary`** is the contract; follow **`agent_instructions`** when non-empty.
+5. Read the task description or queue item. **For queue work:** run **`make queue:top-item`** first — stdout is **one line** of JSON with every column of the top open non-human-ops row in **`queue/queue.csv`** (`id`, `batch`, `phase`, `category`, `complexity`, `goal`, `acceptance_criteria`, `touch_files`, `context_files`, and more). Parse it; **`goal`** and **`acceptance_criteria`** are the contract; follow **`agent_instructions`** when non-empty; only write paths listed in **`touch_files`**.
 6. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`** and **`queue/QUEUE_AGENT_PROMPT.md`**, and follow **`prompts/queue_worker_executor.md`** — implementation agents **do not** edit **`queue/queue.csv`** or **`queue/queuearchive.csv`** (operators own the ledger; see QUEUE_AGENT_PROMPT §Executor vs operator).
 7. **Mandatory — search `skills/` for relevant skills:** run `make skills:list` or read **`skills/README.md`**; scan titles and every **When to invoke** section; read every relevant skill in full **before** planning or writing code.
 8. Read relevant **`docs/procedures/`** for the task type.
@@ -97,6 +97,18 @@ Before writing code, produce a plan (in the PR description or queue notes) that 
 - **Definition of done** — e.g. tests passing, docs updated, queue row archived when applicable.
 
 Do not start implementation until the plan is written down.
+
+**Granularity pre-check (mandatory before writing the plan):**
+
+Before writing the plan, run the Pre-Flight Split Check from
+`queue/QUEUE_AGENT_PROMPT.md` against the current row. If any check fails:
+- Do NOT proceed to implementation
+- Update `notes` with `"ESCALATE: split required — [reason]"`
+- Halt and surface to the human operator in your handoff
+
+An agent that discovers mid-implementation that `touch_files` will exceed the
+complexity limit must stop immediately, document the scope violation in the PR
+description, and open sub-task rows for the remaining work before closing.
 
 ---
 
@@ -155,7 +167,7 @@ Canonical reference: **`queue/QUEUE_INSTRUCTIONS.md`**. Executor contract: **`pr
 Summary:
 
 - The **top data row** of `queue/queue.csv` is the **active** work item for single-lane processing.
-- Read the **entire** top row — the summary is the contract and must be actionable without guesswork.
+- Read the **entire** top row — `goal` and `acceptance_criteria` together form the contract.
 - **Implementation agents** MUST **read** `QUEUE_INSTRUCTIONS.md` and **`queue/QUEUE_AGENT_PROMPT.md`** and MUST **not** edit **`queue/queue.csv`** or **`queue/queuearchive.csv`** or run **`make queue:archive-top`** / **`make queue:archive`** (operators own the ledger).
 - **Never delete** a queue row without archiving per procedure.
 - **Blocked** items stay in `queue.csv` with clear notes (updated by **operators**; executors document blockers in PR/issue/handoff).
@@ -163,6 +175,13 @@ Summary:
 - Run **`make queue:validate`** after any queue CSV change (**operators**).
 - Use **`make queue:top-item`** for the active item as **one JSON line** (all columns). Use **`make queue:peek`** for raw CSV lines (header + first row).
 - If two writers collide: stop, re-validate, reconcile using **`main`** as the integration truth.
+- The top row's `context_files` lists paths to read for context (ordered,
+  read-only). The top row's `touch_files` lists the only paths the agent may
+  write. Never edit a `context_files` path.
+- `category=human-ops` rows are tracked in `queue.csv` but skipped by
+  `make queue:top-item`. Never claim or implement a `human-ops` row.
+- Complexity must be `S` or `M`. If the top row is `L`, do not claim it —
+  escalate for decomposition.
 
 ---
 
@@ -304,7 +323,11 @@ Prefer **`make`** targets over ad hoc commands. See the **Makefile** for the ful
 
 **Validation:** `make audit:self` runs a comprehensive check — use before merging substantial work.
 
-**Queue:** **`make queue:top-item`** (one JSON line — full top row), `make queue:peek` (raw CSV snippet), **`make queue:archive-top`** / **`make queue:archive`**, **`make queue:validate`**, then **`make queue:pr-merge`** (after archive — `gh` merge + delete branch for GitHub).
+**Queue:** `make queue:top-item` (one JSON line — full top row including
+`goal`, `acceptance_criteria`, `touch_files`, `context_files`),
+`make queue:peek` (raw CSV snippet), `make queue:archive-top` /
+`make queue:archive`, `make queue:validate`, then `make queue:pr-merge`
+(after archive).
 
 ### Handoff format
 

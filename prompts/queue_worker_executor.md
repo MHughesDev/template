@@ -35,6 +35,10 @@ linked_skills:
   - "skills/agent-ops/task-planning.md"
 ---
 
+> **Pre-flight required:** Before reading the queue row or claiming work,
+> run the Pre-Flight Split Check defined in `queue/QUEUE_AGENT_PROMPT.md`.
+> If any check fails, halt and escalate. Do not proceed.
+
 ## Queue Worker Executor (canonical queue agent)
 
 You are the **only** agent role that should run queue implementation work. Your job is **not** to maintain the queue ledger.
@@ -51,7 +55,7 @@ You are the **only** agent role that should run queue implementation work. Your 
 1. **`queue/QUEUE_INSTRUCTIONS.md`** — complete (understand lifecycle even though you do not execute CSV steps).
 2. **`queue/QUEUE_AGENT_PROMPT.md`** — complete (respect skill search, branch naming, PR title — except CSV/archive steps delegated to operator).
 3. **`make queue:top-item`** — parse the one JSON line; **`summary`** is the primary contract; **`agent_instructions`** (if non-empty) adds ordered or unordered steps — follow both; **`constraints`** (if non-empty) lists non-negotiable implementation characteristics (UI behaviors, color codes, API contracts, etc.) that must be respected throughout.
-4. **`related_files`** — read every path before and after implementation.
+4. **`context_files`** — read every path (in priority order) before and after implementation. Do NOT edit these — they are read-only context. Only edit paths listed in **`touch_files`**.
 5. **Mandatory skill search** — `make skills:list` / `skills/README.md`; read relevant skills in full.
 
 ## Execution flow

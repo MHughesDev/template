@@ -8,37 +8,107 @@
 
 ## Overview
 
-One paragraph. This file is the authoritative SOP for the CSV-based agent work queue. Any agent working on queue items must read this file completely before starting. The queue is NOT a product backlog — it is an agent work orchestration lane with strict lifecycle rules.
+One paragraph. This file is the authoritative SOP for the CSV-based agent work queue. Any agent working on queue items must read this file completely before starting. The queue is NOT a product backlog — it is an agent work orchestration lane with strict lifecycle rules. Every row must declare S or M complexity with enforceable file-count limits. L complexity is forbidden.
 
 ## File Roles
 
 Description of each queue file and its role:
-- `queue/queue.csv` — Open items; top data row = active work item for single-lane processing
+- `queue/queue.csv` — Open items; top data row = active work item for single-lane processing (human-ops rows skipped)
 - `queue/queuearchive.csv` — Historical record; append-only; completed/cancelled/superseded items
 - `queue/QUEUE_AGENT_PROMPT.md` — Executable behavior contract for agents (must read before processing)
+- `queue/QUEUE_SPLIT_TRIGGERS.md` — Quick reference card for split triggers (when a row must be decomposed)
 - `queue/queue.lock` — Optional mutex file; present = someone is actively processing
 - `queue/audit.log` — Append-only JSON lines for all claim/release/archive events
 
 ## Schema (Column Definitions)
 
-Table defining each column in queue.csv:
-| Column | Type | Required | Description |
-|--------|------|----------|-------------|
-| id | string | yes | Unique identifier (e.g., Q-001). Never reuse IDs. |
-| batch | string | no | Batch label for coordinated release trains (e.g., "1-mvp") |
-| phase | string | no | Phase within batch for ordering (e.g., "1", "2") |
-| category | string | yes | Work category — must be in docs/queue/queue-categories.md |
-| summary | string | yes | Elaborative work contract ≥100 chars. Must include: goal, acceptance criteria, definition of done, out-of-scope, dependencies |
-| agent_instructions | string | no | Instructions for the **implementation executor** (see `prompts/queue_worker_executor.md`): numbered steps for sequence, or bullets/prose if order-free. Empty if none. |
-| constraints | string | no | Specific characteristics and implementation requirements that must be respected: UI/UX interaction behaviors, color hex codes, design system rules, API contracts, naming conventions, or any non-negotiable quality/style properties. Think of these as "characteristics" of the work. |
-| dependencies | string | no | Comma-separated IDs of items that must be done before this one |
-| related_files | string | no | Comma-separated repo-relative paths (code and docs) the agent MUST read before completing the item; use quoted CSV fields if paths contain commas |
-| notes | string | no | Operator notes: blockers, in-progress branch, PR URLs, completion info (executors do not edit) |
-| created_date | date | yes | ISO 8601 date (YYYY-MM-DD) |
+The queue CSV uses the following columns. **Columns marked Required=yes must be
+non-empty for `make queue:validate` to pass.** All paths in file columns are
+repo-relative (e.g. `apps/api/src/routes/health.py`).
 
-Archive-only columns:
-| status | string | yes | "done", "cancelled", or "superseded" |
-| completed_date | date | yes | ISO 8601 date when archived |
+| Column | Type | Required | Description |
+|---|---|---|---|
+| `id` | string | yes | Unique identifier. Format: `Q-NNN` for top-level, `Q-NNNa`, `Q-NNNb` for sub-tasks from a decomposed parent. Never reuse IDs. |
+| `batch` | string | no | Batch label for coordinated release trains (e.g. `1-mvp`). |
+| `phase` | string | no | Ordering within a batch (e.g. `1`, `2`, `3`). |
+| `category` | string | yes | Must exactly match a value in `docs/queue/queue-categories.md`. |
+| `complexity` | enum | yes | **`S` or `M` only. `L` is forbidden and fails validation.** S = 1–2 touch_files, single atomic deliverable. M = 3 touch_files max, one feature boundary crossed. |
+| `goal` | string | yes | 1–2 sentences. What is being built and why. No acceptance criteria here. Max 300 chars. |
+| `acceptance_criteria` | string | yes | Numbered list of verifiable conditions. Each item must be independently checkable by the agent or a reviewer. Minimum 1 item required. Use `\|` as line separator within the CSV cell (e.g. `1. Tests pass \| 2. No new warnings`). |
+| `scope_boundary` | string | no | Explicit comma-separated list of files, modules, API surfaces, or behaviors that are OUT OF SCOPE for this item. Agent must not touch anything listed here. |
+| `agent_instructions` | string | no | Numbered steps if execution order matters. Prose or bullets if order-free. Empty if the goal and acceptance criteria are sufficient. |
+| `constraints` | string | no | Non-negotiable implementation characteristics: naming conventions, color tokens, API contracts, design system rules, performance budgets. |
+| `context_files` | string | no | **Ordered** comma-separated repo-relative paths the agent reads for context. First listed = highest priority if context budget is tight. Agent reads but does NOT edit these files. |
+| `touch_files` | string | yes | Comma-separated repo-relative paths the agent will write, create, or delete. **Hard limit: ≤2 for S, ≤3 for M.** Validation fails if this limit is exceeded for the declared complexity. |
+| `verification_cmds` | string | no | Task-specific shell or make commands to run as proof of done, beyond the global checklist in AGENTS.md. Example: `make test -- -k test_invoice`. |
+| `dependencies` | string | no | Comma-separated IDs that must be in `queuearchive.csv` with `status=done` before this item may be claimed. |
+| `notes` | string | no | Operator channel only. Executors write only branch/PR info here. Do not put implementation detail in notes. |
+| `created_date` | date | yes | ISO 8601 (YYYY-MM-DD). |
+
+**Archive-only columns** (added when a row is moved to `queuearchive.csv`):
+
+| Column | Type | Required | Description |
+|---|---|---|---|
+| `status` | string | yes | `done`, `cancelled`, or `superseded`. |
+| `completed_date` | date | yes | ISO 8601 date when archived. |
+
+## Granularity Rules — L Tasks Are Forbidden
+
+Every row in `queue.csv` must be complexity `S` or `M`. Complexity `L` is
+**forbidden** and will cause `make queue:validate` to fail. This is not
+negotiable and is not overridable by operator notes.
+
+### Complexity definitions
+
+**S — Small:**
+- `touch_files` contains ≤ 2 paths
+- Single atomic deliverable: one widget, one function, one test file, one doc
+  section, one config change
+- Does not add new entries to `pubspec.yaml`, `pyproject.toml`, `package.json`,
+  or equivalent dependency manifests
+
+**M — Medium:**
+- `touch_files` contains ≤ 3 paths
+- Crosses at most one feature/module boundary
+- If a new package dependency is required, that dependency addition is a
+  separate S task that must complete first (and be listed in `dependencies`)
+
+### Split triggers — a row MUST be decomposed when any of these fire
+
+Before adding any row to `queue.csv`, apply this checklist. If **any** item is
+true, the row is L complexity and must be split before entering the queue:
+
+1. `touch_files` would exceed the limit for the declared complexity
+2. The `goal` sentence contains "and" describing two **distinct** behaviors or
+   deliverables
+3. Tests are a major deliverable alongside implementation (tests become a
+   separate S row with a dependency on the implementation row)
+4. A new package/dependency is required (dependency addition = separate S row
+   first, listed in `dependencies` of the implementation row)
+5. The work crosses two or more feature module or layer boundaries
+6. `acceptance_criteria` has more than 5 items (split at natural seams)
+7. The human operator cannot describe the row's output in one commit message
+
+### Sub-task ID convention
+
+When a parent task is decomposed:
+- The parent ID (e.g. `Q-042`) is **never** added to the queue directly
+- Sub-tasks use lettered suffixes: `Q-042a`, `Q-042b`, `Q-042c`
+- Each sub-task gets its own full row with its own `goal`, `acceptance_criteria`,
+  `touch_files`, and `context_files`
+- Sub-tasks chain via `dependencies`: `Q-042b` lists `Q-042a` in its
+  `dependencies` field; `Q-042c` lists `Q-042b`
+- Each sub-task sees only its own slice — never the full parent picture
+
+### human-ops category
+
+Items that are ops, secrets, Kubernetes config, CI pipeline config, or
+infrastructure work that no coding agent should execute must use
+`category=human-ops`. These rows are tracked in the queue for audit purposes
+but are **skipped** by `make queue:top-item` (they are never returned as the
+active work item). They must still pass all other validation rules.
+
+See `docs/procedures/queue-decomposition.md` for the full SOP on decomposing L tasks.
 
 ## Lifecycle State Machine
 
@@ -54,14 +124,16 @@ State transitions per spec §17.3. Each state with location, transition rules, a
 
 Rules for single-lane processing:
 1. Only ONE item may be "In Progress" at a time under the default policy
-2. The top data row of queue.csv is the next item to process
+2. The top data row of queue.csv (skipping human-ops rows) is the next item to process
 3. Before starting: verify all dependencies are in queuearchive.csv with status=done
 4. Blocked top item: document blocker in notes; optionally process next ready item
 5. Never reorder queue.csv rows without human approval
 
 ## Adding New Rows (Dependency-First Ordering)
 
-When adding a new row to `queue/queue.csv`, apply dependency-first ordering:
+0. **Apply the split triggers checklist** (see "Granularity Rules" section
+   above). If any trigger fires, decompose into sub-tasks first and add those
+   instead. Never add an `L`-complexity row directly.
 1. Parse the new row's `dependencies` as queue IDs.
 2. Place the new row **after** every open prerequisite row it depends on.
 3. If all dependencies are already `status=done` in `queuearchive.csv`, place the row after existing currently-ready items in its batch/phase lane (or at the end of the open queue when no batch policy is active).
@@ -72,9 +144,13 @@ When adding a new row to `queue/queue.csv`, apply dependency-first ordering:
 ## Claiming Work
 
 How to claim a queue item:
-1. Run **`make queue:top-item`** — stdout is **one line** of JSON with the full top row (all columns). Parse it; **`summary`** is the contract. Optional: `make queue:peek` for raw CSV (header + first data row).
+1. Run **`make queue:top-item`** — stdout is **one line** of JSON with the full top non-human-ops row (all columns). Parse it; **`goal`** and **`acceptance_criteria`** together form the contract. Optional: `make queue:peek` for raw CSV (header + first data row).
 2. Verify dependencies met (all IDs in queuearchive.csv with status=done)
-3. Read every path in `related_files` (split on commas; trim whitespace) before implementation and again before PR/handoff — treat as mandatory context alongside the summary. Read **`agent_instructions`** (if non-empty) and follow it together with the summary.
+3. Read every path in `context_files` (split on commas, trim whitespace) in
+   priority order — first listed is highest priority if your context window is
+   tight. Read `agent_instructions` if non-empty. Do NOT edit `context_files`
+   paths — they are read-only context. The files you may write are in
+   `touch_files` only.
 4. Create branch: `git checkout -b queue/<id>-short-slug`
 5. Update notes column (optional but recommended): "in_progress | branch: queue/<id>-slug"
 6. Run mandatory skill search before starting implementation
@@ -131,8 +207,21 @@ If two processors collide on queue.csv:
 ## Validation
 
 Run `make queue:validate` after any modification. Validation checks:
-- Header row matches expected columns
+- Header row matches expected columns (new 16-column schema)
 - No duplicate IDs across queue.csv and queuearchive.csv
 - All categories in docs/queue/queue-categories.md
-- Summary length ≥100 chars
 - No circular dependencies
+
+**New checks (granularity enforcement):**
+- `complexity` must be `S` or `M` — `L` or any other value fails
+- For `S` rows: `touch_files` must contain ≤ 2 comma-separated paths
+- For `M` rows: `touch_files` must contain ≤ 3 comma-separated paths
+- `goal` must be present and ≤ 300 characters
+- `acceptance_criteria` must be present and contain at least one numbered item
+  (must match pattern `1.` or `1)`)
+- `touch_files` must be present and non-empty
+- `category=human-ops` rows: skip active-item selection but still validate
+  all other required fields
+- Column count must match the new header exactly (new columns: `complexity`,
+  `goal`, `acceptance_criteria`, `scope_boundary`, `context_files`,
+  `touch_files`, `verification_cmds`; removed: `summary`, `related_files`)

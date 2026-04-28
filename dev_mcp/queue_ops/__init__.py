@@ -13,18 +13,31 @@ OPEN_FIELDS: list[str] = [
     "batch",
     "phase",
     "category",
-    "summary",
+    "complexity",
+    "goal",
+    "acceptance_criteria",
+    "scope_boundary",
     "agent_instructions",
     "constraints",
+    "context_files",
+    "touch_files",
+    "verification_cmds",
     "dependencies",
-    "related_files",
     "notes",
     "created_date",
 ]
 
 ARCHIVE_HEADER: list[str] = OPEN_FIELDS + ["status", "completed_date"]
 
-MIN_SUMMARY_LEN = 100
+MIN_SUMMARY_LEN = 100  # kept for archive rows that pre-date migration
+MAX_GOAL_LEN = 300
+
+VALID_COMPLEXITY = {"S", "M"}
+
+# touch_files limits per complexity
+TOUCH_LIMITS: dict[str, int] = {"S": 2, "M": 3}
+
+HUMAN_OPS_CATEGORY = "human-ops"
 
 
 def load_open_rows(path: Path) -> list[dict[str, str]]:
@@ -44,16 +57,17 @@ def load_open_rows(path: Path) -> list[dict[str, str]]:
 
 
 def top_item_dict(repo_root: Path) -> dict[str, str] | None:
-    """First open row as a dict, or ``None`` if there are no data rows."""
+    """First open, non-human-ops row as a dict, or ``None`` if none available."""
 
     path = repo_root / "queue" / "queue.csv"
     if not path.is_file():
         return None
     rows = load_open_rows(path)
-    if not rows:
-        return None
-    row = rows[0]
-    return {k: (row.get(k) or "").strip() for k in OPEN_FIELDS}
+    for row in rows:
+        if row.get("category", "").strip().lower() == HUMAN_OPS_CATEGORY:
+            continue
+        return {k: (row.get(k) or "").strip() for k in OPEN_FIELDS}
+    return None
 
 
 def top_item_json_line(repo_root: Path) -> str:
@@ -70,14 +84,15 @@ def top_item_json_line(repo_root: Path) -> str:
         return json.dumps(
             {"error": "invalid_csv", "detail": str(e)}, ensure_ascii=False
         )
-    if not rows:
-        return json.dumps(
-            {"error": "no_open_items", "message": "queue.csv has no data rows"},
-            ensure_ascii=False,
-        )
-    row = rows[0]
-    item = {k: (row.get(k) or "").strip() for k in OPEN_FIELDS}
-    return json.dumps(item, ensure_ascii=False)
+    for row in rows:
+        if row.get("category", "").strip().lower() == HUMAN_OPS_CATEGORY:
+            continue
+        item = {k: (row.get(k) or "").strip() for k in OPEN_FIELDS}
+        return json.dumps(item, ensure_ascii=False)
+    return json.dumps(
+        {"error": "no_open_items", "message": "queue.csv has no non-human-ops data rows"},
+        ensure_ascii=False,
+    )
 
 
 def _read_rows(path: Path) -> tuple[list[str], list[dict[str, str]]]:
@@ -112,13 +127,49 @@ def validate_open(path: Path) -> list[str]:
     if header != OPEN_FIELDS:
         errors.append(f"{path}: expected header {OPEN_FIELDS}, got {header}")
         return errors
+
     for i, row in enumerate(rows, start=1):
-        summary = (row.get("summary") or "").strip()
-        if summary and len(summary) < MIN_SUMMARY_LEN:
+        row_id = (row.get("id") or f"row-{i}").strip()
+
+        # --- Granularity checks ---
+
+        complexity = (row.get("complexity") or "").strip()
+        if complexity not in VALID_COMPLEXITY:
             errors.append(
-                f"{path} row {i}: summary must be empty or >= {MIN_SUMMARY_LEN} chars "
-                f"(got {len(summary)})",
+                f"{path} row {row_id}: complexity must be S or M, got {complexity!r}"
             )
+
+        touch_files_raw = (row.get("touch_files") or "").strip()
+        if not touch_files_raw:
+            errors.append(f"{path} row {row_id}: touch_files is required and must be non-empty")
+        elif complexity in TOUCH_LIMITS:
+            touch_count = len([p for p in touch_files_raw.split(",") if p.strip()])
+            limit = TOUCH_LIMITS[complexity]
+            if touch_count > limit:
+                errors.append(
+                    f"{path} row {row_id}: {complexity} complexity allows "
+                    f"≤{limit} touch_files, got {touch_count}"
+                )
+
+        goal = (row.get("goal") or "").strip()
+        if not goal:
+            errors.append(f"{path} row {row_id}: goal is required and must be non-empty")
+        elif len(goal) > MAX_GOAL_LEN:
+            errors.append(
+                f"{path} row {row_id}: goal exceeds {MAX_GOAL_LEN} chars ({len(goal)})"
+            )
+
+        ac = (row.get("acceptance_criteria") or "").strip()
+        if not ac:
+            errors.append(f"{path} row {row_id}: acceptance_criteria is required")
+        else:
+            import re
+            if not re.search(r"(^|\|)\s*1[.)]", ac):
+                errors.append(
+                    f"{path} row {row_id}: acceptance_criteria must contain "
+                    "at least one numbered item (e.g. '1.')"
+                )
+
     return errors
 
 

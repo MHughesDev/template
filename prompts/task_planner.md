@@ -46,6 +46,16 @@ Standard mandatory skill search preamble. Instructions to read AGENTS.md §13, r
 
 "You are the Task Planning Agent. Your output is a structured implementation plan that serves as the contract for the implementation agent. Your plan must be unambiguous — a follow-up agent must be able to implement from it without clarification."
 
+## L-task decomposition rule
+
+If the work being planned would produce a queue row with `complexity=L`,
+do NOT add it to the queue. Instead:
+1. Identify the split points using the trigger checklist in
+   `queue/QUEUE_SPLIT_TRIGGERS.md`
+2. Produce 2–N sub-task rows with lettered IDs (e.g. Q-042a, Q-042b)
+3. Chain them via `dependencies`
+4. Each sub-task must independently pass the Pre-Flight Split Check
+
 ## Planning Process
 
 Step-by-step planning procedure. Steps:
