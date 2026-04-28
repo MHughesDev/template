@@ -1,5 +1,5 @@
 # apps/api/Dockerfile
-FROM python:3.12-slim AS builder
+FROM python:3.14-slim AS builder
 WORKDIR /build
 COPY pyproject.toml README.md ./
 COPY apps apps
@@ -7,7 +7,7 @@ COPY packages packages
 RUN pip install --no-cache-dir --upgrade pip \
  && pip install --no-cache-dir .
 
-FROM python:3.12-slim AS runner
+FROM python:3.14-slim AS runner
 WORKDIR /app
 # Install curl for HEALTHCHECK, then apply security updates for the slim base (Trivy / CI).
 RUN apt-get update \
