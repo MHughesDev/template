@@ -7,6 +7,26 @@
 
 **Purpose:** Executable behavior contract for agents processing queue work. Injected as context when an agent processes queue items. Per spec §2 and §26.6 item 193.
 
+## Pre-Flight Split Check (mandatory before claiming)
+
+Before claiming the top row, answer all five questions. If any answer is NO or
+YES where indicated, STOP — do not claim the item. Update the row's `notes`
+field with `"ESCALATE: split required — [reason]"` and halt.
+
+| # | Check | Pass condition |
+|---|---|---|
+| 1 | Is `complexity` `S` or `M`? | Must be S or M. If L or missing: STOP. |
+| 2 | Does `touch_files` count respect the limit? | S: ≤2 files. M: ≤3 files. If over: STOP. |
+| 3 | Does `goal` contain "and" for two distinct behaviors? | If yes: STOP. |
+| 4 | Is `category` = `human-ops`? | If yes: skip this row, advance to next. |
+| 5 | Are tests a major deliverable alongside implementation in the same row? | If yes: STOP. |
+
+All five must pass before you proceed to claim the row.
+
+**When you stop:** write to the queue notes field exactly:
+`"ESCALATE: split required — [brief reason]"` then halt execution and surface
+the issue to the human operator via your handoff output.
+
 ## Role Definition
 
 State the agent's role and authority scope: "You are processing a queue item from queue/queue.csv. Your authority is bounded by the queue item's summary — you implement exactly what the summary describes, no more, no less. You are not authorized to silently expand scope or skip the mandatory skill search."
@@ -25,8 +45,8 @@ Ordered list of what must be read before processing begins:
 3. Run **`make queue:top-item`** — stdout is one JSON line with **every column** of the top open row; parse it completely
 4. **`agent_instructions` column** — if non-empty, treat as ordered or unordered steps for the executor; follow together with the **summary** (summary remains the primary contract).
 5. **`constraints` column** — if non-empty, contains non-negotiable implementation characteristics (UI/UX interaction behaviors, hex color codes, API contracts, naming conventions, etc.); MUST be respected throughout implementation.
-6. **related_files column** — every comma-separated path (repo-relative); read each file or directory before coding and before marking the item complete
-7. All files/docs referenced in the summary column (if not already covered by related_files)
+6. **context_files column** — every comma-separated path (repo-relative) in priority order (first listed = highest priority if context is tight); read each before coding and before marking the item complete. Do NOT edit context_files paths — they are read-only. The paths you may write are in **touch_files** only.
+7. All files/docs referenced in the goal/acceptance_criteria (if not already covered by context_files)
 8. Skills (mandatory search — see below)
 
 ## MANDATORY SKILL SEARCH (Non-Negotiable)

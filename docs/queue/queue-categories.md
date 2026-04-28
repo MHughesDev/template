@@ -27,6 +27,7 @@ Table of default queue categories. Columns: Category, Description, Example Summa
 | refactor | Structure improvements without behavior change | "Extract repository layer from invoice service to separate file." |
 | security | Security hardening, CVE fixes, auth changes | "Rotate JWT signing key and verify all sessions invalidated." |
 | devops | CI/CD, monitoring, observability | "Add Prometheus metrics to API health endpoints." |
+| `human-ops` | Operational, infrastructure, secrets, CI/CD, or Kubernetes work that must be performed by a human operator. Coding agents skip rows with this category. Examples: secrets audit, K8s deployment, SSL cert renewal, Firestore migration in production, CI pipeline configuration. | "Rotate production DB credentials and update K8s secret." |
 
 ## 12.1.2 Adding a Category
 

@@ -1,5 +1,5 @@
 # scripts/queue_top_item.py
-"""Print the first open queue row as one line (JSON) for agents."""
+"""Print the first open, non-human-ops queue row as one line (JSON) for agents."""
 
 from __future__ import annotations
 
@@ -7,7 +7,9 @@ import json
 import sys
 from pathlib import Path
 
-from dev_mcp.queue_ops import OPEN_FIELDS, load_open_rows
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from dev_mcp.queue_ops import OPEN_FIELDS, HUMAN_OPS_CATEGORY, load_open_rows
 
 
 def main() -> int:
@@ -23,13 +25,16 @@ def main() -> int:
         err = {"error": "invalid_csv", "detail": str(e)}
         print(json.dumps(err, ensure_ascii=False), file=sys.stderr)
         return 1
-    if not rows:
-        empty = {"error": "no_open_items", "message": "queue.csv has no data rows"}
-        print(json.dumps(empty, ensure_ascii=False))
+
+    for row in rows:
+        if row.get("category", "").strip().lower() == HUMAN_OPS_CATEGORY:
+            continue
+        item = {k: (row.get(k) or "").strip() for k in OPEN_FIELDS}
+        print(json.dumps(item, ensure_ascii=False))
         return 0
-    row = rows[0]
-    item = {k: (row.get(k) or "").strip() for k in OPEN_FIELDS}
-    print(json.dumps(item, ensure_ascii=False))
+
+    empty = {"error": "no_open_items", "message": "queue.csv has no non-human-ops data rows"}
+    print(json.dumps(empty, ensure_ascii=False))
     return 0
 
 

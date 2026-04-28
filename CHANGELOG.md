@@ -4,6 +4,35 @@ All notable changes to this project are documented in this file.
 
 This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) version **1.1.0**. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased] — 2026-04-28
+
+### Changed
+- **Queue schema overhaul:** Replaced `summary` and `related_files` columns
+  with `complexity`, `goal`, `acceptance_criteria`, `scope_boundary`,
+  `context_files`, `touch_files`, and `verification_cmds`. All queue rows
+  must now declare S or M complexity with hard touch_files limits.
+- `queue/QUEUE_INSTRUCTIONS.md`: Added Granularity Rules section; L tasks
+  are forbidden and enforced by validation.
+- `dev_mcp/queue_ops/__init__.py`: Updated `OPEN_FIELDS`, `ARCHIVE_HEADER`,
+  and `validate_open` to enforce the new schema and granularity checks.
+- `scripts/queue_archive.py`, `scripts/queue_top_item.py`: Updated to use new
+  field names; top-item now filters `category=human-ops` rows.
+- `AGENTS.md`: Updated sections 3, 5, 9, and navigation to reference new
+  column names and granularity pre-check requirement.
+- `docs/queue/queue-categories.md`: Added `human-ops` category.
+- `scripts/queue_validate.py`, `scripts/queue_top_item.py`: Fixed sys.path
+  to allow `dev_mcp` import when run as a script (pre-existing bug).
+
+### Added
+- `queue/QUEUE_AGENT_PROMPT.md`: Pre-flight split check block (mandatory
+  before claiming any queue row).
+- `queue/QUEUE_SPLIT_TRIGGERS.md`: Quick reference card for the seven split
+  triggers and common decomposition patterns.
+- `docs/procedures/queue-decomposition.md`: Full SOP for decomposing L tasks
+  into S/M sub-tasks.
+- `prompts/queue_worker_executor.md`: Pre-flight required callout block.
+- `prompts/task_planner.md`: L-task decomposition rule section.
+
 ## [Unreleased]
 
 ### Changed
