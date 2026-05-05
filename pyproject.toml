@@ -25,7 +25,7 @@ dependencies = [
   "httpx>=0.28.0",
   "email-validator>=2.3.0",
   "celery[redis]>=5.4.0",
-  "fastapi-mcp>=0.2",
+  "fastapi-mcp>=0.4.0",
   "mcp>=1.8",
 ]
 
