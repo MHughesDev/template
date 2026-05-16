@@ -19,7 +19,6 @@ Table mapping each script to its Make target and purpose:
 | `fmt.sh` | `make fmt` | Apply ruff formatting |
 | `fmt-check.sh` | `make fmt-check` | Verify ruff formatting (CI) |
 | `codebase-summary.sh` | `make codebase-summary` | Regenerate `CODEBASE_SUMMARY.md` |
-| `implementation-plan-ci.sh` | (CI) | Verify IMPLEMENTATION_PLAN checked paths exist |
 | `typecheck.sh` | `make typecheck` | Run mypy --strict |
 | `test.sh` | `make test`, `make test:unit`, `make test:integration`, `make test:smoke` | Run test suite |
 | `migrate.sh` | `make migrate`, `make migrate:create` | Database migrations |
@@ -53,14 +52,11 @@ Table mapping each script to its Make target and purpose:
 | `validate-idea.sh` | `make idea:validate` | Validate idea.md |
 | `scaffold-module.sh` | `make scaffold:module` | Scaffold domain module |
 | `profile-enable.sh` | `make profile:enable` | Enable optional profile |
-| `idea-to-queue.sh` | `make idea:queue` | Seed queue from idea.md |
 | `generate-env.sh` | `make env:generate` | Generate .env |
-| `inventory-check.sh` | `make inventory:check` | Verify spec-required files |
 | `queue_top_item.py` | (via `queue-top-item.sh`) | First open row as JSON (`dev_mcp.queue_ops`) |
 | `queue_validate.py` | (via `queue-validate.sh`) | CSV schema validation (`dev_mcp.queue_ops`) |
 | `queue_archive.py` | (via `queue-archive.sh`) | Move queue row to archive |
 | `repo_self_audit.py` | (via `audit-self.sh`) | Lightweight audit runner |
-| `inventory_check.py` | (via `inventory-check.sh`) | Check IMPLEMENTATION_PLAN paths |
 
 Skill machinery (invoked via Make, not shell wrappers):
 
