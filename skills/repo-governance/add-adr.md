@@ -4,6 +4,8 @@
 <!-- - Template: docs/adr/template.md -->
 <!-- - Index: docs/adr/README.md -->
 <!-- - Index generator: skills/repo-governance/adr-index-generator.py -->
+<!-- - Format variants: skills/repo-governance/references/adr-templates.md -->
+<!-- - Architecture methodology: skills/repo-governance/architecture-design.md -->
 <!-- - Supersedes: skills/repo-governance/writing-adrs.md -->
 <!-- - Rule: .cursor/rules/documentation.md (ADRs for significant architecture) -->
 <!-- - Rule: .cursor/rules/global.md (architectural decisions need ADR + PR link) -->

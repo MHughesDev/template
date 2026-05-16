@@ -5,6 +5,7 @@
 <!-- - Related prompt: prompts/repo_initializer.md -->
 <!-- - Invoked after: skills/init/idea-validator.md -->
 <!-- - Produces input for: skills/init/queue-seeder.md -->
+<!-- - Phase 1 methodology: skills/repo-governance/architecture-design.md -->
 <!-- - Rule: .cursor/rules/initialization.md -->
 
 **Purpose:** Transform a completed `idea.md` into a fully documented project blueprint by writing every project-specific architecture, API, data, security, operations, and testing document. This skill produces documentation only — no application code, no migrations, no tests. The queue-seeder skill runs after this one and derives queue items from the docs produced here.
