@@ -1,5 +1,5 @@
 ---
-doc_id: "arch-ai-rag"
+doc_id: "2.11"
 title: "ai and rag architecture"
 section: "Architecture"
 status: "pending-init"

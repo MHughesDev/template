@@ -45,6 +45,8 @@ Purpose: Explains system design: contexts, data layer, auth, APIs, errors, and o
 | 2.7 | error handling | `docs/architecture/error-handling.md` | Cross-cutting error handling strategy. |
 | 2.8 | modular monolith | `docs/architecture/modular-monolith.md` | Modular monolith design: bounded contexts, contract boundaries, data ownership, extraction criteria (§12). |
 | 2.9 | system context | `docs/architecture/system-context.md` | System context diagram and description. Shows the system boundary, external actors, and integrations. Populated from `idea.md` §8. |
+| 2.10 | profile interactions | `docs/architecture/profile-interactions.md` | Cross-profile integration behavior and constraints for combined optional profiles. |
+| 2.11 | ai rag | `docs/architecture/ai-rag.md` | Ingestion, embeddings, retrieval, model provider abstraction, and kill-switch behavior. |
 
 ### Section 3 — Development
 
@@ -72,6 +74,7 @@ Purpose: Indexes HTTP API surface: route catalog, error codes, and how docs stay
 | 4.0 | Api overview | `docs/api/README.md` | API documentation index. |
 | 4.1 | endpoints | `docs/api/endpoints.md` | API endpoint catalog. Auto-generated or manually maintained list of all routes with request/response schemas. |
 | 4.2 | error codes | `docs/api/error-codes.md` | Error code taxonomy. Stable codes with descriptions, HTTP status mappings, and client handling guidance. |
+| 4.3 | api versioning | `docs/api/versioning.md` | Versioning policy, active version, deprecation windows, and migration guidance. |
 
 ### Section 5 — Procedures
 
@@ -134,6 +137,7 @@ Purpose: Records architecture decisions: template, status, and the decision inde
 | 7.0 | Adr overview | `docs/adr/README.md` | ADR index. Lists all decisions with status. |
 | 7.1 | template | `docs/adr/template.md` | ADR template for new decisions. |
 | 7.2 | ADR-001 full-stack template vendor | `docs/adr/ADR-001-full-stack-template-vendor.md` | Accepted baseline: mechanical import from fork, SHA pin, bulk-copy frontend, port backend into apps/api. |
+| 7.3 | ADR-0001 initial architecture | `docs/adr/0001-initial-architecture.md` | Foundational project architecture decisions captured at initialization. |
 
 ### Section 8 — Agents
 

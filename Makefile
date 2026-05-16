@@ -15,7 +15,7 @@ SHELL := /usr/bin/env bash
         scaffold-module profile-enable env-generate \
         codebase-summary skill-docs-gen \
         test-scaffold env-sync coverage-ratchet rule-lint adr-index \
-        clean health-check
+        clean health-check project-health
 
 ## help: Show targets (see also: scripts/README.md)
 help:
@@ -246,10 +246,14 @@ clean:
 health-check:
 	@scripts/health-check.sh
 
+## project-health: aggregate repo health checks for docs-first workflow
+project-health:
+	@scripts/project-health.sh
+
 # --- Colon-style aliases (spec §10.2 and docs). GNU Make needs escaped colons in target names.
 .PHONY: skills\:list queue\:peek queue\:top-item queue\:validate queue\:archive queue\:archive-top queue\:pr-merge queue\:graph queue\:analyze audit\:self rules\:check \
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
-        health\:check idea\:validate profile\:enable \
+        health\:check project\:health idea\:validate profile\:enable \
         scaffold\:module test\:unit test\:integration \
         test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed ci\:migrate-dry-run image\:build image\:scan \
         k8s\:render k8s\:validate env\:generate skill\:docs-gen \
@@ -299,3 +303,5 @@ env\:sync: env-sync
 coverage\:ratchet: coverage-ratchet
 rule\:lint: rule-lint
 adr\:index: adr-index
+
+project\:health: project-health

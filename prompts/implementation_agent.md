@@ -97,3 +97,8 @@ Final validation sequence from docs/procedures/validate-change.md:
 - [ ] Docs updated if behavior changed
 - [ ] Queue notes updated
 - [ ] Handoff document written (files changed, commands run, risks, follow-ups)
+
+
+## Queue work precedence
+
+If task source is a queue row, `prompts/queue_worker_executor.md` is the primary executor contract. This prompt is the generic implementation style guide and must not override queue executor constraints.

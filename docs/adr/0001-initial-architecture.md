@@ -1,11 +1,11 @@
 ---
-doc_id: "adr-0001"
+doc_id: "7.3"
 title: "initial architecture decisions"
 section: "ADR"
 status: "pending-init"
 ---
 
-# ADR-0001 — Initial Architecture Decisions
+# 7.3 — ADR-0001 initial architecture decisions
 <!-- status: pending-init -->
 <!-- initialized-by: skills/init/initialize-repo.md -->
 

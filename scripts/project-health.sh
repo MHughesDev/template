@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+echo "[project:health] queue validation"
+make queue:validate
+
+echo "[project:health] docs map invariants"
+python3 scripts/check_docs_map.py
+
+echo "[project:health] docs check"
+make docs:check
+
+echo "[project:health] adr index regeneration check"
+python3 skills/repo-governance/adr-index-generator.py --repo-root . >/dev/null
+
+echo "[project:health] placeholder scan (docs + idea)"
+if rg -n "TODO|TBD|<placeholder>|pending-init|Stub procedure placeholder|Compatibility stub" docs idea.md >/tmp/project_health_placeholders.txt; then
+  echo "Found unresolved placeholders/stubs:"
+  cat /tmp/project_health_placeholders.txt
+  exit 1
+fi
+
+echo "project:health OK"

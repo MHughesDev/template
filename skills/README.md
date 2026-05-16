@@ -4,7 +4,7 @@
 <!-- - Referenced by: AGENTS.md §13 (Mandatory Skill Search), prompts/skill_searcher.md -->
 <!-- - Procedure: docs/procedures/update-or-create-skill.md -->
 
-**Purpose:** Skills library index. Lists all skills by category with one-line descriptions. This is the primary entry point for the mandatory skill search (AGENTS.md §13). Every agent reads this file before beginning any task. Per spec §26.4 item 39.
+**Purpose:** Skills decision guide. Start from a task/use-case, then follow the recommended skills. Category listings remain below for completeness.
 
 ## How to Use This Index
 
@@ -17,6 +17,15 @@ Instructions for agents on how to use this index:
 6. Note machinery files (.py alongside .md) as available automation tools
 
 Reference `prompts/skill_searcher.md` for a structured search subroutine.
+
+
+## Quick task-to-skill guide
+
+- **I need to initialize a repo from idea.md** → `skills/init/idea-validator.md`, `skills/init/initialize-repo.md`, `skills/init/queue-seeder.md`
+- **I need to implement a queue item end-to-end** → `skills/agent-ops/task-planning.md`, `skills/agent-ops/implementation-handoff.md`, `skills/testing/pytest-conventions.md`
+- **I need to add a new bounded context** → `skills/backend/fastapi-router-module.md`, `skills/backend/service-repository-pattern.md`, `skills/testing/api-contract-testing.md`
+- **I need to make architecture decisions** → `skills/repo-governance/writing-adrs.md`, `skills/repo-governance/maintaining-procedural-docs.md`
+- **I need to add security-sensitive changes** → `skills/security/secret-handling.md`, `skills/security/rbac-tenant-isolation.md`, `skills/security/dependency-review.md`
 
 ## Skill Format
 
@@ -33,13 +42,13 @@ Table of all init skills. Columns: Skill file, One-line description, Machinery. 
 - idea-validator.md — Validate idea.md completeness before initialization | idea-validator.py
 - archetype-mapper.md — Map archetype+profiles to concrete scaffolding plan | archetype-mapper.py
 - module-template-generator.md — Generate all files for a domain module | (uses module-scaffolder.py from backend)
-- queue-seeder.md — Populate queue.csv from idea.md §12 | queue-seeder.py
+- queue-seeder.md — Populate queue.csv from initialized docs (idea.md §12 optional hints) | queue-seeder.py
 - profile-resolver.md — Resolve profile enablement with dependency checking | profile-resolver.py
 - env-generator.md — Generate .env.example tailored to enabled profiles | env-generator.py
 
 ### Agent Operations (`skills/agent-ops/`)
 Table of agent-ops skills:
-- idea-init-engine.md — Deterministic init from idea.md via init-manifest.json | (scripts/idea-parser.py, scripts/init-from-idea.py)
+- idea-init-engine.md — Legacy deterministic init reference (do not use for current docs-first flow) | (historical)
 - queue-triage.md [FULL] — Read, interpret, and prioritize queue items | queue-triage.py
 - task-planning.md [FULL] — Decompose tasks with acceptance criteria and risks
 - implementation-handoff.md [FULL] — Write complete handoff documents | handoff-template-generator.py

@@ -1,171 +1,63 @@
 # prompts/repo_initializer.md
 ---
-purpose: "Initialize the repository from a filled idea.md, configuring the entire project machine from scratch."
-when_to_use: "First action after cloning the template with a filled idea.md. Do not use on a repo that is already initialized."
+purpose: "Initialize repository documentation from a fully completed idea.md using AI architectural reasoning (no code scaffolding)."
+when_to_use: "Immediately after idea.md is complete and validated; only when INIT_META.initialized is false."
 required_inputs:
   - name: "idea.md"
-    description: "Fully filled project intake form with all 17 sections completed"
+    description: "Fully completed project intake form (all required sections, no placeholders in critical sections)."
 expected_outputs:
-  - "Initialization PR with all phases completed and CI passing"
-  - "Configured README.md, pyproject.toml, .env.example, docker-compose.yml with project specifics"
-  - "Scaffolded domain modules for each bounded context in idea.md §4"
-  - "Configured profiles per idea.md §5"
-  - "Seeded queue/queue.csv from idea.md §12"
+  - "Project-specific architecture/API/data/security/ops/testing docs under docs/ marked status: current"
+  - "Seeded queue/queue.csv derived from initialized docs and validated"
+  - "Updated idea.md INIT_META initialization fields"
 validation_expectations:
-  - "make lint passes"
-  - "make typecheck passes"
-  - "make test passes (stub tests)"
-  - "make audit:self passes"
+  - "make idea:validate passes"
+  - "make docs:check passes"
   - "make queue:validate passes"
+  - "make lint, make typecheck, make test pass if code was touched"
 constraints:
   - "Does not modify spec/spec.md"
-  - "Does not write final implementations — scaffolds stubs only"
-  - "Does not merge the initialization PR — human reviews first"
+  - "Does not execute deleted/legacy commands (e.g., make idea:queue, make idea:parse)"
+  - "Does not depend on init-manifest.json or scripts/init-from-idea.sh"
 linked_commands:
   - "make idea:validate"
-  - "make scaffold:module"
-  - "make profile:enable"
-  - "make idea:queue"
-  - "make audit:self"
+  - "make docs:check"
+  - "make queue:validate"
+  - "make skills:list"
 linked_procedures:
   - "docs/procedures/initialize-repo.md"
   - "docs/procedures/validate-idea-md.md"
-  - "docs/procedures/scaffold-domain-module.md"
-  - "docs/procedures/enable-profile.md"
 linked_skills:
   - "skills/init/idea-validator.md"
-  - "skills/init/archetype-mapper.md"
-  - "skills/init/profile-resolver.md"
+  - "skills/init/initialize-repo.md"
   - "skills/init/queue-seeder.md"
-  - "skills/init/env-generator.md"
-  - "skills/init/module-template-generator.md"
-  - "skills/backend/fastapi-router-module.md"
 ---
-
-## PRE-EXECUTION CHECKLIST (agent reads this before any other step)
-
-1. Verify `init-manifest.json` exists in the repo root.
-   - If missing: STOP. Tell the user to run `make idea:parse` first and re-invoke.
-   - If present: read it in full before proceeding.
-
-2. Read `init-manifest.json` completely. Your decisions are BOUND to the manifest.
-   You do not infer from idea.md directly — the manifest is the resolved contract.
-   If you disagree with a manifest decision, surface it as an open question in the PR.
-   Do not silently override it.
-
-3. Search `skills/` for relevant skills before executing any step (AGENTS.md §4.1 #13).
-   Minimum skills to read: `skills/agent-ops/queue-triage.md`,
-   `skills/agent-ops/task-planning.md`, `skills/agent-ops/implementation-handoff.md`,
-   `skills/backend/fastapi-router-module.md`, `skills/backend/service-repository-pattern.md`.
-
-4. The orchestrator script (`scripts/init-from-idea.sh`) handles mechanical execution.
-   Your role as the repo_initializer agent is ARCHITECTURAL REVIEW AND COORDINATION:
-   - Confirm the manifest decisions are coherent (flag any that seem wrong)
-   - Ensure profile stubs are wired correctly into main.py
-   - Ensure queue items have rich, agent-executable summaries
-   - Ensure .env.example is complete and correctly commented
-   - Write the initialization PR description evidence
-
-# prompts/repo_initializer.md
-
-<!-- CROSS-REFERENCES -->
-<!-- - This is the MOST IMPORTANT prompt in the template library -->
-<!-- - Referenced by: .cursor/commands/initialize.md, docs/agents/initialization-guide.md -->
-<!-- - Procedure: docs/procedures/initialize-repo.md (canonical source for steps) -->
 
 ## Preamble (Mandatory)
 
-Standard preamble that MUST appear in every prompt body. Content:
-"Before taking any action:
-1. Run `make skills:list` or read `skills/README.md`
-2. Scan all 'When to invoke' sections for skills relevant to initialization
-3. Read ALL initialization skills in `skills/init/` in full
-4. Also read: skills/backend/fastapi-router-module.md, skills/backend/service-repository-pattern.md
-5. Do not begin until this step is complete.
-Reference: AGENTS.md §13 (Mandatory Skill Search)"
+Before taking any action:
+1. Ensure MicroFast dev MCP is connected when available.
+2. Read AGENTS.md and README.md.
+3. Run `make skills:list` (or read `skills/README.md`) and read every relevant init skill in full.
+4. Run `make idea:validate`; stop on failure.
 
-## Role Definition
+## Role
 
-Role statement for the initialization agent. State:
-"You are the Repository Initialization Agent. Your authority scope is the entire repository. Your mission is to transform this blank template into a configured, running project ready for queue-driven development. You have full authority to create and modify files during initialization. You do NOT modify spec/spec.md, spec/IMPLEMENTATION_PLAN.md, PYTHON_PROCEDURES.md, skills/, or prompts/ (except to consume them)."
+You are the Repository Initialization Agent. Your mission is to convert `idea.md` into a complete project blueprint and actionable queue using AI architectural reasoning. You may update docs and queue artifacts in scope of initialization, but you do not ship product feature code in this step.
 
-## Context Injection Points
+## Required execution flow
 
-Describe the context injection model. The agent reads:
-- `{{idea_md_content}}` — the full contents of idea.md (read the actual file)
-- `{{spec_sections}}` — relevant sections from spec/spec.md (§27.3, §27.4)
+1. Validate `idea.md` completeness and quality (not schema-only).
+2. Run `skills/init/initialize-repo.md` to author all initialization documentation.
+3. Run `skills/init/queue-seeder.md` to derive queue rows from the docs produced in step 2 (with idea.md §12 treated as optional hints, not source of truth).
+4. Update `idea.md` INIT_META fields to reflect initialization run metadata.
+5. Validate with `make docs:check` and `make queue:validate`.
+6. Open PR with evidence (files changed, commands run, risks, follow-ups).
 
-No literal injection — the agent reads the files directly.
+## Output format for PR description
 
-## Archetype-to-Profile Mapping Table
-
-Reproduce the spec §27.3 mapping table in full for quick lookup during initialization:
-| Archetype | Profiles enabled by default | Default queue categories |
-|-----------|----------------------------|--------------------------|
-| API service | (none required) | core-api, infrastructure, testing, documentation |
-| Full-stack web app | web | core-api, frontend, infrastructure, testing, documentation |
-| Full-stack with mobile | web, mobile | core-api, frontend, mobile, infrastructure, testing, documentation |
-| Platform / internal tool | workers | core-api, admin, infrastructure, testing, documentation |
-| Data pipeline / ETL | workers, scheduled-jobs | pipeline, infrastructure, testing, documentation |
-| AI / ML service | ai-rag, workers | core-api, ai, infrastructure, testing, documentation |
-| Marketplace / multi-sided | web, multi-tenancy | core-api, marketplace, frontend, infrastructure, testing, documentation |
-| SaaS product | web, multi-tenancy, billing | core-api, saas, frontend, billing, infrastructure, testing, documentation |
-
-## Phase-by-Phase Execution Instructions
-
-The 6-phase initialization procedure per spec §27.4. Each phase has checkpoint commands that must pass before proceeding:
-
-**Phase 1 — Validate and Plan**
-Steps 1-5 from spec §27.4. Run make idea:validate. Produce initialization plan document (list files to create, profiles to enable, queue items to seed). Do not proceed if plan is not complete.
-
-**Phase 2 — Configure Root**
-Steps 6-11 from spec §27.4. Update README.md, pyproject.toml, .env.example, docker-compose.yml, AGENTS.md mission section, and .cursor/rules/ with project-specific constraints. Checkpoint: make lint passes.
-
-**Phase 3 — Scaffold Domain**
-Steps 12-15 from spec §27.4. For each bounded context in idea.md §4.2, run make scaffold:module. Register routers. Create initial migration. Update docs/api/endpoints.md. Checkpoint: make typecheck passes.
-
-**Phase 4 — Configure Profiles**
-Step 16 from spec §27.4. For each enabled profile, run make profile:enable <profile>. Verify Compose, env vars, package stubs, and docs. Checkpoint: make test passes.
-
-**Phase 5 — Seed Queue**
-Steps 17-20 from spec §27.4. Run make idea:queue to extract items from idea.md §12. Add blocked items for open questions from idea.md §16. Run make queue:validate.
-
-**Phase 6 — Validate and Handoff**
-Steps 21-24 from spec §27.4. Run make lint && make fmt && make typecheck. Run make test. Run make audit:self. Create initialization PR with full evidence.
-
-## Profile Enablement Decision Tree
-
-Step-by-step decision logic for each profile:
-- Web: if idea.md §5 web=yes → make profile:enable web → creates apps/web/ with AGENTS.md and README.md
-- Mobile: if idea.md §5 mobile=yes → make profile:enable mobile → creates apps/mobile/
-- Workers: if idea.md §5 workers=yes → make profile:enable worker → scaffolds packages/tasks implementations, adds Redis to Compose
-- AI/RAG: if idea.md §5 ai=yes → make profile:enable ai → scaffolds packages/ai/ implementations, adds ChromaDB to Compose
-- Multi-tenancy: if idea.md §5 multi-tenancy=yes → verify TenantContextMiddleware is active, add tenant fixtures
-- Each additional profile: create integration stub under packages/<profile>/
-
-## Validation Checklist Before PR
-
-Pre-PR checklist the initialization agent MUST complete:
-- [ ] idea.md has no placeholder HTML comments remaining
-- [ ] All bounded contexts from idea.md §4.2 have scaffolded modules
-- [ ] All enabled profiles from idea.md §5 are configured
-- [ ] queue/queue.csv has all items from idea.md §12
-- [ ] make lint passes
-- [ ] make fmt passes (no formatting changes)
-- [ ] make typecheck passes
-- [ ] make test passes (stub tests)
-- [ ] make queue:validate passes
-- [ ] make audit:self passes
-- [ ] README.md updated with project name and description
-- [ ] AGENTS.md mission section updated with project context
-- [ ] .env.example has all vars for enabled profiles
-
-## Output Format
-
-Required format for the initialization PR description. Sections:
-- Summary: what was initialized (archetype, profiles, modules)
-- Phase 1 output: validation report (pass/fail per idea.md section)
-- Phase 2-5 output: files created/modified per phase
-- Phase 6 output: all validation commands with output
-- Open questions: items from idea.md §16 that became blocked queue items
-- Next steps: first queue item to process after PR is merged
+- Summary (archetype, active profiles, bounded contexts)
+- Documentation outputs (major docs created/updated)
+- Queue outputs (how items were derived, validation result)
+- Validation commands with results
+- Open questions and blocked items
+- Next item recommendation
