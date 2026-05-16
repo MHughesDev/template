@@ -3,10 +3,10 @@
 <!-- INIT_META
 initialized: false
 init_version: "2.0"
+template_version: "2026.05"
 init_completed_at: null
 init_branch: null
 init_pr_url: null
-init_manifest_hash: null
 -->
 
 > **Purpose:** This is the singular input document for initializing this repository into a working project. Fill out every applicable section. The initialization agent (`prompts/repo_initializer.md`) reads this file and uses it to configure, scaffold, and wire up the entire repository machine.
@@ -204,9 +204,9 @@ List the most important API endpoints to scaffold during initialization.
 
 ---
 
-## 12. Initial queue items
+## 12. Initial queue hints (optional)
 
-Seed the queue with the first batch of work items. These become the initialization batch in `queue/queue.csv`.
+Optional prioritization hints for queue seeding. The initializer should derive queue rows from generated docs even if this section is empty.
 
 | Priority | Category | Summary |
 |----------|----------|---------|
@@ -297,3 +297,11 @@ Attach or link any additional context: wireframes, ERDs, existing API docs, comp
 > 2. Reference this file and `prompts/repo_initializer.md`
 > 3. The agent will read `idea.md`, validate completeness, and execute the initialization procedure
 > 4. Review the initialization PR for correctness before merging
+
+
+## 17. Non-goals
+
+List what this system will explicitly not do in initial and near-term scope.
+
+- Example: No public plugin marketplace in v1.
+- Example: No multi-region active/active deployment at launch.
