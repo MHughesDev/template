@@ -11,8 +11,8 @@ SHELL := /usr/bin/env bash
         security-scan secret-scan image-build image-scan \
         release-prepare release-verify \
         k8s-render k8s-validate docker-up docker-down \
-        init idea-validate idea-parse idea-plan idea-execute init-from-idea \
-        scaffold-module profile-enable idea-queue env-generate inventory-check \
+        init idea-validate \
+        scaffold-module profile-enable env-generate \
         codebase-summary skill-docs-gen \
         test-scaffold env-sync coverage-ratchet rule-lint adr-index \
         clean health-check
@@ -190,28 +190,9 @@ docker-down:
 init:
 	@scripts/init-repo.sh
 
-## idea-validate: idea.md placeholder check
+## idea-validate: validate idea.md before initialization
 idea-validate:
 	@scripts/validate-idea.sh
-
-## idea-parse: parse idea.md into init-manifest.json
-idea-parse:
-	@python3 scripts/idea-parser.py
-
-## idea-plan: parse idea.md and print resolved decisions (dry-run, no files written)
-idea-plan:
-	@python3 scripts/idea-parser.py --dry-run
-
-## idea-execute: run full initialization from init-manifest.json (run idea-parse first)
-idea-execute:
-	@scripts/init-from-idea.sh
-
-## idea-execute-dry-run: preview orchestrator actions without modifying files
-idea-execute-dry-run:
-	@python3 scripts/init-from-idea.py --dry-run
-
-## init-from-idea: validate + parse + execute in one command
-init-from-idea: idea-validate idea-parse idea-execute
 
 ## scaffold-module: MODULE= name
 scaffold-module:
@@ -221,17 +202,9 @@ scaffold-module:
 profile-enable:
 	@PROFILE="$(PROFILE)" scripts/profile-enable.sh
 
-## idea-queue: queue seeding stub
-idea-queue:
-	@scripts/idea-to-queue.sh
-
 ## env-generate: copy .env.example to .env
 env-generate:
 	@scripts/generate-env.sh
-
-## inventory-check: verify completed IMPLEMENTATION_PLAN paths exist
-inventory-check:
-	@scripts/inventory-check.sh
 
 ## codebase-summary: regenerate CODEBASE_SUMMARY.md
 codebase-summary:
@@ -276,10 +249,10 @@ health-check:
 # --- Colon-style aliases (spec §10.2 and docs). GNU Make needs escaped colons in target names.
 .PHONY: skills\:list queue\:peek queue\:top-item queue\:validate queue\:archive queue\:archive-top queue\:pr-merge queue\:graph queue\:analyze audit\:self rules\:check \
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
-        health\:check idea\:validate idea\:parse idea\:plan idea\:execute idea\:execute-dry-run init\:from-idea profile\:enable idea\:queue \
+        health\:check idea\:validate profile\:enable \
         scaffold\:module test\:unit test\:integration \
         test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed ci\:migrate-dry-run image\:build image\:scan \
-        k8s\:render k8s\:validate env\:generate inventory\:check skill\:docs-gen \
+        k8s\:render k8s\:validate env\:generate skill\:docs-gen \
         secret\:scan test\:scaffold env\:sync coverage\:ratchet rule\:lint adr\:index
 
 skills\:list: skills-list
@@ -303,13 +276,7 @@ docker\:up: docker-up
 docker\:down: docker-down
 health\:check: health-check
 idea\:validate: idea-validate
-idea\:parse: idea-parse
-idea\:plan: idea-plan
-idea\:execute: idea-execute
-idea\:execute-dry-run: idea-execute-dry-run
-init\:from-idea: init-from-idea
 profile\:enable: profile-enable
-idea\:queue: idea-queue
 scaffold\:module: scaffold-module
 test\:unit: test-unit
 test\:integration: test-integration
@@ -325,7 +292,6 @@ image\:scan: image-scan
 k8s\:render: k8s-render
 k8s\:validate: k8s-validate
 env\:generate: env-generate
-inventory\:check: inventory-check
 skill\:docs-gen: skill-docs-gen
 secret\:scan: secret-scan
 test\:scaffold: test-scaffold
