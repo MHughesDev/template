@@ -149,7 +149,7 @@ Decompose the chosen element into concrete architectural elements:
 - **Interfaces**: what does it expose to other elements? What does it consume?
 - **QAS addressed**: which architectural driver does this element directly satisfy?
 
-In this repo, elements map to bounded contexts (`apps/api/src/<name>/`) with the standard internal structure: `router.py → service.py → repository.py → models.py`. Dependencies flow inward. The router layer never imports from another router. Cross-context communication uses `packages/contracts/` only.
+In this repo, elements map to bounded contexts (`apps/api/app/<name>/`) with the standard internal structure: `router.py → service.py → repository.py → models.py`. Dependencies flow inward. The router layer never imports from another router. Cross-context communication uses `packages/contracts/` only.
 
 Document the element decomposition as a list — a prose sketch is sufficient. Mermaid diagrams can be added to `docs/architecture/` docs but are not required at this stage.
 

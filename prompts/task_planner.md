@@ -79,7 +79,7 @@ Required plan document structure:
 - [ ] Criterion 2
 
 ### Files to Change
-- apps/api/src/<module>/router.py — add endpoint X
+- apps/api/app/<module>/router.py — add endpoint X
 - apps/api/tests/test_<module>.py — add tests for X
 
 ### Risks

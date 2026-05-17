@@ -47,7 +47,7 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 | `compose_services` | string[] | Logical Compose services (always includes `api`; may include `db`, `redis`, `worker`, `chroma`, `nginx`). |
 | `python_dependencies` | string[] | PEP 508 dependency strings to ensure in `[project.dependencies]`. |
 | `env_vars` | object | Key → placeholder value for `.env.example` / `.env`. |
-| `modules_to_scaffold` | string[] | Snake_case module names under `apps/api/src/`. |
+| `modules_to_scaffold` | string[] | Snake_case module names under `apps/api/app/`. |
 | `profiles_enabled` | string[] | Profile script stems to `source` (`enable-<stem>.sh`). |
 | `profiles_discarded` | string[] | Profile script stems for `discard-<stem>.sh`. |
 | `queue_seed_rows` | object[] | Rows matching `queue/queue.csv` columns. |
@@ -156,7 +156,7 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
         "batch": "1",
         "phase": "1",
         "category": "core-api",
-        "summary": "Implement tenant-scoped Customer CRUD in apps/api/src/customers/: models with TenantMixin, repository, service, router, Pydantic schemas, and pytest coverage. Acceptance: list/create/get return correct HTTP status codes; integration test proves row-level isolation between tenants.",
+        "summary": "Implement tenant-scoped Customer CRUD in apps/api/app/customers/: models with TenantMixin, repository, service, router, Pydantic schemas, and pytest coverage. Acceptance: list/create/get return correct HTTP status codes; integration test proves row-level isolation between tenants.",
         "agent_instructions": "1) Scaffold module per module-patterns. 2) Add migrations and tests.",
         "dependencies": "",
         "related_files": "",

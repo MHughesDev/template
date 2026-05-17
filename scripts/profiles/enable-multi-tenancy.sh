@@ -3,15 +3,15 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-TEN="$ROOT/apps/api/src/tenancy"
-if [[ ! -d "$ROOT/apps/api/src" ]]; then
-  echo "ERROR: apps/api/src not found" >&2
+TEN="$ROOT/apps/api/app/tenancy"
+if [[ ! -d "$ROOT/apps/api/app" ]]; then
+  echo "ERROR: apps/api/app not found" >&2
   exit 1
 fi
 mkdir -p "$TEN"
 if [[ ! -f "$TEN/context.py" ]]; then
   cat >"$TEN/context.py" <<'EOF'
-# apps/api/src/tenancy/context.py
+# apps/api/app/tenancy/context.py
 """Tenant context (ContextVar) — stub for initialization engine."""
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ EOF
 fi
 if [[ ! -f "$TEN/README.md" ]]; then
   cat >"$TEN/README.md" <<'EOF'
-# apps/api/src/tenancy/README.md
+# apps/api/app/tenancy/README.md
 
 Multi-tenancy module. This repository may already ship with `TenantContextMiddleware` and models — extend rather than replace.
 EOF

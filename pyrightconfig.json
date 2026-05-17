@@ -1,5 +1,5 @@
 {
-  "include": ["apps/api/src", "packages", "scripts"],
+  "include": ["apps/api/app", "packages", "scripts"],
   "exclude": ["**/node_modules", "**/__pycache__", "**/.venv", "**/alembic/versions", "skills"],
   "venvPath": ".",
   "venv": ".venv",

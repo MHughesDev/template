@@ -59,14 +59,14 @@ Domain model output structure:
 
 | Context | Module Path | Entities | Aggregate Root | Shared Contracts |
 |---------|------------|---------|----------------|-----------------|
-| billing | apps/api/src/billing/ | Invoice, Payment, LineItem | Invoice | InvoiceResponse → packages/contracts/ |
+| billing | apps/api/app/billing/ | Invoice, Payment, LineItem | Invoice | InvoiceResponse → packages/contracts/ |
 
 ## Entity Relationships
 <Mermaid ERD or text representation>
 
 ## Module Scaffolding Plan
 For each context:
-- Directory: apps/api/src/<context>/
+- Directory: apps/api/app/<context>/
 - Models: <list of SQLAlchemy models with key fields>
 - Schemas: <list of Pydantic schemas>
 - Router endpoints: <list of CRUD endpoints to stub>

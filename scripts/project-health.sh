@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# scripts/project-health.sh — aggregate repo health checks for docs-first workflow.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

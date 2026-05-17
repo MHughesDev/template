@@ -2,13 +2,15 @@
 doc_id: "20.0"
 title: "Full-stack FastAPI template integration"
 section: "Integrations"
-summary: "Mechanical vendor workflow for MHughesDev/fastapi-template: clone, pin SHA, rsync paths, and copy-vs-port matrix for this repo."
-updated: "2026-04-17"
+summary: "Provenance of apps/api and apps/web (vendored from MHughesDev/fastapi-template), plus the mechanical re-sync workflow when advancing the vendor baseline."
+updated: "2026-05-17"
 ---
 
 # 20.0 — Full-stack FastAPI template integration
 
-**Purpose:** Document how to reproduce a **mechanical import** from the forked full-stack template using **git and rsync only** — no AI-invented file trees. Downstream queue items (vendor script, frontend copy, backend port) depend on this contract.
+**Status:** the initial bulk import has **already been performed**. The contents of `apps/api/` (FastAPI + SQLModel + Postgres + Alembic) and `apps/web/` (React 19 + Vite + TanStack + Tailwind v4) come from `MHughesDev/fastapi-template`. This document is now the **re-sync contract** — how to advance the vendor baseline when the upstream fork is bumped.
+
+**Purpose:** Document how to reproduce a **mechanical import or re-sync** from the forked full-stack template using **git and rsync only** — no AI-invented file trees.
 
 ## 20.0.1 Sources of truth
 
@@ -79,9 +81,10 @@ Rename `review-compose.yml` to suit your merge workflow; merge into the repo’s
 
 | Vendor path / topic | Treatment in this repo | Rationale |
 |---------------------|------------------------|-----------|
-| `frontend/` | **Bulk copy** into `apps/web/` (rsync with explicit review) | Preserve Vite/React stack as-is; minimal patches only (proxy, env, codegen). |
-| `backend/` (e.g. app under `backend/app`) | **Port / adapt** into `apps/api/src/` bounded contexts | This repo uses a modular layout, tenancy, and factory patterns; **do not** wholesale-replace `apps/api`. |
-| `compose.yml`, `compose.override.yml`, `compose.traefik.yml` | **Merge** into existing Compose / Traefik docs | Avoid discarding agent-factory services and profiles. |
+| `frontend/` | **Bulk vendored** at `apps/web/` (current contents). On re-sync: rsync with explicit review. | Preserve Vite/React stack as-is; minimal patches only (proxy, env, codegen). |
+| `backend/` (e.g. app under `backend/app`) | **Bulk vendored** at `apps/api/` (current contents — see `apps/api/app/`). On re-sync: review module changes carefully. | The systemization layer (docs/skills/queue/prompts) does not own application code; the upstream app is the working baseline. |
+| `compose.yml`, `compose.override.yml`, `compose.traefik.yml` | **Bulk vendored** at repo root with `./backend` and `./frontend` paths rewritten to `./apps/api` and `./apps/web`. | Avoid discarding agent-factory services and profiles. |
+| Root `package.json`, `bun.lock`, `uv.lock` | **Vendored** at repo root; `package.json` workspace updated to point at `apps/web`. | Required for bun + uv workspace tooling. |
 | Root `README`, Copier, or generator metadata | **Reference only** | Initialization here is driven by `idea.md` and factory scripts, not Copier. |
 
 ## 20.0.6 Related documentation

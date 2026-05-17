@@ -30,7 +30,7 @@ Python and API coding standards for this repository (typing, style, security). S
 
 ## 3.1.4 Security
 
-- No secrets in source; configuration only via `Settings` in `apps/api/src/config.py`.
+- No secrets in source; configuration only via `Settings` in `apps/api/app/config.py`.
 - Follow [docs/security/secrets-management.md](../security/secrets-management.md).
 
 ## 3.1.5 Related

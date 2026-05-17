@@ -1,0 +1,15 @@
+{
+  "name": "template-fullstack",
+  "private": true,
+  "workspaces": [
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "bun run --filter web dev",
+    "build": "bun run --filter web build",
+    "lint": "bun run --filter web lint",
+    "test": "bun run --filter web test",
+    "test:ui": "bun run --filter web test:ui",
+    "generate-client": "bun run --filter web generate-client"
+  }
+}

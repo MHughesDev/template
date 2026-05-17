@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # scripts/scaffold-module.sh
-# Scaffold a bounded-context module under apps/api/src/<module>/.
+# Scaffold a bounded-context module under apps/api/app/<module>/.
 
 set -euo pipefail
 

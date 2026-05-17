@@ -19,8 +19,8 @@ API endpoint catalog. Auto-generated or manually maintained list of all routes w
 
 ## 4.1.2 MCP (Model Context Protocol)
 
-When the MCP integration is enabled in `apps/api/src/main.py`, the HTTP MCP
-server is mounted at **`/mcp`** (see `apps/api/src/mcp/__init__.py`). Tools are
+When the MCP integration is enabled in `apps/api/app/main.py`, the HTTP MCP
+server is mounted at **`/mcp`** (see `apps/api/app/mcp/__init__.py`). Tools are
 derived from the OpenAPI schema; see [add-mcp-tool.md](../procedures/add-mcp-tool.md).
 
 ## 4.1.3 Examples (teaching module)

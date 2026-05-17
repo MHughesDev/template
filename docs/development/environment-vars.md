@@ -2,7 +2,7 @@
 doc_id: "3.4"
 title: "environment vars"
 section: "Development"
-summary: "Environment variable reference. All vars documented with defaults, read by `apps/api/src/config.py` via Pydantic Settings (§10.3)."
+summary: "Environment variable reference. All vars documented with defaults, read by `apps/api/app/config.py` via Pydantic Settings (§10.3)."
 updated: "2026-04-17"
 ---
 
@@ -11,15 +11,15 @@ updated: "2026-04-17"
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/development/README.md, README.md -->
 
-**Purpose:** Environment variable reference. All vars documented with defaults, read by `apps/api/src/config.py` via Pydantic Settings (§10.3).
+**Purpose:** Environment variable reference. All vars documented with defaults, read by `apps/api/app/config.py` via Pydantic Settings (§10.3).
 
 ## 3.4.1 Overview
 
-Environment variable reference. All vars documented with defaults, read by `apps/api/src/config.py` via Pydantic Settings (§10.3). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Environment variable reference. All vars documented with defaults, read by `apps/api/app/config.py` via Pydantic Settings (§10.3). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
 
 ## 3.4.2 Rules
 
-- **Never** read the environment with `os.getenv()` outside `apps/api/src/config.py`.
+- **Never** read the environment with `os.getenv()` outside `apps/api/app/config.py`.
 - Copy `.env.example` to `.env` for local development; do not commit real secrets.
 - After adding or renaming a variable in code, update **both** `.env.example` and this file.
 
@@ -47,7 +47,7 @@ Environment variable reference. All vars documented with defaults, read by `apps
 | `MCP_ENABLED` | (not read by Settings yet) | Documented in `.env.example` for operators; MCP mounts at `/mcp` when the integration is present |
 | `BROKER_URL` | unset | Optional worker profile |
 
-See `apps/api/src/config.py` for the authoritative list and validation rules.
+See `apps/api/app/config.py` for the authoritative list and validation rules.
 
 ## 3.4.4 Related
 

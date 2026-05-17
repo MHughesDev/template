@@ -58,11 +58,11 @@ Purpose: Covers local setup, coding standards, testing, env vars, git flow, and 
 | 3.1 | coding standards | `docs/development/coding-standards.md` | Python and API coding standards for this repository (typing, style, security). |
 | 3.2 | dependency management | `docs/development/dependency-management.md` | How Python dependencies are declared, upgraded, and reviewed in this repo. |
 | 3.3 | docs generation | `docs/development/docs-generation.md` | How the docs pipeline works and how to extend it. |
-| 3.4 | environment vars | `docs/development/environment-vars.md` | Environment variable reference. All vars documented with defaults, read by `apps/api/src/config.py` via Pydantic Settings (§10.3). |
+| 3.4 | environment vars | `docs/development/environment-vars.md` | Environment variable reference. All vars documented with defaults, read by `apps/api/app/config.py` via Pydantic Settings (§10.3). |
 | 3.5 | git workflow | `docs/development/git-workflow.md` | Git branching, PR workflow, and review expectations for this repository. |
 | 3.6 | Init manifest schema | `docs/development/init-manifest-schema.md` | Defines init-manifest.json fields produced from idea.md for deterministic initialization. |
 | 3.7 | local setup | `docs/development/local-setup.md` | Detailed local development setup. All Make/Task targets documented with expected behavior (§10.1). |
-| 3.8 | module patterns | `docs/development/module-patterns.md` | How to structure bounded-context modules under `apps/api/src/` (router, service, models, tests). |
+| 3.8 | module patterns | `docs/development/module-patterns.md` | How to structure bounded-context modules under `apps/api/app/` (router, service, models, tests). |
 | 3.9 | testing guide | `docs/development/testing-guide.md` | Pytest layout, markers, async tests, and coverage expectations for the API. |
 
 ### Section 4 — API

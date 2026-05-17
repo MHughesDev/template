@@ -3,10 +3,10 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-RT="$ROOT/apps/api/src/realtime"
+RT="$ROOT/apps/api/app/realtime"
 mkdir -p "$RT"
 cat >"$RT/__init__.py" <<'EOF'
-# apps/api/src/realtime/__init__.py
+# apps/api/app/realtime/__init__.py
 """Real-time / WebSocket module."""
 
 from apps.api.src.realtime.router import router
@@ -14,7 +14,7 @@ from apps.api.src.realtime.router import router
 __all__ = ["router"]
 EOF
 cat >"$RT/connection_manager.py" <<'EOF'
-# apps/api/src/realtime/connection_manager.py
+# apps/api/app/realtime/connection_manager.py
 """WebSocket connection manager stub."""
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ class ConnectionManager:
             self._connections.remove(websocket)
 EOF
 cat >"$RT/router.py" <<'EOF'
-# apps/api/src/realtime/router.py
+# apps/api/app/realtime/router.py
 """WebSocket routes stub."""
 
 from __future__ import annotations
@@ -58,7 +58,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         manager.disconnect(websocket)
 EOF
 cat >"$RT/README.md" <<'EOF'
-# apps/api/src/realtime/README.md
+# apps/api/app/realtime/README.md
 
 WebSocket profile stub. Register `router` in `main.py` when enabling real-time features.
 EOF

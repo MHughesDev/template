@@ -24,7 +24,7 @@ wrappers for coding agents), see [microfast-dev-mcp.md](microfast-dev-mcp.md) â€
 ## 5.2.3 Prerequisites
 
 - `fastapi-mcp` installed (see `pyproject.toml`)
-- MCP module mounted in `apps/api/src/main.py`
+- MCP module mounted in `apps/api/app/main.py`
 - Understanding of MCP tool design principles
 
 ## 5.2.4 How tools are built
@@ -38,9 +38,9 @@ docstrings and type hints.
 
 If you add a new FastAPI route anywhere under the mounted app, it becomes an MCP
 tool automatically (subject to optional tag/operation filtering in
-`apps/api/src/mcp/__init__.py`).
+`apps/api/app/mcp/__init__.py`).
 
-1. Create your FastAPI endpoint in `apps/api/src/<module>/router.py` as normal
+1. Create your FastAPI endpoint in `apps/api/app/<module>/router.py` as normal
 2. Ensure the endpoint has:
    - Clear docstring (becomes the tool description for the AI model)
    - Type-annotated parameters (becomes the tool input schema)
@@ -55,7 +55,7 @@ tool automatically (subject to optional tag/operation filtering in
 
 ### Filtering endpoints
 
-To control which endpoints become MCP tools, edit `apps/api/src/mcp/__init__.py`:
+To control which endpoints become MCP tools, edit `apps/api/app/mcp/__init__.py`:
 
 ```python
 mcp = FastApiMCP(
@@ -70,7 +70,7 @@ mcp = FastApiMCP(
 Use this when the tool should not live in a domain module (e.g. a minimal
 connectivity check or an aggregation wrapper).
 
-1. Open `apps/api/src/mcp/__init__.py`
+1. Open `apps/api/app/mcp/__init__.py`
 2. Add a route on `_mcp_custom_router` (or register another `APIRouter`) **before**
    `FastApiMCP` is constructed, with an explicit `operation_id`:
 
@@ -138,8 +138,8 @@ and invoke them manually.
 
 To remove MCP from the project entirely:
 
-1. Delete `apps/api/src/mcp/` folder
+1. Delete `apps/api/app/mcp/` folder
 2. Remove lines between `# --- MCP MODULE START ---` and `# --- MCP MODULE END ---`
-   in `apps/api/src/main.py` and `.env.example`
+   in `apps/api/app/main.py` and `.env.example`
 3. Remove `fastapi-mcp` from `pyproject.toml`
 4. Run `make test` to verify nothing breaks

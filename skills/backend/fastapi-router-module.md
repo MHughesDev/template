@@ -23,27 +23,27 @@ One paragraph. Adding a new FastAPI module is the most common structural change 
 - apps/api/AGENTS.md read
 - .cursor/rules/apps-api.md read
 - PYTHON_PROCEDURES.md §6 (Domain Separation) and §7 (Import Direction) read
-- apps/api/src/main.py read (to understand registration pattern)
+- apps/api/app/main.py read (to understand registration pattern)
 
 ## Relevant Files/Areas
 
-- `apps/api/src/<module>/` — new module directory
-- `apps/api/src/main.py` — router registration
+- `apps/api/app/<module>/` — new module directory
+- `apps/api/app/main.py` — router registration
 - `apps/api/tests/test_<module>.py` — test file
 - `skills/backend/module-scaffolder.py` — machinery for generation
-- `apps/api/src/dependencies.py` — shared dependencies
+- `apps/api/app/dependencies.py` — shared dependencies
 
 ## Step-by-Step Method
 
 Numbered steps:
 1. Run `make scaffold:module MODULE=<name>` or invoke `python skills/backend/module-scaffolder.py <name>`
 2. Verify all generated files exist:
-   - `apps/api/src/<module>/__init__.py` — exports router
-   - `apps/api/src/<module>/router.py` — APIRouter with prefix and tags
-   - `apps/api/src/<module>/models.py` — SQLAlchemy models with correct base class
-   - `apps/api/src/<module>/schemas.py` — Pydantic request/response models (frozen=True for inputs)
-   - `apps/api/src/<module>/service.py` — business logic functions/class
-   - `apps/api/src/<module>/dependencies.py` — FastAPI Depends() factories (if needed)
+   - `apps/api/app/<module>/__init__.py` — exports router
+   - `apps/api/app/<module>/router.py` — APIRouter with prefix and tags
+   - `apps/api/app/<module>/models.py` — SQLAlchemy models with correct base class
+   - `apps/api/app/<module>/schemas.py` — Pydantic request/response models (frozen=True for inputs)
+   - `apps/api/app/<module>/service.py` — business logic functions/class
+   - `apps/api/app/<module>/dependencies.py` — FastAPI Depends() factories (if needed)
    - `apps/api/tests/test_<module>.py` — test stubs
 3. Implement router endpoints in router.py:
    - Use Depends(get_current_user) for auth
@@ -51,7 +51,7 @@ Numbered steps:
    - Return Pydantic response schemas (never raw SQLAlchemy models)
    - Raise AppError subclasses from exceptions.py (not HTTPException directly)
 4. Implement models.py:
-   - Inherit from Base (from apps/api/src/database.py)
+   - Inherit from Base (from apps/api/app/database.py)
    - Add TenantMixin if tenant-scoped
    - All columns explicitly typed
 5. Implement schemas.py:
@@ -61,7 +61,7 @@ Numbered steps:
    - Pure business logic — no DB queries, no HTTP concerns
    - Accept repository as parameter (DI)
    - Return domain objects or raise domain exceptions
-7. Register router in apps/api/src/main.py:
+7. Register router in apps/api/app/main.py:
    - `from apps.api.src.<module> import router as <module>_router`
    - `app.include_router(<module>_router, prefix="/api/v1")`
 8. Create Alembic migration: `make migrate:create MESSAGE="add <module> tables"`

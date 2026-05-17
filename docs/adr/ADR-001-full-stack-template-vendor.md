@@ -14,14 +14,14 @@ updated: "2026-04-17"
 
 ## 7.2.1 Context
 
-This repository is an **agent-operated software factory** with its own FastAPI layout (`apps/api/src/`), tenancy, queue, and docs. We also want feature parity with the **full-stack FastAPI template** ecosystem (Vite frontend, compose, SMTP-backed flows, etc.). Regenerating that stack with an LLM is brittle and wastes tokens; **provenance** from a known git remote is required.
+This repository is an **agent-operated software factory** with its own FastAPI layout (`apps/api/app/`), tenancy, queue, and docs. We also want feature parity with the **full-stack FastAPI template** ecosystem (Vite frontend, compose, SMTP-backed flows, etc.). Regenerating that stack with an LLM is brittle and wastes tokens; **provenance** from a known git remote is required.
 
 ## 7.2.2 Decision
 
 1. **Vendor remote:** Use fork `https://github.com/MHughesDev/fastapi-template.git`, default branch `master`, pinned at commit **`13652b51ea0acca7dfe243ac25e2bbdc066f3c4f`** (record updates when the pin moves).
 2. **Upstream reference:** Treat `https://github.com/fastapi/full-stack-fastapi-template` as the conceptual upstream for behavior and layout comparisons.
 3. **Frontend:** **Bulk-copy** the `frontend/` tree from a checkout of the pin into `apps/web/` (mechanical rsync/cp), then minimal config patches only.
-4. **Backend:** **Do not** replace `apps/api/` with the template backend. **Port** features by reading/copying from the vendor `backend/` tree into existing bounded contexts under `apps/api/src/`.
+4. **Backend:** **Do not** replace `apps/api/` with the template backend. **Port** features by reading/copying from the vendor `backend/` tree into existing bounded contexts under `apps/api/app/`.
 5. **Automation:** A vendor sync script and Make target (queue **Q-005**) will wrap `git clone` / `git fetch` and `rsync` with safety flags (e.g. no overwrite of `apps/api` unless explicitly forced).
 
 ## 7.2.3 Consequences

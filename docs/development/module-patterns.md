@@ -2,7 +2,7 @@
 doc_id: "3.8"
 title: "module patterns"
 section: "Development"
-summary: "How to structure bounded-context modules under `apps/api/src/` (router, service, models, tests)."
+summary: "How to structure bounded-context modules under `apps/api/app/` (router, service, models, tests)."
 updated: "2026-04-17"
 ---
 
@@ -11,15 +11,15 @@ updated: "2026-04-17"
 <!-- CROSS-REFERENCES -->
 <!-- - Referenced by: docs/development/README.md, README.md -->
 
-**Purpose:** How to structure bounded-context modules under `apps/api/src/` (router, service, models, tests).
+**Purpose:** How to structure bounded-context modules under `apps/api/app/` (router, service, models, tests).
 
 ## 3.8.1 Overview
 
-How to structure bounded-context modules under `apps/api/src/` (router, service, models, tests). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+How to structure bounded-context modules under `apps/api/app/` (router, service, models, tests). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
 
 ## 3.8.2 Standard layout
 
-Each context under `apps/api/src/<context>/` should include:
+Each context under `apps/api/app/<context>/` should include:
 
 | File | Role |
 |------|------|
@@ -30,7 +30,7 @@ Each context under `apps/api/src/<context>/` should include:
 | `service.py` | Domain logic and orchestration |
 | `dependencies.py` | `Depends()` factories (optional) |
 
-Register the router in `apps/api/src/main.py` under `api_prefix` (default `/api/v1`). Health routes stay outside the versioned prefix.
+Register the router in `apps/api/app/main.py` under `api_prefix` (default `/api/v1`). Health routes stay outside the versioned prefix.
 
 ## 3.8.3 Tests
 

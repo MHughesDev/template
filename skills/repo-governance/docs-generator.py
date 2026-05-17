@@ -214,7 +214,7 @@ def _default_targets(repo_root: Path) -> list[DocTarget]:
         ),
         DocTarget(
             "config",
-            ["apps/api/src/config.py"],
+            ["apps/api/app/config.py"],
             "docs/generated/settings-fields.md",
             generate_env_vars_doc,
             "Settings AST",

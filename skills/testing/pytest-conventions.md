@@ -75,9 +75,9 @@ All markers registered in `pyproject.toml` under `[tool.pytest.ini_options]`:
 ## Step-by-Step Method — Coverage
 
 Coverage configuration in pyproject.toml:
-- `[tool.coverage.run]`: source=["apps/api/src"], omit=["*/alembic/*", "*/__init__.py"]
+- `[tool.coverage.run]`: source=["apps/api/app"], omit=["*/alembic/*", "*/__init__.py"]
 - `[tool.coverage.report]`: fail_under = floor from docs/quality/coverage-policy.md
-- Run: `make test` or `pytest --cov=apps/api/src --cov-report=xml`
+- Run: `make test` or `pytest --cov=apps/api/app --cov-report=xml`
 - Ratcheting: `python skills/testing/coverage-ratchet.py` updates floor when coverage improves
 
 ## Command Examples
@@ -87,7 +87,7 @@ Coverage configuration in pyproject.toml:
 - `make test:integration` — integration tests only (`pytest -m integration`)
 - `make test:smoke` — smoke tests only (`pytest -m smoke`)
 - `pytest -k "test_invoice" -v` — run tests matching pattern
-- `python skills/testing/test-scaffolder.py apps/api/src/invoices/` — scaffold test stubs
+- `python skills/testing/test-scaffolder.py apps/api/app/invoices/` — scaffold test stubs
 
 ## Validation Checklist
 
@@ -123,4 +123,4 @@ prompts/test_writer.md
 
 ## Machinery
 
-`skills/testing/test-scaffolder.py` — analyzes router and service files, generates parametrized test stubs. Invoke: `python skills/testing/test-scaffolder.py apps/api/src/<module>/`
+`skills/testing/test-scaffolder.py` — analyzes router and service files, generates parametrized test stubs. Invoke: `python skills/testing/test-scaffolder.py apps/api/app/<module>/`

@@ -358,7 +358,7 @@ At least one procedure file per topic (names illustrative; content required):
 | Procedure | Covers |
 |-----------|--------|
 | `initialize-repo.md` | Full repo initialization from idea.md (§27.4) |
-| `scaffold-domain-module.md` | Create bounded context module in apps/api/src/ |
+| `scaffold-domain-module.md` | Create bounded context module in apps/api/app/ |
 | `enable-profile.md` | Enable optional profile with dependency checking |
 | `validate-idea-md.md` | Validate idea.md completeness before initialization |
 | `start-queue-item.md` | Claim work, branch, read docs row |
@@ -473,14 +473,14 @@ Manually maintained documentation drifts from code as soon as it is not updated.
 - **Generate:** produce fresh documentation from source — `make docs:generate` (via `scripts/docs-generate.sh` → `skills/repo-governance/docs-generator.py`).
 - **Check:** verify on-disk docs match generated output — `make docs:check` also runs the generator in `--check` mode; CI treats drift as failure.
 
-**Guiding principles for generated docs:** token-efficient (tables, short descriptions, hierarchical headings); human-readable; **source-linked** (every section annotated, e.g. `<!-- Generated from: apps/api/src/config.py -->`); **diffable** (stable sort orders, deterministic formatting).
+**Guiding principles for generated docs:** token-efficient (tables, short descriptions, hierarchical headings); human-readable; **source-linked** (every section annotated, e.g. `<!-- Generated from: apps/api/app/config.py -->`); **diffable** (stable sort orders, deterministic formatting).
 
 **Source → target mappings (non-exhaustive; extend via machinery):**
 
 | Source | Target |
 |--------|--------|
 | FastAPI app OpenAPI | `docs/api/endpoints.md` — routes, methods, auth, schemas |
-| Pydantic `BaseSettings` (`apps/api/src/config.py`) | `docs/development/environment-vars.md` — cross-check with `.env.example` (`skills/backend/env-var-sync.py` logic) |
+| Pydantic `BaseSettings` (`apps/api/app/config.py`) | `docs/development/environment-vars.md` — cross-check with `.env.example` (`skills/backend/env-var-sync.py` logic) |
 | Error code definitions (`ERROR_*`, enums) | `docs/api/error-codes.md` — `skills/backend/error-code-registry.py` |
 | `pyproject.toml` | Section in `docs/development/dependency-management.md` |
 | `docker-compose.yml` | Section in `docs/operations/docker.md` |
@@ -604,7 +604,7 @@ After initialization (`idea.md` + `repo_initializer`) and when the project has r
 
 ### 12.1 Principles (unchanged, tightened)
 
-- **Bounded contexts** in `packages/` and `apps/api/src/<context>/`.  
+- **Bounded contexts** in `packages/` and `apps/api/app/<context>/`.  
 - **Contracts:** OpenAPI + shared Pydantic models in `packages/contracts`.  
 - **Data ownership:** no cross-context table access without documented FKs and ownership.  
 - **Outbox** (optional) for reliable async evolution.
@@ -745,7 +745,7 @@ Each item may receive an **advisory** complexity score (S/M/L/XL or 1–10) from
 
 #### 17.11.3 Automatic batching of related items
 
-Suggest batches via **`make queue:analyze`**: same `apps/api/src/<module>/` context; shared prerequisite dependencies; schema + API pairs; test + implementation pairs. Humans confirm by setting the same `batch` value — **the system does not auto-edit the CSV.**
+Suggest batches via **`make queue:analyze`**: same `apps/api/app/<module>/` context; shared prerequisite dependencies; schema + API pairs; test + implementation pairs. Humans confirm by setting the same `batch` value — **the system does not auto-edit the CSV.**
 
 #### 17.11.4 Conflict detection
 
@@ -1301,22 +1301,22 @@ Skills are organized by coverage category (§6.3). Each skill file follows the s
 | 209 | `apps/api/alembic/env.py` | REQUIRED | Alembic environment configuration. Supports both SQLite and PostgreSQL connection strings. | Standard alembic env.py with: target_metadata from models, run_migrations_offline, run_migrations_online, engine configuration from env var. |
 | 210 | `apps/api/alembic/script.py.mako` | REQUIRED | Alembic migration script template. | Standard Mako template for generating migration files. |
 | 211 | `apps/api/alembic/versions/.gitkeep` | REQUIRED | Placeholder to ensure the versions directory exists in version control. | Empty file. |
-| 212 | `apps/api/src/__init__.py` | REQUIRED | Package marker for API source. | Empty or minimal `__all__` definition. |
-| 213 | `apps/api/src/main.py` | REQUIRED | FastAPI application entry point. Creates app, registers routers, configures middleware, sets up lifespan events. | Structure: app factory function, router registration (health, auth), middleware setup (CORS, tenant, logging), lifespan event handlers (startup/shutdown), error handlers. |
-| 214 | `apps/api/src/config.py` | REQUIRED | Configuration management. Reads env vars with validation and defaults. Single source of truth for app configuration (§1.3). | Pydantic `BaseSettings` class with all config fields, validators, env var mappings. Sections grouped: Database, Auth, API, Optional features, Observability. |
-| 215 | `apps/api/src/database.py` | REQUIRED | Database connection and session management. Supports SQLite and PostgreSQL via connection string configuration. | Structure: engine creation, session factory, dependency for request-scoped sessions, Base declarative class. |
-| 216 | `apps/api/src/middleware.py` | REQUIRED | Shared middleware: CORS, request logging, correlation ID injection, error handling. | Middleware classes/functions: CORSMiddleware config, RequestLoggingMiddleware, CorrelationIdMiddleware, global exception handler. |
-| 217 | `apps/api/src/health/__init__.py` | REQUIRED | Package marker for health module. | Router export. |
-| 218 | `apps/api/src/health/router.py` | REQUIRED | Health, readiness, and liveness endpoints (§12.1). `/health` (basic), `/ready` (DB + critical deps), `/live` (process alive). | Three endpoints: `GET /health` (always 200), `GET /ready` (checks DB connectivity, returns 200/503), `GET /live` (returns 200). Response schemas with status field. |
-| 219 | `apps/api/src/auth/__init__.py` | REQUIRED | Package marker for auth module. | Router and dependency exports. |
-| 220 | `apps/api/src/auth/router.py` | REQUIRED | Auth endpoints: register, login, refresh, logout stubs. Policy-complete with extension points (§1.5). | Endpoints: `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`. Request/response schemas. JWT issuance and validation. |
-| 221 | `apps/api/src/auth/models.py` | REQUIRED | Auth database models: User, RefreshToken. SQLAlchemy models. | Models: `User` (id, email, hashed_password, is_active, tenant_id, created_at), `RefreshToken` (id, user_id, token, expires_at, revoked). |
-| 222 | `apps/api/src/auth/schemas.py` | REQUIRED | Auth Pydantic schemas: request/response models for auth endpoints. | Schemas: `RegisterRequest`, `LoginRequest`, `TokenResponse`, `RefreshRequest`, `UserResponse`. |
-| 223 | `apps/api/src/auth/service.py` | REQUIRED | Auth business logic: password hashing, JWT creation/validation, user management. | Functions/class: `create_user`, `authenticate_user`, `create_access_token`, `create_refresh_token`, `verify_token`, `revoke_token`. |
-| 224 | `apps/api/src/auth/dependencies.py` | REQUIRED | FastAPI dependencies for auth: `get_current_user`, `require_auth`, optional `require_tenant`. | Dependencies: `get_current_user` (extract and validate JWT from header), `require_auth` (raise 401 if not authenticated), `require_tenant` (extract tenant context). |
-| 225 | `apps/api/src/tenancy/__init__.py` | REQUIRED | Package marker for tenancy module. | Middleware and model exports. |
-| 226 | `apps/api/src/tenancy/middleware.py` | REQUIRED | Tenant context middleware: extracts tenant from JWT/header, sets request-scoped context for query filtering (§14). | Middleware: extract tenant ID from token claims, set on request state, provide to downstream dependencies. |
-| 227 | `apps/api/src/tenancy/models.py` | REQUIRED | Tenant database models: Tenant, TenantMixin for scoped queries. | Models: `Tenant` (id, name, is_active, created_at), `TenantMixin` (mixin class adding tenant_id FK and query scoping). |
+| 212 | `apps/api/app/__init__.py` | REQUIRED | Package marker for API source. | Empty or minimal `__all__` definition. |
+| 213 | `apps/api/app/main.py` | REQUIRED | FastAPI application entry point. Creates app, registers routers, configures middleware, sets up lifespan events. | Structure: app factory function, router registration (health, auth), middleware setup (CORS, tenant, logging), lifespan event handlers (startup/shutdown), error handlers. |
+| 214 | `apps/api/app/config.py` | REQUIRED | Configuration management. Reads env vars with validation and defaults. Single source of truth for app configuration (§1.3). | Pydantic `BaseSettings` class with all config fields, validators, env var mappings. Sections grouped: Database, Auth, API, Optional features, Observability. |
+| 215 | `apps/api/app/database.py` | REQUIRED | Database connection and session management. Supports SQLite and PostgreSQL via connection string configuration. | Structure: engine creation, session factory, dependency for request-scoped sessions, Base declarative class. |
+| 216 | `apps/api/app/middleware.py` | REQUIRED | Shared middleware: CORS, request logging, correlation ID injection, error handling. | Middleware classes/functions: CORSMiddleware config, RequestLoggingMiddleware, CorrelationIdMiddleware, global exception handler. |
+| 217 | `apps/api/app/health/__init__.py` | REQUIRED | Package marker for health module. | Router export. |
+| 218 | `apps/api/app/health/router.py` | REQUIRED | Health, readiness, and liveness endpoints (§12.1). `/health` (basic), `/ready` (DB + critical deps), `/live` (process alive). | Three endpoints: `GET /health` (always 200), `GET /ready` (checks DB connectivity, returns 200/503), `GET /live` (returns 200). Response schemas with status field. |
+| 219 | `apps/api/app/auth/__init__.py` | REQUIRED | Package marker for auth module. | Router and dependency exports. |
+| 220 | `apps/api/app/auth/router.py` | REQUIRED | Auth endpoints: register, login, refresh, logout stubs. Policy-complete with extension points (§1.5). | Endpoints: `POST /auth/register`, `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout`. Request/response schemas. JWT issuance and validation. |
+| 221 | `apps/api/app/auth/models.py` | REQUIRED | Auth database models: User, RefreshToken. SQLAlchemy models. | Models: `User` (id, email, hashed_password, is_active, tenant_id, created_at), `RefreshToken` (id, user_id, token, expires_at, revoked). |
+| 222 | `apps/api/app/auth/schemas.py` | REQUIRED | Auth Pydantic schemas: request/response models for auth endpoints. | Schemas: `RegisterRequest`, `LoginRequest`, `TokenResponse`, `RefreshRequest`, `UserResponse`. |
+| 223 | `apps/api/app/auth/service.py` | REQUIRED | Auth business logic: password hashing, JWT creation/validation, user management. | Functions/class: `create_user`, `authenticate_user`, `create_access_token`, `create_refresh_token`, `verify_token`, `revoke_token`. |
+| 224 | `apps/api/app/auth/dependencies.py` | REQUIRED | FastAPI dependencies for auth: `get_current_user`, `require_auth`, optional `require_tenant`. | Dependencies: `get_current_user` (extract and validate JWT from header), `require_auth` (raise 401 if not authenticated), `require_tenant` (extract tenant context). |
+| 225 | `apps/api/app/tenancy/__init__.py` | REQUIRED | Package marker for tenancy module. | Middleware and model exports. |
+| 226 | `apps/api/app/tenancy/middleware.py` | REQUIRED | Tenant context middleware: extracts tenant from JWT/header, sets request-scoped context for query filtering (§14). | Middleware: extract tenant ID from token claims, set on request state, provide to downstream dependencies. |
+| 227 | `apps/api/app/tenancy/models.py` | REQUIRED | Tenant database models: Tenant, TenantMixin for scoped queries. | Models: `Tenant` (id, name, is_active, created_at), `TenantMixin` (mixin class adding tenant_id FK and query scoping). |
 | 228 | `apps/api/tests/__init__.py` | REQUIRED | Package marker for tests. | Empty. |
 | 229 | `apps/api/tests/conftest.py` | REQUIRED | Shared test fixtures: test client, test database, test user, auth headers. | Fixtures: `app` (FastAPI test app), `client` (httpx.AsyncClient), `db_session` (test database session), `test_user` (seeded user), `auth_headers` (valid JWT headers). |
 | 230 | `apps/api/tests/test_health.py` | REQUIRED | Tests for health, readiness, and liveness endpoints. | Tests: `test_health_returns_200`, `test_ready_returns_200_when_db_up`, `test_ready_returns_503_when_db_down`, `test_live_returns_200`. |
@@ -1432,7 +1432,7 @@ The following paths extend the §26 inventory (Amendment 6). Paths overlap §28 
 | 340 | `.dockerignore` | REQUIRED | Docker context exclusions; reduce image size and secret leakage. |
 | 341 | `.gitattributes` | REQUIRED | Line endings, merge strategy for queue CSV, linguist overrides. |
 | 342 | `.devcontainer/devcontainer.json` | REQUIRED | VS Code/Codespaces devcontainer; Python 3.12+, Docker-in-Docker, Make, Git. |
-| 343 | `apps/api/src/exceptions.py` | REQUIRED | Custom exception hierarchy; referenced by error taxonomy and error-codes doc. |
+| 343 | `apps/api/app/exceptions.py` | REQUIRED | Custom exception hierarchy; referenced by error taxonomy and error-codes doc. |
 | 344 | `apps/api/tests/test_tenancy.py` | REQUIRED | Tenant isolation tests: middleware, scoping, cross-tenant prevention. |
 | 345 | `scripts/clean.sh` | REQUIRED | Remove caches and artifacts → `make clean`. |
 | 346 | `scripts/db-reset.sh` | REQUIRED | Drop/recreate local DB and migrations → `make db:reset`. |
@@ -1459,8 +1459,8 @@ The following paths extend the §26 inventory (Amendment 6). Paths overlap §28 
 | 367 | `deploy/k8s/base/hpa.yaml` | REQUIRED | HorizontalPodAutoscaler; patched per overlay. |
 | 368 | `deploy/k8s/base/networkpolicy.yaml` | REQUIRED | NetworkPolicy; default-deny with explicit allows. |
 | 369 | `deploy/k8s/base/serviceaccount.yaml` | REQUIRED | Dedicated ServiceAccount for API pods. |
-| 370 | `apps/api/src/dependencies.py` | REQUIRED | Shared FastAPI deps: get_db, get_settings, request context. |
-| 371 | `apps/api/src/pagination.py` | REQUIRED | Pagination utilities and shared list models. |
+| 370 | `apps/api/app/dependencies.py` | REQUIRED | Shared FastAPI deps: get_db, get_settings, request context. |
+| 371 | `apps/api/app/pagination.py` | REQUIRED | Pagination utilities and shared list models. |
 | 372 | `apps/api/tests/factories.py` | REQUIRED | Test data factories (e.g. factory_boy patterns). |
 | 373 | `.cursorignore` | REQUIRED | Cursor indexing exclusions for agent context. |
 | 374 | `docs/glossary.md` | REQUIRED | Ubiquitous language / domain glossary. |
@@ -1485,7 +1485,7 @@ The following paths extend the §26 inventory (Amendment 6). Paths overlap §28 
 | 393 | `.envrc` | OPTIONAL | direnv: load .env and .venv. |
 | 394 | `.github/workflows/stale.yml` | OPTIONAL | Stale issue/PR automation. |
 | 395 | `.github/workflows/label-sync.yml` | OPTIONAL | Sync labels from .github/labels.yml. |
-| 396 | `apps/api/src/events.py` | OPTIONAL | Domain events and event bus foundation. |
+| 396 | `apps/api/app/events.py` | OPTIONAL | Domain events and event bus foundation. |
 | 397 | `packages/contracts/errors.py` | REQUIRED | Shared error response models and enums. |
 | 398 | `packages/contracts/pagination.py` | REQUIRED | Shared pagination models and cursor utilities. |
 | 399 | `docs/architecture/diagrams/README.md` | OPTIONAL | Index for Mermaid/PlantUML sources. |
@@ -1544,7 +1544,7 @@ The template repository is designed to be **cloned and initialized for a specifi
 | 1 | Project identity | Name, slug, one-liner | Repo naming, README content, pyproject.toml name |
 | 2 | Problem and solution | What and why | README description, AGENTS.md mission |
 | 3 | Project archetype | Category of project | Default profiles, module set, queue categories, deployment shape |
-| 4 | Domain model | Entities, contexts, workflows | Module scaffolding in `apps/api/src/`, model files, test stubs |
+| 4 | Domain model | Entities, contexts, workflows | Module scaffolding in `apps/api/app/`, model files, test stubs |
 | 5 | Profile selection | Which optional features to enable | docker-compose profiles, packages to include, deploy config |
 | 6 | Auth and authorization | Auth model, roles, permissions | Auth module configuration, middleware, test fixtures |
 | 7 | Data layer | Database, caching, external data | Database config, migration setup, connection management |
@@ -1596,10 +1596,10 @@ The initialization agent follows this exact sequence (see also `docs/procedures/
 11. Add project-specific constraints to `.cursor/rules/` from `idea.md` §13.
 
 **Phase 3 — Scaffold domain**
-12. For each bounded context in `idea.md` §4.2, create module directory under `apps/api/src/<context>/`:
+12. For each bounded context in `idea.md` §4.2, create module directory under `apps/api/app/<context>/`:
     - `__init__.py`, `router.py`, `models.py`, `schemas.py`, `service.py`
     - `tests/test_<context>.py` with stub tests for each entity
-13. Register all new routers in `apps/api/src/main.py`.
+13. Register all new routers in `apps/api/app/main.py`.
 14. Create initial Alembic migration for all domain models.
 15. Update `docs/api/endpoints.md` with scaffolded endpoint stubs.
 
@@ -1686,7 +1686,7 @@ This section enumerates additional files beyond §26 that are required for the i
 | # | File | Status | Summary | Initial content |
 |---|------|--------|---------|-----------------|
 | 281 | `docs/procedures/initialize-repo.md` | REQUIRED | SOP for initializing the repo from `idea.md`. The canonical procedure the `repo_initializer` prompt follows. | Per §8.3 format. Purpose: turn blank template into configured project. Trigger: fresh clone with filled `idea.md`. Prerequisites: `idea.md` complete, template repo cloned. Commands: make targets for each phase. Ordered steps: §27.4 six-phase procedure. Expected artifacts: initialization PR. Validation: `make lint`, `make test`, `make audit:self`. |
-| 282 | `docs/procedures/scaffold-domain-module.md` | REQUIRED | SOP for scaffolding a new bounded context module in `apps/api/src/`. Used during initialization and when adding new domains post-init. | Per §8.3 format. Steps: create directory, create `__init__.py` with router export, create `router.py` with CRUD endpoint stubs, create `models.py` with SQLAlchemy models from entity definitions, create `schemas.py` with Pydantic request/response models, create `service.py` with business logic stubs, register router in `main.py`, create `tests/test_<context>.py`, create Alembic migration. |
+| 282 | `docs/procedures/scaffold-domain-module.md` | REQUIRED | SOP for scaffolding a new bounded context module in `apps/api/app/`. Used during initialization and when adding new domains post-init. | Per §8.3 format. Steps: create directory, create `__init__.py` with router export, create `router.py` with CRUD endpoint stubs, create `models.py` with SQLAlchemy models from entity definitions, create `schemas.py` with Pydantic request/response models, create `service.py` with business logic stubs, register router in `main.py`, create `tests/test_<context>.py`, create Alembic migration. |
 | 283 | `docs/procedures/enable-profile.md` | REQUIRED | SOP for enabling an optional profile (generalized from `add-optional-app-profile.md`). Covers all profile types with a decision matrix. | Per §8.3 format. Steps: identify profile, check prerequisites, create package/app directory, update docker-compose.yml, add env vars to .env.example, update documentation, add profile-specific tests, validate with `make test`. Per-profile checklists for web, mobile, workers, ai, multi-tenancy, billing, email, search, analytics. |
 | 284 | `docs/procedures/validate-idea-md.md` | REQUIRED | SOP for validating that `idea.md` is complete enough for initialization. Lists every required field and validation rules. | Per §8.3 format. Steps: read each section, check for placeholder comments vs real content, validate entity relationships are consistent, verify archetype matches profile selections, check for contradictions between constraints and profile choices, list open questions as blockers. Output: validation report (pass/fail per section, list of blockers). |
 
@@ -1700,7 +1700,7 @@ This section enumerates additional files beyond §26 that are required for the i
 | 286 | `docs/architecture/domain-model.md` | REQUIRED | Domain model documentation. Entity definitions, relationships, bounded context map. Populated from `idea.md` §4. | Sections: Entity catalog (table: entity, context, key fields, relationships), Bounded context map, Context interaction patterns, Aggregate roots, Domain events (if applicable). |
 | 287 | `docs/architecture/api-design.md` | REQUIRED | API design decisions: style, versioning, pagination, rate limiting, error handling conventions. Populated from `idea.md` §9. | Sections: API style rationale, Versioning strategy, Pagination convention, Rate limiting policy, Error response format, Authentication header format, Content negotiation. |
 | 288 | `docs/development/environment-vars.md` | REQUIRED | Complete environment variable reference. Every env var the system reads, with description, type, default, required/optional, and which profile needs it. | Table format: Variable, Description, Type, Default, Required, Profile. Generated from `.env.example` with expanded descriptions. Updated whenever new env vars are added. |
-| 289 | `docs/development/module-patterns.md` | REQUIRED | Reference for the standard module structure in `apps/api/src/`. Shows the canonical file layout, naming conventions, and registration pattern. | Sections: Module directory layout, Router pattern, Model pattern, Schema pattern, Service pattern, Test pattern, Registration in main.py. Code examples for each. |
+| 289 | `docs/development/module-patterns.md` | REQUIRED | Reference for the standard module structure in `apps/api/app/`. Shows the canonical file layout, naming conventions, and registration pattern. | Sections: Module directory layout, Router pattern, Model pattern, Schema pattern, Service pattern, Test pattern, Registration in main.py. Code examples for each. |
 | 290 | `docs/development/dependency-management.md` | REQUIRED | How to manage Python dependencies: adding, removing, upgrading, lockfile, CI verification. | Sections: Adding a dependency (pyproject.toml), Dev vs production deps, Lockfile management, Upgrade procedure (link to procedure), CI dependency caching, Pinning policy. |
 | 291 | `docs/operations/configuration.md` | REQUIRED | Operations configuration reference: how config flows from env vars through Pydantic settings to application code. | Sections: Configuration sources (env vars only — no config files in prod), Pydantic BaseSettings pattern, Validation on startup, Profile-specific config, Secrets vs config distinction. |
 | 292 | `docs/operations/health-checks.md` | REQUIRED | Health check documentation: endpoint contracts, probe configuration, dependency checks, degraded states. | Sections: Endpoint reference (/health, /ready, /live), Dependency health checks, Degraded state handling, K8s probe mapping, Monitoring integration. |
@@ -1725,7 +1725,7 @@ This section enumerates additional files beyond §26 that are required for the i
 |---|------|--------|---------|-----------------|
 | 298 | `scripts/init-repo.sh` | REQUIRED | Repo initialization orchestrator. Validates `idea.md` is present and non-empty, runs pre-initialization checks, and provides guidance. Corresponds to `make init`. | Bash script: check idea.md exists and is not template-only (grep for un-replaced placeholders), verify Python version, verify Docker, print initialization instructions, optionally run `scripts/validate-idea.sh`. |
 | 299 | `scripts/validate-idea.sh` | REQUIRED | Validates `idea.md` completeness. Checks each required section has content beyond placeholder comments. Corresponds to `make idea:validate`. | Bash script: parse idea.md, for each of the 17 sections check that content exists beyond HTML comments, report pass/fail per section, exit non-zero if any required section is empty. |
-| 300 | `scripts/scaffold-module.sh` | REQUIRED | Scaffolds a new domain module directory structure. Creates all files from templates. Corresponds to `make scaffold:module`. | Bash script: accepts module name and entity list as args, creates `apps/api/src/<module>/` with `__init__.py`, `router.py`, `models.py`, `schemas.py`, `service.py`, creates `apps/api/tests/test_<module>.py`, registers router in main.py (or prints instruction). |
+| 300 | `scripts/scaffold-module.sh` | REQUIRED | Scaffolds a new domain module directory structure. Creates all files from templates. Corresponds to `make scaffold:module`. | Bash script: accepts module name and entity list as args, creates `apps/api/app/<module>/` with `__init__.py`, `router.py`, `models.py`, `schemas.py`, `service.py`, creates `apps/api/tests/test_<module>.py`, registers router in main.py (or prints instruction). |
 | 301 | `scripts/profile-enable.sh` | REQUIRED | Enables an optional profile. Modifies docker-compose.yml, .env.example, and creates package stubs. Corresponds to `make profile:enable`. | Bash script: accepts profile name as arg, validates against known profiles, enables Compose service, adds env vars, creates package directory if needed, prints post-enable instructions. |
 | 302 | `scripts/idea-to-queue.sh` | RECOMMENDED | Extracts queue items from `idea.md` §12 and writes them to `queue/queue.csv`. Corresponds to `make idea:queue`. | Bash/Python script: parse idea.md §12 table, generate CSV rows with auto-incrementing IDs, batch assignment from idea.md §15, validate with `scripts/queue-validate.sh`. |
 | 303 | `scripts/generate-env.sh` | REQUIRED | Generates `.env` from `.env.example` with interactive or default values. Corresponds to `make env:generate`. | Bash script: read .env.example, for each var prompt for value or use default, write .env (gitignored), validate required vars are set. |
@@ -2411,10 +2411,10 @@ repo-root/
 | 38 | `apps/api/` | FastAPI modular monolith — the primary application. Health endpoints, auth stubs, tenant hooks, Alembic migrations, Docker build, tests. |
 | 39 | `apps/api/alembic/` | Database migration configuration and version scripts (Alembic). |
 | 40 | `apps/api/alembic/versions/` | Individual migration version files. Starts with `.gitkeep`; populated as schema evolves. |
-| 41 | `apps/api/src/` | API application source code organized by bounded context (health, auth, tenancy). |
-| 42 | `apps/api/src/health/` | Health module: health, readiness, and liveness endpoints for operational monitoring and K8s probes. |
-| 43 | `apps/api/src/auth/` | Authentication module: register, login, refresh, logout endpoints with JWT token management. Policy-complete stubs with extension points. |
-| 44 | `apps/api/src/tenancy/` | Multi-tenancy module: tenant context middleware, tenant models, query scoping mixin. |
+| 41 | `apps/api/app/` | API application source code organized by bounded context (health, auth, tenancy). |
+| 42 | `apps/api/app/health/` | Health module: health, readiness, and liveness endpoints for operational monitoring and K8s probes. |
+| 43 | `apps/api/app/auth/` | Authentication module: register, login, refresh, logout endpoints with JWT token management. Policy-complete stubs with extension points. |
+| 44 | `apps/api/app/tenancy/` | Multi-tenancy module: tenant context middleware, tenant models, query scoping mixin. |
 | 45 | `apps/api/tests/` | API test suite: health endpoint tests, auth endpoint tests, shared fixtures and configuration. |
 | 46 | `apps/web/` | Optional web frontend placeholder. Contains README and scoped AGENTS.md when profile is enabled. |
 | 47 | `apps/mobile/` | Optional mobile app placeholder. Contains README and scoped AGENTS.md when profile is enabled. |
@@ -2658,22 +2658,22 @@ repo-root/
 | 209 | `apps/api/alembic/env.py` | Alembic environment: SQLite + Postgres support | §13 |
 | 210 | `apps/api/alembic/script.py.mako` | Alembic migration script template | §13 |
 | 211 | `apps/api/alembic/versions/.gitkeep` | Migration versions directory placeholder | §13 |
-| 212 | `apps/api/src/__init__.py` | API source package marker | §12 |
-| 213 | `apps/api/src/main.py` | FastAPI entry point: app factory, routers, middleware, lifespan | §12 |
-| 214 | `apps/api/src/config.py` | Configuration via Pydantic BaseSettings, env var validation | §12 |
-| 215 | `apps/api/src/database.py` | Database engine, session factory, Base class | §13 |
-| 216 | `apps/api/src/middleware.py` | Shared middleware: CORS, logging, correlation IDs, error handling | §12, §21 |
-| 217 | `apps/api/src/health/__init__.py` | Health module package marker | §12 |
-| 218 | `apps/api/src/health/router.py` | Health, readiness, and liveness endpoints | §12 |
-| 219 | `apps/api/src/auth/__init__.py` | Auth module package marker | §14 |
-| 220 | `apps/api/src/auth/router.py` | Auth endpoints: register, login, refresh, logout | §14 |
-| 221 | `apps/api/src/auth/models.py` | Auth DB models: User, RefreshToken | §14 |
-| 222 | `apps/api/src/auth/schemas.py` | Auth Pydantic schemas: request/response models | §14 |
-| 223 | `apps/api/src/auth/service.py` | Auth business logic: passwords, JWT, user management | §14 |
-| 224 | `apps/api/src/auth/dependencies.py` | FastAPI auth dependencies: get_current_user, require_auth | §14 |
-| 225 | `apps/api/src/tenancy/__init__.py` | Tenancy module package marker | §14 |
-| 226 | `apps/api/src/tenancy/middleware.py` | Tenant context extraction and request-scoped state | §14 |
-| 227 | `apps/api/src/tenancy/models.py` | Tenant DB models: Tenant, TenantMixin for query scoping | §14 |
+| 212 | `apps/api/app/__init__.py` | API source package marker | §12 |
+| 213 | `apps/api/app/main.py` | FastAPI entry point: app factory, routers, middleware, lifespan | §12 |
+| 214 | `apps/api/app/config.py` | Configuration via Pydantic BaseSettings, env var validation | §12 |
+| 215 | `apps/api/app/database.py` | Database engine, session factory, Base class | §13 |
+| 216 | `apps/api/app/middleware.py` | Shared middleware: CORS, logging, correlation IDs, error handling | §12, §21 |
+| 217 | `apps/api/app/health/__init__.py` | Health module package marker | §12 |
+| 218 | `apps/api/app/health/router.py` | Health, readiness, and liveness endpoints | §12 |
+| 219 | `apps/api/app/auth/__init__.py` | Auth module package marker | §14 |
+| 220 | `apps/api/app/auth/router.py` | Auth endpoints: register, login, refresh, logout | §14 |
+| 221 | `apps/api/app/auth/models.py` | Auth DB models: User, RefreshToken | §14 |
+| 222 | `apps/api/app/auth/schemas.py` | Auth Pydantic schemas: request/response models | §14 |
+| 223 | `apps/api/app/auth/service.py` | Auth business logic: passwords, JWT, user management | §14 |
+| 224 | `apps/api/app/auth/dependencies.py` | FastAPI auth dependencies: get_current_user, require_auth | §14 |
+| 225 | `apps/api/app/tenancy/__init__.py` | Tenancy module package marker | §14 |
+| 226 | `apps/api/app/tenancy/middleware.py` | Tenant context extraction and request-scoped state | §14 |
+| 227 | `apps/api/app/tenancy/models.py` | Tenant DB models: Tenant, TenantMixin for query scoping | §14 |
 | 228 | `apps/api/tests/__init__.py` | Test package marker | §12 |
 | 229 | `apps/api/tests/conftest.py` | Shared test fixtures: client, DB, test user, auth headers | §12 |
 | 230 | `apps/api/tests/test_health.py` | Health endpoint tests: health, ready, live | §12 |
@@ -2731,14 +2731,14 @@ repo-root/
 | 281 | `prompts/domain_modeler.md` | Role: analyze domain model, produce bounded context map and scaffolding plan | §28.2 |
 | 282 | `prompts/profile_configurator.md` | Role: enable/disable profiles based on idea.md selections | §28.2 |
 | 283 | `docs/procedures/initialize-repo.md` | SOP: initialize repo from idea.md (6-phase procedure) | §27.4 |
-| 284 | `docs/procedures/scaffold-domain-module.md` | SOP: scaffold new bounded context module in apps/api/src/ | §28.3 |
+| 284 | `docs/procedures/scaffold-domain-module.md` | SOP: scaffold new bounded context module in apps/api/app/ | §28.3 |
 | 285 | `docs/procedures/enable-profile.md` | SOP: enable optional profile with dependency checking | §28.3 |
 | 286 | `docs/procedures/validate-idea-md.md` | SOP: validate idea.md completeness before initialization | §28.3 |
 | 287 | `docs/architecture/system-context.md` | System context: boundary, actors, integrations, data flows | §28.4 |
 | 288 | `docs/architecture/domain-model.md` | Domain model: entities, relationships, bounded context map | §28.4 |
 | 289 | `docs/architecture/api-design.md` | API design decisions: style, versioning, pagination, rate limiting | §28.4 |
 | 290 | `docs/development/environment-vars.md` | Environment variable reference with types, defaults, and profiles | §28.4 |
-| 291 | `docs/development/module-patterns.md` | Standard module structure reference for apps/api/src/ | §28.4 |
+| 291 | `docs/development/module-patterns.md` | Standard module structure reference for apps/api/app/ | §28.4 |
 | 292 | `docs/development/dependency-management.md` | Dependency management: adding, removing, upgrading, lockfile | §28.4 |
 | 293 | `docs/operations/configuration.md` | Configuration flow: env vars → Pydantic settings → app code | §28.4 |
 | 294 | `docs/operations/health-checks.md` | Health endpoint contracts, probe config, degraded states | §28.4 |
@@ -2792,7 +2792,7 @@ repo-root/
 | 342 | `.dockerignore` | Docker context exclusions; reduce image size and secret leakage. | §26.12 |
 | 343 | `.gitattributes` | Line endings, merge strategy for queue CSV, linguist overrides. | §26.12 |
 | 344 | `.devcontainer/devcontainer.json` | VS Code/Codespaces devcontainer; Python 3.12+, Docker-in-Docker, Make, Git. | §26.12 |
-| 345 | `apps/api/src/exceptions.py` | Custom exception hierarchy; referenced by error taxonomy and error-codes doc. | §26.12 |
+| 345 | `apps/api/app/exceptions.py` | Custom exception hierarchy; referenced by error taxonomy and error-codes doc. | §26.12 |
 | 346 | `apps/api/tests/test_tenancy.py` | Tenant isolation tests: middleware, scoping, cross-tenant prevention. | §26.12 |
 | 347 | `scripts/clean.sh` | Remove caches and artifacts → `make clean`. | §26.12 |
 | 348 | `scripts/db-reset.sh` | Drop/recreate local DB and migrations → `make db:reset`. | §26.12 |
@@ -2819,8 +2819,8 @@ repo-root/
 | 369 | `deploy/k8s/base/hpa.yaml` | HorizontalPodAutoscaler; patched per overlay. | §26.12 |
 | 370 | `deploy/k8s/base/networkpolicy.yaml` | NetworkPolicy; default-deny with explicit allows. | §26.12 |
 | 371 | `deploy/k8s/base/serviceaccount.yaml` | Dedicated ServiceAccount for API pods. | §26.12 |
-| 372 | `apps/api/src/dependencies.py` | Shared FastAPI deps: get_db, get_settings, request context. | §26.12 |
-| 373 | `apps/api/src/pagination.py` | Pagination utilities and shared list models. | §26.12 |
+| 372 | `apps/api/app/dependencies.py` | Shared FastAPI deps: get_db, get_settings, request context. | §26.12 |
+| 373 | `apps/api/app/pagination.py` | Pagination utilities and shared list models. | §26.12 |
 | 374 | `apps/api/tests/factories.py` | Test data factories (e.g. factory_boy patterns). | §26.12 |
 | 375 | `.cursorignore` | Cursor indexing exclusions for agent context. | §26.12 |
 | 376 | `docs/glossary.md` | Ubiquitous language / domain glossary. | §26.12 |
@@ -2845,7 +2845,7 @@ repo-root/
 | 395 | `.envrc` | direnv: load .env and .venv. | §26.12 |
 | 396 | `.github/workflows/stale.yml` | Stale issue/PR automation. | §26.12 |
 | 397 | `.github/workflows/label-sync.yml` | Sync labels from .github/labels.yml. | §26.12 |
-| 398 | `apps/api/src/events.py` | Domain events and event bus foundation. | §26.12 |
+| 398 | `apps/api/app/events.py` | Domain events and event bus foundation. | §26.12 |
 | 399 | `packages/contracts/errors.py` | Shared error response models and enums. | §26.12 |
 | 400 | `packages/contracts/pagination.py` | Shared pagination models and cursor utilities. | §26.12 |
 | 401 | `docs/architecture/diagrams/README.md` | Index for Mermaid/PlantUML sources. | §26.12 |

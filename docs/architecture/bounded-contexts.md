@@ -15,4 +15,4 @@ summary: "Bounded context map: every context, what it owns, what it does not own
 
 ## Purpose
 
-Defines every bounded context in this system: its name, the entities it owns, the workflows it is responsible for, the interfaces it exposes to other contexts, and which module path it maps to under `apps/api/src/`.
+Defines every bounded context in this system: its name, the entities it owns, the workflows it is responsible for, the interfaces it exposes to other contexts, and which module path it maps to under `apps/api/app/`.

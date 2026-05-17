@@ -17,7 +17,7 @@ if [[ -f .venv/bin/activate ]]; then
   source .venv/bin/activate
 fi
 
-if command -v docker >/dev/null 2>&1 && [[ -f docker-compose.yml ]]; then
+if command -v docker >/dev/null 2>&1 && [[ -f compose.yml ]]; then
   if ! docker compose ps --status running --format '{{.Name}}' 2>/dev/null | grep -q .; then
     echo "Starting Docker Compose services..."
     docker compose up -d
@@ -25,8 +25,9 @@ if command -v docker >/dev/null 2>&1 && [[ -f docker-compose.yml ]]; then
   fi
 fi
 
-echo "API: http://localhost:8000"
-echo "Docs: http://localhost:8000/docs"
-echo "Health: http://localhost:8000/health"
+echo "API:    http://localhost:8000"
+echo "Docs:   http://localhost:8000/docs"
+echo "Health: http://localhost:8000/api/v1/utils/health-check/"
+echo "Web:    http://localhost:5173 (run \`make dev-web\` separately)"
 
 exec "$ROOT/scripts/dev.sh"

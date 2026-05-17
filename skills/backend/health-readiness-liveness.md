@@ -24,7 +24,7 @@ How to implement and verify health, readiness, and liveness endpoints. Probe con
 
 - This skill file and `skills/README.md`
 - `docs/procedures/implement-change.md` and `docs/procedures/validate-change.md`
-- `apps/api/src/`
+- `apps/api/app/`
 - `packages/tasks/`
 - `apps/api/tests/`
 

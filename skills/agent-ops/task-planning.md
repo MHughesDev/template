@@ -27,7 +27,7 @@ One paragraph. This skill produces an implementation plan document that is the c
 ## Relevant Files/Areas
 
 - The source files that will change
-- `apps/api/src/` — API source modules
+- `apps/api/app/` — API source modules
 - `apps/api/tests/` — test files
 - `docs/procedures/plan-change.md` — the SOP this skill implements
 

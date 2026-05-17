@@ -15,7 +15,7 @@ Several files in this repository were created with thin or placeholder content. 
 
 ---
 
-## 1. `apps/api/src/exceptions.py`
+## 1. `apps/api/app/exceptions.py`
 
 **Problem:** Missing two exception classes from the spec: `TenantIsolationError` and `StateTransitionError`. Also, `ExternalServiceError` and `NotFoundError` lack the extra fields we specified.
 
@@ -55,7 +55,7 @@ Also add to `AppError` base class:
 
 ---
 
-## 2. `apps/api/src/pagination.py`
+## 2. `apps/api/app/pagination.py`
 
 **Problem:** Currently a 13-line re-export shim. It should contain the actual query-level pagination logic that routers use, while the contract types stay in `packages/contracts/pagination.py`.
 
@@ -197,7 +197,7 @@ class BatchSuggester:
     suggest(items: list[QueueItem]) -> list[list[QueueItem]]:
         Group items by:
         - Same batch value (explicit grouping)
-        - Shared module references in summary (regex for apps/api/src/<name>/)
+        - Shared module references in summary (regex for apps/api/app/<name>/)
         - Shared dependencies (items depending on same prerequisite)
         Return list of suggested batches
 
@@ -464,7 +464,7 @@ Key rules enforced:
 - Every public function is fully typed (params, return, errors).
 - Boundary shapes (requests, responses, config) defined as Pydantic models before logic.
 - Import direction: `router` → `service` → `repository`. Never reverse.
-- No `os.getenv()` outside `apps/api/src/config.py`.
+- No `os.getenv()` outside `apps/api/app/config.py`.
 - State modeled with `Enum` and explicit transition maps.
 - `None` handled explicitly; never used as an error signal.
 
@@ -522,7 +522,7 @@ Add `PageInfo` and `PaginatedResponse` to `__all__` if present, or add an `__all
 
 ---
 
-## 13. `apps/api/src/dependencies.py`
+## 13. `apps/api/app/dependencies.py`
 
 **Problem:** Currently 17 lines that only re-export `get_db`. Should be the central wiring point that all routers import from.
 
@@ -755,8 +755,8 @@ jobs:
 Expand REQUIRED_PATHS to include at least:
     AGENTS.md, PYTHON_PROCEDURES.md, spec/spec.md, Makefile, pyproject.toml,
     .gitignore, .dockerignore, .gitattributes, .env.example, docker-compose.yml,
-    apps/api/Dockerfile, apps/api/src/main.py, apps/api/src/config.py,
-    apps/api/src/exceptions.py, apps/api/src/database.py,
+    apps/api/Dockerfile, apps/api/app/main.py, apps/api/app/config.py,
+    apps/api/app/exceptions.py, apps/api/app/database.py,
     queue/queue.csv, queue/queuearchive.csv, queue/QUEUE_INSTRUCTIONS.md,
     queue/QUEUE_AGENT_PROMPT.md, LICENSE, CONTRIBUTING.md, README.md,
     .github/workflows/ci.yml, .github/workflows/cd.yml
@@ -859,8 +859,8 @@ runs:
 ```csv
 # queue/queue.csv
 id,batch,phase,category,summary,dependencies,related_files,notes,created_date
-Q-001,1,1,infrastructure,"Configure production PostgreSQL connection: update apps/api/src/config.py with connection pool settings (pool_size, max_overflow, pool_timeout), verify docker-compose.yml db profile works with asyncpg, add integration test that connects to Postgres, update docs/architecture/data-layer.md with connection configuration details. Acceptance: make test passes with DATABASE_URL pointing to Postgres container.",,template-seed,2025-01-01
-Q-002,1,2,core-api,"Implement a sample domain module to validate the scaffolding pattern: create apps/api/src/example/ with router.py, service.py, models.py, schemas.py following docs/development/module-patterns.md. Include CRUD endpoints for a simple Example entity. Add tests in apps/api/tests/test_example.py. Register router in main.py. Acceptance: all CRUD endpoints return correct status codes, tests pass, module follows Python procedures.",Q-001,template-seed,2025-01-01
+Q-001,1,1,infrastructure,"Configure production PostgreSQL connection: update apps/api/app/config.py with connection pool settings (pool_size, max_overflow, pool_timeout), verify docker-compose.yml db profile works with asyncpg, add integration test that connects to Postgres, update docs/architecture/data-layer.md with connection configuration details. Acceptance: make test passes with DATABASE_URL pointing to Postgres container.",,template-seed,2025-01-01
+Q-002,1,2,core-api,"Implement a sample domain module to validate the scaffolding pattern: create apps/api/app/example/ with router.py, service.py, models.py, schemas.py following docs/development/module-patterns.md. Include CRUD endpoints for a simple Example entity. Add tests in apps/api/tests/test_example.py. Register router in main.py. Acceptance: all CRUD endpoints return correct status codes, tests pass, module follows Python procedures.",Q-001,template-seed,2025-01-01
 Q-003,1,3,testing,"Increase test coverage to 70%: audit existing tests for gaps, add edge-case tests for auth (expired tokens, malformed JWTs, duplicate registration), add integration tests for health endpoints with database down scenario, add tenant middleware tests. Acceptance: make test reports >=70% coverage.",Q-002,template-seed,2025-01-01
 ```
 

@@ -54,7 +54,7 @@ CI runs `audit-self` as a separate job on every PR and push to main (see `.githu
 
 ## 14.1.6 file_title_comments: FAIL
   - scripts/new-tool.sh
-  - apps/api/src/mymodule/helpers.py
+  - apps/api/app/mymodule/helpers.py
 ```
 
 Each `FAIL` section lists the offending files or messages. Fix all failures before merging.
@@ -75,7 +75,7 @@ A listed file is missing. Either:
 ### `file_title_comments` failure
 
 Add the file title as the first line:
-- Python: `# apps/api/src/module/file.py`
+- Python: `# apps/api/app/module/file.py`
 - Shell: Line 1 = `#!/usr/bin/env bash`, Line 2 = `# scripts/my-script.sh`
 - Markdown: `# docs/path/to/file.md`
 - YAML: Line 1 = `---`, Line 2 = `# .github/workflows/ci.yml` (or file-specific comment)

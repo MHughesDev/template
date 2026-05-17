@@ -33,7 +33,7 @@ Table of repository-specific terms. Columns: Term, Definition, Used In. Rows:
 | **Rule** | A constraint in .cursor/rules/ enforced on every agent interaction | .cursor/rules/ |
 | **Profile** | An optional feature set (web, mobile, workers, ai-rag, multi-tenancy) | docker-compose.yml, .env.example |
 | **Archetype** | The project type selected in idea.md §3 that determines default profiles | idea.md §3 |
-| **Bounded context** | A domain module in apps/api/src/<context>/ with its own router/models/service | apps/api/src/ |
+| **Bounded context** | A domain module in apps/api/app/<context>/ with its own router/models/service | apps/api/app/ |
 | **Mandatory skill search** | The required step of searching skills/ before beginning any task | AGENTS.md §13 |
 | **Handoff** | The evidence document produced when completing or blocking work | docs/procedures/handoff.md |
 | **Ratchet** | A mechanism that only allows coverage floor to increase, never decrease | docs/quality/coverage-policy.md |

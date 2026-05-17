@@ -24,7 +24,7 @@ Description of each queue file and its role:
 
 The queue CSV uses the following columns. **Columns marked Required=yes must be
 non-empty for `make queue:validate` to pass.** All paths in file columns are
-repo-relative (e.g. `apps/api/src/routes/health.py`).
+repo-relative (e.g. `apps/api/app/routes/health.py`).
 
 | Column | Type | Required | Description |
 |---|---|---|---|

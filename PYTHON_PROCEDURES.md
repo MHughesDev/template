@@ -141,7 +141,7 @@ Router (transport layer)
 **Canonical module layout:**
 
 ```
-apps/api/src/<context>/
+apps/api/app/<context>/
 ├── __init__.py          # public API exports (router, key types)
 ├── router.py            # FastAPI router and endpoint handlers
 ├── models.py            # SQLAlchemy models
@@ -155,7 +155,7 @@ apps/api/src/<context>/
 
 - `router.py` imports from: `schemas.py`, `service.py`, `dependencies.py`
 - `service.py` imports from: `models.py`, `schemas.py` (or `packages/contracts/`), `exceptions.py`
-- `repository.py` imports from: `models.py`, `apps/api/src/database.py`
+- `repository.py` imports from: `models.py`, `apps/api/app/database.py`
 - `schemas.py` imports from: `packages/contracts/` only — never from routers/services
 - **Forbidden:** `service.py` importing from `router.py`; `models.py` importing from `service.py`
 - Circular imports are a signal of wrong layer assignment — fix the structure, not the import
@@ -196,7 +196,7 @@ apps/api/src/<context>/
 **Exception hierarchy:**
 
 ```python
-# apps/api/src/exceptions.py
+# apps/api/app/exceptions.py
 class AppError(Exception):
     code: str
     status_code: int
@@ -212,7 +212,7 @@ class ExternalServiceError(AppError): ...
 
 **Procedure:**
 
-1. Define all custom exceptions in `apps/api/src/exceptions.py` with `code`, `status_code`, `message`.
+1. Define all custom exceptions in `apps/api/app/exceptions.py` with `code`, `status_code`, `message`.
 2. Services raise domain exceptions (`NotFoundError`, `ConflictError`, etc.) — never HTTP exceptions directly.
 3. Routers catch domain exceptions and translate to `HTTPException` (or let the global handler do it).
 4. Global exception handler in `middleware.py` catches `AppError` subclasses and returns structured JSON error response.
@@ -228,7 +228,7 @@ class ExternalServiceError(AppError): ...
 
 **Procedure:**
 
-1. One `Settings(BaseSettings)` class in `apps/api/src/config.py`.
+1. One `Settings(BaseSettings)` class in `apps/api/app/config.py`.
 2. All env vars declared as fields with type annotations, defaults, and descriptions.
 3. `@field_validator` for cross-field validation (e.g., database URL format).
 4. Instantiate as a module-level singleton: `settings = Settings()` (fails fast on startup if invalid).

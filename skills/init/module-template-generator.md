@@ -16,11 +16,11 @@ During initialization Phase 3 (Scaffold Domain). Invoked once per initialization
 
 ## Prerequisites
 
-archetype-mapper.py plan available. skills/backend/fastapi-router-module.md read. apps/api/src/ directory exists. Alembic configured.
+archetype-mapper.py plan available. skills/backend/fastapi-router-module.md read. apps/api/app/ directory exists. Alembic configured.
 
 ## Relevant Files/Areas
 
-apps/api/src/ (all module directories), apps/api/src/main.py, apps/api/tests/, skills/backend/module-scaffolder.py
+apps/api/app/ (all module directories), apps/api/app/main.py, apps/api/tests/, skills/backend/module-scaffolder.py
 
 ## Step-by-Step Method
 

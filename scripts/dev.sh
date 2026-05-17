@@ -11,5 +11,6 @@ if [[ ! -f .env ]] && [[ -f .env.example ]]; then
   echo "Note: no .env found; copy .env.example to .env or export DATABASE_URL / JWT_SECRET_KEY." >&2
 fi
 
-export PYTHONPATH="${ROOT}"
-exec python3 -m uvicorn apps.api.src.main:app --reload --host "${API_HOST:-0.0.0.0}" --port "${API_PORT:-8000}"
+export PYTHONPATH="${ROOT}/apps/api"
+cd "${ROOT}/apps/api"
+exec python3 -m uvicorn app.main:app --reload --host "${API_HOST:-0.0.0.0}" --port "${API_PORT:-8000}"
