@@ -1,3 +1,11 @@
+---
+doc_id: "21.20"
+title: "queue decomposition"
+section: "Procedures"
+summary: "Break L-complexity queue tasks into S/M sub-tasks that satisfy touch file and dependency constraints."
+updated: "2026-05-16"
+---
+
 # Procedure: Decomposing L-Complexity Queue Items
 
 **Purpose:** SOP for breaking an oversized (L-complexity) task into S/M

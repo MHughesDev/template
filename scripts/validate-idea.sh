@@ -57,7 +57,7 @@ def main() -> int:
 
     def check_placeholders_required() -> None:
         bad = False
-        for num in (1, 3, 4, 6, 7, 9):
+        for num in (1, 2, 3, 4, 6, 7, 9):
             sec = section_span(num)
             if sec and "<!--" in sec:
                 errors.append(
@@ -66,7 +66,7 @@ def main() -> int:
                 )
                 bad = True
         if not bad:
-            print("✓ Required sections (1, 3, 4, 6, 7, 9) have no <!-- placeholders")
+            print("✓ Required sections (1, 2, 3, 4, 6, 7, 9) have no <!-- placeholders")
 
     def warn_optional_placeholders() -> None:
         for num in (2, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17):
@@ -201,7 +201,7 @@ def main() -> int:
             print("✓ §12 Initial queue items: at least one non-placeholder row")
         else:
             errors.append(
-                "§12 Initial queue items: at least one non-placeholder row is required."
+                "§12 queue hints are optional in docs-first mode (no rows provided)."
             )
         if short_summaries:
             errors.append(

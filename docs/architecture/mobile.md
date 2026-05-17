@@ -1,5 +1,5 @@
 ---
-doc_id: "arch-mobile"
+doc_id: "21.7"
 title: "mobile architecture"
 section: "Architecture"
 status: "pending-init"

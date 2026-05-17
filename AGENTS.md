@@ -1,3 +1,13 @@
+# Project Mission (init-populated)
+
+- **System name:** _populate during initialization_
+- **One-line mission:** _populate during initialization_
+- **Archetype:** _populate during initialization_
+- **Active profiles:** _populate during initialization_
+- **Primary bounded contexts:** _populate during initialization_
+
+---
+
 # AGENTS.md
 
 Root agent control plane. This is the default policy surface for all agents operating in this repository. It defines mission, instruction hierarchy, required workflows, validation, queue interaction, escalation, and anti-patterns. **Before reading [README.md](README.md), this file, or any other repo content:** ensure the **MicroFast dev MCP** session requirement in **section 3 step 1** is satisfied (unless your runtime cannot attach MCP — then note that in your handoff). **Read [README.md](README.md) next** for repository orientation, then read this file (`AGENTS.md`) completely before any other policy or code. Per [spec/spec.md](spec/spec.md) section 4 — sections 1–14 below are all required, plus sections 15–16 and navigation.

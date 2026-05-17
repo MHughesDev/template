@@ -1,5 +1,5 @@
 ---
-doc_id: "arch-async-workers"
+doc_id: "21.1"
 title: "async workers"
 section: "Architecture"
 status: "pending-init"
