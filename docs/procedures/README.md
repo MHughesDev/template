@@ -35,7 +35,7 @@ Ordered list of all procedure files with one-line descriptions and links. Ordere
 **Initialization:**
 - [initialize-repo.md](initialize-repo.md) — Full repo initialization from idea.md (6-phase procedure)
 - [validate-idea-md.md](validate-idea-md.md) — Validate idea.md completeness before initialization
-- [scaffold-domain-module.md](scaffold-domain-module.md) — Create bounded context module in apps/api/src/
+- [scaffold-domain-module.md](scaffold-domain-module.md) — Create bounded context module in apps/api/app/
 - [enable-profile.md](enable-profile.md) — Enable optional profile with dependency checking
 
 **Development lifecycle:**

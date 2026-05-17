@@ -19,7 +19,7 @@ Profile resolution complete. skills/backend/env-var-sync.py available for post-g
 
 ## Relevant Files/Areas
 
-.env.example, apps/api/src/config.py, skills/init/env-generator.py
+.env.example, apps/api/app/config.py, skills/init/env-generator.py
 
 ## Step-by-Step Method
 
@@ -27,7 +27,7 @@ Numbered steps:
 1. Run `python skills/init/env-generator.py --profiles web,ai_rag,workers > .env.example`
 2. Review generated .env.example: verify all profile vars present with correct comments
 3. Run `python skills/backend/env-var-sync.py` to verify sync with config.py
-4. Update apps/api/src/config.py if new vars need Settings fields
+4. Update apps/api/app/config.py if new vars need Settings fields
 
 ## Command Examples
 

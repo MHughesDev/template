@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # scripts/migrate.sh
-# Run Alembic from apps/api (requires PYTHONPATH=repo root for imports).
+# Run Alembic migrations against the configured database.
+# Operates from apps/api (where alembic.ini lives).
 
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-export PYTHONPATH="$ROOT"
+export PYTHONPATH="$ROOT/apps/api"
 cd "$ROOT/apps/api"
 
 if [[ "${1:-}" == "create" ]]; then

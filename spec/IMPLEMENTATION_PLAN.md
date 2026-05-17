@@ -97,10 +97,10 @@ This file is the **implementation checklist** for the template repository descri
 | [x] | `apps/api/` | FastAPI modular monolith — the primary application. Health endpoints, auth stubs, tenant hooks, Alembic migrations, Docker build, tests. |
 | [x] | `apps/api/alembic/` | Database migration configuration and version scripts (Alembic). |
 | [x] | `apps/api/alembic/versions/` | Individual migration version files. Starts with `.gitkeep`; populated as schema evolves. |
-| [x] | `apps/api/src/` | API application source code organized by bounded context (health, auth, tenancy). |
-| [x] | `apps/api/src/health/` | Health module: health, readiness, and liveness endpoints for operational monitoring and K8s probes. |
-| [x] | `apps/api/src/auth/` | Authentication module: register, login, refresh, logout endpoints with JWT token management. Policy-complete stubs with extension points. |
-| [x] | `apps/api/src/tenancy/` | Multi-tenancy module: tenant context middleware, tenant models, query scoping mixin. |
+| [x] | `apps/api/app/` | API application source code organized by bounded context (health, auth, tenancy). |
+| [x] | `apps/api/app/health/` | Health module: health, readiness, and liveness endpoints for operational monitoring and K8s probes. |
+| [x] | `apps/api/app/auth/` | Authentication module: register, login, refresh, logout endpoints with JWT token management. Policy-complete stubs with extension points. |
+| [x] | `apps/api/app/tenancy/` | Multi-tenancy module: tenant context middleware, tenant models, query scoping mixin. |
 | [x] | `apps/api/tests/` | API test suite: health endpoint tests, auth endpoint tests, shared fixtures and configuration. |
 | [x] | `apps/web/` | Optional web frontend placeholder. Contains README and scoped AGENTS.md when profile is enabled. |
 | [x] | `apps/mobile/` | Optional mobile app placeholder. Contains README and scoped AGENTS.md when profile is enabled. |
@@ -190,26 +190,26 @@ This file is the **implementation checklist** for the template repository descri
 | [x] | `apps/api/alembic/env.py` |  |
 | [x] | `apps/api/alembic/script.py.mako` |  |
 | [x] | `apps/api/alembic/versions/.gitkeep` |  |
-| [x] | `apps/api/src/__init__.py` |  |
-| [x] | `apps/api/src/auth/__init__.py` |  |
-| [x] | `apps/api/src/auth/dependencies.py` |  |
-| [x] | `apps/api/src/auth/models.py` |  |
-| [x] | `apps/api/src/auth/router.py` |  |
-| [x] | `apps/api/src/auth/schemas.py` |  |
-| [x] | `apps/api/src/auth/service.py` |  |
-| [x] | `apps/api/src/config.py` |  |
-| [x] | `apps/api/src/database.py` |  |
-| [x] | `apps/api/src/dependencies.py` |  |
-| [x] | `apps/api/src/events.py` | optional |
-| [x] | `apps/api/src/exceptions.py` |  |
-| [x] | `apps/api/src/health/__init__.py` |  |
-| [x] | `apps/api/src/health/router.py` |  |
-| [x] | `apps/api/src/main.py` |  |
-| [x] | `apps/api/src/middleware.py` |  |
-| [x] | `apps/api/src/pagination.py` |  |
-| [x] | `apps/api/src/tenancy/__init__.py` |  |
-| [x] | `apps/api/src/tenancy/middleware.py` |  |
-| [x] | `apps/api/src/tenancy/models.py` |  |
+| [x] | `apps/api/app/__init__.py` |  |
+| [x] | `apps/api/app/auth/__init__.py` |  |
+| [x] | `apps/api/app/auth/dependencies.py` |  |
+| [x] | `apps/api/app/auth/models.py` |  |
+| [x] | `apps/api/app/auth/router.py` |  |
+| [x] | `apps/api/app/auth/schemas.py` |  |
+| [x] | `apps/api/app/auth/service.py` |  |
+| [x] | `apps/api/app/config.py` |  |
+| [x] | `apps/api/app/database.py` |  |
+| [x] | `apps/api/app/dependencies.py` |  |
+| [x] | `apps/api/app/events.py` | optional |
+| [x] | `apps/api/app/exceptions.py` |  |
+| [x] | `apps/api/app/health/__init__.py` |  |
+| [x] | `apps/api/app/health/router.py` |  |
+| [x] | `apps/api/app/main.py` |  |
+| [x] | `apps/api/app/middleware.py` |  |
+| [x] | `apps/api/app/pagination.py` |  |
+| [x] | `apps/api/app/tenancy/__init__.py` |  |
+| [x] | `apps/api/app/tenancy/middleware.py` |  |
+| [x] | `apps/api/app/tenancy/models.py` |  |
 | [x] | `apps/api/tests/__init__.py` |  |
 | [x] | `apps/api/tests/conftest.py` |  |
 | [x] | `apps/api/tests/factories.py` |  |

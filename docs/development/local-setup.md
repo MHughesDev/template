@@ -21,7 +21,7 @@ Detailed local development setup. All Make/Task targets documented with expected
 
 1. **Python:** 3.12+ (`python --version`).
 2. **Virtual env:** One-shot bootstrap: `./setup.sh` (creates `.venv`, installs from `requirements.lock` when present then `pip install -e . --no-deps`, else `pip install -e ".[dev]"`, copies `.env` from `.env.example`, runs `make migrate`, lint, fmt, typecheck, test).
-3. **Environment file:** Copy `cp .env.example .env` and set `JWT_SECRET_KEY` to a strong value before any shared or production use. All settings are read through `apps/api/src/config.py` only.
+3. **Environment file:** Copy `cp .env.example .env` and set `JWT_SECRET_KEY` to a strong value before any shared or production use. All settings are read through `apps/api/app/config.py` only.
 
 ## 3.7.3 Running the API
 

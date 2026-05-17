@@ -179,7 +179,7 @@ class ComplexityScorer:
 class BatchSuggester:
     """Group items into suggested batches."""
 
-    _MOD = re.compile(r"apps/api/src/([^/]+)/")
+    _MOD = re.compile(r"apps/api/app/([^/]+)/")
 
     def suggest(self, items: list[QueueItem]) -> list[list[QueueItem]]:
         by_batch: dict[str, list[QueueItem]] = defaultdict(list)

@@ -146,7 +146,7 @@ def prerequisites(cat: str) -> str:
     elif cat == "devops":
         extra.append("- Docker and/or `kubectl` available if you touch deploy manifests.")
     elif cat == "security":
-        extra.append("- No secrets in code; use `.env` and `apps/api/src/config.py` only for settings.")
+        extra.append("- No secrets in code; use `.env` and `apps/api/app/config.py` only for settings.")
     return "\n".join(base + extra)
 
 
@@ -157,7 +157,7 @@ def relevant_files(cat: str, rel: str) -> str:
     ]
     by_cat: dict[str, list[str]] = {
         "backend": [
-            "- `apps/api/src/`",
+            "- `apps/api/app/`",
             "- `packages/tasks/`",
             "- `apps/api/tests/`",
         ],
@@ -169,7 +169,7 @@ def relevant_files(cat: str, rel: str) -> str:
         "security": [
             "- `docs/security/`",
             "- `.env.example`",
-            "- `apps/api/src/auth/`",
+            "- `apps/api/app/auth/`",
         ],
         "devops": [
             "- `deploy/docker/`",

@@ -79,7 +79,7 @@ Universal constraints for **every** agent session: commits, scope, evidence, fil
 
 1. No secrets, tokens, passwords, or API keys in the repo.
 2. No CI bypass, no direct or force push to **`main`**.
-3. No **`os.getenv()`** outside **`apps/api/src/config.py`** (use `Settings` + DI).
+3. No **`os.getenv()`** outside **`apps/api/app/config.py`** (use `Settings` + DI).
 4. No bare **`Any`** without a short justification.
 5. No **`# type: ignore`** without an explanatory comment.
 6. No DB queries in **router** handlers (service/repository only).

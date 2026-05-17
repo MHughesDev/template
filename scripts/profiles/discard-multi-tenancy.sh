@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-TEN="$ROOT/apps/api/src/tenancy"
+TEN="$ROOT/apps/api/app/tenancy"
 if [[ ! -d "$TEN" ]]; then
   echo "✓ Multi-tenancy profile discarded."
   exit 0

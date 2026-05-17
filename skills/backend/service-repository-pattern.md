@@ -23,10 +23,10 @@ PYTHON_PROCEDURES.md §6 (Domain Separation), §4 (Dependency Injection), §14 (
 
 ## Relevant Files/Areas
 
-- `apps/api/src/<module>/service.py` — business logic layer
-- `apps/api/src/<module>/router.py` — transport layer (thin)
-- `apps/api/src/<module>/models.py` — persistence layer definitions
-- `apps/api/src/database.py` — session management
+- `apps/api/app/<module>/service.py` — business logic layer
+- `apps/api/app/<module>/router.py` — transport layer (thin)
+- `apps/api/app/<module>/models.py` — persistence layer definitions
+- `apps/api/app/database.py` — session management
 
 ## Step-by-Step Method
 

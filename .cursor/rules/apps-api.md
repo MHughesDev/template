@@ -20,13 +20,13 @@ Rules for **`apps/api/`**: FastAPI layout, layers, DI, schemas vs ORM models, er
 ## Router registration
 
 1. Define **`router = APIRouter(prefix="/...", tags=[...])`** in **`router.py`**.
-2. Include routers from **`apps/api/src/main.py`** under a consistent API prefix (e.g. **`/api/v1`**) without duplicating path segments.
+2. Include routers from **`apps/api/app/main.py`** under a consistent API prefix (e.g. **`/api/v1`**) without duplicating path segments.
 3. Keep registration order predictable (e.g. alphabetical by package name).
 
 ## Dependency injection
 
 1. Do **not** construct services inline in handlers — use **`Depends()`** factories.
-2. DB access uses shared session dependencies (e.g. **`get_db`**) from **`apps/api/src/dependencies.py`**.
+2. DB access uses shared session dependencies (e.g. **`get_db`**) from **`apps/api/app/dependencies.py`**.
 3. Auth uses **`get_current_user`** (or stricter deps) from **`auth/dependencies.py`**.
 4. Configuration via **`Depends(get_settings)`**, not hidden imports of a global **`settings`** in routers.
 5. Place module-specific **`Depends()`** factories in **`dependencies.py`** for that module.

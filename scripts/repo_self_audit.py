@@ -19,12 +19,17 @@ REQUIRED_PATHS = (
     ".dockerignore",
     ".gitattributes",
     ".env.example",
-    "docker-compose.yml",
+    "compose.yml",
     "apps/api/Dockerfile",
-    "apps/api/src/main.py",
-    "apps/api/src/config.py",
-    "apps/api/src/exceptions.py",
-    "apps/api/src/database.py",
+    "apps/api/AGENTS.md",
+    "apps/api/app/main.py",
+    "apps/api/app/core/config.py",
+    "apps/api/app/core/db.py",
+    "apps/api/app/models.py",
+    "apps/web/Dockerfile",
+    "apps/web/AGENTS.md",
+    "apps/web/package.json",
+    "apps/web/src/main.tsx",
     "scripts/repo_self_audit.py",
     "scripts/queue_validate.py",
     "scripts/queue_archive.py",
@@ -41,6 +46,11 @@ REQUIRED_PATHS = (
 )
 
 SKIP_DIRS = {".git", "node_modules", ".venv", "__pycache__", ".pytest_cache"}
+
+# apps/api and apps/web are vendored from the upstream Tiangolo full-stack
+# template; their source files keep upstream conventions and skip the
+# template-systemization first-line-comment rule.
+VENDORED_PREFIXES = (("apps", "api"), ("apps", "web"))
 TITLE_EXT = {".py", ".md", ".sh", ".yml", ".yaml"}
 SKILL_HEADINGS = ("purpose", "when to invoke", "prerequisites")
 
@@ -72,6 +82,12 @@ def file_title_comments(root: Path) -> list[str]:
         if not path.is_file():
             continue
         if any(p in SKIP_DIRS for p in path.parts):
+            continue
+        try:
+            rel_parts = path.relative_to(root).parts
+        except ValueError:
+            rel_parts = path.parts
+        if any(rel_parts[: len(pref)] == pref for pref in VENDORED_PREFIXES):
             continue
         if path.suffix.lower() not in TITLE_EXT:
             continue

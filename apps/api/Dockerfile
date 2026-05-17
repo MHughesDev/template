@@ -1,32 +1,45 @@
-# apps/api/Dockerfile
-FROM python:3.14-slim AS builder
-WORKDIR /build
-COPY pyproject.toml README.md ./
-COPY apps apps
-COPY packages packages
-RUN pip install --no-cache-dir --upgrade pip \
- && pip install --no-cache-dir .
+FROM python:3.12
 
-FROM python:3.14-slim AS runner
-WORKDIR /app
-# Install curl for HEALTHCHECK, then apply security updates for the slim base (Trivy / CI).
-RUN apt-get update \
- && apt-get install -y --no-install-recommends curl \
- && apt-get upgrade -y \
- && rm -rf /var/lib/apt/lists/* \
- && useradd --create-home --uid 1000 app
+ENV PYTHONUNBUFFERED=1
 
-# Copy full minor-version lib tree so patch-level image drift does not break site-packages paths.
-COPY --from=builder /usr/local/lib/python3.12 /usr/local/lib/python3.12
-COPY --from=builder /usr/local/bin /usr/local/bin
-COPY --from=builder /build/apps /app/apps
-COPY --from=builder /build/packages /app/packages
+# Install uv
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
+COPY --from=ghcr.io/astral-sh/uv:0.9.26 /uv /uvx /bin/
 
-USER app
-ENV PYTHONPATH=/app
-EXPOSE 8000
+# Compile bytecode
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#compiling-bytecode
+ENV UV_COMPILE_BYTECODE=1
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD curl -fsS http://127.0.0.1:8000/health >/dev/null || exit 1
+# uv Cache
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#caching
+ENV UV_LINK_MODE=copy
 
-CMD ["python", "-m", "uvicorn", "apps.api.src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+WORKDIR /app/
+
+# Place executables in the environment at the front of the path
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Install dependencies
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-workspace --package app
+
+COPY ./apps/api/scripts /app/apps/api/scripts
+
+COPY ./apps/api/pyproject.toml ./apps/api/alembic.ini /app/apps/api/
+
+COPY ./apps/api/app /app/apps/api/app
+
+# Sync the project
+# Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --package app
+
+WORKDIR /app/apps/api/
+
+CMD ["fastapi", "run", "--workers", "4", "app/main.py"]

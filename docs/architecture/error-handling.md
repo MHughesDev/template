@@ -14,7 +14,7 @@ updated: "2026-04-17"
 
 ## 2.7.1 Error Hierarchy
 
-AppError hierarchy from apps/api/src/exceptions.py. Base class structure, HTTP status mappings, stable error codes.
+AppError hierarchy from apps/api/app/exceptions.py. Base class structure, HTTP status mappings, stable error codes.
 
 ## 2.7.2 Error Response Shape
 

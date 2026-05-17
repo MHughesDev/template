@@ -23,7 +23,7 @@ This project uses a three-layer pyramid. Each layer has a specific job; do not b
      /--------\
     /Integration\    ← apps/api/tests/ (marker: integration)
    /------------\
-  /  Unit tests  \   ← apps/api/src/**/tests/ (marker: unit)
+  /  Unit tests  \   ← apps/api/app/**/tests/ (marker: unit)
  /________________\
 ```
 
@@ -32,7 +32,7 @@ This project uses a three-layer pyramid. Each layer has a specific job; do not b
 **What:** Pure logic — services, domain functions, schema validators, utility helpers.
 **When:** Any function with conditional logic, state transitions, or error paths.
 **How:** Mock all I/O (database, HTTP, filesystem). Never hit real infrastructure.
-**Location:** `apps/api/src/<module>/tests/test_service.py`, `test_schemas.py`
+**Location:** `apps/api/app/<module>/tests/test_service.py`, `test_schemas.py`
 
 ```python
 @pytest.mark.unit
@@ -46,7 +46,7 @@ def test_state_transition_invalid_raises():
 **What:** Router → service → repository → DB. Tests the full in-process stack.
 **When:** Every HTTP endpoint needs at least one happy-path and one error-path test.
 **How:** Use the `client` fixture (AsyncClient + SQLite in-memory via conftest). No external services.
-**Location:** `apps/api/src/<module>/tests/test_router.py`, `apps/api/tests/`
+**Location:** `apps/api/app/<module>/tests/test_router.py`, `apps/api/tests/`
 
 ```python
 @pytest.mark.integration
@@ -100,7 +100,7 @@ make test-smoke              # smoke tests only
 - **`client`** — `AsyncClient` backed by in-memory SQLite + migrated schema. Defined in `apps/api/tests/conftest.py`.
 - **`auth_headers`** — JWT bearer token for a test user.
 - **`tenant_headers`** — JWT with `tenant_id` claim for multi-tenancy tests.
-- Module-local fixtures go in `apps/api/src/<module>/tests/conftest.py`.
+- Module-local fixtures go in `apps/api/app/<module>/tests/conftest.py`.
 
 ## 11.3.7 When to add a test
 

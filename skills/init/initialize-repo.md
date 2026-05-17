@@ -31,7 +31,7 @@ Do not invoke if any of the following are true:
 - `idea.md` read completely, every section understood
 - `make idea:validate` passing
 - `docs/` placeholder files all present (`status: pending-init`)
-- Understanding of the existing module pattern in `apps/api/src/example/`
+- Understanding of the existing module pattern in `apps/api/app/example/`
 
 ---
 
@@ -85,7 +85,7 @@ Update frontmatter: change `status: "pending-init"` to `status: "current"` and s
 
 #### `docs/architecture/bounded-contexts.md`
 For each bounded context identified in Phase 1:
-- **Context name** and the module path it maps to (`apps/api/src/<name>/`)
+- **Context name** and the module path it maps to (`apps/api/app/<name>/`)
 - **Owns:** the entities it is the single source of truth for
 - **Does not own:** entities from other contexts it may read but never writes
 - **Exposes:** the service methods and API endpoints it provides

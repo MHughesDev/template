@@ -24,7 +24,7 @@ How to implement rate limiting: middleware setup, configuration, per-tenant limi
 
 - This skill file and `skills/README.md`
 - `docs/procedures/implement-change.md` and `docs/procedures/validate-change.md`
-- `apps/api/src/`
+- `apps/api/app/`
 - `packages/tasks/`
 - `apps/api/tests/`
 

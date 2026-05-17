@@ -24,7 +24,7 @@ How to migrate from SQLite to PostgreSQL: schema differences, data migration, co
 
 - This skill file and `skills/README.md`
 - `docs/procedures/implement-change.md` and `docs/procedures/validate-change.md`
-- `apps/api/src/`
+- `apps/api/app/`
 - `packages/tasks/`
 - `apps/api/tests/`
 

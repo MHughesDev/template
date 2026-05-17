@@ -1,5 +1,5 @@
 # skills/security/tenant-isolation-checker.py
-"""Grep for raw SQL or missing tenant_id in apps/api/src (heuristic)."""
+"""Grep for raw SQL or missing tenant_id in apps/api/app (heuristic)."""
 
 from __future__ import annotations
 

@@ -1,5 +1,5 @@
 # skills/backend/module-scaffolder.py
-"""Create a bounded-context skeleton under apps/api/src/<module>/ (full pattern)."""
+"""Create a bounded-context skeleton under apps/api/app/<module>/ (full pattern)."""
 
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ def main() -> int:
 
     files: dict[str, str] = {}
 
-    files[f"apps/api/src/{name}/__init__.py"] = f'''# apps/api/src/{name}/__init__.py
+    files[f"apps/api/app/{name}/__init__.py"] = f'''# apps/api/app/{name}/__init__.py
 """Bounded context: {name}."""
 
 from apps.api.src.{name}.router import router
@@ -43,7 +43,7 @@ from apps.api.src.{name}.router import router
 __all__ = ["router"]
 '''
 
-    files[f"apps/api/src/{name}/models.py"] = f'''# apps/api/src/{name}/models.py
+    files[f"apps/api/app/{name}/models.py"] = f'''# apps/api/app/{name}/models.py
 """SQLAlchemy models for {name}."""
 
 from __future__ import annotations
@@ -71,7 +71,7 @@ class {title}Entity(Base):
     )
 '''
 
-    files[f"apps/api/src/{name}/schemas.py"] = f'''# apps/api/src/{name}/schemas.py
+    files[f"apps/api/app/{name}/schemas.py"] = f'''# apps/api/app/{name}/schemas.py
 """Pydantic schemas for {name}."""
 
 from __future__ import annotations
@@ -98,7 +98,7 @@ class {title}Response(BaseModel):
     created_at: datetime
 '''
 
-    files[f"apps/api/src/{name}/repository.py"] = f'''# apps/api/src/{name}/repository.py
+    files[f"apps/api/app/{name}/repository.py"] = f'''# apps/api/app/{name}/repository.py
 """Persistence layer for {name}."""
 
 from __future__ import annotations
@@ -131,7 +131,7 @@ class {title}Repository:
         return row
 '''
 
-    files[f"apps/api/src/{name}/service.py"] = f'''# apps/api/src/{name}/service.py
+    files[f"apps/api/app/{name}/service.py"] = f'''# apps/api/app/{name}/service.py
 """Application service for {name}."""
 
 from __future__ import annotations
@@ -170,7 +170,7 @@ class {title}Service:
         return {title}Response.model_validate(row)
 '''
 
-    files[f"apps/api/src/{name}/dependencies.py"] = f'''# apps/api/src/{name}/dependencies.py
+    files[f"apps/api/app/{name}/dependencies.py"] = f'''# apps/api/app/{name}/dependencies.py
 """FastAPI dependencies for {name}."""
 
 from __future__ import annotations
@@ -191,7 +191,7 @@ def get_{name}_service(
     return {title}Service(repo={title}Repository(session))
 '''
 
-    files[f"apps/api/src/{name}/router.py"] = f'''# apps/api/src/{name}/router.py
+    files[f"apps/api/app/{name}/router.py"] = f'''# apps/api/app/{name}/router.py
 """HTTP routes for {name}."""
 
 from __future__ import annotations
@@ -262,7 +262,7 @@ async def get_{name}(
         print(f"Created {rel}")
     print()
     print("Next steps:")
-    print("  1. Register router in apps/api/src/main.py")
+    print("  1. Register router in apps/api/app/main.py")
     print("  2. Import models in apps/api/alembic/env.py and add Alembic migration")
     print("  3. Run: make migrate && make test")
     return 0

@@ -68,7 +68,7 @@ Numbered steps for adding a new source→target mapping:
 
 ## Common Failure Modes
 
-- **App import error**: generator can't import FastAPI app → endpoint docs fail. Fix: ensure PYTHONPATH includes apps/api/src.
+- **App import error**: generator can't import FastAPI app → endpoint docs fail. Fix: ensure PYTHONPATH includes apps/api/app.
 - **Drift in CI**: generated docs on disk are stale → run make docs:generate locally and commit.
 - **Generator produces unstable output**: timestamps or sort order varies → use deterministic formatting.
 

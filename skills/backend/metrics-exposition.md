@@ -24,7 +24,7 @@ How to expose Prometheus-compatible metrics: `/metrics` endpoint, custom counter
 
 - This skill file and `skills/README.md`
 - `docs/procedures/implement-change.md` and `docs/procedures/validate-change.md`
-- `apps/api/src/`
+- `apps/api/app/`
 - `packages/tasks/`
 - `apps/api/tests/`
 

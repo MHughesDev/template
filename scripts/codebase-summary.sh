@@ -15,7 +15,7 @@ from pathlib import Path
 
 root = Path(".")
 
-modules = sorted(p.parent.name for p in root.glob("apps/api/src/*/router.py"))
+modules = sorted(p.stem for p in root.glob("apps/api/app/api/routes/*.py") if p.stem != "__init__")
 packages = sorted(p.parent.name for p in root.glob("packages/*/AGENTS.md"))
 skills = sorted(
     str(p.relative_to(root))
@@ -34,7 +34,7 @@ queue_count = max(0, len(q_lines) - 1)
 
 now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
-mod_lines = "\n".join(f"- `apps/api/src/{m}/`" for m in modules) or "- _(none yet)_"
+mod_lines = "\n".join(f"- `apps/api/app/api/routes/{m}.py`" for m in modules) or "- _(none yet)_"
 pkg_lines = "\n".join(f"- `packages/{p}/`" for p in packages) or "- _(none yet)_"
 
 summary = f"""# CODEBASE_SUMMARY.md
@@ -42,9 +42,11 @@ summary = f"""# CODEBASE_SUMMARY.md
 <!-- Generated: {now} -->
 
 ## Stack
-Python 3.12+, FastAPI, SQLAlchemy (async), Alembic, Pydantic v2, pytest
+- Backend: Python 3.12+, FastAPI, SQLModel, Postgres, Alembic, Pydantic v2, pytest
+- Frontend: React 19, Vite, TanStack Router/Query, Tailwind v4, shadcn/ui, Playwright
+- Orchestration: Docker Compose (db + adminer + backend + frontend + prestart), Traefik overlay
 
-## API modules
+## API routes
 {mod_lines}
 
 ## Packages
@@ -61,10 +63,13 @@ Python 3.12+, FastAPI, SQLAlchemy (async), Alembic, Pydantic v2, pytest
 - Procedures: {len(procedures)}
 
 ## Key entry points
-- API: `apps/api/src/main.py`
-- Config: `apps/api/src/config.py`
+- API:       `apps/api/app/main.py`
+- Config:    `apps/api/app/core/config.py`
+- Models:    `apps/api/app/models.py`
+- Frontend:  `apps/web/src/main.tsx`
+- Compose:   `compose.yml` + `compose.override.yml`
 - Spec: `spec/spec.md`
-- Agent control: `AGENTS.md`
+- Agent control: `AGENTS.md` (root) + `apps/api/AGENTS.md` + `apps/web/AGENTS.md`
 - Python rules: `PYTHON_PROCEDURES.md`
 - Commands: `make help`
 """

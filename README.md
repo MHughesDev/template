@@ -1,12 +1,14 @@
-# 🏭 Template — Agent-Operated Software Factory
+# 🏭 Template — Agent-Operated Full-Stack Software Factory
 
 > **Ship production-grade software with AI agents doing the heavy lifting.**
-> A Cursor-first, Claude-ready template that turns a single `idea.md` file into a fully-wired FastAPI backend, optional React/Expo frontends, a live CI pipeline, and a self-auditing docs system.
+> A Cursor-first, Claude-ready full-stack template: **FastAPI + React 19** out of the box, wired through a typed OpenAPI client, with `idea.md` → fully-wired app initialization, a self-auditing docs system, a CSV task queue, and skill-driven agent playbooks.
 
 <div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.114+-009688?logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose_v2-2496ED?logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088FF?logo=githubactions&logoColor=white)
@@ -30,13 +32,15 @@
 | | Feature |
 |---|---------|
 | 🤖 | **Agent-native from day one** — AGENTS.md contract, skill playbooks, prompt templates, CSV task queue |
-| ⚡ | **One command bootstrap** — `./setup.sh` wires deps, env, migrations, and tests automatically |
-| 🧩 | **Profile system** — enable/disable React web, Expo mobile, billing, multi-tenancy, workers, and more |
-| 🔒 | **Security built-in** — JWT auth, tenant isolation, CORS policy, threat model, secrets management |
-| 🧪 | **Full test pyramid** — unit, integration, smoke; 55% coverage floor enforced in CI |
+| 🐍 | **Real FastAPI backend** — SQLModel + Postgres + Alembic + JWT auth + email + Sentry (`apps/api/`) |
+| ⚛️ | **Real React 19 frontend** — Vite + TanStack Router/Query + Tailwind v4 + shadcn/ui (`apps/web/`) |
+| 🔌 | **Typed end-to-end** — OpenAPI → typed TS client via `openapi-ts` (`make generate-client`) |
+| 🐳 | **Production-grade Docker** — `compose.yml` + override + Traefik stack from Tiangolo's template |
+| 🔒 | **Security built-in** — JWT auth, password hashing (argon2/bcrypt), CORS policy, secrets management |
+| 🧪 | **Full test pyramid** — pytest (backend) + Playwright (frontend) with fixtures and CI hooks |
 | 📋 | **Self-auditing repo** — `make audit:self` checks 7 invariants; CI blocks on failure |
 | 📖 | **Living documentation** — freshness checks, drift detection, improvement loops |
-| 🚢 | **Production-ready CI** — lint, typecheck, test matrix (SQLite + Postgres), migrate dry-run |
+| 🧩 | **Profile system** — enable/disable optional capabilities (mobile, workers, AI/RAG, etc.) |
 
 ---
 
@@ -46,16 +50,26 @@
 # 1. Clone
 git clone <repo-url> && cd <repo-name>
 
-# 2. Bootstrap (recommended)
-./setup.sh          # Linux/macOS
-setup.bat           # Windows
+# 2. Configure
+cp .env.example .env       # edit SECRET_KEY, POSTGRES_*, FIRST_SUPERUSER_*
 
-# 3. Start developing
-make dev            # spin up local API + dev stack
-make test           # run full test suite
+# 3. Start the full stack with Docker (Postgres + backend + frontend + adminer)
+make docker-up             # equivalent: docker compose up -d
+make health-check          # GET /api/v1/utils/health-check/
+
+# 4. Or run pieces locally
+make web-install           # install frontend deps via bun
+make dev-api               # FastAPI on :8000 (needs Postgres running)
+make dev-web               # Vite on :5173
+
+# 5. Tests
+make test                  # backend pytest with coverage
+make test-web              # frontend Playwright e2e
 ```
 
-> **Manual path:** `cp .env.example .env`, edit values, then `make dev` + `make test`.
+> The frontend talks to the backend via a generated TypeScript client. After
+> changing backend routes or schemas, run `make generate-client` to refresh
+> `apps/web/src/client/`.
 
 ---
 
@@ -77,41 +91,68 @@ idea.md  ──►  make idea:execute  ──►  fully-wired FastAPI app
 
 ---
 
-## 🧩 Profiles
+## 🧩 What's in the box
 
-Enable optional capabilities in `idea.md §5`:
+The full-stack app is **always present** (no profile required):
+
+| Path | What it is |
+|------|-----------|
+| `apps/api/` | FastAPI + SQLModel + Postgres + Alembic + JWT (Tiangolo full-stack template) |
+| `apps/web/` | React 19 + Vite + TanStack Router/Query + Tailwind v4 + shadcn/ui |
+| `packages/contracts/` | Cross-service Pydantic models, error catalog, pagination helpers |
+| `packages/tasks/` | Background task interfaces (Celery-compatible) |
+| `packages/ai/` | Optional ChromaDB client + RAG helpers (extras: `pip install -e .[ai]`) |
+| `dev_mcp/` | MicroFast dev MCP server used by Cursor / Claude clients |
+| `compose.yml` | Full Docker stack: db + adminer + backend + frontend + prestart |
+| `compose.traefik.yml` | Production Traefik overlay |
+
+Optional profiles (enable via `idea.md §5`):
 
 | Profile | What it adds |
 |---------|-------------|
-| `web` | Next.js App Router frontend in `apps/web/` |
 | `mobile` | Expo/React Native app in `apps/mobile/` |
 | `workers` | Celery + Redis background task infrastructure |
 | `billing` | Stripe integration scaffolding |
 | `multi_tenancy` | Tenant isolation layer + JWT `tenant_id` claim |
 | `analytics` | Event tracking package in `packages/analytics/` |
 | `notifications` | Email/push notification service |
-| `admin_ui` | Admin panel scaffolding |
+| `admin_ui` | Admin panel scaffolding (note: a minimal admin UI is already in `apps/web/`) |
 | `storage` | File upload + S3-compatible storage |
 | `search` | Full-text search integration |
 | `feature_flags` | Feature flag service scaffolding |
+| `ai_rag` | ChromaDB vector store + retrieval helpers |
 
 ---
 
 ## 🛠️ Essential commands
 
 ```bash
-make dev              # start local dev stack
-make test             # full test suite with coverage
-make test-unit        # unit tests only (fast, no DB)
-make test-integration # integration tests only
-make lint             # Ruff linter
-make fmt              # format check
-make typecheck        # mypy strict
-make migrate          # run Alembic migrations
+# Local dev (backend + frontend)
+make dev-api          # FastAPI with uvicorn --reload (port 8000)
+make dev-web          # Vite dev server (port 5173)
+make docker-up        # full stack via docker compose (db + backend + frontend)
+make docker-down      # tear it down
+
+# Backend
+make test             # pytest with coverage
+make lint             # Ruff lint
+make fmt              # Ruff format
+make typecheck        # mypy
+make migrate          # alembic upgrade head
+MESSAGE="add foo" make migrate:create   # autogenerate revision
+make db-reset         # drop + recreate Postgres dev db, run prestart
+
+# Frontend
+make web-install      # bun install
+make lint-web         # biome
+make test-web         # Playwright
+make generate-client  # regenerate apps/web/src/client/ from backend OpenAPI
+
+# Systemization layer (preserved from template)
 make audit:self       # 7-check repo self-audit
 make queue:top-item   # one JSON line — full top queue row (agents: read this first)
 make queue:peek       # raw CSV: header + first row
-make queue:pr-merge   # after archive+validate — gh merge + delete branch (GitHub sync)
+make queue:pr-merge   # after archive+validate — gh merge + delete branch
 make docs:check       # verify doc link integrity
 make help             # full target catalog
 ```
@@ -123,20 +164,42 @@ make help             # full target catalog
 ```
 .
 ├── apps/
-│   ├── api/          # FastAPI application (always present)
-│   ├── web/          # Next.js frontend (web profile)
-│   └── mobile/       # Expo app (mobile profile)
-├── packages/         # Shared Python packages (per-profile)
-├── scripts/          # Orchestration, validation, scaffold scripts
-│   └── profiles/     # enable-*.sh / discard-*.sh for each profile
-├── skills/           # Agent playbooks by domain
-├── prompts/          # Role-specific prompt templates
-├── docs/             # Architecture, procedures, governance, security
-├── queue/            # CSV task queue + instructions
-├── spec/             # Full system specification
-├── idea.md           # ← Start here: your project intake form
-├── AGENTS.md         # ← Agent contract and workflow policy
-└── Makefile          # All automation targets
+│   ├── api/                # FastAPI backend (SQLModel + Postgres + Alembic)
+│   │   ├── app/            # Python package (app.main, app.api, app.core, ...)
+│   │   ├── alembic.ini
+│   │   ├── tests/          # pytest suite (api / crud / scripts / utils)
+│   │   ├── scripts/        # format / lint / test / prestart
+│   │   ├── pyproject.toml  # backend deps (uv-managed)
+│   │   └── Dockerfile
+│   ├── web/                # React 19 + Vite frontend
+│   │   ├── src/            # routes/, components/, client/ (generated), ...
+│   │   ├── tests/          # Playwright e2e
+│   │   ├── public/
+│   │   ├── package.json
+│   │   ├── vite.config.ts
+│   │   ├── openapi-ts.config.ts
+│   │   └── Dockerfile / Dockerfile.playwright
+│   └── mobile/             # Expo app stub (mobile profile)
+├── packages/               # Optional Python packages
+│   ├── contracts/          # Shared Pydantic models + error catalog
+│   ├── tasks/              # Background task interfaces
+│   └── ai/                 # ChromaDB / RAG helpers (extras)
+├── compose.yml             # Full Docker stack (db + adminer + backend + frontend + prestart)
+├── compose.override.yml    # Local dev overrides (volume mounts, hot reload)
+├── compose.traefik.yml     # Production Traefik overlay
+├── scripts/                # Orchestration, validation, scaffold scripts
+│   └── profiles/           # enable-*.sh / discard-*.sh for each profile
+├── skills/                 # Agent playbooks by domain
+├── prompts/                # Role-specific prompt templates
+├── docs/                   # Architecture, procedures, governance, security
+├── queue/                  # CSV task queue + instructions
+├── spec/                   # Full system specification
+├── dev_mcp/                # MicroFast dev MCP server for Cursor / Claude
+├── idea.md                 # ← Start here: your project intake form
+├── AGENTS.md               # ← Agent contract and workflow policy
+├── pyproject.toml          # Repo-wide Python tool config (ruff, mypy, pytest)
+├── package.json            # Bun workspace pointing at apps/web
+└── Makefile                # All automation targets
 ```
 
 ---
@@ -166,26 +229,39 @@ make help             # full target catalog
 
 | Layer | Technology |
 |-------|-----------|
-| API framework | FastAPI 0.110+ with Pydantic v2 |
-| ORM | SQLAlchemy 2.0 async |
+| API framework | FastAPI 0.114+ with Pydantic v2 |
+| ORM | SQLModel (SQLAlchemy + Pydantic) |
+| Database | PostgreSQL 18 (Postgres 16 also fine) |
 | Migrations | Alembic |
-| Auth | JWT (python-jose) + bcrypt |
+| Auth | JWT (PyJWT) + pwdlib (argon2 / bcrypt) |
+| Email | `emails` + Jinja2 + MJML templates |
+| Observability | Sentry SDK (`sentry-sdk[fastapi]`) |
+| Backend tests | pytest with fixtures + coverage |
+| Backend lint | Ruff |
+| Backend type checker | mypy + `ty` |
+| Frontend framework | React 19 + Vite 7 |
+| Frontend router | TanStack Router (file-based) |
+| Frontend state | TanStack Query |
+| Frontend styling | Tailwind v4 + shadcn/ui + Radix |
+| Frontend forms | react-hook-form + zod |
+| Frontend lint/format | Biome |
+| Frontend tests | Playwright |
+| Typed client | `@hey-api/openapi-ts` (generated from `/api/v1/openapi.json`) |
+| Containerisation | Docker multi-stage (python:3.10 + nginx) |
+| Orchestration | Docker Compose v2 + optional Traefik |
 | Task queue | Celery + Redis (workers profile) |
-| Test runner | pytest with asyncio, SQLite in-memory |
-| Linter | Ruff |
-| Type checker | mypy (strict) |
-| Containerisation | Docker multi-stage (python:3.12-slim) |
 | CI | GitHub Actions — lint, test matrix, migrate dry-run, audit |
 
 ### Prerequisites
 
 | Tool | Minimum | Check |
 |------|---------|-------|
-| Python | 3.12 | `python --version` |
+| Python | 3.10 | `python --version` |
 | Docker + Compose | v2+ | `docker compose version` |
 | GNU Make | any | `make --version` |
 | Git | any | `git --version` |
-| Node (web profile) | 20+ | `node --version` |
+| Bun (frontend) | 1.x | `bun --version` |
+| uv (backend pkg mgr) | 0.4+ | `uv --version` |
 | Expo CLI (mobile profile) | latest | `npx expo --version` |
 
 Full details and troubleshooting: [docs/getting-started/prerequisites.md](docs/getting-started/prerequisites.md).

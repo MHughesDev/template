@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-RT="$ROOT/apps/api/src/realtime"
+RT="$ROOT/apps/api/app/realtime"
 if [[ ! -d "$RT" ]]; then
   echo "✓ WebSocket profile discarded."
   exit 0

@@ -263,7 +263,7 @@ Current capabilities:
    - based on summary length + dependency count + category weighting
 
 4. **Batch suggestion**
-   - groups by `batch`, then by inferred module context (`apps/api/src/<module>/` pattern)
+   - groups by `batch`, then by inferred module context (`apps/api/app/<module>/` pattern)
 
 5. **Conflict detection**
    - path pattern extraction from summary + related_files

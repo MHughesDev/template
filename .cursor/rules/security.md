@@ -9,7 +9,7 @@ Security defaults for all work. Deep references: **`docs/security/`**, **`skills
 
 ## Secrets
 
-1. Runtime secrets come from **environment** via **`Settings`** in **`apps/api/src/config.py`** — not scattered **`os.getenv()`**.
+1. Runtime secrets come from **environment** via **`Settings`** in **`apps/api/app/config.py`** — not scattered **`os.getenv()`**.
 2. Never commit real credentials, tokens, or private keys.
 3. Tests use obviously fake values from fixtures — not production-like secrets.
 4. **`.env.example`** lists variables with safe placeholders.

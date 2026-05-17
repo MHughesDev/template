@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-SCH="$ROOT/apps/api/src/scheduler"
+SCH="$ROOT/apps/api/app/scheduler"
 if [[ -d "$SCH" ]] && [[ -f "$SCH/README.md" ]] && grep -q "Scheduled jobs profile" "$SCH/README.md"; then
   rm -rf "$SCH"
 fi

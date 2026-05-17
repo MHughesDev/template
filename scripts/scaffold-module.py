@@ -1,5 +1,5 @@
 # scripts/scaffold-module.py
-"""Scaffold a bounded context under apps/api/src/<module>/ with tests and main.py wiring."""
+"""Scaffold a bounded context under apps/api/app/<module>/ with tests and main.py wiring."""
 
 from __future__ import annotations
 
@@ -141,7 +141,7 @@ def main() -> int:
 
     files: dict[str, str] = {}
 
-    files[f"apps/api/src/{name}/__init__.py"] = f'''# apps/api/src/{name}/__init__.py
+    files[f"apps/api/app/{name}/__init__.py"] = f'''# apps/api/app/{name}/__init__.py
 """Bounded context: {name}."""
 
 from apps.api.src.{name}.router import router
@@ -149,7 +149,7 @@ from apps.api.src.{name}.router import router
 __all__ = ["router"]
 '''
 
-    files[f"apps/api/src/{name}/models.py"] = f'''# apps/api/src/{name}/models.py
+    files[f"apps/api/app/{name}/models.py"] = f'''# apps/api/app/{name}/models.py
 """SQLAlchemy models for {name}."""
 
 from __future__ import annotations
@@ -183,7 +183,7 @@ class {title}Record(Base):
     )
 '''
 
-    files[f"apps/api/src/{name}/schemas.py"] = f'''# apps/api/src/{name}/schemas.py
+    files[f"apps/api/app/{name}/schemas.py"] = f'''# apps/api/app/{name}/schemas.py
 """Pydantic schemas for {name}."""
 
 from __future__ import annotations
@@ -224,8 +224,8 @@ class {title}Response(BaseModel):
 '''
 
     files[
-        f"apps/api/src/{name}/repository.py"
-    ] = f'''# apps/api/src/{name}/repository.py
+        f"apps/api/app/{name}/repository.py"
+    ] = f'''# apps/api/app/{name}/repository.py
 """Persistence layer for {name}."""
 
 from __future__ import annotations
@@ -258,7 +258,7 @@ class {title}Repository:
         return row
 '''
 
-    files[f"apps/api/src/{name}/service.py"] = f'''# apps/api/src/{name}/service.py
+    files[f"apps/api/app/{name}/service.py"] = f'''# apps/api/app/{name}/service.py
 """Application service for {name}."""
 
 from __future__ import annotations
@@ -307,8 +307,8 @@ class {title}Service:
 '''
 
     files[
-        f"apps/api/src/{name}/dependencies.py"
-    ] = f'''# apps/api/src/{name}/dependencies.py
+        f"apps/api/app/{name}/dependencies.py"
+    ] = f'''# apps/api/app/{name}/dependencies.py
 """FastAPI dependencies for {name}."""
 
 from __future__ import annotations
@@ -329,7 +329,7 @@ def get_{name}_service(
     return {title}Service(repo={title}Repository(session))
 '''
 
-    files[f"apps/api/src/{name}/router.py"] = f'''# apps/api/src/{name}/router.py
+    files[f"apps/api/app/{name}/router.py"] = f'''# apps/api/app/{name}/router.py
 """HTTP routes for {name}."""
 
 from __future__ import annotations
@@ -389,13 +389,13 @@ async def get_{name}(
         raise _handle(exc) from exc
 '''
 
-    files[f"apps/api/src/{name}/tests/__init__.py"] = (
-        f"# apps/api/src/{name}/tests/__init__.py\n"
+    files[f"apps/api/app/{name}/tests/__init__.py"] = (
+        f"# apps/api/app/{name}/tests/__init__.py\n"
     )
 
     files[
-        f"apps/api/src/{name}/tests/conftest.py"
-    ] = f'''# apps/api/src/{name}/tests/conftest.py
+        f"apps/api/app/{name}/tests/conftest.py"
+    ] = f'''# apps/api/app/{name}/tests/conftest.py
 """Module-local pytest fixtures for {name}."""
 
 from __future__ import annotations
@@ -404,8 +404,8 @@ from __future__ import annotations
 '''
 
     files[
-        f"apps/api/src/{name}/tests/test_router.py"
-    ] = f'''# apps/api/src/{name}/tests/test_router.py
+        f"apps/api/app/{name}/tests/test_router.py"
+    ] = f'''# apps/api/app/{name}/tests/test_router.py
 """HTTP tests for {name} router (stubs)."""
 
 from __future__ import annotations
@@ -441,8 +441,8 @@ async def test_get_{name}_returns_404_unknown_id(client: AsyncClient) -> None:
 '''
 
     files[
-        f"apps/api/src/{name}/tests/test_service.py"
-    ] = f'''# apps/api/src/{name}/tests/test_service.py
+        f"apps/api/app/{name}/tests/test_service.py"
+    ] = f'''# apps/api/app/{name}/tests/test_service.py
 """Unit tests for {title}Service (stubs)."""
 
 from __future__ import annotations

@@ -20,7 +20,7 @@ JWT token lifecycle: issuance, refresh, revocation, key rotation, testing token 
 
 - Read root `AGENTS.md` and complete the mandatory skill search (`make skills-list` or `skills/README.md`).
 - Install dev dependencies: `pip install -e ".[dev]"` (or use `./setup.sh`).
-- No secrets in code; use `.env` and `apps/api/src/config.py` only for settings.
+- No secrets in code; use `.env` and `apps/api/app/config.py` only for settings.
 
 ## Relevant Files/Areas
 
@@ -28,7 +28,7 @@ JWT token lifecycle: issuance, refresh, revocation, key rotation, testing token 
 - `docs/procedures/implement-change.md` and `docs/procedures/validate-change.md`
 - `docs/security/`
 - `.env.example`
-- `apps/api/src/auth/`
+- `apps/api/app/auth/`
 
 ## Step-by-Step Method
 

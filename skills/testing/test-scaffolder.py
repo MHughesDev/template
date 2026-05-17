@@ -1,5 +1,5 @@
 # skills/testing/test-scaffolder.py
-"""Emit pytest stub tests for each @router.* route in apps/api/src/<module>/router.py."""
+"""Emit pytest stub tests for each @router.* route in apps/api/app/<module>/router.py."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ def find_routes(source: str) -> list[tuple[str, str]]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate pytest stub tests for a router module")
-    parser.add_argument("--module", required=True, help="Bounded context name under apps/api/src/")
+    parser.add_argument("--module", required=True, help="Bounded context name under apps/api/app/")
     parser.add_argument("--repo-root", type=Path, default=Path(__file__).resolve().parents[2])
     args = parser.parse_args()
     router_file = args.repo_root / "apps" / "api" / "src" / args.module / "router.py"

@@ -24,7 +24,7 @@ One paragraph. Secrets in code are a critical security vulnerability. This skill
 
 ## Relevant Files/Areas
 
-- `apps/api/src/config.py` — the ONLY place secrets are read via BaseSettings
+- `apps/api/app/config.py` — the ONLY place secrets are read via BaseSettings
 - `.env.example` — documents all secrets with CHANGEME placeholders
 - `.pre-commit-config.yaml` — detect-secrets hook prevents accidental commits
 - `skills/security/secret-scanner.py` — scan for leaked secrets in codebase
@@ -35,7 +35,7 @@ One paragraph. Secrets in code are a critical security vulnerability. This skill
 Numbered steps:
 
 **Adding a new secret**:
-1. Add field to `Settings` class in `apps/api/src/config.py`:
+1. Add field to `Settings` class in `apps/api/app/config.py`:
    ```python
    stripe_api_key: str = Field(description="Stripe secret key for payment processing")
    ```

@@ -4,7 +4,7 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-.PHONY: help dev dev-mcp lint fmt fmt-check fmt-fix typecheck test test-unit test-integration test-smoke \
+.PHONY: help dev dev-api dev-web dev-mcp lint lint-web fmt fmt-check fmt-fix typecheck test test-web test-unit test-integration test-smoke \
         migrate migrate\:create ci-migrate-dry-run db-reset db-seed docs-check docs-map-check docs-generate docs-index \
         queue-peek queue-top-item queue-validate queue-archive queue-archive-top queue-pr-merge queue-graph queue-analyze \
         prompt-list skills-list rules-check audit-self \
@@ -15,6 +15,7 @@ SHELL := /usr/bin/env bash
         scaffold-module profile-enable env-generate \
         codebase-summary skill-docs-gen \
         test-scaffold env-sync coverage-ratchet rule-lint adr-index \
+        web-install generate-client \
         clean health-check project-health
 
 ## help: Show targets (see also: scripts/README.md)
@@ -22,9 +23,32 @@ help:
 	@echo "Targets:"
 	@grep -E '^##' $(MAKEFILE_LIST) | sed 's/^## //' | column -t -s ':'
 
-## dev: Run API with uvicorn --reload
-dev:
+## dev: Run API with uvicorn --reload (alias for dev-api)
+dev: dev-api
+
+## dev-api: Run API (apps/api) with uvicorn --reload
+dev-api:
 	@scripts/dev.sh
+
+## dev-web: Run frontend (apps/web) dev server via bun
+dev-web:
+	@cd apps/web && bun run dev
+
+## web-install: Install frontend dependencies via bun
+web-install:
+	@cd apps/web && bun install
+
+## lint-web: Run biome lint on apps/web
+lint-web:
+	@cd apps/web && bun run lint
+
+## test-web: Run frontend playwright tests
+test-web:
+	@cd apps/web && bun run test
+
+## generate-client: Regenerate openapi TypeScript client in apps/web
+generate-client:
+	@cd apps/web && bun run generate-client
 
 ## dev-mcp: how to run the MicroFast dev MCP server (stdio)
 dev-mcp:
@@ -178,13 +202,17 @@ k8s-render:
 k8s-validate:
 	@OVERLAY="$(or $(OVERLAY),dev)" scripts/k8s-validate.sh
 
-## docker-up: docker compose up -d
+## docker-up: docker compose up -d (uses compose.yml + compose.override.yml)
 docker-up:
 	docker compose up -d
 
 ## docker-down: docker compose down
 docker-down:
 	docker compose down
+
+## docker-build: docker compose build
+docker-build:
+	docker compose build
 
 ## init: pip install -e and .env stub
 init:

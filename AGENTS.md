@@ -235,7 +235,7 @@ Document in the PR or queue notes: what is unclear, options, what information is
 - Never edit **`queue/queue.csv`** or **`queue/queuearchive.csv`** as a **queue implementation executor** — use **`prompts/queue_worker_executor.md`**; operators update the ledger.
 - Never silently expand scope.
 - Never run ad hoc shell when a canonical **`make`** target exists.
-- Never use **`os.getenv()`** outside **`apps/api/src/config.py`** (single Settings object).
+- Never use **`os.getenv()`** outside **`apps/api/app/core/config.py`** (single Settings object).
 - Never add **`# type: ignore`** without an explanatory comment.
 - Never swallow exceptions (`except Exception: pass`).
 - Never query the database directly in a router handler.
@@ -283,7 +283,7 @@ Key rules enforced:
 - Every public function is fully typed (params, return, errors).
 - Boundary shapes (requests, responses, config) defined as Pydantic models before logic.
 - Import direction: `router` → `service` → `repository`. Never reverse.
-- No `os.getenv()` outside `apps/api/src/config.py`.
+- No `os.getenv()` outside `apps/api/app/core/config.py`.
 - State modeled with `Enum` and explicit transition maps where applicable.
 - `None` handled explicitly; never used as an error signal.
 
@@ -312,10 +312,14 @@ See the full document for all 18 procedures, the condensed 12-point rule set, an
 
 | Area | Location |
 |------|----------|
-| API source | `apps/api/src/` — contexts include `health/`, `auth/`, `tenancy/` |
+| API source | `apps/api/app/` — `main.py`, `api/routes/`, `core/`, `models.py`, `crud.py`, `alembic/` |
+| API scope policy | `apps/api/AGENTS.md` |
+| Frontend source | `apps/web/src/` — `main.tsx`, `routes/`, `components/`, `client/` (generated) |
+| Frontend scope policy | `apps/web/AGENTS.md` |
 | Shared contracts | `packages/contracts/` |
 | Task interfaces | `packages/tasks/` |
 | AI/RAG (optional) | `packages/ai/` |
+| Compose stack | `compose.yml` + `compose.override.yml` + `compose.traefik.yml` |
 | Deploy | `deploy/docker/`, `deploy/k8s/` (base + overlays) |
 | Documentation | `docs/` — start with **`docs/README.md`** |
 | Template vendor (mechanical import) | `docs/integrations/full-stack-fastapi-template.md` — fork SHA pin, `git`/`rsync` workflow |

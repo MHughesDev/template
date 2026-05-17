@@ -323,12 +323,12 @@ def main() -> int:
                     f"  '{name}' conflicts with a protected module ({', '.join(sorted(PROTECTED_MODULES))}) "
                     "— the scaffolder will refuse to overwrite it."
                 )
-            # Check for overlap with profile names (causes packages/ vs apps/api/src/ duplication)
+            # Check for overlap with profile names (causes packages/ vs apps/api/app/ duplication)
             name_dash = name.replace("_", "-")
             if name_dash in PROFILE_SCRIPT_STEMS or slug in PROFILE_INTERNAL_KEYS:
                 warnings.append(
                     f"§4.2 Context '{name}' shares a name with an enabled profile — "
-                    "the scaffolder will create apps/api/src/{name}/ AND the profile script "
+                    "the scaffolder will create apps/api/app/{name}/ AND the profile script "
                     "will create packages/{name}/. Rename the context to avoid duplication "
                     "(e.g. 'billing_domain' or 'subscriptions')."
                 )

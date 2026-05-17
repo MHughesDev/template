@@ -78,7 +78,7 @@ List the primary domain objects. These become database models, API resources, an
 
 ### 4.2 Bounded contexts
 
-Group entities into bounded contexts. Each context becomes a module in `apps/api/src/<context>/` with its own router, models, service, schemas, and tests.
+Group entities into bounded contexts. Each context becomes a module in `apps/api/app/<context>/` with its own router, models, service, schemas, and tests.
 
 | Context name | Entities | Description |
 |-------------|----------|-------------|
