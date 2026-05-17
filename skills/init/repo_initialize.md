@@ -1,0 +1,217 @@
+# skills/init/repo_initialize.md
+
+**Purpose:** The single, canonical procedural skill that an AI agent runs **after** a developer has filled out `idea.md` end-to-end. The skill is documentation-first and queue-first: it does not write product feature code. Its job is to turn a complete `idea.md` into (a) project specification and design docs, (b) the founding-product ADR(s), and (c) initial MVP queue rows that future agents can execute one at a time.
+
+If `idea.md` is incomplete, this skill **stops and queues open-question rows**. It does not invent product decisions.
+
+---
+
+## When to invoke
+
+- The developer has filled out every applicable section of `idea.md` and has explicitly asked for repo initialization.
+- The repo's baseline full-stack app (`apps/api/` + `apps/web/`) is in place — this skill assumes that substrate exists and **plans on top of it**.
+- No prior initialization for this product has run, OR the developer has asked for a re-initialization after substantially editing `idea.md`.
+
+Do **not** invoke when:
+
+- `idea.md` still has whole sections blank with no `N/A` marker (stop and tell the developer which sections).
+- `idea.md` §19 "Open questions" lists questions whose answers would change MVP architecture (stop and surface them; do not guess).
+- The developer asked only for a docs update — use the standard documentation skills instead.
+
+---
+
+## Prerequisites
+
+- Read this skill, root `AGENTS.md`, and `apps/api/AGENTS.md` + `apps/web/AGENTS.md`.
+- Read `idea.md` end-to-end.
+- Read `queue/QUEUE_INSTRUCTIONS.md` — every queue row this skill creates must conform to its schema.
+- Read `docs/adr/template.md` for ADR formatting.
+- Confirm `make queue:validate` passes on the current branch before adding rows.
+
+---
+
+## What this skill does NOT do
+
+- Does not write application code under `apps/api/app/` or `apps/web/src/`. Application work is queued.
+- Does not run database migrations, install dependencies, or modify CI configuration.
+- Does not delete or rewrite the baseline app. The baseline is the substrate.
+- Does not modify `spec/spec.md` from the template's design baseline unless explicitly instructed.
+- Does not silently resolve ambiguity in `idea.md`. Ambiguity becomes an open-question row or a docs-only TODO.
+
+---
+
+## Procedure
+
+The procedure has six phases. Each phase has a single output gate; do not start the next phase until the gate is passed.
+
+---
+
+### Phase 0 — Read and triage `idea.md`
+
+1. Read `idea.md` end-to-end.
+2. For each section, classify:
+   - **Complete** — has real content, ready to drive decisions.
+   - **N/A** — marked explicitly inapplicable.
+   - **Incomplete** — blank, placeholder, or vague.
+3. Build a triage report (in chat, not on disk):
+   - Which sections are incomplete?
+   - Which `§19` open questions block architecture? Which only block implementation? Which are non-blocking?
+4. **Gate:** if any incomplete section *blocks an MVP bullet* (§4) or any open question blocks architecture, stop here. Tell the developer exactly which sections/questions are blocking. Do not proceed to Phase 1.
+
+Use `prompts/skill_searcher.md` if you need to find supporting skills for parts of the idea the baseline doesn't already cover (e.g. background jobs, billing, multi-tenancy).
+
+---
+
+### Phase 1 — Author or refresh the project spec
+
+Output: `spec/spec.md` is updated (or, for a fresh init, a per-product spec is written) so it is the single authoritative description of what is being built. It must be derivable from `idea.md` and contain no information `idea.md` doesn't justify.
+
+1. Read the current `spec/spec.md`. If the existing content is the **template's own design spec** (not a product spec), preserve template-baseline material in a clearly marked top section and append the product spec below it. Do **not** delete template material that documents the systemization layer.
+2. Synthesize the product spec from `idea.md` with at minimum these sections:
+   - Product summary (1–2 paragraphs derived from §1, §2, §3).
+   - MVP definition (verbatim from §4, lightly rewritten as a numbered list).
+   - Non-goals (from §5).
+   - Users, roles, permissions (from §2, §10).
+   - Domain model overview (from §8) — entities, relationships, ownership.
+   - Workflow narratives (from §7) — each workflow as numbered steps end-to-end.
+   - External integrations (from §9).
+   - Constraints and NFRs (from §14, §17, §18).
+3. Mark every spec section with a **provenance** comment that names the `idea.md` section it derives from, e.g. `<!-- derived from: idea.md §4 -->`. This lets reviewers verify nothing was invented.
+4. **Gate:** the spec contains no claim that does not trace back to a specific `idea.md` section.
+
+---
+
+### Phase 2 — Generate or refresh project docs
+
+Output: every doc under `docs/` that the spec implies is up to date. Docs are produced from the spec, not directly from `idea.md`.
+
+Touch the docs listed below. For docs that already exist as template scaffolds, **rewrite the body** but preserve the frontmatter `doc_id` and section structure used by `docs-map-check`.
+
+| Doc | Source sections | What to write |
+|-----|-----------------|---------------|
+| `docs/architecture/overview.md` | spec product summary + MVP + workflows | System purpose, archetype, component map (Mermaid), primary data-flow narrative, top 3–5 design decisions |
+| `docs/architecture/bounded-contexts.md` | spec domain model + workflows | Each context: owns / does-not-own / exposes / consumes; Mermaid context map |
+| `docs/architecture/data-model.md` | spec domain model | Every entity: fields, types, FKs, cardinality, indexes; Mermaid ER diagram |
+| `docs/architecture/auth.md` | spec users/roles | Strategy, token lifecycle, permission model, endpoint access matrix |
+| `docs/api/endpoints.md` | spec workflows + idea §12 | Every endpoint: method, path, auth, request, response, error codes, example |
+| `docs/api/error-codes.md` | spec workflows | Complete error taxonomy: code, HTTP status, message, condition, resolution |
+| `docs/data/schema.md` | spec domain model | Plain-language schema description, join patterns, index rationale |
+| `docs/security/threat-model.md` | spec constraints + §14 | Top 3–5 threats given archetype + data, mitigations, accepted risks |
+| `docs/operations/deployment.md` | idea §13 | Target environments, deploy steps, post-deploy verification |
+| `docs/testing/strategy.md` | spec + idea §15 | Unit / integration / smoke / e2e strategy with project-specific concerns |
+| `docs/open-questions.md` | idea §19 | One entry per question with Q-id, classification (architecture / implementation / non-blocking), and current status |
+
+Conditional docs (only write real content when the corresponding capability is in scope; otherwise leave with a one-line "Not applicable for this product" note + frontmatter `status: "current"`):
+
+| Doc | Trigger | What to write |
+|-----|---------|---------------|
+| `docs/architecture/multi-tenancy.md` | §10 says multi-tenant | Isolation model, tenant context propagation, shared-vs-isolated data |
+| `docs/architecture/async-workers.md` | §12 mentions background work | Task inventory, retry policy, idempotency, failure handling |
+| `docs/architecture/ai-rag.md` | idea §9 or §11 mentions LLM/RAG | Ingestion, embeddings, retrieval, model provider, kill-switch |
+| `docs/architecture/billing.md` | §9 mentions payments | Provider, webhook handling, subscription model, retry/dunning |
+
+For every touched doc:
+- Update frontmatter: `status: "current"`, `updated: <today>`.
+- Reference the spec section it derives from in a top-of-file comment.
+- Run `make docs:check` and `make docs-map-check` after writing.
+
+**Gate:** `make docs:check` and `make docs-map-check` pass.
+
+---
+
+### Phase 3 — Refresh the founding ADR
+
+Output: `docs/adr/0001-initial-template-architecture.md` is up to date. (This is the template's own founding ADR — it explains the initialization model, not a per-product decision. Per-product ADRs are created at Phase 6.)
+
+1. Read `docs/adr/0001-initial-template-architecture.md`. If it already describes the template's initialization architecture (idea-first → docs-first → queue-first), do not change it.
+2. If `idea.md` introduced a product-level decision that contradicts a template default (e.g. SQLite instead of Postgres, REST replaced by GraphQL), record it as a **new** ADR:
+   - Copy `docs/adr/template.md` to `docs/adr/<NNN>-<kebab-title>.md` (next sequential number).
+   - Fill every section (Context, Decision, Consequences, Alternatives, References).
+   - Update `docs/adr/README.md` index.
+
+**Gate:** every new ADR has all template sections filled.
+
+---
+
+### Phase 4 — Seed MVP queue rows
+
+Output: `queue/queue.csv` has rows that, taken in order from the top, walk the product from the current baseline to the MVP defined in `idea.md` §4.
+
+For each MVP bullet in `idea.md` §4:
+
+1. Decompose into queue-row-sized work (≤ S or M complexity per `queue/QUEUE_INSTRUCTIONS.md`).
+2. Order rows so each row's `dependencies` are already satisfied by either:
+   - the baseline (already in `apps/api/` or `apps/web/`), or
+   - an earlier row in `queue/queue.csv` / `queue/queuearchive.csv`.
+3. For each row, write the full schema:
+   - `id` (next sequential `Q-NNN`)
+   - `category` (must match `docs/queue/queue-categories.md`)
+   - `complexity` (`S` or `M`; `L` is forbidden and must be split first)
+   - `goal` (one or two sentences, ≤ 300 chars)
+   - `acceptance_criteria` (numbered list joined with `|`)
+   - `touch_files` (≤ 2 for S, ≤ 3 for M)
+   - `context_files` (ordered; first listed = highest priority)
+   - `verification_cmds` (task-specific)
+   - `dependencies`
+   - `created_date`
+4. For every blocking `§19` open question, add a `category=human-ops` row whose `goal` is "Resolve open question: <question text>" and whose `notes` say `blocked_by: open_question`. These rows are skipped by `make queue:top-item` but are visible in audits.
+5. Tag rows that belong on the MVP critical path by including the literal string `mvp` in `category` or `batch` (e.g. `batch=mvp-1`, `batch=mvp-2`, …) so reviewers can see the path at a glance.
+
+The first executable row at the top of `queue/queue.csv` must have:
+- all dependencies satisfied,
+- `context_files` that all already exist (Phase 2 created them), and
+- a `goal` that any agent can pick up from cold-read.
+
+**Gate:** `make queue:validate` passes; `make queue:top-item` returns a row whose `dependencies` are empty or point only to archived rows.
+
+---
+
+### Phase 5 — Validate and report
+
+Run, in order:
+
+1. `make queue:validate`
+2. `make docs:check`
+3. `make docs-map-check` (or `python3 scripts/check_docs_map.py`)
+4. `python3 scripts/repo_self_audit.py`
+5. `make lint && make fmt-check` (only if any executable scripts changed)
+
+If any validation fails:
+- Roll back the offending file edit when possible.
+- Otherwise, record the failure in the handoff and surface it to the developer.
+
+Produce a handoff summary that lists:
+- Files written or modified (grouped by phase).
+- Each MVP bullet from `idea.md §4` mapped to the queue row(s) that fulfill it.
+- Every blocked open-question row created, with the source `§19` question.
+- Validation command outputs (concise, last 5 lines each).
+- The next row at the top of `queue/queue.csv` and a one-sentence summary of what an executor would do next.
+
+---
+
+### Phase 6 — Handoff
+
+The repo is now initialized for the product. Subsequent work follows the standard queue lifecycle in `queue/QUEUE_INSTRUCTIONS.md`. Future product-level ADRs (e.g. "use Stripe for billing") are written when the corresponding queue row is executed, not by this skill.
+
+Do not auto-merge. Open a PR titled `init: <product name>` with the handoff summary as the description.
+
+---
+
+## Cross-references
+
+- Input contract: `idea.md`
+- Invocation prompt: `prompts/repo_initializer.md`
+- Queue rules: `queue/QUEUE_INSTRUCTIONS.md`, `queue/QUEUE_AGENT_PROMPT.md`
+- ADR format: `docs/adr/template.md`
+- Skill discovery: `prompts/skill_searcher.md`
+- Audit: `scripts/repo_self_audit.py`
+
+## Validation checklist (final)
+
+- [ ] Every MVP bullet in `idea.md §4` traces to one or more queue rows.
+- [ ] Every blocked open question has a `category=human-ops` queue row.
+- [ ] Every touched doc has frontmatter `status: "current"`.
+- [ ] No file under `apps/api/app/` or `apps/web/src/` was modified by this skill.
+- [ ] `make queue:validate` passes.
+- [ ] `make docs:check` and `python3 scripts/check_docs_map.py` pass.
+- [ ] `python3 scripts/repo_self_audit.py` does not regress beyond the pre-existing baseline.

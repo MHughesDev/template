@@ -214,7 +214,7 @@ def _default_targets(repo_root: Path) -> list[DocTarget]:
         ),
         DocTarget(
             "config",
-            ["apps/api/app/config.py"],
+            ["apps/api/app/core/config.py"],
             "docs/generated/settings-fields.md",
             generate_env_vars_doc,
             "Settings AST",
@@ -233,8 +233,8 @@ def main() -> int:
     extra = [
         DocTarget(
             "compose",
-            ["docker-compose.yml"],
-            "docs/generated/docker-compose.md",
+            ["compose.yml"],
+            "docs/generated/compose.md",
             generate_compose_doc,
             "Compose file",
         ),
@@ -254,7 +254,7 @@ def main() -> int:
         ),
         DocTarget(
             "migrations",
-            ["apps/api/alembic/versions"],
+            ["apps/api/app/alembic/versions"],
             "docs/generated/migrations.md",
             generate_migration_history,
             "Alembic",

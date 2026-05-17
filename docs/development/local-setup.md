@@ -54,7 +54,6 @@ Run `make help` for the full list. Common targets:
 | `make audit-self` / `make audit:self` | Repo self-audit |
 | `make docs-check` / `make docs:check` | Documentation link check |
 | `make docs-generate` / `make docs:generate` | Regenerate generated docs |
-| `make idea-validate` / `make idea:validate` | Validate `idea.md` placeholders |
 | `make security-scan` / `make security:scan` | Bandit + pip-audit |
 | `make secret-scan` / `make secret:scan` | Heuristic secret-pattern scan |
 | `make env-sync` / `make env:sync` | Compare `.env.example` with `Settings` fields |

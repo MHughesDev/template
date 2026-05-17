@@ -101,7 +101,6 @@ Purpose: Canonical agent SOPs: queue work, implementation, validation, init, mig
 | 5.23 | update or create rule | `docs/procedures/update-or-create-rule.md` | SOP: Rule lifecycle — creating new .cursor/rules or updating existing ones. |
 | 5.24 | update or create skill | `docs/procedures/update-or-create-skill.md` | SOP: Skill lifecycle — creating new skills or updating existing ones to the standard format. |
 | 5.25 | validate change | `docs/procedures/validate-change.md` | SOP: Run full validation matrix before opening PR. |
-| 5.26 | validate idea md | `docs/procedures/validate-idea-md.md` | SOP for validate-idea-md. |
 | 5.27 | MicroFast development MCP server | `docs/procedures/microfast-dev-mcp.md` | stdio MCP for agents: queue tools, repo resources, canonical make targets (dev-only). |
 | 5.3 | add optional app profile | `docs/procedures/add-optional-app-profile.md` | SOP for add-optional-app-profile. |
 | 5.4 | add prompt template | `docs/procedures/add-prompt-template.md` | SOP for add-prompt-template. |
@@ -136,8 +135,7 @@ Purpose: Records architecture decisions: template, status, and the decision inde
 | --- | --- | --- | --- |
 | 7.0 | Adr overview | `docs/adr/README.md` | ADR index. Lists all decisions with status. |
 | 7.1 | template | `docs/adr/template.md` | ADR template for new decisions. |
-| 7.2 | ADR-001 full-stack template vendor | `docs/adr/ADR-001-full-stack-template-vendor.md` | Accepted baseline: mechanical import from fork, SHA pin, bulk-copy frontend, port backend into apps/api. |
-| 7.3 | ADR-0001 initial architecture | `docs/adr/0001-initial-architecture.md` | Foundational project architecture decisions captured at initialization. |
+| 7.3 | ADR-0001 initial template architecture | `docs/adr/0001-initial-template-architecture.md` | Founding ADR — defines idea.md as the canonical intake, repo_initialize as the canonical skill, and the documentation-first/queue-first initialization model. |
 
 ### Section 8 — Agents
 
@@ -278,8 +276,7 @@ Purpose: Vendor and upstream integration guides — mechanical git/rsync workflo
 
 | ID | Title | Path | Summary |
 | --- | --- | --- | --- |
-| 20.0 | Full-stack FastAPI template integration | `docs/integrations/full-stack-fastapi-template.md` | Clone `MHughesDev/fastapi-template`, pin SHA, optional sparse-checkout, rsync matrix vs this repo; no wholesale apps/api replacement. |
-| 20.1 | Integrations overview | `docs/integrations/README.md` | Index of integration guides (vendor workflows). |
+| 20.1 | Integrations overview | `docs/integrations/README.md` | Index of product-level integration guides (populated during initialization). |
 
 ## 0.3 Retired IDs
 

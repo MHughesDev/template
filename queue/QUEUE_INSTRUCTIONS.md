@@ -225,3 +225,41 @@ Run `make queue:validate` after any modification. Validation checks:
 - Column count must match the new header exactly (new columns: `complexity`,
   `goal`, `acceptance_criteria`, `scope_boundary`, `context_files`,
   `touch_files`, `verification_cmds`; removed: `summary`, `related_files`)
+
+## Initialization-derived MVP work
+
+When repository initialization runs ([`skills/init/repo_initialize.md`](../skills/init/repo_initialize.md)), it adds an **initial batch** of queue rows that walk the product from the baseline app to the MVP defined in `idea.md §4`. These rows follow the same schema as every other row but with three conventions that make the MVP path auditable:
+
+### How initialized MVP work enters the queue
+
+1. The skill decomposes each `idea.md §4` MVP bullet into one or more queue-sized rows (S or M complexity).
+2. Each row's `context_files` references the docs the skill itself produced in phase 2 (e.g. `docs/architecture/data-model.md`, `docs/api/endpoints.md`). Executors do not have to re-read `idea.md`.
+3. Rows are tagged on the MVP critical path with `batch=mvp-1`, `mvp-2`, … in dependency order. The first executable MVP row is the topmost row in `queue/queue.csv` that has all dependencies satisfied.
+
+### How agents select the next initialization row
+
+Standard `make queue:top-item` semantics apply — the first non-human-ops data row whose dependencies are satisfied is the active row. Initialization does **not** introduce a parallel selection mechanism; the queue stays single-lane.
+
+### Blocked open-question rows
+
+For every entry in `idea.md §19` that the initializer judged blocking (architecture or implementation), it creates a `category=human-ops` row with:
+
+- `goal` = `Resolve open question: <verbatim question>`
+- `notes` = `blocked_by: open_question`
+- `dependencies` = `(empty)` (so the question can be answered at any time)
+
+These rows are skipped by `make queue:top-item` but visible to operators and audits. When a question is answered, the operator archives the human-ops row with `status=done` and adds the answer to `docs/open-questions.md`.
+
+### Linking docs updates to queue execution
+
+When an executor lands a queue row whose work materially changes a doc that initialization produced (e.g. adding a real endpoint changes `docs/api/endpoints.md`), the same PR must update that doc. The `touch_files` field for such rows therefore commonly includes both a code path and a docs path. Reviewers reject PRs that change behavior without updating the corresponding initialized doc.
+
+### Definition of "done" for initialization-derived rows
+
+A row is done when:
+
+- All `acceptance_criteria` items are demonstrated true in the PR (CI green, manual checks linked, or files committed).
+- Any doc this row owns updating has been updated in the same PR.
+- The row is moved to `queue/queuearchive.csv` with `status=done` and `completed_date`.
+- The PR is merged via `make queue:pr-merge` (or the UI), and the feature branch is deleted.
+

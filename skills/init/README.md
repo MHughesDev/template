@@ -1,35 +1,35 @@
 # skills/init/README.md
 
-<!-- CROSS-REFERENCES -->
-<!-- - Used by: prompts/repo_initializer.md, .cursor/commands/initialize.md -->
-<!-- - Procedure: docs/procedures/initialize-repo.md -->
+**Purpose:** Index for initialization skills. Repository initialization is driven by a **single canonical skill** that an AI agent runs after a developer has filled out `idea.md` end-to-end.
 
-**Purpose:** Index for initialization skills. Lists all skills used during the repo initialization process from idea.md. Per spec §28.7 item 328.
+## When to invoke
 
-## Overview
+- A developer has filled out `idea.md` end-to-end (every applicable section, with `N/A` where appropriate).
+- The repo's baseline full-stack app (`apps/api/` + `apps/web/`) is in place and is the substrate for the product.
 
-Brief description of the initialization skill collection. State that these skills are invoked exclusively during repository initialization (the process of turning the blank template into a configured project). The repo_initializer prompt orchestrates these skills in sequence.
+## Prerequisites
 
-## Skills in This Category
+- Read root `AGENTS.md`, `apps/api/AGENTS.md`, `apps/web/AGENTS.md`.
+- Read `idea.md` end-to-end before opening the skill.
+- Read `queue/QUEUE_INSTRUCTIONS.md` — every row this initialization creates must conform to its schema.
 
-Table of initialization skills. Columns: Skill, Machinery, Purpose. Rows:
-- idea-validator.md | idea-validator.py | Validate idea.md completeness and consistency
-- archetype-mapper.md | archetype-mapper.py | Map archetype+profiles to scaffolding plan
-- module-template-generator.md | (uses backend/module-scaffolder.py) | Generate domain module files
-- queue-seeder.md | queue-seeder.py | Populate queue.csv from idea.md §12
-- profile-resolver.md | profile-resolver.py | Resolve profile enablement with dependency checking
-- env-generator.md | env-generator.py | Generate .env.example for enabled profiles
+## Skills in this category
 
-## Invocation Order
+| Skill | Purpose |
+|-------|---------|
+| [`repo_initialize.md`](repo_initialize.md) | Documentation-first, queue-first initialization: read `idea.md`, refresh spec + design docs, seed MVP queue rows, surface open questions as blocked rows. |
 
-The initialization skills are invoked in this order during initialization:
-1. idea-validator.md — Phase 1 (Validate and Plan)
-2. archetype-mapper.md — Phase 1 (Validate and Plan)
-3. profile-resolver.md — Phase 4 (Configure Profiles)
-4. env-generator.md — Phase 4 (Configure Profiles)
-5. module-template-generator.md — Phase 3 (Scaffold Domain)
-6. queue-seeder.md — Phase 5 (Seed Queue)
+## Invocation flow
 
-## Related Resources
+1. Developer fills out `idea.md` end-to-end.
+2. AI agent runs `skills/init/repo_initialize.md`.
+3. Output: refreshed spec/docs + initial MVP queue rows + open-question rows for anything ambiguous. **No product code is written by initialization.**
 
-Links to docs/procedures/initialize-repo.md, prompts/repo_initializer.md, .cursor/commands/initialize.md, spec/spec.md §27
+There is no `make idea:*` command. There is no multi-skill phased pipeline. There is one input (`idea.md`), one procedural skill (`repo_initialize.md`), and one output set (docs + queue rows).
+
+## Related resources
+
+- Input contract: [`/idea.md`](../../idea.md)
+- Invocation prompt: [`prompts/repo_initializer.md`](../../prompts/repo_initializer.md)
+- Queue lifecycle: [`queue/QUEUE_INSTRUCTIONS.md`](../../queue/QUEUE_INSTRUCTIONS.md)
+- Founding ADR: [`docs/adr/0001-initial-template-architecture.md`](../../docs/adr/0001-initial-template-architecture.md)

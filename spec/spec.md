@@ -1,8 +1,10 @@
 # Template Repository Specification — Agent-Operated Machine
 
 **Version:** 4.0  
-**Stack:** Python 3.12+, FastAPI, optional React/Expo front-ends  
+**Stack:** Python 3.12+, FastAPI, React 19 (Vite + TanStack), Postgres  
 **Primary operators:** Coding agents (Cursor and compatible tooling). Humans are **reviewers, supervisors, and policy maintainers**, not the default execution path.
+
+> **Note (2026-05-17):** Portions of this spec describe the **earlier** initialization model (`make idea:validate` / `make idea:execute`, multi-skill phased pipeline, `init-manifest.json`, `scripts/validate-idea.sh`, `scripts/idea-parser.py`, `scripts/init-from-idea.py`). That model has been replaced by a single canonical skill at [`skills/init/repo_initialize.md`](../skills/init/repo_initialize.md). The authoritative initialization architecture is recorded in [`docs/adr/0001-initial-template-architecture.md`](../docs/adr/0001-initial-template-architecture.md). When this spec disagrees with the ADR or the skill, the ADR and skill win.
 
 This document is the **authoritative specification** for a batteries-included template repository designed as a **Cursor-first, agentic-coding-centric repository machine**: a software factory where subsystems have explicit **purpose, inputs, outputs, invariants, commands, failure modes, tests, related prompts, and handoff rules**.
 

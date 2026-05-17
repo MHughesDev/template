@@ -49,7 +49,6 @@ Table mapping each script to its Make target and purpose:
 | `seed-db.sh` | `make db:seed` | Seed sample data |
 | `health-check.sh` | `make health:check` | Check API health |
 | `init-repo.sh` | `make init` | Initialization pre-checks |
-| `validate-idea.sh` | `make idea:validate` | Validate idea.md |
 | `scaffold-module.sh` | `make scaffold:module` | Scaffold domain module |
 | `profile-enable.sh` | `make profile:enable` | Enable optional profile |
 | `generate-env.sh` | `make env:generate` | Generate .env |

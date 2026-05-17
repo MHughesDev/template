@@ -2,41 +2,60 @@
 doc_id: "5.16"
 title: "initialize repo"
 section: "Procedures"
-summary: "Initialize a repository from idea.md using the documentation-first AI flow, then seed queue items from generated docs."
-updated: "2026-05-16"
+summary: "Documentation-first, queue-first repo initialization from a completed idea.md, driven by the canonical repo_initialize skill."
+updated: "2026-05-17"
 ---
 
 # 5.16 — initialize repo
 
-**Purpose:** Canonical initialization workflow for converting a completed `idea.md` into project documentation and an executable queue.
+**Purpose:** Canonical procedure for converting a completed `idea.md` into a refreshed project spec, derived design docs, and initial MVP queue rows. The procedure does **not** write product code — that work is queued.
 
 ## Preconditions
 
-- `idea.md` is complete and passes `make idea:validate`.
-- Initialization has not already completed (`INIT_META.initialized: false`).
-- Agent has completed mandatory skill search and read `skills/init/initialize-repo.md` and `skills/init/queue-seeder.md`.
+- A developer has filled out `idea.md` end-to-end (every applicable section, `N/A` where inapplicable).
+- The baseline full-stack app (`apps/api/` + `apps/web/`) is in place.
+- The agent has read root `AGENTS.md`, `apps/api/AGENTS.md`, `apps/web/AGENTS.md`, and `queue/QUEUE_INSTRUCTIONS.md`.
+
+## Inputs
+
+- `idea.md` — the canonical human-authored intake contract.
+
+## Outputs
+
+- Refreshed `spec/spec.md` product section (or new product spec appended to template spec).
+- Derived design docs under `docs/architecture/`, `docs/api/`, `docs/data/`, `docs/security/`, `docs/operations/`, `docs/testing/`.
+- `docs/open-questions.md` populated from `idea.md §19`.
+- Initial MVP queue rows in `queue/queue.csv`, ordered as the path from baseline to the MVP defined in `idea.md §4`.
+- Blocked `category=human-ops` queue rows for unresolved open questions.
+- A PR titled `init: <product name>` summarizing what was initialized and what remains blocked.
 
 ## Exact commands
 
-- `make idea:validate`
-- `make docs:check`
 - `make queue:validate`
-- `make lint && make typecheck && make test` (if code changed)
+- `make docs:check`
+- `python3 scripts/check_docs_map.py`
+- `python3 scripts/repo_self_audit.py`
+
+(No `make idea:*` target exists. Initialization is driven by an AI skill, not a Make orchestrator.)
 
 ## Ordered steps
 
-1. Read `idea.md` fully, including open questions and constraints.
-2. Run `make idea:validate`; stop if it fails.
-3. Execute `skills/init/initialize-repo.md` to generate/update initialization docs.
-4. Execute `skills/init/queue-seeder.md` to derive queue rows from generated docs.
-   - `idea.md` §12 is optional prioritization input only.
-5. Update `idea.md` INIT_META (`initialized`, `init_completed_at`, `init_branch`, `init_pr_url`) as applicable.
-6. Run `make docs:check` and `make queue:validate`.
-7. If any executable code changed, run `make lint`, `make typecheck`, `make test`.
-8. Open one PR with evidence: files changed, commands run, outputs, risks, follow-ups.
+1. Read `idea.md` end-to-end. Triage every section as complete / N/A / incomplete.
+2. Surface any blocking gaps (incomplete MVP sections, or `§19` open questions that would change architecture). Stop and report back to the developer if any exist.
+3. Run [`skills/init/repo_initialize.md`](../../skills/init/repo_initialize.md) end-to-end. The skill has six phases (triage → spec → docs → ADR → MVP queue → validate) with explicit gates.
+4. Run `make queue:validate`, `make docs:check`, `python3 scripts/repo_self_audit.py`.
+5. Open one PR titled `init: <product name>` with the skill's handoff summary as the description.
 
-## Expected outputs
+## Acceptance
 
-- Initialization docs in `docs/` updated to project-specific, current state.
-- Valid queue rows derived from docs.
-- Initialization metadata updated in `idea.md`.
+- Every MVP bullet in `idea.md §4` traces to one or more queue rows.
+- Every blocked open question has a `category=human-ops` queue row.
+- No file under `apps/api/app/` or `apps/web/src/` was modified by this procedure.
+- All listed validation commands pass.
+
+## Related resources
+
+- Canonical skill: [`skills/init/repo_initialize.md`](../../skills/init/repo_initialize.md)
+- Invocation prompt: [`prompts/repo_initializer.md`](../../prompts/repo_initializer.md)
+- Founding ADR: [`docs/adr/0001-initial-template-architecture.md`](../adr/0001-initial-template-architecture.md)
+- Queue lifecycle: [`queue/QUEUE_INSTRUCTIONS.md`](../../queue/QUEUE_INSTRUCTIONS.md)

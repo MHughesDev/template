@@ -52,8 +52,6 @@ ignore = ["S101", "B008", "E501"]
 "apps/api/tests/**" = ["S101", "S105", "E501"]
 "**/alembic/**" = ["INP001", "E501"]
 "packages/contracts/errors.py" = ["S105"]
-"scripts/idea-parser.py" = ["E501", "T201"]
-"scripts/init-from-idea.py" = ["E501", "T201", "S603", "S607"]
 "scripts/scaffold-module.py" = ["E501", "T201", "S608"]
 
 [tool.ruff.format]

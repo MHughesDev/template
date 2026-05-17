@@ -33,8 +33,7 @@ Ordered list of all procedure files with one-line descriptions and links. Ordere
 - [handle-blocked-work.md](handle-blocked-work.md) — Document blockers and optionally requeue
 
 **Initialization:**
-- [initialize-repo.md](initialize-repo.md) — Full repo initialization from idea.md (6-phase procedure)
-- [validate-idea-md.md](validate-idea-md.md) — Validate idea.md completeness before initialization
+- [initialize-repo.md](initialize-repo.md) — Documentation-first, queue-first repo initialization from a completed idea.md
 - [scaffold-domain-module.md](scaffold-domain-module.md) — Create bounded context module in apps/api/app/
 - [enable-profile.md](enable-profile.md) — Enable optional profile with dependency checking
 
