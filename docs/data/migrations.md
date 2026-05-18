@@ -1,5 +1,5 @@
 ---
-doc_id: "data-migrations"
+doc_id: "21.2"
 title: "migration procedures"
 section: "Data"
 status: "pending-init"

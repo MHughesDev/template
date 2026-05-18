@@ -47,6 +47,15 @@ Purpose: Explains system design: contexts, data layer, auth, APIs, errors, and o
 | 2.9 | system context | `docs/architecture/system-context.md` | System context diagram and description. Shows the system boundary, external actors, and integrations. Populated from `idea.md` §8. |
 | 2.10 | profile interactions | `docs/architecture/profile-interactions.md` | Cross-profile integration behavior and constraints for combined optional profiles. |
 | 2.11 | ai rag | `docs/architecture/ai-rag.md` | Ingestion, embeddings, retrieval, model provider abstraction, and kill-switch behavior. |
+| 2.12 | async workers | `docs/architecture/async-workers.md` | Every async task: trigger, payload shape, retry policy, failure handling, and idempotency approach. Conditional on a workers/background-jobs profile. |
+| 2.13 | auth | `docs/architecture/auth.md` | Auth strategy: scheme, token lifecycle, permission model, endpoint access matrix, multi-tenancy intersection. |
+| 2.14 | billing | `docs/architecture/billing.md` | Billing architecture: provider, webhook handling, subscription model, retry/dunning. Conditional. |
+| 2.15 | bounded contexts | `docs/architecture/bounded-contexts.md` | Per-context owns / does-not-own / exposes / consumes map; inter-context dependency diagram. |
+| 2.16 | data model | `docs/architecture/data-model.md` | Source-of-truth entity catalog: fields, enums, FKs, cardinality, indexes; ER diagram. |
+| 2.17 | frontend | `docs/architecture/frontend.md` | Frontend architecture: page/route inventory, component hierarchy, API integration, state management. |
+| 2.18 | mobile | `docs/architecture/mobile.md` | Mobile architecture: screen inventory, navigation, auth/token storage, offline behavior. Conditional. |
+| 2.19 | multi tenancy | `docs/architecture/multi-tenancy.md` | Isolation model, tenant context propagation, shared-vs-isolated data, tenant provisioning. Conditional. |
+| 2.20 | architecture overview | `docs/architecture/overview.md` | System purpose, archetype, component map, primary data flow, key design decisions. |
 
 ### Section 3 — Development
 
@@ -64,6 +73,8 @@ Purpose: Covers local setup, coding standards, testing, env vars, git flow, and 
 | 3.7 | local setup | `docs/development/local-setup.md` | Detailed local development setup. All Make/Task targets documented with expected behavior (§10.1). |
 | 3.8 | module patterns | `docs/development/module-patterns.md` | How to structure bounded-context modules under `apps/api/app/` (router, service, models, tests). |
 | 3.9 | testing guide | `docs/development/testing-guide.md` | Pytest layout, markers, async tests, and coverage expectations for the API. |
+| 3.10 | ci | `docs/development/ci.md` | CI pipeline stages, matrix, how to reproduce locally, common CI failures and fixes. |
+| 3.11 | commands | `docs/development/commands.md` | Make target catalog scoped to this product (dev / test / db / queue / CI / profiles). |
 
 ### Section 4 — API
 
@@ -89,8 +100,7 @@ Purpose: Canonical agent SOPs: queue work, implementation, validation, init, mig
 | 5.12 | handoff | `docs/procedures/handoff.md` | SOP: Complete handoff — files changed, commands run, results, risks, follow-ups. |
 | 5.13 | implement change | `docs/procedures/implement-change.md` | SOP: Execute code changes in small validated increments with commits that tell a story. |
 | 5.14 | incident rollback | `docs/procedures/incident-rollback.md` | SOP for incident-rollback. |
-| 5.15 | Initialize from idea | `docs/procedures/initialize-from-idea.md` | Runs structured repository initialization from idea.md using the initialization engine. |
-| 5.16 | initialize repo | `docs/procedures/initialize-repo.md` | SOP for initializing the repo from idea.md. The canonical procedure that the repo_initializer prompt follows. Turns a blank template into... |
+| 5.16 | initialize repo | `docs/procedures/initialize-repo.md` | Canonical documentation-first, queue-first repo initialization from a completed idea.md, driven by `skills/init/repo_initialize.md`. |
 | 5.17 | open pull request | `docs/procedures/open-pull-request.md` | SOP: Create PR with title, description template, evidence, labels, queue linkage. |
 | 5.18 | plan change | `docs/procedures/plan-change.md` | SOP: Create implementation plan with acceptance criteria, file impact, risks, scope bounds. |
 | 5.19 | release preparation | `docs/procedures/release-preparation.md` | SOP for release-preparation. |
@@ -101,7 +111,10 @@ Purpose: Canonical agent SOPs: queue work, implementation, validation, init, mig
 | 5.23 | update or create rule | `docs/procedures/update-or-create-rule.md` | SOP: Rule lifecycle — creating new .cursor/rules or updating existing ones. |
 | 5.24 | update or create skill | `docs/procedures/update-or-create-skill.md` | SOP: Skill lifecycle — creating new skills or updating existing ones to the standard format. |
 | 5.25 | validate change | `docs/procedures/validate-change.md` | SOP: Run full validation matrix before opening PR. |
+| 5.26 | implementation loop | `docs/procedures/implementation-loop.md` | SOP for executing a queue row end-to-end: read context, plan, implement in small validated increments, hand off. |
 | 5.27 | MicroFast development MCP server | `docs/procedures/microfast-dev-mcp.md` | stdio MCP for agents: queue tools, repo resources, canonical make targets (dev-only). |
+| 5.28 | queue decomposition | `docs/procedures/queue-decomposition.md` | SOP for splitting an L-complexity queue row into S/M sub-tasks with proper dependency ordering. |
+| 5.29 | template upgrade | `docs/procedures/template-upgrade.md` | SOP for advancing the template baseline in a downstream initialized product. |
 | 5.3 | add optional app profile | `docs/procedures/add-optional-app-profile.md` | SOP for add-optional-app-profile. |
 | 5.4 | add prompt template | `docs/procedures/add-prompt-template.md` | SOP for add-prompt-template. |
 | 5.5 | add queue category | `docs/procedures/add-queue-category.md` | SOP for add-queue-category. |
@@ -126,6 +139,10 @@ Purpose: Run and scale the system: Docker, Kubernetes, health, backups, observab
 | 6.7 | observability | `docs/operations/observability.md` | Observability setup: structured logging, metrics, tracing, dashboards (§21). |
 | 6.8 | rollback | `docs/operations/rollback.md` | Rollback and forward-fix decision tree. When to rollback vs fix-forward, procedures for each (§2). |
 | 6.9 | scaling | `docs/operations/scaling.md` | Scaling playbook: horizontal pod autoscaling, workers, cache. |
+| 6.10 | deployment | `docs/operations/deployment.md` | Per-environment deploy steps, post-deploy verification, failed-deploy handling. |
+| 6.11 | monitoring | `docs/operations/monitoring.md` | What is instrumented, alert conditions and thresholds, first-look checklist, dashboards. |
+| 6.12 | runbook — incident response | `docs/operations/runbooks/incident-response.md` | Incident-response scenarios for the project's likely failure modes. |
+| 6.13 | runbook — rollback | `docs/operations/runbooks/rollback.md` | Application rollback, migration rollback, and worker-drain procedure. |
 
 ### Section 7 — ADR
 
@@ -237,8 +254,9 @@ Purpose: Covers threat model, secrets, CORS, tokens, incidents, and accepted ris
 | 16.2 | cors policy | `docs/security/cors-policy.md` | CORS origins and security rationale. |
 | 16.3 | incident response | `docs/security/incident-response.md` | Incident response plan: classification, evidence capture, communication, remediation, post-incident (§2). |
 | 16.4 | secrets management | `docs/security/secrets-management.md` | How secrets are managed: sourcing (env vars only), rotation procedures, CI/CD injection, never in code. |
-| 16.5 | threat model stub | `docs/security/threat-model-stub.md` | Generic threat model for FastAPI applications built on this template. Identifies assets, threat actors, attack surfaces, and mitigations.... |
 | 16.6 | token lifecycle | `docs/security/token-lifecycle.md` | JWT token lifecycle details: issuance parameters, refresh windows, revocation mechanism, key rotation (§14). |
+| 16.7 | security overview | `docs/security/overview.md` | Attack surface, controls in place, out-of-scope, pointers to detailed security docs. |
+| 16.8 | threat model | `docs/security/threat-model.md` | Project-specific top threats, mitigations, accepted residual risks, out-of-scope threats. |
 
 ### Section 17 — Troubleshooting
 
@@ -257,6 +275,7 @@ Purpose: Hub entry and ubiquitous language: the docs index and domain glossary.
 | --- | --- | --- | --- |
 | 18.0 | Docs overview | `docs/README.md` | Documentation hub. Index of all doc sections with one-line descriptions and links. |
 | 18.1 | glossary | `docs/glossary.md` | Ubiquitous language and domain glossary. Defines terms used consistently across spec, code, and documentation. |
+| 18.2 | project state | `docs/project-state.md` | Quick-orientation snapshot for new agent sessions: mission, architecture status, queue focus, current risks. |
 
 ### Section 19 — BRAINSTORM
 
@@ -278,10 +297,32 @@ Purpose: Vendor and upstream integration guides — mechanical git/rsync workflo
 | --- | --- | --- | --- |
 | 20.1 | Integrations overview | `docs/integrations/README.md` | Index of product-level integration guides (populated during initialization). |
 
+### Section 21 — Data
+
+Purpose: Database schema documentation, migration SOP, and seed data procedures specific to the initialized product.
+
+| ID | Title | Path | Summary |
+| --- | --- | --- | --- |
+| 21.1 | schema | `docs/data/schema.md` | Plain-language description of the physical schema, join patterns, index rationale. |
+| 21.2 | migrations | `docs/data/migrations.md` | Project-specific Alembic SOP: create, review checklist, apply, rollback, CI behavior. |
+| 21.3 | seeding | `docs/data/seeding.md` | What `make db:seed` creates, in which environments, and how to reset/re-seed. |
+
+### Section 22 — Testing
+
+Purpose: Project-specific testing strategy and coverage policy, complementing the repo-wide quality guidance in §11.
+
+| ID | Title | Path | Summary |
+| --- | --- | --- | --- |
+| 22.1 | strategy | `docs/testing/strategy.md` | Unit / integration / smoke / e2e strategy with project-specific concerns. |
+| 22.2 | coverage | `docs/testing/coverage.md` | Coverage floor, per-module targets, exclusions, ratchet policy. |
+
 ## 0.3 Retired IDs
 
 | ID | Original title | Retired date | Reason |
 | --- | --- | --- | --- |
+| 5.15 | Initialize from idea | 2026-05-17 | Procedure file removed during initialization redesign; the canonical procedure is now 5.16 (`docs/procedures/initialize-repo.md`) driven by `skills/init/repo_initialize.md`. |
+| 7.2 | ADR-001 full-stack template vendor | 2026-05-17 | Vendor-import ADR removed during cleanup; provenance is no longer part of the operational record. |
+| 16.5 | threat model stub | 2026-05-17 | Stub file never existed under that name; canonical threat model is at 16.8 (`docs/security/threat-model.md`). |
 
 ## 0.4 Invariants enforced by `make docs:map-check`
 

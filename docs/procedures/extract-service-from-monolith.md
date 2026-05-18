@@ -1,5 +1,5 @@
 ---
-doc_id: "5.86"
+doc_id: "5.10"
 title: "extract service from monolith"
 section: "Procedures"
 summary: "Procedure reference retained and normalized for docs integrity; expand with project-specific detail when used."

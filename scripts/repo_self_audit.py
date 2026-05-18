@@ -33,7 +33,6 @@ REQUIRED_PATHS = (
     "scripts/repo_self_audit.py",
     "scripts/queue_validate.py",
     "scripts/queue_archive.py",
-    "scripts/inventory_check.py",
     "queue/queue.csv",
     "queue/queuearchive.csv",
     "queue/QUEUE_INSTRUCTIONS.md",

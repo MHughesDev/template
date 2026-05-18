@@ -1,5 +1,19 @@
 # skills/repo-governance/references/atam-procedure.md
 
+**Purpose:** Reference procedure (full and lightweight variants) for the Architecture Tradeoff Analysis Method. Cited by `skills/repo-governance/architecture-design.md` Stage 3 when two design candidates are close enough to require tradeoff analysis. This file is reference material, not an invocable skill on its own.
+
+## When to invoke
+
+- From `skills/repo-governance/architecture-design.md` Stage 3 when two candidate designs scored within 1–2 points and a quantified tradeoff comparison is needed.
+- Standalone, when auditing an existing architecture against a quality attribute it may not satisfy.
+
+## Prerequisites
+
+- Stage 1 outputs from `architecture-design.md` are available (quality attribute scenarios, constraints, drivers).
+- Two or more candidate designs exist, each with at least a name, sketch, and approximate cost/benefit notes.
+
+## Reference
+
 Full Architecture Tradeoff Analysis Method procedure, plus a lightweight variant for AI agent execution.
 
 Source: Kazman, Klein & Clements — "ATAM: Method for Architecture Evaluation", CMU/SEI Technical Report CMU/SEI-2000-TR-004.

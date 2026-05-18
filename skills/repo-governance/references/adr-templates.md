@@ -1,5 +1,20 @@
 # skills/repo-governance/references/adr-templates.md
 
+**Purpose:** Reference catalog of ADR format variants with annotated examples. Used as a lookup table by `skills/repo-governance/architecture-design.md` (Stage 3) and `skills/repo-governance/add-adr.md`. This file is reference material, not an invocable skill — the surrounding skills cite specific sections of it as needed.
+
+## When to invoke
+
+- Indirectly, from `skills/repo-governance/architecture-design.md` Stage 3 when recording a decision and the default Extended Nygard format is not the obvious fit.
+- Indirectly, from `skills/repo-governance/add-adr.md` when selecting an ADR format for a new record.
+- Read this file directly when you need to compare formats or read a worked example before authoring.
+
+## Prerequisites
+
+- You are about to write an ADR under `docs/adr/` and have already read `docs/adr/template.md` (the repo's default format).
+- You have a candidate decision in mind with context, alternatives, and at least a working draft of consequences.
+
+## Reference
+
 All major ADR format variants with annotated examples. Use this alongside `skills/repo-governance/add-adr.md` when choosing which format to apply.
 
 This repo's **default format** is the extended Nygard (Template 1). Use other formats when the decision type warrants it — see the selection guide in `add-adr.md`.

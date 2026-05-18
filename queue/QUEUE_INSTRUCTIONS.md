@@ -263,3 +263,88 @@ A row is done when:
 - The row is moved to `queue/queuearchive.csv` with `status=done` and `completed_date`.
 - The PR is merged via `make queue:pr-merge` (or the UI), and the feature branch is deleted.
 
+## Generic row examples (illustrative — do NOT copy into `queue.csv`)
+
+These examples show the shape of well-formed rows for the four common archetypes. They are illustrative only; do not add them to `queue/queue.csv`. Real rows come from initialization or from `docs/procedures/add-make-target.md`-style sources.
+
+> **Schema header** (always row 1 of `queue/queue.csv`):
+> `id,batch,phase,category,complexity,goal,acceptance_criteria,scope_boundary,agent_instructions,constraints,context_files,touch_files,verification_cmds,dependencies,notes,created_date`
+
+### Example 1 — normal MVP work row (feature implementation)
+
+A typical S-complexity row on the MVP critical path. Adds one route on top of an existing module.
+
+```
+Q-EX1,mvp-1,2,core-api,S,
+"Add GET /api/v1/widgets/{id} that returns a single widget by id with 404 when missing.",
+"1. Endpoint returns 200 + Widget schema when the row exists | 2. Endpoint returns 404 + WIDGET_NOT_FOUND when missing | 3. pytest in tests/api/routes/test_widgets.py covers both paths",
+"Do not modify Widget model or migrations",
+,
+"Path must match `/api/v1/widgets/{id}`; error code WIDGET_NOT_FOUND defined in docs/api/error-codes.md",
+"docs/api/endpoints.md,docs/architecture/bounded-contexts.md,apps/api/app/api/routes/items.py",
+"apps/api/app/api/routes/widgets.py,apps/api/tests/api/routes/test_widgets.py",
+"make test -- -k widgets",
+,
+,
+2026-05-18
+```
+
+### Example 2 — blocked open-question row (`category=human-ops`)
+
+Created by `repo_initialize` when `idea.md §19` lists a question whose answer changes product behavior. Skipped by `make queue:top-item`; resolved by a human writing the answer into `docs/open-questions.md` and archiving this row.
+
+```
+Q-EX2,,,human-ops,S,
+"Resolve open question: Should invoices support multiple currencies?",
+"1. Decision recorded in docs/open-questions.md with rationale | 2. Any new product ADR added if the decision is architecturally significant | 3. Follow-up MVP rows added if implementation work is unblocked",
+,
+,
+,
+"idea.md,docs/open-questions.md",
+"docs/open-questions.md",
+,
+,
+"blocked_by: open_question | owner: product",
+2026-05-18
+```
+
+### Example 3 — docs-update row (paired with a feature row)
+
+Sometimes the implementation row also has to update a doc; sometimes the docs change is large enough to warrant its own row. Use this shape when the docs change has its own acceptance criteria.
+
+```
+Q-EX3,mvp-1,3,docs,S,
+"Update docs/api/endpoints.md and docs/api/error-codes.md to describe the new GET /widgets/{id} endpoint and WIDGET_NOT_FOUND error.",
+"1. docs/api/endpoints.md has one row per HTTP method for the widgets resource | 2. docs/api/error-codes.md has a WIDGET_NOT_FOUND entry (404, message, condition, resolution) | 3. make docs:check passes",
+,
+,
+,
+"docs/api/endpoints.md,docs/api/error-codes.md,apps/api/app/api/routes/widgets.py",
+"docs/api/endpoints.md,docs/api/error-codes.md",
+"make docs:check",
+"Q-EX1",
+,
+2026-05-18
+```
+
+### Example 4 — validation / finalization row (end of an MVP batch)
+
+The terminal row in a batch. Picks up after all feature and docs rows in the batch have archived; runs the full validation matrix and updates `docs/project-state.md` to reflect what the batch delivered.
+
+```
+Q-EX4,mvp-1,99,release,S,
+"Run full validation matrix for mvp-1 and update docs/project-state.md.",
+"1. make lint, make fmt-check, make typecheck, make test all pass | 2. make queue:validate, make docs:check, python3 scripts/check_docs_map.py, python3 scripts/repo_self_audit.py all pass | 3. docs/project-state.md updated to describe mvp-1 outcomes and the next focus",
+"Do not implement new features here",
+"Use only existing make targets — do not invent commands",
+,
+"docs/project-state.md,queue/queue.csv,queue/queuearchive.csv",
+"docs/project-state.md",
+"make lint && make typecheck && make test && make queue:validate && make docs:check",
+"Q-EX1,Q-EX3",
+,
+2026-05-18
+```
+
+The examples follow every queue invariant: `complexity` is `S`, `touch_files` ≤ 2 paths, `goal` ≤ 300 chars, `acceptance_criteria` is a `|`-separated numbered list, and `category` matches a value in `docs/queue/queue-categories.md`.
+

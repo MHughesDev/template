@@ -1,5 +1,5 @@
 ---
-doc_id: "test-strategy"
+doc_id: "22.1"
 title: "testing strategy"
 section: "Testing"
 status: "pending-init"

@@ -1,5 +1,5 @@
 ---
-doc_id: "5.83"
+doc_id: "5.7"
 title: "database migration"
 section: "Procedures"
 summary: "Procedure reference retained and normalized for docs integrity; expand with project-specific detail when used."

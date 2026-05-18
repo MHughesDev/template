@@ -1,5 +1,5 @@
 ---
-doc_id: "5.88"
+doc_id: "5.5"
 title: "add queue category"
 section: "Procedures"
 summary: "Procedure reference retained and normalized for docs integrity; expand with project-specific detail when used."

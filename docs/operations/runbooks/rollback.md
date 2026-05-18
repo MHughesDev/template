@@ -1,5 +1,5 @@
 ---
-doc_id: "ops-runbook-rollback"
+doc_id: "6.13"
 title: "rollback runbook"
 section: "Operations"
 status: "pending-init"

@@ -1,5 +1,5 @@
 ---
-doc_id: "arch-auth"
+doc_id: "2.13"
 title: "authentication and authorization"
 section: "Architecture"
 status: "pending-init"

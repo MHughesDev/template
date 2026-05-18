@@ -1,5 +1,5 @@
 ---
-doc_id: "5.90"
+doc_id: "5.26"
 title: "implementation loop"
 section: "Procedures"
 summary: "Single end-to-end loop from claiming queue work to PR handoff and operator archive."

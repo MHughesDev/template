@@ -5,22 +5,35 @@
 <!-- - Conceptual docs: docs/development/docs-generation.md -->
 <!-- - Make targets: make docs:generate, make docs:check -->
 
-**Purpose:** [FULL SKILL] How to run, extend, and maintain the documentation generation pipeline. Covers adding new source→target mappings, running locally, and CI integration. Per spec §9.4 and §26.12 item 356-357.
+**Purpose:** How to run, extend, and maintain the **deterministic docs-indexing pipeline**. The pipeline projects authoritative sources (Makefile help lines, Pydantic Settings AST, `compose.yml`, k8s YAML, cursor rules, Alembic versions) into stable Markdown indexes under `docs/generated/`. It is a small helper, not the product-design brain.
 
 ## Purpose
 
-One paragraph. The documentation generation pipeline automatically produces Markdown documentation from authoritative sources (FastAPI OpenAPI, Pydantic Settings, pyproject.toml, Compose, K8s YAML, Makefile). This prevents documentation drift — the most common failure mode in agentic repos. When sources change, docs update automatically via `make docs:generate` and CI catches drift with `make docs:check`.
+The pipeline is a deterministic indexer / scaffolder. It exists to keep `docs/generated/` files in sync with authoritative sources so CI can fail on drift. It **does not** author architecture, API, data, or operations docs — those are written by a developer or by an AI agent following [`skills/init/repo_initialize.md`](../init/repo_initialize.md).
 
-## When to Invoke
+Source-of-truth boundaries this skill respects:
 
-- After any change to a source file that has a corresponding generated doc target
-- To add a new source→target mapping to the pipeline
-- When `make docs:check` fails in CI (regenerate and commit)
-- On release preparation (ensure all docs are fresh)
+- Source of **product intent** → [`/idea.md`](../../idea.md) (human-authored).
+- Source of **initialization procedure** → [`skills/init/repo_initialize.md`](../init/repo_initialize.md) (canonical skill).
+- Source of **deterministic index files** under `docs/generated/` → this pipeline.
+- Source of **product design docs** under `docs/architecture/`, `docs/api/`, `docs/data/`, `docs/security/`, `docs/operations/`, `docs/testing/` → `repo_initialize` phase 3 and subsequent queue-row execution.
+
+This skill never writes outside `docs/generated/`.
+
+## When to invoke
+
+- After any change to a source file that has a corresponding generated doc target (Makefile help lines, Settings, compose, k8s, cursor rules, alembic versions).
+- To add a new source→target mapping to the pipeline.
+- When `make docs:check` fails in CI (regenerate and commit).
+- On release preparation (ensure all generated docs are fresh).
+
+Do **not** invoke this skill for product documentation work. For that, see `skills/init/repo_initialize.md` (initialization) or the relevant `docs/procedures/update-documentation.md` SOP (ongoing).
 
 ## Prerequisites
 
-FastAPI app can be imported (make migrate applied, .env set). Python 3.12+ with venv activated.
+- Python 3.12+ available.
+- The repo's source artifacts exist where the targets expect them: `Makefile`, `apps/api/app/core/config.py`, `compose.yml`, `deploy/k8s/base/`, `.cursor/rules/`, `apps/api/app/alembic/versions/`.
+- Optional: PyYAML installed for compose/k8s output (gracefully skipped otherwise).
 
 ## Relevant Files/Areas
 

@@ -1,5 +1,5 @@
 ---
-doc_id: "5.92"
+doc_id: "5.29"
 title: "template upgrade"
 section: "Procedures"
 summary: "Manual upgrade path for projects initialized from this template."

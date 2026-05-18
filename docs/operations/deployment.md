@@ -1,5 +1,5 @@
 ---
-doc_id: "ops-deployment"
+doc_id: "6.10"
 title: "deployment"
 section: "Operations"
 status: "pending-init"

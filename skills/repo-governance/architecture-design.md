@@ -5,7 +5,7 @@
 <!-- - Methodology source: skills/repo-governance/references/atam-procedure.md -->
 <!-- - Methodology source: skills/repo-governance/references/adr-templates.md -->
 <!-- - ADR creation: skills/repo-governance/add-adr.md -->
-<!-- - Init integration: skills/init/initialize-repo.md (Phase 1 uses this skill's Stage 1–2) -->
+<!-- - Init integration: skills/init/repo_initialize.md (Phase 1 triage uses this skill's Stage 1–2) -->
 <!-- - Template: docs/adr/template.md -->
 <!-- - Rule: .cursor/rules/documentation.md -->
 <!-- - Rule: .cursor/rules/global.md (architectural decisions need ADR + PR link) -->
@@ -19,7 +19,7 @@ This skill is written for **AI agent execution**, not human team workshops. All 
 
 ## When to Invoke
 
-- `initialize-repo` skill Phase 1 (architectural reasoning before writing any docs)
+- `skills/init/repo_initialize.md` Phase 0/1 (triage + spec authoring — that skill calls into Stage 1–2 of this one for any architecturally significant decision)
 - A new profile, bounded context, or external integration is being added
 - Two or more implementation approaches are viable and the choice has long-term impact
 - An existing architecture is being evaluated against a quality attribute it may not satisfy
@@ -29,6 +29,15 @@ This skill is written for **AI agent execution**, not human team workshops. All 
 - Bug fixes or refactoring that preserves observable behavior
 - Decisions already made and recorded in `docs/adr/`
 - Implementation choices within a single bounded context (those don't need ADD)
+
+---
+
+## Prerequisites
+
+- `idea.md` is filled out (or, for non-initialization invocations, the artifact under design is fully described in repo docs).
+- The references this skill cites are available: `references/tactics-catalog.md`, `references/atam-procedure.md`, `references/adr-templates.md`.
+- The ADR template `docs/adr/template.md` is reachable for Stage 3 recording.
+- You can write to `docs/adr/` and have permission to open a PR with the new ADR(s).
 
 ---
 

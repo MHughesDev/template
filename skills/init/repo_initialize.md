@@ -32,11 +32,16 @@ Do **not** invoke when:
 
 ## What this skill does NOT do
 
-- Does not write application code under `apps/api/app/` or `apps/web/src/`. Application work is queued.
+> **Hard rule: do not write product feature code during initialization.** No edits to files under `apps/api/app/` or `apps/web/src/` that implement product behavior. No new SQLModel models for product entities, no new FastAPI routes for product workflows, no new React components for product screens, no Alembic migrations for product tables. All of that work is **queued** — it is executed later, one row at a time, against the queue rows initialization creates.
+
+The exceptions are limited to non-product configuration: updating `apps/api/.env.example` to reflect new env vars `idea.md` introduces, or adding a comment header to an existing baseline file. Any change beyond that is out of scope for initialization and must be deferred to a queue row.
+
+Other behaviors this skill does **not** perform:
+
 - Does not run database migrations, install dependencies, or modify CI configuration.
 - Does not delete or rewrite the baseline app. The baseline is the substrate.
-- Does not modify `spec/spec.md` from the template's design baseline unless explicitly instructed.
-- Does not silently resolve ambiguity in `idea.md`. Ambiguity becomes an open-question row or a docs-only TODO.
+- Does not modify `spec/spec.md`'s template-baseline section. It may append or update the product spec section appended to it.
+- Does not silently resolve ambiguity in `idea.md`. Ambiguity becomes an open-question row or a `docs/open-questions.md` entry.
 
 ---
 
@@ -206,12 +211,36 @@ Do not auto-merge. Open a PR titled `init: <product name>` with the handoff summ
 - Skill discovery: `prompts/skill_searcher.md`
 - Audit: `scripts/repo_self_audit.py`
 
-## Validation checklist (final)
+## Acceptance criteria
 
-- [ ] Every MVP bullet in `idea.md §4` traces to one or more queue rows.
-- [ ] Every blocked open question has a `category=human-ops` queue row.
-- [ ] Every touched doc has frontmatter `status: "current"`.
-- [ ] No file under `apps/api/app/` or `apps/web/src/` was modified by this skill.
+Initialization is **not complete** until every item below is true. If any item cannot be satisfied, do not declare initialization done — surface the gap in the handoff and stop.
+
+1. **Spec is current.** `spec/spec.md`'s product section is refreshed and every claim traces back via a provenance comment to a specific `idea.md` section.
+2. **Required docs are current.** Every doc in the Phase 2 table that applies (architecture overview, bounded contexts, data model, auth, API endpoints, error codes, data schema, threat model, deployment, testing strategy, open questions) has been refreshed and carries `status: "current"` in its frontmatter. Conditional docs (multi-tenancy, async-workers, ai-rag, billing, mobile, frontend) are either filled or carry the standard "Not applicable for this product" stub.
+3. **Initial MVP queue rows are seeded.** Every MVP bullet in `idea.md §4` is mapped to at least one row in `queue/queue.csv`, tagged with `batch=mvp-1`/`mvp-2`/… in dependency order. The topmost row has empty `dependencies` or dependencies that point only to archived rows.
+4. **Blocked open-question rows exist where needed.** Every `idea.md §19` open question that the skill judged blocking has a corresponding `category=human-ops` row whose `notes` start with `blocked_by: open_question`.
+5. **Founding ADR(s) exist where needed.** For every product-level decision in `idea.md` that contradicts a template default, a new ADR has been written at `docs/adr/<NNNN>-<kebab-title>.md` (sequential from 0002) with every template section filled.
+6. **`docs/open-questions.md` is populated** with one entry per `idea.md §19` item, classified as architecture-blocking / implementation-blocking / non-blocking.
+7. **No product feature code was written.** `git diff --stat apps/api/app/ apps/web/src/` is empty for files implementing product behavior. Comment-only header edits and `.env.example` additions are tolerated.
+8. **All validation gates pass:**
+   - `make queue:validate` exits 0.
+   - `make docs:check` exits 0.
+   - `python3 scripts/check_docs_map.py` exits 0.
+   - `python3 scripts/repo_self_audit.py` reports PASS on every check (`required_files`, `queue_validate`, `file_title_comments`, `skills_headings`, `prompts_frontmatter`, `prompts_title_and_fields`, `makefile_help`).
+9. **If any audit failure is unavoidable** (e.g. an `idea.md` instruction conflicts with a template invariant), the handoff explicitly documents the failure, the reason it cannot be cleanly fixed, and the queue row created to address it. The skill never silently waves audit failures through.
+
+## Validation checklist
+
+Quick checklist mirroring the acceptance criteria above — useful during execution:
+
+- [ ] `spec/spec.md` product section refreshed and provenance comments link every claim to an `idea.md` section.
+- [ ] Every applicable Phase 2 doc has `status: "current"` frontmatter.
+- [ ] Every `idea.md §4` MVP bullet maps to one or more queue rows tagged `batch=mvp-N`.
+- [ ] Every blocking `idea.md §19` question has a `category=human-ops` row with `notes=blocked_by: open_question`.
+- [ ] `docs/open-questions.md` lists every `§19` item with classification.
+- [ ] Founding ADR(s) added for any template-default contradictions.
+- [ ] `git diff apps/api/app/ apps/web/src/` shows no product code changes.
 - [ ] `make queue:validate` passes.
-- [ ] `make docs:check` and `python3 scripts/check_docs_map.py` pass.
-- [ ] `python3 scripts/repo_self_audit.py` does not regress beyond the pre-existing baseline.
+- [ ] `make docs:check` passes.
+- [ ] `python3 scripts/check_docs_map.py` passes.
+- [ ] `python3 scripts/repo_self_audit.py` passes (or every failure is documented in the handoff).

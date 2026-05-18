@@ -1,5 +1,5 @@
 ---
-doc_id: "5.91"
+doc_id: "5.28"
 title: "queue decomposition"
 section: "Procedures"
 summary: "Break L-complexity queue tasks into S/M sub-tasks that satisfy touch file and dependency constraints."

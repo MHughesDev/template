@@ -1,5 +1,5 @@
 ---
-doc_id: "5.3"
+doc_id: "5.27"
 title: "MicroFast development MCP server"
 section: "Procedures"
 summary: "stdio MCP server for coding agents: queue tools, repo resources, canonical make targets."

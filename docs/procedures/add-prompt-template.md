@@ -1,5 +1,5 @@
 ---
-doc_id: "5.89"
+doc_id: "5.4"
 title: "add prompt template"
 section: "Procedures"
 summary: "Procedure reference retained and normalized for docs integrity; expand with project-specific detail when used."
