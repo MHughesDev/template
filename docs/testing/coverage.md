@@ -1,5 +1,5 @@
 ---
-doc_id: "test-coverage"
+doc_id: "22.2"
 title: "coverage targets"
 section: "Testing"
 status: "pending-init"

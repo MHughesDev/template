@@ -1,6 +1,20 @@
 # skills/repo-governance/references/tactics-catalog.md
 
-Reference for `architecture-design.md` Stage 2 Step 3. For each quality attribute, the concrete architectural tactics — design decisions that directly affect the system's ability to achieve that attribute.
+**Purpose:** Quality-attribute → tactics lookup table used by `skills/repo-governance/architecture-design.md` Stage 2 Step 3. For each quality attribute (performance, availability, security, modifiability, …), this file lists the concrete architectural tactics that directly affect a system's ability to achieve it. This file is reference material, not an invocable skill on its own.
+
+## When to invoke
+
+- From `architecture-design.md` Stage 2 Step 3 when mapping a prioritized quality attribute to concrete tactics for the current decision.
+- Standalone, when reviewing an existing module to assess which tactics are in play vs missing.
+
+## Prerequisites
+
+- The quality attributes that matter to the current decision are already prioritized (Stage 1 output of `architecture-design.md`).
+- You have read enough of the targeted attribute's section here to recognize which tactics apply to the current context.
+
+## Reference
+
+For each quality attribute, the concrete architectural tactics — design decisions that directly affect the system's ability to achieve that attribute.
 
 Source: Bass, Clements & Kazman — *Software Architecture in Practice* (SEI/CMU), and Cervantes & Kazman — *Designing Software Architectures* (ADD method, Addison-Wesley 2016).
 

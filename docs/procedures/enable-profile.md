@@ -1,5 +1,5 @@
 ---
-doc_id: "5.81"
+doc_id: "5.9"
 title: "enable profile"
 section: "Procedures"
 summary: "Procedure reference retained and normalized for docs integrity; expand with project-specific detail when used."

@@ -11,7 +11,7 @@ SHELL := /usr/bin/env bash
         security-scan secret-scan image-build image-scan \
         release-prepare release-verify \
         k8s-render k8s-validate docker-up docker-down \
-        init idea-validate \
+        init \
         scaffold-module profile-enable env-generate \
         codebase-summary skill-docs-gen \
         test-scaffold env-sync coverage-ratchet rule-lint adr-index \
@@ -218,10 +218,6 @@ docker-build:
 init:
 	@scripts/init-repo.sh
 
-## idea-validate: validate idea.md before initialization
-idea-validate:
-	@scripts/validate-idea.sh
-
 ## scaffold-module: MODULE= name
 scaffold-module:
 	@MODULE="$(MODULE)" scripts/scaffold-module.sh
@@ -281,7 +277,7 @@ project-health:
 # --- Colon-style aliases (spec §10.2 and docs). GNU Make needs escaped colons in target names.
 .PHONY: skills\:list queue\:peek queue\:top-item queue\:validate queue\:archive queue\:archive-top queue\:pr-merge queue\:graph queue\:analyze audit\:self rules\:check \
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
-        health\:check project\:health idea\:validate profile\:enable \
+        health\:check project\:health profile\:enable \
         scaffold\:module test\:unit test\:integration \
         test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed ci\:migrate-dry-run image\:build image\:scan \
         k8s\:render k8s\:validate env\:generate skill\:docs-gen \
@@ -307,7 +303,6 @@ release\:verify: release-verify
 docker\:up: docker-up
 docker\:down: docker-down
 health\:check: health-check
-idea\:validate: idea-validate
 profile\:enable: profile-enable
 scaffold\:module: scaffold-module
 test\:unit: test-unit

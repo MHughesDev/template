@@ -1,5 +1,5 @@
 ---
-doc_id: "1.10"
+doc_id: "18.2"
 title: "project state"
 section: "Project"
 summary: "Quick orientation snapshot for new agent sessions: mission, architecture status, queue focus, and risks."

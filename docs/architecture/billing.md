@@ -1,5 +1,5 @@
 ---
-doc_id: "arch-billing"
+doc_id: "2.14"
 title: "billing and payments"
 section: "Architecture"
 status: "pending-init"

@@ -1,35 +1,46 @@
 # skills/init/README.md
 
-<!-- CROSS-REFERENCES -->
-<!-- - Used by: prompts/repo_initializer.md, .cursor/commands/initialize.md -->
-<!-- - Procedure: docs/procedures/initialize-repo.md -->
+**Purpose:** Index for initialization skills. The flow has two canonical skills, run in order; the first is optional (use it only when `idea.md` is not yet filled out).
 
-**Purpose:** Index for initialization skills. Lists all skills used during the repo initialization process from idea.md. Per spec §28.7 item 328.
+## When to invoke
 
-## Overview
+- **`idea_author.md`** — when `idea.md` is the blank template (or partially filled) and the developer has source material or a prompt they want turned into a real intake document.
+- **`repo_initialize.md`** — once `idea.md` is filled out end-to-end and the developer asks for the repo to be initialized for their product.
 
-Brief description of the initialization skill collection. State that these skills are invoked exclusively during repository initialization (the process of turning the blank template into a configured project). The repo_initializer prompt orchestrates these skills in sequence.
+## Prerequisites
 
-## Skills in This Category
+- Read root `AGENTS.md`, `apps/api/AGENTS.md`, `apps/web/AGENTS.md`.
+- Read the current `idea.md` to see what is already filled and what is stub.
+- Read `queue/QUEUE_INSTRUCTIONS.md` before running `repo_initialize` — every row it creates must conform to that schema.
 
-Table of initialization skills. Columns: Skill, Machinery, Purpose. Rows:
-- idea-validator.md | idea-validator.py | Validate idea.md completeness and consistency
-- archetype-mapper.md | archetype-mapper.py | Map archetype+profiles to scaffolding plan
-- module-template-generator.md | (uses backend/module-scaffolder.py) | Generate domain module files
-- queue-seeder.md | queue-seeder.py | Populate queue.csv from idea.md §12
-- profile-resolver.md | profile-resolver.py | Resolve profile enablement with dependency checking
-- env-generator.md | env-generator.py | Generate .env.example for enabled profiles
+## Skills in this category
 
-## Invocation Order
+| Step | Skill | Purpose |
+|------|-------|---------|
+| 1 (optional) | [`idea_author.md`](idea_author.md) | Turn raw input (notes, PRD, prompt, partial draft) into a completely filled-out `idea.md`. Replaces the blank stub. Never invents product decisions; gaps become §19 open questions. |
+| 2 (required) | [`repo_initialize.md`](repo_initialize.md) | Read the completed `idea.md`, refresh `spec/spec.md` + design docs, seed initial MVP queue rows, surface remaining open questions as blocked `category=human-ops` rows. Never writes product code. |
 
-The initialization skills are invoked in this order during initialization:
-1. idea-validator.md — Phase 1 (Validate and Plan)
-2. archetype-mapper.md — Phase 1 (Validate and Plan)
-3. profile-resolver.md — Phase 4 (Configure Profiles)
-4. env-generator.md — Phase 4 (Configure Profiles)
-5. module-template-generator.md — Phase 3 (Scaffold Domain)
-6. queue-seeder.md — Phase 5 (Seed Queue)
+## Invocation flow
 
-## Related Resources
+```
+raw materials  ─►  idea_author.md  ─►  filled idea.md  ─►  repo_initialize.md  ─►  spec + docs + MVP queue
+                  (optional)            (canonical input)    (required)             (executed later via queue rows)
+```
 
-Links to docs/procedures/initialize-repo.md, prompts/repo_initializer.md, .cursor/commands/initialize.md, spec/spec.md §27
+1. (Optional) Developer asks an agent to run `idea_author.md` against their source material. Output: a completed `idea.md`.
+2. Developer reviews and edits `idea.md` if needed.
+3. Developer asks an agent to run `repo_initialize.md`. Output: refreshed spec/docs + initial MVP queue rows + blocked rows for any remaining open questions.
+
+Either step can be skipped if its inputs are already in the right shape:
+
+- If the developer wrote `idea.md` by hand, skip step 1.
+- If only `idea.md` is requested (no initialization), stop after step 1.
+
+There is no `make idea:*` command. There is no multi-skill phased pipeline. Initialization is two AI-judged procedures, not a shell orchestrator.
+
+## Related resources
+
+- Input contract: [`/idea.md`](../../idea.md)
+- Invocation prompt for step 2: [`prompts/repo_initializer.md`](../../prompts/repo_initializer.md)
+- Queue lifecycle: [`queue/QUEUE_INSTRUCTIONS.md`](../../queue/QUEUE_INSTRUCTIONS.md)
+- Founding ADR: [`docs/adr/0001-initial-template-architecture.md`](../../docs/adr/0001-initial-template-architecture.md)

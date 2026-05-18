@@ -1,5 +1,5 @@
 ---
-doc_id: "5.82"
+doc_id: "5.8"
 title: "dependency upgrade"
 section: "Procedures"
 summary: "Procedure reference retained and normalized for docs integrity; expand with project-specific detail when used."

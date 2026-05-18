@@ -8,4 +8,4 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 python3 -m ruff format apps/api/app packages \
-  scripts/idea-parser.py scripts/scaffold-module.py scripts/init-from-idea.py
+  scripts/scaffold-module.py

@@ -1,5 +1,5 @@
 ---
-doc_id: "5.85"
+doc_id: "5.14"
 title: "incident rollback"
 section: "Procedures"
 summary: "Procedure reference retained and normalized for docs integrity; expand with project-specific detail when used."

@@ -1,5 +1,5 @@
 ---
-doc_id: "sec-threat-model"
+doc_id: "16.8"
 title: "threat model"
 section: "Security"
 status: "pending-init"

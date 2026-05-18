@@ -70,7 +70,6 @@ jobs:
       - typecheck
       - test
       - migrate-dry-run
-      - implementation-plan-check
     steps:
       - uses: actions/checkout@v6
       - run: make image-build
@@ -105,13 +104,6 @@ jobs:
           export JWT_SECRET_KEY="test-only-key-for-ci-migrations"
           export PYTHONPATH=.
           make migrate
-
-  implementation-plan-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: ./.github/actions/setup-python
-      - run: scripts/implementation-plan-ci.sh
 
   k8s-validate:
     runs-on: ubuntu-latest

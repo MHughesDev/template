@@ -1,5 +1,5 @@
 ---
-doc_id: "arch-frontend"
+doc_id: "2.17"
 title: "frontend architecture"
 section: "Architecture"
 status: "pending-init"

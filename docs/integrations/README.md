@@ -2,16 +2,16 @@
 doc_id: "20.1"
 title: "Integrations overview"
 section: "Integrations"
-summary: "Index of third-party and vendor integration guides (mechanical import workflows)."
-updated: "2026-04-17"
+summary: "Index of third-party integration guides for products initialized from this template."
+updated: "2026-05-17"
 ---
 
 # 20.1 — Integrations overview
 
-**Purpose:** Entry point for documented **vendor** or **upstream** integrations — especially mechanical git/rsync workflows that preserve provenance.
+**Purpose:** Entry point for product-level third-party integration guides (Stripe, SSO providers, email vendors, vector stores, etc.).
+
+This template ships with no product-specific integrations enabled. When a product needs one, add a guide under this directory and link it here.
 
 ## 20.1.1 Guides
 
-| Guide | Summary |
-|-------|---------|
-| [full-stack-fastapi-template.md](full-stack-fastapi-template.md) | Clone, SHA pin, and rsync matrix for `MHughesDev/fastapi-template` vs this repo. |
+_None yet. Add product integrations during initialization or as queue work executes._

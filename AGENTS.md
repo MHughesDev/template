@@ -322,7 +322,7 @@ See the full document for all 18 procedures, the condensed 12-point rule set, an
 | Compose stack | `compose.yml` + `compose.override.yml` + `compose.traefik.yml` |
 | Deploy | `deploy/docker/`, `deploy/k8s/` (base + overlays) |
 | Documentation | `docs/` — start with **`docs/README.md`** |
-| Template vendor (mechanical import) | `docs/integrations/full-stack-fastapi-template.md` — fork SHA pin, `git`/`rsync` workflow |
+| Initialization input | `idea.md` (filled by developer) → canonical skill `skills/init/repo_initialize.md` |
 | Skills | `skills/` — **`skills/README.md`** |
 | Prompts | `prompts/` — **`prompts/README.md`** |
 | Queue (open / archive) | `queue/queue.csv`, `queue/queuearchive.csv` |

@@ -1,5 +1,5 @@
 ---
-doc_id: "ops-monitoring"
+doc_id: "6.11"
 title: "monitoring"
 section: "Operations"
 status: "pending-init"

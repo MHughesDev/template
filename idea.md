@@ -1,307 +1,278 @@
 # Idea Definition — Project Intake Form
 
-<!-- INIT_META
-initialized: false
-init_version: "2.0"
-template_version: "2026.05"
-init_completed_at: null
-init_branch: null
-init_pr_url: null
--->
-
-> **Purpose:** This is the singular input document for initializing this repository into a working project. Fill out every applicable section. The initialization agent (`prompts/repo_initializer.md`) reads this file and uses it to configure, scaffold, and wire up the entire repository machine.
+> **Purpose.** `idea.md` is the single human-authored input that drives repository initialization. It is a **product-intake contract**, not a brief. The AI agent that initializes this repository (see [skills/init/repo_initialize.md](skills/init/repo_initialize.md)) treats every section below as **user intent** — what you say here becomes the project's spec, docs, and initial queue.
 >
-> **How to use:** Copy this template, fill in your answers, then invoke the repo initializer prompt in Cursor. The agent will read this file, map your idea to the correct project archetype, enable the right profiles, populate the queue, and scaffold domain modules.
+> **How to use.**
+> 1. Fill out every applicable section end-to-end. Do not skip sections.
+> 2. Mark inapplicable sections with `N/A` and a one-line reason. Do not leave blanks.
+> 3. Mark unresolved items in **§19 Open questions** — the initializer will turn each open question into a blocked queue row or open-questions doc entry, not silently invent an answer.
+> 4. Once filled out, ask an AI agent to run **`skills/init/repo_initialize.md`**. Do not invoke any `make idea:*` target — that workflow no longer exists.
 >
-> **Rules:** Do not delete sections — mark inapplicable ones as `N/A`. The more detail you provide, the fewer assumptions the agent makes. Ambiguity here becomes ambiguity in the codebase.
+> **Need help filling this out?** If you have source material (a PRD, design notes, a brainstorm doc, or just a free-form prompt) instead of a fully-formed product description, ask an AI agent to run **[`skills/init/idea_author.md`](skills/init/idea_author.md)** first. It will read your input, ask focused clarifying questions where the input is silent, and fill out this file. It will not invent product decisions — unresolved items become entries in §19 below.
+>
+> **Rules.**
+> - Be specific. Vague answers become vague code.
+> - Distinguish **intent** (what you want) from **implementation instruction** (how to build it). The initializer decides "how" — your job is "what" and "why."
+> - The template assumes a working FastAPI + React baseline already exists under `apps/api/` and `apps/web/`. You do not need to design the baseline. You design the **product** that runs on top of it.
 
 ---
 
-## 1. Project identity
+## 1. Product identity
 
 | Field | Your answer |
 |-------|-------------|
-| **Project name** | `template-demo` |
-| **Display name** | `Template Demo` |
-| **One-line pitch** | `Demonstrates the agent-operated template repository and initialization engine.` |
-| **Repository slug** | `MHughesDev/template` |
+| Product name |  |
+| One-sentence concept |  |
+| Repository slug (e.g. `<owner>/<repo>`) |  |
+| License (default: MIT) |  |
 
 ---
 
-## 2. Problem and solution
+## 2. Target users
 
-### 2.1 Problem statement
-<!-- 2–5 sentences. What pain exists today? Who feels it? What happens if it stays unsolved? -->
+Describe who will use this product. Be specific about roles, not personas with names.
 
-### 2.2 Proposed solution
-<!-- 2–5 sentences. How does this project solve the problem? What is the core mechanism? -->
-
-### 2.3 Success criteria
-<!-- Measurable outcomes that prove the solution works. Be specific. -->
-
-- [ ] `<!-- e.g. "API processes 100 invoices/min at p99 < 200ms" -->`
-- [ ] `<!-- e.g. "Multi-tenant isolation verified by integration tests" -->`
-- [ ] `<!-- e.g. "User can register, login, and perform core action end-to-end" -->`
+- **Primary user(s):**
+- **Secondary user(s) (if any):**
+- **Non-users (people who must not have access):**
 
 ---
 
-## 3. Project archetype
+## 3. Core problem
 
-Pick **one** primary archetype. The initializer uses this to select default modules, middleware, deployment shape, and queue categories.
+2–5 sentences. What pain exists today? Who feels it? What happens if it stays unsolved? If there is a current workaround, describe it.
 
-| Archetype | Select | Description |
-|-----------|--------|-------------|
-| **API service** | `[x]` | Backend REST/GraphQL API. No user-facing UI. Consumed by other services or clients. |
-| **Full-stack web app** | `[ ]` | Backend API + web frontend (React). Users interact via browser. |
-| **Full-stack with mobile** | `[ ]` | Backend API + web + mobile (Expo/React Native). |
-| **Platform / internal tool** | `[ ]` | Internal APIs, admin dashboards, data pipelines. No external consumer UI. |
-| **Data pipeline / ETL** | `[ ]` | Ingestion, transformation, storage. May have API for status/triggers. |
-| **AI / ML service** | `[ ]` | Model serving, RAG pipeline, embedding service. ChromaDB profile enabled. |
-| **Marketplace / multi-sided** | `[ ]` | Multiple user types (buyer/seller, provider/consumer). Complex auth and tenancy. |
-| **SaaS product** | `[ ]` | Multi-tenant B2B/B2C application with billing, onboarding, tenant isolation. |
-
-**If none fit exactly:** describe your archetype below.
-
-N/A — a listed archetype was selected.
+>
 
 ---
 
-## 4. Domain model
+## 4. MVP scope
 
-### 4.1 Core entities
+The MVP is the smallest version of this product that is **shippable and usable** by the target users in §2. List 3–7 bullets. Each bullet must be:
 
-List the primary domain objects. These become database models, API resources, and bounded contexts.
+- a user-visible capability (not an internal step), and
+- independently testable (a reviewer can confirm it works without reading code).
 
-| Entity | Description | Key fields | Relationships |
-|--------|-------------|------------|---------------|
-| DemoRecord | Sample entity for template validation | id, label, timestamps | Standalone for CI |
+Examples of good MVP bullets:
+- "A registered user can create, list, and delete projects they own."
+- "An admin can invite a new user via email; the invitee sets their password on first login."
 
-### 4.2 Bounded contexts
+Your MVP bullets:
 
-Group entities into bounded contexts. Each context becomes a module in `apps/api/app/<context>/` with its own router, models, service, schemas, and tests.
+1.
+2.
+3.
 
-| Context name | Entities | Description |
-|-------------|----------|-------------|
-| demo | DemoRecord | Demonstrates bounded-context scaffolding for the template repository. |
-
-### 4.3 Key workflows
-
-Describe the critical user/system workflows. These become the basis for smoke tests and queue items.
-
-1. Client calls health and authenticated CRUD endpoints on the demo module; tests assert status codes and persistence.
-2. N/A for template smoke scope.
-3. N/A.
+The initializer will use these bullets as the primary input for queue seeding. Order them by dependency: top bullet must work before subsequent bullets are meaningful.
 
 ---
 
-## 5. Profile selection
+## 5. Explicitly out of scope
 
-Enable or disable optional system profiles. The initializer uses these to scaffold files, configure Compose services, and set up deployment.
+Things this product will **not** do in initial scope. Be explicit — this is how the initializer avoids inventing features.
 
-| Profile | Enable? | Notes |
-|---------|---------|-------|
-| **Web frontend** (React) | `[x] no` | Template default: API-only. |
-| **Mobile app** (Expo) | `[x] no` | Template default: API-only. |
-| **Background workers** | `[x] no` | Enable when Celery/Redis is required. |
-| **AI / RAG (ChromaDB)** | `[x] no` | Optional Chroma profile. |
-| **Multi-tenancy** | `[x] no` | Use TenantMixin when product needs isolation. |
-| **WebSocket / real-time** | `[x] no` | Optional realtime module. |
-| **Scheduled jobs / cron** | `[x] no` | Optional APScheduler profile. |
-| **File uploads / storage** | `[x] no` | Optional S3/local storage package. |
-| **Email / notifications** | `[x] no` | Optional notifications package. |
-| **Search (full-text)** | `[x] no` | Optional Meilisearch or FTS. |
-| **Billing / payments** | `[x] no` | Optional Stripe integration. |
-| **Analytics / events** | `[x] no` | Optional analytics env flags. |
+-
+-
+-
 
 ---
 
-## 6. Authentication and authorization
+## 6. User stories
+
+For each MVP bullet in §4, write 1–3 user stories in the format:
+
+> As a `<role from §2>`, I want to `<capability>` so that `<outcome>`.
+
+Group by role.
+
+### 6.1 `<role>`
+
+-
+
+### 6.2 `<role>`
+
+-
+
+---
+
+## 7. Core workflows
+
+Describe the most important end-to-end flows in plain language. Step the user (or system) through each one. These become the basis of smoke tests and queue items.
+
+### 7.1 `<workflow name>`
+
+1.
+2.
+3.
+
+### 7.2 `<workflow name>`
+
+1.
+
+---
+
+## 8. Data and entities
+
+List the primary domain entities. The initializer will turn these into SQLModel models, API resources, and Alembic migrations.
+
+| Entity | Description (one sentence) | Key fields | Relationships |
+|--------|---------------------------|------------|---------------|
+|  |  |  |  |
+
+Notes (cardinality, soft-delete needs, multi-tenancy ownership, derived fields):
+
+>
+
+---
+
+## 9. Integrations
+
+External systems this product depends on. Mark **required for MVP** vs **post-MVP**.
+
+| Service | Direction | Purpose | MVP? |
+|---------|-----------|---------|------|
+|  | inbound / outbound |  | yes / no |
+
+---
+
+## 10. Authentication and permissions assumptions
 
 | Field | Your answer |
 |-------|-------------|
-| **Auth model** | JWT access tokens with email/password registration (template default). |
-| **User types / roles** | Registered user; admin role deferred. |
-| **Permission model** | Authenticated vs anonymous for MVP; RBAC later. |
-| **SSO / IdP integration** | Deferred — add when product requires SSO. |
-| **API key support** | Deferred for MVP. |
-| **Multi-tenant auth** | N/A until multi-tenancy profile is enabled. |
+| Sign-up model (open, invite-only, SSO-only, …) |  |
+| Roles (e.g. `user`, `admin`, `owner`) |  |
+| Resource ownership rules (who can see/edit what) |  |
+| Multi-tenancy (yes/no — if yes, isolation model in 1 line) |  |
+| Session/token style (default: JWT access token) |  |
+
+Note: the baseline ships JWT password auth with a single superuser. State here if your product needs more — SSO, invite-only, role gates, tenant scoping — and the initializer will queue the work.
 
 ---
 
-## 7. Data layer
+## 11. Frontend expectations
 
 | Field | Your answer |
 |-------|-------------|
-| **Primary database** | SQLite for local development and CI. Optional containerized relational database for production parity is documented under deployment (use the `db` Compose profile). |
-| **Expected data volume** | Small — template and demo data only until product launch. |
-| **Read/write ratio** | Read-heavy for API demos; exact ratio TBD per product. |
-| **Caching needs** | In-process first; Redis when workers profile is enabled. |
-| **External data sources** | None for template bootstrap. |
-| **Data retention policy** | Default SQLite file lifecycle; formal policy when product ships. |
+| Public surface (e.g. landing page, signup) |  |
+| Authenticated surface (key screens / routes) |  |
+| Mobile / responsive expectations |  |
+| Design system (default: shadcn/ui + Tailwind v4 baseline) |  |
+| Anything explicitly out-of-scope for the UI |  |
+
+The baseline frontend (`apps/web/`) already includes login, signup, items CRUD, user settings, and an admin view. State here which of those to keep, repurpose, or replace.
 
 ---
 
-## 8. Integrations and external services
-
-List every external system this project will communicate with.
-
-| Service | Direction | Protocol | Purpose | Required for MVP? |
-|---------|-----------|----------|---------|-------------------|
-| `<!-- e.g. Stripe -->` | `<!-- outbound -->` | `<!-- REST API -->` | `<!-- payment processing -->` | `<!-- yes/no -->` |
-| `<!-- e.g. SendGrid -->` | `<!-- outbound -->` | `<!-- REST API -->` | `<!-- transactional email -->` | `<!-- no — defer -->` |
-| `<!-- e.g. Webhook receiver -->` | `<!-- inbound -->` | `<!-- HTTP webhook -->` | `<!-- payment status updates -->` | `<!-- yes -->` |
-| `<!-- add rows as needed -->` | | | | |
-
----
-
-## 9. API design
+## 12. Backend / API expectations
 
 | Field | Your answer |
 |-------|-------------|
-| **API style** | REST JSON over HTTP (FastAPI). |
-| **Versioning strategy** | URL prefix `/api/v1/` (configurable via `API_PREFIX`). |
-| **Pagination style** | Cursor-based for list endpoints where needed; offset for small demos. |
-| **Rate limiting** | Deferred — enable `RATE_LIMITING_ENABLED` when exposing public internet. |
-| **OpenAPI / docs** | Auto-generated OpenAPI and Swagger when `API_DEBUG=true`. |
+| API style (default: REST + OpenAPI) |  |
+| Versioning (default: `/api/v1/`) |  |
+| Pagination style (default: offset; cursor where needed) |  |
+| Rate limiting needs (yes/no, threshold) |  |
+| Background work needs (yes/no, what kind) |  |
 
-### 9.1 Key endpoints (sketch)
+Key endpoints you can already name (path + method + one-sentence purpose):
 
-List the most important API endpoints to scaffold during initialization.
-
-| Method | Path | Description | Auth required? |
-|--------|------|-------------|----------------|
-| GET | `/api/v1/demo/` | List demo records | yes |
-| POST | `/api/v1/demo/` | Create demo record | yes |
-| GET | `/api/v1/demo/{id}` | Fetch demo record | yes |
+| Method | Path | Purpose | Auth |
+|--------|------|---------|------|
+|  |  |  |  |
 
 ---
 
-## 10. Non-functional requirements
+## 13. Deployment expectations
+
+| Field | Your answer |
+|-------|-------------|
+| Target environment(s) |  |
+| Cloud provider / host |  |
+| Domain & TLS plan |  |
+| CI/CD beyond the default GitHub Actions |  |
+| Observability (Sentry default; specify more if needed) |  |
+
+---
+
+## 14. Security and privacy constraints
+
+| Field | Your answer |
+|-------|-------------|
+| Compliance regimes (GDPR, SOC2, HIPAA, PCI, none) |  |
+| PII handled (yes/no — list categories) |  |
+| Data retention policy |  |
+| Data residency constraints |  |
+| Secrets management approach |  |
+
+Hard constraints (one per line; the initializer will lift these into `docs/security/`):
+
+-
+
+---
+
+## 15. Testing expectations
+
+| Field | Your answer |
+|-------|-------------|
+| Unit test depth (default: per service / per route) |  |
+| Integration tests (default: per route group, real Postgres in CI) |  |
+| End-to-end tests (default: Playwright on the React app) |  |
+| Coverage floor (default: as configured in `pyproject.toml`) |  |
+| Performance / load testing (yes/no, basic targets) |  |
+
+---
+
+## 16. Acceptance criteria for "initialized"
+
+When this repository is considered initialized for this product, what must be true? These are the conditions an MVP-path queue row will be tested against.
+
+-
+-
+-
+
+---
+
+## 17. Non-functional requirements
 
 | Requirement | Target | Notes |
 |-------------|--------|-------|
-| **Availability** | `<!-- e.g. 99.9% -->` | |
-| **Latency (p95)** | `<!-- e.g. < 200ms for API responses -->` | |
-| **Throughput** | `<!-- e.g. 1000 req/s peak -->` | |
-| **Scalability** | `<!-- horizontal, vertical, or specific plan -->` | |
-| **Compliance** | `<!-- GDPR, SOC2, HIPAA, PCI-DSS, none, or defer -->` | |
-| **Data residency** | `<!-- regions, or no constraint -->` | |
-| **Backup RPO** | `<!-- e.g. 1 hour, 24 hours, or defer -->` | |
-| **Backup RTO** | `<!-- e.g. 4 hours, 1 hour, or defer -->` | |
+| Availability |  |  |
+| Latency (p95) |  |  |
+| Throughput |  |  |
+| Scalability plan |  |  |
+| Backup RPO / RTO |  |  |
 
 ---
 
-## 11. Deployment and infrastructure
+## 18. Hard constraints
 
-| Field | Your answer |
-|-------|-------------|
-| **Target environment** | `<!-- local-only, single VPS, Kubernetes, cloud-managed, or defer -->` |
-| **Cloud provider** | `<!-- AWS, GCP, Azure, Hetzner, self-hosted, or cloud-agnostic -->` |
-| **Container registry** | `<!-- GHCR, ECR, Docker Hub, or defer -->` |
-| **Domain / DNS** | `<!-- e.g. api.myproject.com, or defer -->` |
-| **TLS / certificates** | `<!-- Let's Encrypt, cloud-managed, or defer -->` |
-| **CI/CD beyond GitHub Actions** | `<!-- any additional CD tooling, or default is fine -->` |
+Things that absolutely must be true. The initializer treats these as inviolable and will refuse to design around them.
+
+-
+-
 
 ---
 
-## 12. Initial queue hints (optional)
+## 19. Open questions
 
-Optional prioritization hints for queue seeding. The initializer should derive queue rows from generated docs even if this section is empty.
+List anything you are **unsure** about. The initializer will turn each open question into either:
+- a blocked queue row (when execution depends on the answer), or
+- an `docs/open-questions.md` entry (when only docs depend on the answer).
 
-| Priority | Category | Summary |
-|----------|----------|---------|
-| 1 | core-api | Implement the `demo` bounded context end-to-end: SQLAlchemy model with UUID primary key, repository, service, Pydantic schemas, FastAPI router with list/create/get, and pytest coverage including 401/404 paths. Acceptance: all routes return documented status codes; `make test` passes; no raw SQL in routers. Definition of done: router registered under `api_prefix`, migration or metadata create_all verified in CI. |
-| 2 | infrastructure | Add optional PostgreSQL smoke test job documentation and verify `docker compose --profile db up` works with asyncpg `DATABASE_URL`. Acceptance: connection health check passes against the container; pool settings documented in `docs/architecture/data-layer.md`. |
-| 3 | testing | Raise coverage floor incrementally: add integration tests for auth edge cases and tenant middleware when multi-tenancy is enabled. Acceptance: coverage ratchet target met; no flaky tests in CI. |
+It will **not** silently choose an answer.
 
----
-
-## 13. Constraints and non-goals
-
-### 13.1 Hard constraints
-<!-- Things that absolutely must be true. List as bullet points. -->
-
-- `<!-- e.g. "Must run on Python 3.12+ — no earlier versions" -->`
-- `<!-- e.g. "Must not store PII in logs" -->`
-- `<!-- e.g. "All API responses must include correlation ID header" -->`
-
-### 13.2 Non-goals (explicit exclusions)
-<!-- Things this project will NOT do, at least not in initial scope. -->
-
-- `<!-- e.g. "No admin UI in first release" -->`
-- `<!-- e.g. "No support for legacy API clients" -->`
-- `<!-- e.g. "No real-time features until post-MVP" -->`
+1.
+2.
 
 ---
 
-## 14. Risk register
+## 20. Additional context
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| `<!-- e.g. "Complex tenant isolation logic" -->` | `<!-- high/med/low -->` | `<!-- high/med/low -->` | `<!-- e.g. "Use TenantMixin with mandatory test coverage" -->` |
-| `<!-- e.g. "Third-party API rate limits" -->` | `<!-- med -->` | `<!-- med -->` | `<!-- e.g. "Implement circuit breaker per skill" -->` |
-| `<!-- add rows as needed -->` | | | |
+Links, sketches, ERDs, design refs, competitor URLs, prior conversations.
 
----
-
-## 15. Timeline and phasing (optional)
-
-If you have phases in mind, describe them. The initializer can map these to queue batches.
-
-| Phase | Milestone | Scope |
-|-------|-----------|-------|
-| 1 — MVP | `<!-- e.g. "Core API with auth and primary domain" -->` | `<!-- entities, endpoints, features -->` |
-| 2 — Beta | `<!-- e.g. "Add web frontend, email notifications" -->` | `<!-- profiles to enable, features to add -->` |
-| 3 — GA | `<!-- e.g. "Production hardening, monitoring, scale" -->` | `<!-- non-functional requirements, compliance -->` |
-
----
-
-## 16. Open questions
-
-List anything you are unsure about. The initialization agent will flag these for human resolution before proceeding with those areas.
-
-1. `<!-- e.g. "Should invoices support multiple currencies?" -->`
-2. `<!-- e.g. "What is the billing provider — Stripe or custom?" -->`
-3. `<!-- add as needed -->`
-
----
-
-## 17. Additional context
-
-Attach or link any additional context: wireframes, ERDs, existing API docs, competitor references, design docs, Slack threads.
-
-<!-- paste links, descriptions, or inline content here -->
-
----
-
-## 18. Initialization log
-
-> This section is auto-populated by `make idea:execute`. Do not edit manually.
-
-| Field              | Value |
-| ------------------ | ----- |
-| Status             | `not initialized` |
-| Manifest version   | — |
-| Executed at        | — |
-| Profiles enabled   | — |
-| Contexts scaffolded| — |
-| Queue rows seeded  | — |
-| Init PR            | — |
+>
 
 ---
 
 **End of idea definition.**
 
-> After filling this out, run the repo initializer:
-> 1. Open Cursor in this repository
-> 2. Reference this file and `prompts/repo_initializer.md`
-> 3. The agent will read `idea.md`, validate completeness, and execute the initialization procedure
-> 4. Review the initialization PR for correctness before merging
-
-
-## 17. Non-goals
-
-List what this system will explicitly not do in initial and near-term scope.
-
-- Example: No public plugin marketplace in v1.
-- Example: No multi-region active/active deployment at launch.
+> Once every applicable section above is filled out, ask an AI agent in this repo to run **`skills/init/repo_initialize.md`**. The skill is the single canonical initialization procedure — there is no `make idea:*` command.

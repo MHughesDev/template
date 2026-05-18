@@ -1,5 +1,5 @@
 ---
-doc_id: "5.84"
+doc_id: "5.19"
 title: "release preparation"
 section: "Procedures"
 summary: "Procedure reference retained and normalized for docs integrity; expand with project-specific detail when used."

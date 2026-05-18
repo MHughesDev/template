@@ -76,18 +76,16 @@ make test-web              # frontend Playwright e2e
 ## 🗺️ How it works
 
 ```
-idea.md  ──►  make idea:execute  ──►  fully-wired FastAPI app
-   │                                        │
-   │  describe your project                 │  scaffolded modules
-   │  pick profiles (web, billing…)         │  wired routes + DB models
-   │  list bounded contexts                 │  CI/CD pipeline
-   └──────────────────────────────────────►─┘  enabled profile code
+idea.md ─►  skills/init/repo_initialize.md  ─►  refreshed spec/docs + initial MVP queue
+   (human-authored)                                (no product code yet — that's queued)
 ```
 
-1. **Fill `idea.md`** — name, archetype, profiles, bounded contexts, queue seeds.
-2. **Run `make idea:validate`** — catches errors before anything writes to disk.
-3. **Run `make idea:execute`** — orchestrator scaffolds, wires, and opens a PR.
-4. **Ship features** — agents use `AGENTS.md`, skills, and the queue to work autonomously.
+1. **Fill out `idea.md` end-to-end** — every applicable section, with `N/A` where inapplicable. `idea.md` is the canonical product-intake contract.
+2. **Ask an AI agent to run `skills/init/repo_initialize.md`** — the single canonical procedural skill. It refreshes the spec, generates design docs from the spec, and seeds initial MVP queue rows. It does **not** write product code.
+3. **Resolve open questions** — the skill creates blocked `category=human-ops` queue rows for anything ambiguous in `idea.md`. Answer them and unblock.
+4. **Ship features** — agents pick the top row of `queue/queue.csv` and execute against the `acceptance_criteria` in that row. Each row is sized so an executor can pick it up cold.
+
+There is no `make idea:*` orchestrator — initialization is an AI-judged procedure, not a shell command.
 
 ---
 
@@ -219,7 +217,7 @@ make help             # full target catalog
 | **Prompts** | [prompts/README.md](prompts/README.md) | Role-specific prompt templates |
 | **Security** | [docs/security/](docs/security/) | Threat model, secrets, CORS, incidents |
 | **API docs** | [docs/api/](docs/api/) | Endpoints and error catalog |
-| **Full-stack template vendor** | [docs/integrations/full-stack-fastapi-template.md](docs/integrations/full-stack-fastapi-template.md) | Clone, pin SHA, rsync/copy matrix (fork `MHughesDev/fastapi-template`) |
+| **Founding ADR** | [docs/adr/0001-initial-template-architecture.md](docs/adr/0001-initial-template-architecture.md) | The template's initialization model: idea.md → repo_initialize skill → docs + queue |
 
 ---
 

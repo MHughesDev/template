@@ -1,5 +1,5 @@
 ---
-doc_id: "5.87"
+doc_id: "5.3"
 title: "add optional app profile"
 section: "Procedures"
 summary: "Procedure reference retained and normalized for docs integrity; expand with project-specific detail when used."

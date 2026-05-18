@@ -36,7 +36,7 @@ Run a retrospective (even a brief one) after:
 - A CI red build that took more than 30 minutes to diagnose.
 - A PR that required more than 3 review rounds due to misunderstood conventions.
 - A refactor that revealed a systemic design problem.
-- An initialization (post-`make idea:execute`) to capture what went wrong or was surprising.
+- An initialization run (after `skills/init/repo_initialize.md`) to capture what went wrong or was surprising.
 - End of quarter (scheduled — see below).
 
 ## 14.3.3 Retrospective format
