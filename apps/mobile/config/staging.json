@@ -1,0 +1,7 @@
+{
+  "API_BASE_URL": "https://api-staging.example.com",
+  "LOG_LEVEL": "info",
+  "ANALYTICS_ENABLED": true,
+  "BIOMETRIC_UNLOCK": true,
+  "API_VERSION": "v1"
+}

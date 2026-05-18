@@ -1,0 +1,99 @@
+{
+  "@@locale": "en",
+  "@@author": "Template",
+  
+  "appTitle": "Mobile App",
+  "@appTitle": {
+    "description": "The application title"
+  },
+  
+  "loginButton": "Sign In",
+  "@loginButton": {
+    "description": "Button label for login"
+  },
+  
+  "logoutButton": "Sign Out",
+  "@logoutButton": {
+    "description": "Button label for logout"
+  },
+  
+  "registerButton": "Create Account",
+  "@registerButton": {
+    "description": "Button label for registration"
+  },
+  
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Label for email input field"
+  },
+  
+  "passwordLabel": "Password",
+  "@passwordLabel": {
+    "description": "Label for password input field"
+  },
+  
+  "confirmPasswordLabel": "Confirm Password",
+  "@confirmPasswordLabel": {
+    "description": "Label for confirm password input field"
+  },
+  
+  "submitButton": "Submit",
+  "@submitButton": {
+    "description": "Generic submit button label"
+  },
+  
+  "cancelButton": "Cancel",
+  "@cancelButton": {
+    "description": "Generic cancel button label"
+  },
+  
+  "retryButton": "Try Again",
+  "@retryButton": {
+    "description": "Button label to retry a failed operation"
+  },
+  
+  "loadingMessage": "Loading...",
+  "@loadingMessage": {
+    "description": "Generic loading message"
+  },
+  
+  "errorGeneric": "Something went wrong. Please try again.",
+  "@errorGeneric": {
+    "description": "Generic error message"
+  },
+  
+  "errorNetwork": "No internet connection. Please check your network and try again.",
+  "@errorNetwork": {
+    "description": "Network error message"
+  },
+  
+  "errorAuth": "Authentication failed. Please sign in again.",
+  "@errorAuth": {
+    "description": "Authentication error message"
+  },
+  
+  "errorNotFound": "The requested resource was not found.",
+  "@errorNotFound": {
+    "description": "Not found error message"
+  },
+  
+  "validationRequired": "This field is required",
+  "@validationRequired": {
+    "description": "Validation message for required fields"
+  },
+  
+  "validationEmail": "Please enter a valid email address",
+  "@validationEmail": {
+    "description": "Validation message for invalid email"
+  },
+  
+  "validationPasswordLength": "Password must be at least 8 characters",
+  "@validationPasswordLength": {
+    "description": "Validation message for short password"
+  },
+  
+  "validationPasswordMatch": "Passwords do not match",
+  "@validationPasswordMatch": {
+    "description": "Validation message for mismatched passwords"
+  }
+}
