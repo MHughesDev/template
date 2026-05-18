@@ -3,7 +3,7 @@ doc_id: "0"
 title: "Documentation Map"
 section: "Root"
 summary: "Canonical index of every documentation file in this repository."
-updated: "2026-04-20"
+updated: "2026-05-17"
 ---
 
 # 0 — Documentation Map
@@ -153,6 +153,7 @@ Purpose: Records architecture decisions: template, status, and the decision inde
 | 7.0 | Adr overview | `docs/adr/README.md` | ADR index. Lists all decisions with status. |
 | 7.1 | template | `docs/adr/template.md` | ADR template for new decisions. |
 | 7.3 | ADR-0001 initial template architecture | `docs/adr/0001-initial-template-architecture.md` | Founding ADR — defines idea.md as the canonical intake, repo_initialize as the canonical skill, and the documentation-first/queue-first initialization model. |
+| 7.4 | ADR-0002 DeviceLab product default overrides | `docs/adr/0002-devicelab-product-default-overrides.md` | Product-level ADR capturing DeviceLab overrides to template defaults (local-first auth, BYOC, MCP-first interface, safety gates). |
 
 ### Section 8 — Agents
 
@@ -276,6 +277,7 @@ Purpose: Hub entry and ubiquitous language: the docs index and domain glossary.
 | 18.0 | Docs overview | `docs/README.md` | Documentation hub. Index of all doc sections with one-line descriptions and links. |
 | 18.1 | glossary | `docs/glossary.md` | Ubiquitous language and domain glossary. Defines terms used consistently across spec, code, and documentation. |
 | 18.2 | project state | `docs/project-state.md` | Quick-orientation snapshot for new agent sessions: mission, architecture status, queue focus, current risks. |
+| 18.3 | open questions | `docs/open-questions.md` | Initialization-tracked unresolved decisions from idea.md with blocking classification and queue linkage. |
 
 ### Section 19 — BRAINSTORM
 
@@ -315,6 +317,26 @@ Purpose: Project-specific testing strategy and coverage policy, complementing th
 | --- | --- | --- | --- |
 | 22.1 | strategy | `docs/testing/strategy.md` | Unit / integration / smoke / e2e strategy with project-specific concerns. |
 | 22.2 | coverage | `docs/testing/coverage.md` | Coverage floor, per-module targets, exclusions, ratchet policy. |
+
+### Section 23 — Research
+
+Purpose: External discovery and provisional architecture decisions for future product specs (e.g. DeviceLab BYOC platform). Does not replace `spec/spec.md` or initialized product docs until adopted.
+
+| ID | Title | Path | Summary |
+| --- | --- | --- | --- |
+| 23.0 | DeviceLab research workspace | `docs/research/README.md` | Folder layout: bibliography, query log, skim notes, external quoting policy. |
+| 23.1 | DeviceLab research bibliography | `docs/research/SOURCES.md` | Canonical `[Snnn]` citations with URLs and one-line takeaways. |
+| 23.2 | DeviceLab open-ended design decisions | `docs/research/open_ended_question.md` | Answers + confidence for 81 open questions across packaging, AWS, streaming, automation, security. |
+| 23.3 | Research external resources policy | `docs/research/external/README.md` | No full doc mirrors in-repo; short excerpts + links only. |
+| 23.4 | DeviceLab research query batch results | `docs/research/queries/queries-results.md` | Fifty web-search strings with paraphrased outcomes. |
+| 23.5 | Research notes — local stack, MCP, workers | `docs/research/notes/local-stack-mcp-workers.md` | Packaging, MCP SDK vs FastMCP, workers, SQLite/Litestream synthesis. |
+| 23.6 | Research notes — AWS provisioning | `docs/research/notes/aws-provisioning-snapshots.md` | VPC, Packer/SSM, snapshots, Marketplace/legal constraints synthesis. |
+| 23.7 | Research notes — streaming WebRTC | `docs/research/notes/streaming-webrtc-input.md` | DCV, WebRTC stacks, TURN, codecs, input channel separation synthesis. |
+| 23.8 | Research notes — automation OCR VLM | `docs/research/notes/automation-ocr-vlm.md` | AX/UIA stacks, OCR tiers, OmniParser/VLM policy, Wayland/TCC synthesis. |
+| 23.9 | Research notes — network and recipes | `docs/research/notes/network-recipes-testing.md` | mitmproxy HTTP/3, recipes DSL safety, Playwright codegen/testing outputs synthesis. |
+| 23.10 | Research notes — security observability | `docs/research/notes/security-observability-onboarding.md` | Keyring headless Linux, mTLS, OTel, SBOM, MCP onboarding deeplinks synthesis. |
+| 23.11 | Research reference index | `docs/research/reference/README.md` | Points to external registry + skim digest; explains how to track upstreams. |
+| 23.12 | External reference registry and digest | `docs/research/reference/EXTERNAL_REFERENCE.md` | Part A: slugged URL/repo registry; Part B: direct-read skim notes with retrieve dates. |
 
 ## 0.3 Retired IDs
 

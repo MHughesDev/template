@@ -2,19 +2,14 @@
 doc_id: "2.19"
 title: "multi-tenancy"
 section: "Architecture"
-status: "pending-init"
-summary: "Tenant isolation model, how tenant context propagates through the stack, and what data is shared vs isolated. Not applicable if not enabled."
+status: "current"
+summary: "Not applicable for DeviceLab v1 because the product is local single-workspace only."
+updated: "2026-05-17"
 ---
 
 # Multi-Tenancy
-<!-- status: pending-init -->
-<!-- initialized-by: skills/init/initialize-repo.md -->
+<!-- derived from: spec/spec.md (DeviceLab product section), idea.md §10 -->
 
-> **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
->
-> If multi-tenancy is not enabled, this file will contain: `Not applicable — multi-tenancy not enabled for this project.`
+Not applicable - multi-tenancy not enabled for this project.
 
-## Purpose
-
-Documents the tenancy model: whether isolation is row-level or schema-level, how tenant context is extracted from requests and propagated through the service layer, what data is shared across tenants vs isolated per tenant, and how tenant provisioning works.
+DeviceLab v1 operates as a local, single-workspace control plane in the user's environment. Future multi-account or multi-workspace capabilities are tracked as explicit follow-up decisions and queue rows.

@@ -385,3 +385,79 @@ This spec deliberately does **not** define:
 | Canonical queue SOP | `queue/QUEUE_INSTRUCTIONS.md` |
 
 Changes to the **template machine** require a new template-architecture ADR alongside the spec edit. Changes to **products** are recorded as per-product ADRs inside the initialized product, not here.
+
+---
+
+## 18. Initialized product section — DeviceLab
+
+This section captures the initialized product contract derived from `idea.md`. It complements the template-machine sections above and is the source of truth for DeviceLab queue seeding.
+
+### 18.1 Product summary
+<!-- derived from: idea.md §1 §2 §3 -->
+
+DeviceLab is an open-source, local-first, BYOC cloud device platform that lets humans and AI agents provision and operate Linux, Android, Windows, macOS, iOS Simulator, real iOS, and browser testing environments in the user's own AWS account.
+
+The system optimizes for low-friction AI operation over MCP with structured observation and semantic interaction tools, while preserving cost transparency, secret safety, and auditable control in user-owned infrastructure.
+
+### 18.2 End-state scope contract
+<!-- derived from: idea.md §4 -->
+
+1. Local install with web UI and MCP gateway.
+2. BYOC AWS connect + preflight + bootstrap checks.
+3. Seven first-class device families.
+4. Capability-aware MCP tool groups and observation pyramid.
+5. Low-round-trip interaction contract with screen versioning and batched steps.
+6. Recipes + session recording.
+7. Identity Broker secret references and elicitation.
+8. Streaming/input split (WebRTC + data channel).
+9. Cost guardrails and cleanup.
+10. Snapshots and forks.
+11. Test and artifact pipelines.
+12. Evidence/replay traceability.
+13. Plugin adapter SPI.
+14. First-run wizard.
+
+### 18.3 Non-goals
+<!-- derived from: idea.md §5 -->
+
+- No DeviceLab-hosted SaaS, billing, or remote accounts.
+- No reseller model or cloud markup.
+- No screenshot-loop-first computer-use paradigm.
+- No default public inbound runtime ports.
+- No proprietary software bundling in OSS core.
+
+### 18.4 Users, permissions, and trust boundaries
+<!-- derived from: idea.md §2 §10 §14 §18 -->
+
+- Primary users: solo developers, QA engineers, and AI coding agents using MCP.
+- Security model: local operator + scoped MCP client roles with dangerous mode gated.
+- Trust boundaries: local control plane, user-owned cloud account, MCP client tokens, runtime-agent mTLS channel.
+
+### 18.5 Domain model overview
+<!-- derived from: idea.md §8 -->
+
+Primary entities: `Workspace`, `CloudAccount`, `DeviceTemplate`, `DeviceProfile`, `Device`, `Session`, `McpClient`, `Snapshot`, `Recipe`, `TestRun`, `Artifact`, `Evidence`, `SecretRef`, `CostEstimate`, `AuditEvent`, `WarmPoolSlot`.
+
+### 18.6 Workflow narratives
+<!-- derived from: idea.md §7 -->
+
+- First-run onboarding (connect account, preflight, bootstrap, first device, MCP config).
+- Human session flow (create device, stream, interact, capture artifacts).
+- AI session flow (capability handshake, observe, semantic actions, subscriptions).
+- Recipe authoring/replay.
+- Cost guardrail and cleanup.
+- Diagnostics/handoff export.
+
+### 18.7 Integrations
+<!-- derived from: idea.md §9 -->
+
+Core integrations include AWS EC2/SSM/CloudFormation/Pricing/Device Farm, Playwright, Appium drivers, embedded mitmproxy, user-owned coturn, OS keychain, and optional BYOK vision providers.
+
+### 18.8 Constraints and NFRs
+<!-- derived from: idea.md §14 §17 §18 -->
+
+- BYOC and local-first are hard constraints.
+- No secrets returned to model context.
+- Dangerous actions require confirmations and auditing.
+- Round-trip-budget tests are first-class acceptance gates.
+- Cost transparency target is within +/-10 percent of cloud bill for supported families.

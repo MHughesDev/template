@@ -8,13 +8,14 @@ updated: "2026-05-17"
 
 # 7.0 — ADR index
 
-**Purpose:** Index of Architecture Decision Records (ADRs) for this template repository. The template ships with **one** ADR — the founding template-architecture record. Product-specific ADRs are created inside an initialized product, not here.
+**Purpose:** Index of Architecture Decision Records (ADRs) for this repository.
 
 ## Records
 
 | Number | Title | Status | Date |
 |--------|-------|--------|------|
 | [0001](0001-initial-template-architecture.md) | Initial template architecture | Accepted | 2026-05-17 |
+| [0002](0002-devicelab-product-default-overrides.md) | DeviceLab product default overrides | Accepted | 2026-05-17 |
 
 ## Adding a new ADR
 
