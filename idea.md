@@ -8,6 +8,8 @@
 > 3. Mark unresolved items in **§19 Open questions** — the initializer will turn each open question into a blocked queue row or open-questions doc entry, not silently invent an answer.
 > 4. Once filled out, ask an AI agent to run **`skills/init/repo_initialize.md`**. Do not invoke any `make idea:*` target — that workflow no longer exists.
 >
+> **Need help filling this out?** If you have source material (a PRD, design notes, a brainstorm doc, or just a free-form prompt) instead of a fully-formed product description, ask an AI agent to run **[`skills/init/idea_author.md`](skills/init/idea_author.md)** first. It will read your input, ask focused clarifying questions where the input is silent, and fill out this file. It will not invent product decisions — unresolved items become entries in §19 below.
+>
 > **Rules.**
 > - Be specific. Vague answers become vague code.
 > - Distinguish **intent** (what you want) from **implementation instruction** (how to build it). The initializer decides "how" — your job is "what" and "why."

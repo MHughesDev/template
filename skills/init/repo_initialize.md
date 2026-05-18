@@ -8,7 +8,7 @@ If `idea.md` is incomplete, this skill **stops and queues open-question rows**. 
 
 ## When to invoke
 
-- The developer has filled out every applicable section of `idea.md` and has explicitly asked for repo initialization.
+- The developer has filled out every applicable section of `idea.md` and has explicitly asked for repo initialization. (If `idea.md` is still the blank stub or only partially filled, run [`skills/init/idea_author.md`](idea_author.md) first.)
 - The repo's baseline full-stack app (`apps/api/` + `apps/web/`) is in place — this skill assumes that substrate exists and **plans on top of it**.
 - No prior initialization for this product has run, OR the developer has asked for a re-initialization after substantially editing `idea.md`.
 
