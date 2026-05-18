@@ -14,4 +14,4 @@ updated: "2026-04-17"
 
 ## 14.0.1 Overview
 
-Repo governance documentation index (§20). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Repo governance documentation index (§20). See [AGENTS.md](../../AGENTS.md) for validation commands.

@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 3.1.1 Overview
 
-Python and API coding standards for this repository (typing, style, security). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Python and API coding standards for this repository (typing, style, security). See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 3.1.2 Style and lint
 

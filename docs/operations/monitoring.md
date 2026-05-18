@@ -3,16 +3,29 @@ doc_id: "6.11"
 title: "monitoring"
 section: "Operations"
 status: "pending-init"
-summary: "What is instrumented, what alerts exist, key dashboards, and where to look first when something breaks."
+summary: "What is instrumented, alert conditions and thresholds, first-look checklist, dashboards. Populated during initialization from IDEA.md §13."
+updated: "2026-05-17"
 ---
 
 # Monitoring
-<!-- status: pending-init -->
-<!-- initialized-by: skills/init/initialize-repo.md -->
+<!-- derived from: IDEA.md §13 — populated by repo_initialize -->
 
-> **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
+## Metrics
 
-## Purpose
+| Metric | Source | Alert threshold |
+|--------|--------|-----------------|
+| _[Request rate]_ | _[API]_ | _[Baseline + 50%]_ |
+| _[Error rate]_ | _[API]_ | _[>1%]_ |
+| _[Latency p99]_ | _[API]_ | _[>500ms]_ |
 
-Documents the observability setup for this project: what metrics and traces are emitted, what alerts are configured and at what thresholds, which dashboards exist, and the first-look checklist when an incident is detected.
+## Dashboards
+
+_[Links or description of monitoring dashboards]_
+
+## First-look checklist
+
+1. _[Check error rate]_
+2. _[Check resource utilization]_
+3. _[Check upstream dependencies]_
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization.]_

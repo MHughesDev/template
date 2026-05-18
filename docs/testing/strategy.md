@@ -1,38 +1,38 @@
 ---
-doc_id: "22.1"
+doc_id: "11.3"
 title: "testing strategy"
-section: "Testing"
-status: "current"
-summary: "DeviceLab validation strategy spanning unit/integration/e2e, MCP contract tests, and round-trip budget gates."
+section: "Quality"
+status: "pending-init"
+summary: "Testing strategy — pyramid, what to test at each level, when to add tests, and coverage policy. Populated during initialization from IDEA.md §15."
 updated: "2026-05-17"
 ---
 
 # Testing Strategy
-<!-- derived from: spec/spec.md (DeviceLab product section), idea.md §15 §17 -->
+<!-- derived from: IDEA.md §15 — populated by repo_initialize -->
 
 ## Test pyramid
 
-- **Unit tests:** state machine transitions, adapter capability mapping, identity broker, pricing calculator, envelope validation.
-- **Integration tests:** REST routers + service layers with mocked AWS interfaces, runtime-agent simulation, persistence checks.
-- **End-to-end tests (human):** Playwright UI flows (onboarding, device create/stream open, recipe run, artifact download).
-- **End-to-end tests (AI):** MCP contract suites validating capability handshake, observation/action envelopes, and permission gates.
-- **Cloud smoke tests:** nightly opt-in real AWS jobs for each supported family.
+| Level | Tools | Coverage target |
+|-------|-------|-----------------|
+| Unit | pytest | _[70%]_ |
+| Integration | pytest + TestClient | _[Key flows]_ |
+| E2E | Playwright | _[Critical paths]_ |
 
-## Domain-critical test suites
+## What to test
 
-1. **Lifecycle correctness:** invalid transition rejection, phase progression, recovery behavior.
-2. **Safety controls:** dangerous action confirmations, cap enforcement, secret non-disclosure.
-3. **Observation/action contract:** screen-version guards and no-back-and-forth action semantics.
-4. **Cost accuracy:** pricing cache behavior and cap threshold event emission.
+### Unit tests
+- _[Business logic]_
+- _[Utility functions]_
 
-## Quality gates
+### Integration tests
+- _[API endpoints]_
+- _[Database operations]_
 
-- Preserve or raise global coverage floor from `pyproject.toml`.
-- Fail CI when round-trip-budget tests exceed published call budgets for baseline flows.
-- Validate artifact/evidence bundle integrity and replay compatibility.
+### E2E tests
+- _[User workflows]_
 
-## Regression strategy
+## Coverage policy
 
-- Every bugfix adds a failing test first (or same PR) in relevant layer.
-- Per-family smoke recipes execute against known-good templates.
-- Contract changes in MCP envelopes require golden test updates and compatibility notes.
+_[Coverage ratcheting rules]_
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization.]_

@@ -4,7 +4,7 @@
 #   - changelog: configuration for auto-generated GitHub release notes
 #   - categories: PR label → changelog section mapping
 # DESIGN DECISIONS:
-#   - Categories mirror Keep a Changelog format (CHANGELOG.md)
+#   - Categories mirror standard release note format
 #   - Uncategorized PRs show in "Other Changes" section
 #   - Dependabot PRs shown in "Dependency Updates" section
 

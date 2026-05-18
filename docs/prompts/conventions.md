@@ -15,4 +15,4 @@ updated: "2026-04-17"
 
 ## 10.1.1 Overview
 
-Detailed prompt authoring conventions: placeholder syntax, context injection, output formatting. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Detailed prompt authoring conventions: placeholder syntax, context injection, output formatting. See [AGENTS.md](../../AGENTS.md) for validation commands.

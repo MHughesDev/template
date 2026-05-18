@@ -40,6 +40,8 @@ Standard mandatory skill search preamble. For service/repository refactoring: re
 
 "You are the Refactorer. Your sole obligation is structural improvement with zero behavioral change. The test suite is your contract: if tests pass before and after, you have not changed behavior. You do not fix bugs, add features, or change any observable behavior while refactoring."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Refactor Planning
 
 Before writing any code, document:

@@ -1,7 +1,7 @@
 # Root pyproject for the full-stack template.
 # - Workspace coordinates: backend lives at apps/api (its own pyproject defines deps).
 # - This root file keeps repo-wide tooling config (ruff, mypy, pytest, coverage)
-#   and supplemental Python packages (packages/*, dev_mcp).
+#   and supplemental Python packages (packages/*).
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -18,6 +18,7 @@ dependencies = []
 [project.optional-dependencies]
 dev = [
   "pytest>=7.4.0",
+  "pytest-testmon>=2.2.0",
   "mypy>=1.8.0",
   "ruff>=0.2.2",
   "pre-commit>=4.0.0",
@@ -35,12 +36,12 @@ ai = [
 members = ["apps/api"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["packages/contracts", "packages/tasks", "dev_mcp"]
+packages = ["packages/contracts", "packages/tasks", "packages/queue_ops"]
 
 [tool.ruff]
 target-version = "py312"
 line-length = 88
-src = ["apps/api/app", "packages", "dev_mcp"]
+src = ["apps/api/app", "packages"]
 extend-exclude = ["skills", "packages/ai", "apps/api/app/alembic", "apps/web"]
 
 [tool.ruff.lint]
@@ -48,7 +49,6 @@ select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "T20", "SIM", "RET
 ignore = ["S101", "B008", "E501"]
 
 [tool.ruff.lint.per-file-ignores]
-"dev_mcp/**" = ["S603", "S607"]
 "apps/api/tests/**" = ["S101", "S105", "E501"]
 "**/alembic/**" = ["INP001", "E501"]
 "packages/contracts/errors.py" = ["S105"]
@@ -71,7 +71,7 @@ module = ["passlib.*", "jose.*", "celery.*", "chromadb.*", "emails.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
-module = ["fastapi_mcp", "fastapi_mcp.*", "mcp", "mcp.*"]
+module = ["fastapi_mcp", "fastapi_mcp.*"]
 ignore_missing_imports = true
 
 [tool.pydantic-mypy]
@@ -79,7 +79,7 @@ init_forbid_extra = true
 init_typed = true
 
 [tool.pytest.ini_options]
-testpaths = ["apps/api/tests", "packages", "dev_mcp"]
+testpaths = ["apps/api/tests", "packages"]
 asyncio_mode = "auto"
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
@@ -93,7 +93,7 @@ markers = [
 
 [tool.coverage.run]
 source = ["apps/api/app", "packages"]
-omit = ["*/alembic/*", "*/__init__.py", "packages/ai/*", "dev_mcp/*"]
+omit = ["*/alembic/*", "*/__init__.py", "packages/ai/*"]
 
 [tool.coverage.report]
 fail_under = 0

@@ -1,14 +1,18 @@
 # scripts/queue_archive.py
-"""Move a queue row from queue.csv to queuearchive.csv."""
+"""Move a queue row from queue.csv to queuearchive.csv and emit audit metrics."""
 
 from __future__ import annotations
 
 import argparse
 import csv
 import io
+import json
+import re
+import subprocess
 import sys
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
+from typing import Any
 
 OPEN_FIELDS = [
     "id",
@@ -97,7 +101,92 @@ def archive_by_id(root: Path, queue_id: str, *, status: str = "done") -> int:
         writer.writerow(arch_row)
 
     print(f"Archived {queue_id}")
+
+    # Emit audit metrics
+    _emit_audit_metrics(root, found, status)
+
     return 0
+
+
+def _extract_pr_url(notes: str) -> str | None:
+    """Extract PR URL from notes field."""
+    if not notes:
+        return None
+    # Match GitHub PR URLs
+    pr_match = re.search(r"https://github\.com/[^/\s]+/[^/\s]+/pull/\d+", notes)
+    if pr_match:
+        return pr_match.group(0)
+    return None
+
+
+def _count_review_rounds(pr_url: str | None) -> int | None:
+    """Best-effort count of review rounds from gh CLI."""
+    if not pr_url:
+        return None
+    try:
+        # Extract PR number from URL
+        pr_match = re.search(r"/pull/(\d+)$", pr_url)
+        if not pr_match:
+            return None
+        pr_number = pr_match.group(1)
+
+        # Run gh pr view to get review information
+        result = subprocess.run(
+            ["gh", "pr", "view", pr_number, "--json", "reviews"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if result.returncode != 0:
+            return None
+
+        data = json.loads(result.stdout)
+        reviews = data.get("reviews", [])
+
+        # Count unique review rounds (grouped by reviewer + state changes)
+        review_states = set()
+        for review in reviews:
+            reviewer = review.get("author", {}).get("login", "unknown")
+            state = review.get("state", "")
+            review_states.add((reviewer, state))
+
+        return len(review_states) if review_states else None
+    except Exception:
+        return None
+
+
+def _emit_audit_metrics(root: Path, row: dict[str, str], status: str) -> None:
+    """Append JSON metrics line to queue/audit.log."""
+    audit_log = root / "queue" / "audit.log"
+
+    queue_id = row.get("id", "")
+    batch = row.get("batch", "")
+    complexity = row.get("complexity", "")
+    notes = row.get("notes", "")
+    created_date = row.get("created_date", "")
+
+    # Extract PR URL from notes
+    pr_url = _extract_pr_url(notes)
+
+    # Calculate review rounds (best effort)
+    review_rounds = _count_review_rounds(pr_url)
+
+    # Build metrics record
+    metrics: dict[str, Any] = {
+        "queue_id": queue_id,
+        "batch": batch,
+        "complexity": complexity,
+        "status": status,
+        "branch_created_at": created_date if created_date else None,
+        "archived_at": datetime.now(timezone.utc).isoformat(),
+        "pr_url": pr_url,
+        "review_rounds": review_rounds,
+    }
+
+    # Append to audit log
+    audit_log.parent.mkdir(parents=True, exist_ok=True)
+    with audit_log.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(metrics, separators=(",", ":")) + "\n")
 
 
 def main() -> int:

@@ -9,7 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from dev_mcp.queue_ops import OPEN_FIELDS, HUMAN_OPS_CATEGORY, load_open_rows
+from packages.queue_ops import OPEN_FIELDS, HUMAN_OPS_CATEGORY, load_open_rows
 
 
 def main() -> int:

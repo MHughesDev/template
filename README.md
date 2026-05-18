@@ -1,184 +1,110 @@
 <!-- README.md -->
 
-# Template: The AI Software Factory
+# 🏗️ The Software Factory: Your AI-First Launchpad 🚀
 
-Build new products faster without re-litigating the same setup decisions every time.
+Welcome to the **Software Factory**. This isn't just a repository; it's a high-performance engine designed to turn your wildest ideas into production-ready reality at terminal velocity. ⚡
 
-This repository is a production-ready full-stack baseline (`FastAPI` + `React`) plus an agent operating system (`AGENTS.md`, skills, prompts, and queue workflows) designed to turn an idea into execution-ready work.
-
-If you want fewer repeated setup prompts, fewer "what file should I touch?" loops, and cleaner agent handoffs, this is the point.
+If you've ever felt the pain of "re-litigating" the same setup decisions for the 100th time, or watched your AI agents get lost in a "what file should I touch?" loop—**this is your cure.** 💊
 
 ---
 
-## What You Actually Get
+## 🌟 At a Glance (The "Easy Read")
 
-- A working backend in `apps/api/` with auth, models, migrations, tests, and API routes.
-- A working frontend in `apps/web/` with typed client generation and test scaffolding.
-- A queue-driven execution model in `queue/` so work is decomposed, auditable, and parallel-ready.
-- A skill and prompt library in `skills/` and `prompts/` so agents follow reusable workflows instead of making them up.
-- Repo governance built in: validations, docs mapping, self-audit checks, and CI workflows.
+The Software Factory is a **production-ready full-stack baseline** paired with a sophisticated **Agent Operating System**. We've automated the boring stuff so you (and your AI agents) can focus on building the future.
 
----
-
-## Two Modes of Use
-
-### 1) Build a Product from This Template
-
-1. Fill out `idea.md` completely.
-2. Ask an agent to run `skills/init/repo_initialize.md`.
-3. Review generated docs/spec/queue output.
-4. Execute queue items from top to bottom.
-
-Important: initialization is docs-first and queue-first. It does not directly write product feature code.
-
-### 2) Improve the Template Itself
-
-Use the queue in `queue/queue.csv` to ship reusable upgrades that save time/tokens for future projects (scripts, defaults, docs, automation, guardrails).
+- **🤖 Agent-First:** Built from the ground up for Cursor and other AI coding agents.
+- **🏭 Factory Precision:** Every workflow is a documented, reusable machine procedure.
+- **📦 Full-Stack Power:** A modern, type-safe stack that scales from MVP to Enterprise.
+- **🚦 Queue-Driven:** Decompose complex tasks into auditable, parallel-ready work items.
 
 ---
 
-## Required Flow for Coding Agents
+## 🛠️ The Engine Room (Our Tech Stack)
 
-Before implementation work in this repo:
+We don't just use tools; we use the *right* tools. The Software Factory is powered by a curated selection of modern technologies that play nice together.
 
-1. Ensure `microfast-dev` MCP is connected (when available).
-2. Read `README.md` (this file).
-3. Read `AGENTS.md` fully (authoritative policy).
-4. Perform mandatory skill search via `skills/README.md` or `make skills:list`.
-5. Use queue procedures from `queue/QUEUE_INSTRUCTIONS.md`.
+### 🎨 The Face (Frontend)
+A sleek, reactive, and lightning-fast user experience.
+*   **React 19** (The bleeding edge of UI)
+*   **Vite** (For that instant-refresh dev speed)
+*   **TanStack** (Router & Query for state management perfection)
+*   **Tailwind CSS v4** (Utility-first styling at its finest)
+*   **shadcn/ui** (Beautiful, accessible components)
 
-If policy is unclear, re-read `AGENTS.md` before proceeding.
+### 🧠 The Brain (Backend)
+A robust, type-safe, and highly performant API layer.
+*   **FastAPI** (Python 3.12+ speed and elegance)
+*   **SQLModel** (The best of SQLAlchemy + Pydantic)
+*   **Postgres 18** (The gold standard for data integrity)
+*   **Alembic** (Smooth, versioned migrations)
+*   **JWT Auth** (Secure, stateless authentication)
 
----
-
-## Quickstart
-
-### Prerequisites
-
-- Python 3.12+
-- Docker + Docker Compose
-- Bun
-- Git
-- Make (or command alternatives in `scripts/`)
-
-### Local Bootstrap
-
-```bash
-git clone <your-repo-url>
-cd <your-repo-folder>
-make init
-```
-
-### Run Stack
-
-```bash
-make docker-up
-make health-check
-```
-
-### Run Components Separately
-
-```bash
-make dev-api
-make dev-web
-```
-
-### Quality Commands
-
-```bash
-make lint
-make fmt
-make typecheck
-make test
-make docs:check
-make queue:validate
-make audit:self
-```
+### 📱 The Reach (Mobile)
+Native performance with a single codebase.
+*   **Flutter** (Beautiful, high-performance mobile apps for iOS and Android)
 
 ---
 
-## Core Queue Commands
+## 🧬 Why a "Software Factory"?
 
-```bash
-make queue:top-item
-make queue:peek
-make queue:validate
-make queue:graph
-make queue:analyze
-```
+In a traditional setup, you're a craftsman. You hand-forge every screw. In the **Software Factory**, you're the architect of an automated assembly line. 🛠️
 
-- `queue:top-item` returns the active non-human-ops row as JSON.
-- `queue:validate` is required after queue edits.
-- Executor agents should not mutate queue ledgers directly unless explicitly acting as operator.
+We treat **recurring workflows** as **machine procedures**.
+1.  **Skills & Prompts:** Instead of explaining things repeatedly, we encode knowledge into reusable `skills/` and `prompts/`.
+2.  **The Queue:** Work isn't a messy todo list; it's a structured `queue/` that agents can execute with surgical precision.
+3.  **Governance:** Built-in validations and self-audit checks ensure that as the factory runs faster, it doesn't break things.
 
 ---
 
-## Initialization Flow (Token-Saving Version)
+## 🚀 Getting Started (The Fast Path)
 
+Ready to fire up the assembly line? Follow these steps to get your first product moving.
+
+### 1️⃣ The Blueprint
+Fill out `IDEA.md`. This is your product contract. Don't skip it—it's the DNA of your project.
+
+### 2️⃣ The Ignition
+Ask your AI agent to run the initialization skill:
 ```text
-idea.md -> skills/init/repo_initialize.md -> spec/docs refresh -> queue seed -> execution
+"Hey agent, run skills/init/repo_initialize.md based on my IDEA.md"
 ```
+This will generate your spec, design docs, and seed your initial MVP queue. **No code is written yet—just the perfect plan.** 📝
 
-Why this matters:
-
-- You capture intent once in `idea.md`.
-- Agents generate structured artifacts once.
-- Implementation then follows queue rows with explicit constraints and acceptance criteria.
-
-That means less repeated "re-explain the project" overhead in every chat.
+### 3️⃣ The Execution
+Start knocking out queue items from `queue/queue.csv`. Each row is a bite-sized, context-rich task that your agents can handle while you sip your coffee. ☕
 
 ---
 
-## Project Structure
+## 🔧 Operational Commands
 
-```text
-apps/
-  api/                 FastAPI backend
-  web/                 React frontend
-dev_mcp/               MicroFast MCP server + queue ops helpers
-docs/                  Architecture, procedures, runbooks, security, etc.
-prompts/               Reusable agent prompt templates
-queue/                 Open + archived queue ledgers and SOPs
-scripts/               Validation, automation, queue and repo tooling
-skills/                Task-specific reusable operational skills
-spec/                  Canonical system specification
-AGENTS.md              Agent contract and instruction hierarchy
-idea.md                Product intake contract
-Makefile               Canonical command interface
-```
+The Factory comes with a powerful `Makefile` to keep things running smoothly.
+
+| Command | What it does |
+| :--- | :--- |
+| `make dev` | Fire up the local dev environment (API + Web) |
+| `make docker-up` | Spin up the full stack (DB, Adminer, Backend, Frontend) |
+| `make lint` | Keep the code clean and shiny ✨ |
+| `make test` | Run the full suite of backend tests |
+| `make queue:top-item` | See what's next on the assembly line |
+| `make audit:self` | Run a comprehensive health check on the repo |
 
 ---
 
-## Most Important Files
+## 🚦 Required Flow for Agents
 
-- `AGENTS.md` - authoritative workflow and policy contract.
-- `queue/QUEUE_INSTRUCTIONS.md` - queue schema and lifecycle SOP.
-- `skills/README.md` - skill index for mandatory skill search.
-- `docs/DOCS_MAP.md` - canonical doc index with stable doc IDs.
-- `spec/spec.md` - system specification baseline.
+If you are an AI agent operating in this factory, you have a contract to follow (see `AGENTS.md` for the full legal text):
 
----
-
-## Common Pitfalls to Avoid
-
-- Treating `idea.md` as optional: it is the product contract.
-- Writing feature code during initialization flow.
-- Skipping mandatory skill search.
-- Editing queue rows without validating with `make queue:validate`.
-- Using ad hoc shell commands when a `make` target exists.
+1.  **Read this README** (You're doing it! Good job! 🤖)
+2.  **Read AGENTS.md** (The authoritative policy).
+3.  **Search for Skills** (`make skills:list`). Never guess when a procedure exists.
+4.  **Follow the Queue** (`queue/QUEUE_INSTRUCTIONS.md`).
 
 ---
 
-## Contributing
+## 📜 License & Contribution
 
-Use small, reviewable changes. Prefer one logical change per PR.
-
-When behavior changes, update docs and validation expectations in the same PR.
-
-For queue-driven work, include queue IDs in PR titles and follow archive/merge procedure after completion.
+The Software Factory is open-source under the **MIT License**. We love contributions! Just keep them small, logical, and well-documented.
 
 ---
 
-## License
-
-MIT. See `LICENSE`.
+**Now go build something incredible. The factory is waiting.** 🏭💨

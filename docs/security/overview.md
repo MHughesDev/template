@@ -11,7 +11,7 @@ summary: "Security model summary for this project: key controls in place, what i
 <!-- initialized-by: skills/init/initialize-repo.md -->
 
 > **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
+> Run `make init:from-idea` to populate from `IDEA.md`.
 
 ## Purpose
 

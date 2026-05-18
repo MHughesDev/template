@@ -33,7 +33,7 @@ The pipeline is driven by [`skills/repo-governance/docs-generator.py`](../../ski
 ## 3.3.2 What docs-generation is **not**
 
 - **It is not the product-design brain.** The pipeline does not author architecture, design, API, or operations docs — those are written by a developer or by an AI agent following [`skills/init/repo_initialize.md`](../../skills/init/repo_initialize.md).
-- **It does not replace `repo_initialize`.** The source of product intent is [`/idea.md`](../../idea.md). The source of initialization procedure is [`skills/init/repo_initialize.md`](../../skills/init/repo_initialize.md). The outputs of initialization are docs (under `docs/architecture/`, `docs/api/`, `docs/data/`, `docs/security/`, `docs/operations/`, `docs/testing/`) and queue rows.
+- **It does not replace `repo_initialize`.** The source of product intent is [`/IDEA.md`](../../IDEA.md). The source of initialization procedure is [`skills/init/repo_initialize.md`](../../skills/init/repo_initialize.md). The outputs of initialization are docs (under `docs/architecture/`, `docs/api/`, `docs/data/`, `docs/security/`, `docs/operations/`, `docs/testing/`) and queue rows.
 - **It does not invent content.** Every file under `docs/generated/` is a deterministic projection of an existing source artifact in the repo. Re-running the generator on unchanged sources produces byte-identical output.
 
 ## 3.3.3 Commands

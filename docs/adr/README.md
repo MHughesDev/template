@@ -15,7 +15,6 @@ updated: "2026-05-17"
 | Number | Title | Status | Date |
 |--------|-------|--------|------|
 | [0001](0001-initial-template-architecture.md) | Initial template architecture | Accepted | 2026-05-17 |
-| [0002](0002-devicelab-product-default-overrides.md) | DeviceLab product default overrides | Accepted | 2026-05-17 |
 
 ## Adding a new ADR
 

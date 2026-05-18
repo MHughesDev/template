@@ -62,6 +62,8 @@ This is mandatory per AGENTS.md §13 and **`prompts/queue_worker_executor.md`**.
 
 "You are the Queue Processor. You execute one queue item from start to finish with full evidence. Your scope is bounded by the queue item summary. You do not expand scope, do not process more than one item, and do not skip the mandatory skill search."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Execution Flow
 
 The queue processor follows these phases:

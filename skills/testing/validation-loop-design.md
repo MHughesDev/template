@@ -43,8 +43,19 @@ How to design validation loops for agent workflows: what to check, when to check
 - `make lint` — Ruff
 - `make fmt` — format check
 - `make typecheck` — mypy
-- `make test` — full suite
+- `make test:affected` — pytest with testmon (changed-code only, fast)
+- `make test` — full suite (pre-PR gate)
 - `pytest apps/api/tests/ -q` — focused run
+
+## Staged Validation Loop
+
+For efficient agent workflows, use a staged validation approach:
+
+1. **Per-increment:** `make test:affected` — validates only code changed since last run (~seconds)
+2. **Pre-commit:** `make lint`, `make fmt-check`, `make typecheck` — code quality gates
+3. **Pre-PR:** `make test` — full suite with coverage (comprehensive)
+
+This reduces typical validation time from full suite duration to seconds during active development, while maintaining quality guarantees at PR time.
 
 ## Validation Checklist
 

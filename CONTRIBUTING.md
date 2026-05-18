@@ -4,14 +4,17 @@ How to contribute to this repository — for **humans** and **agents**. Agent po
 
 ## How to contribute
 
-This repository is designed for **coding agents** as primary operators. Humans contribute by maintaining **policy** (AGENTS.md, rules, skills, procedures, CI), reviewing **PRs**, filling **`idea.md`** for initialization, and steering the queue.
+This repository is designed for **coding agents** as primary operators. Humans contribute by maintaining **policy** (AGENTS.md, rules, skills, procedures, CI), reviewing **PRs**, filling **`IDEA.md`** for initialization, and steering the queue.
 
 **Start here:** [AGENTS.md](AGENTS.md) — instruction hierarchy, mandatory skill search, validation, and queue rules.
+
+**Agent tooling:** This repo does **not** require connecting a template-specific MCP server. Use **`make queue:top-item`** / **`python scripts/queue_top_item.py`** and **`packages/queue_ops`** for queue I/O; see **[docs/development/local-setup.md](docs/development/local-setup.md)** (*Agent and queue tooling*).
 
 ## Development setup
 
 1. Clone the repository.
-2. Run **`./setup.sh`** (or `setup.bat` on Windows) for a guided bootstrap, **or** follow **[docs/development/local-setup.md](docs/development/local-setup.md)**.
+2. Run **`./setup.sh`** (Linux/macOS/WSL/Git Bash on Windows) for a guided bootstrap, **or** follow **[docs/development/local-setup.md](docs/development/local-setup.md)**.
+   - **Note for Windows users:** The template standardizes on WSL or Git Bash. `setup.bat` is not provided.
 3. Use **`make dev`** for the local stack and **`make test`** to verify.
 
 Full prerequisites: **[docs/getting-started/](docs/getting-started/)**.

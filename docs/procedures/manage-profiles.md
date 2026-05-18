@@ -20,7 +20,7 @@ updated: "2026-05-17"
 - Disabling an unused profile to reduce maintenance burden
 
 **Prerequisites:**
-- [ ] `idea.md` §11 and §12 define the profile requirements
+- [ ] `IDEA.md` §11 and §12 define the profile requirements
 - [ ] For mobile: Apple Developer Program membership (iOS) or Google Play account (Android)
 - [ ] For workers: Message queue infrastructure decision (Redis/RabbitMQ/SQS)
 - [ ] For billing: Payment provider account (Stripe/Paddle)
@@ -53,9 +53,9 @@ updated: "2026-05-17"
 
 ## Steps: Add a New Profile
 
-### 1. Validate in idea.md
+### 1. Validate in IDEA.md
 
-Check `idea.md` §11 (Frontend) and §12 (Backend/API):
+Check `IDEA.md` §11 (Frontend) and §12 (Backend/API):
 - Confirm profile is explicitly requested
 - Review acceptance criteria
 - Note any specific requirements

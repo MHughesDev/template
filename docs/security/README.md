@@ -15,4 +15,4 @@ updated: "2026-04-17"
 
 ## 16.0.1 Overview
 
-Security documentation index. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Security documentation index. See [AGENTS.md](../../AGENTS.md) for validation commands.

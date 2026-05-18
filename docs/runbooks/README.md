@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 15.0.1 Overview
 
-Runbooks index. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Runbooks index. See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 15.0.2 Symptoms
 How to detect this failure condition.

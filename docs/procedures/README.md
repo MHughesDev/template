@@ -33,13 +33,12 @@ Ordered list of all procedure files with one-line descriptions and links. Ordere
 - [handle-blocked-work.md](handle-blocked-work.md) — Document blockers and optionally requeue
 
 **Initialization:**
-- [initialize-repo.md](initialize-repo.md) — Documentation-first, queue-first repo initialization from a completed idea.md
+- [initialize-repo.md](initialize-repo.md) — Documentation-first, queue-first repo initialization from a completed IDEA.md
 - [scaffold-domain-module.md](scaffold-domain-module.md) — Create bounded context module in apps/api/app/
 - [enable-profile.md](enable-profile.md) — Enable optional profile with dependency checking
 
 **Development lifecycle:**
 - [add-mcp-tool.md](add-mcp-tool.md) — Add or expose MCP tools (fastapi-mcp / OpenAPI)
-- [microfast-dev-mcp.md](microfast-dev-mcp.md) — MicroFast **stdio** dev MCP server (queue tools, repo resources; Cursor `microfast-dev`)
 - [update-documentation.md](update-documentation.md) — When and how to update docs alongside code
 - [update-or-create-skill.md](update-or-create-skill.md) — Skill lifecycle management
 - [update-or-create-rule.md](update-or-create-rule.md) — Rule lifecycle management

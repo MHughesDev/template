@@ -1,20 +1,41 @@
 ---
 doc_id: "2.17"
-title: "frontend architecture"
+title: "frontend"
 section: "Architecture"
 status: "pending-init"
-summary: "Frontend page inventory, component hierarchy, API integration points, and state management approach. Not applicable if no web profile."
+summary: "Frontend architecture: page/route inventory, component hierarchy, API integration, state management. Populated during initialization from IDEA.md §11."
+updated: "2026-05-17"
 ---
 
 # Frontend Architecture
-<!-- status: pending-init -->
-<!-- initialized-by: skills/init/initialize-repo.md -->
+<!-- derived from: IDEA.md §11 — populated by repo_initialize -->
 
-> **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
->
-> If no web frontend profile is enabled, this file will contain: `Not applicable — no frontend profile enabled for this project.`
+## Page/route inventory
 
-## Purpose
+| Route | Purpose | Auth required |
+|-------|---------|---------------|
+| `/` | _[Landing/dashboard]_ | _[Yes/No]_ |
+| `/login` | _[Authentication]_ | _[No]_ |
+| `/dashboard` | _[Main app view]_ | _[Yes]_ |
 
-Documents the frontend layer: every page, what data it needs and from which endpoints, the component hierarchy, routing structure, auth integration, and state management approach.
+## Component hierarchy
+
+```
+App
+├── Layout
+│   ├── Header
+│   ├── Sidebar
+│   └── Footer
+├── Pages
+│   ├── Dashboard
+│   └── Settings
+└── Shared
+    ├── Button
+    └── Modal
+```
+
+## State management
+
+_[e.g., TanStack Query for server state, Zustand for client state]_
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization.]_

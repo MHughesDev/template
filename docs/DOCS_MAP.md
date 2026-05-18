@@ -36,7 +36,7 @@ Purpose: Explains system design: contexts, data layer, auth, APIs, errors, and o
 | ID | Title | Path | Summary |
 | --- | --- | --- | --- |
 | 2.0 | Architecture overview | `docs/architecture/README.md` | Architecture documentation index. |
-| 2.2 | api design | `docs/architecture/api-design.md` | API design decisions: style, versioning, pagination, rate limiting, error handling conventions. Populated from `idea.md` §9. |
+| 2.2 | api design | `docs/architecture/api-design.md` | API design decisions: style, versioning, pagination, rate limiting, error handling conventions. Populated from `IDEA.md` §9. |
 | 2.5 | Diagrams overview | `docs/architecture/diagrams/README.md` | Index for Mermaid/PlantUML architecture diagram sources. Optional per spec §26.12 item 399. |
 | 2.7 | error handling | `docs/architecture/error-handling.md` | Cross-cutting error handling strategy. |
 | 2.8 | modular monolith | `docs/architecture/modular-monolith.md` | Modular monolith design: bounded contexts, contract boundaries, data ownership, extraction criteria (§12). |
@@ -64,10 +64,11 @@ Purpose: Covers local setup, coding standards, testing, env vars, git flow, and 
 | 3.3 | docs generation | `docs/development/docs-generation.md` | How the docs pipeline works and how to extend it. |
 | 3.4 | environment vars | `docs/development/environment-vars.md` | Environment variable reference. All vars documented with defaults, read by `apps/api/app/config.py` via Pydantic Settings (§10.3). |
 | 3.5 | git workflow | `docs/development/git-workflow.md` | Git branching, PR workflow, and review expectations for this repository. |
-| 3.6 | Init manifest schema | `docs/development/init-manifest-schema.md` | Defines init-manifest.json fields produced from idea.md for deterministic initialization. |
+| 3.6 | Init manifest schema | `docs/development/init-manifest-schema.md` | Defines init-manifest.json fields produced from IDEA.md for deterministic initialization. |
 | 3.7 | local setup | `docs/development/local-setup.md` | Detailed local development setup. All Make/Task targets documented with expected behavior (§10.1). |
 | 3.8 | module patterns | `docs/development/module-patterns.md` | How to structure bounded-context modules under `apps/api/app/` (router, service, models, tests). |
 | 3.9 | ci | `docs/development/ci.md` | CI pipeline stages, matrix, how to reproduce locally, common CI failures and fixes. |
+| 3.10 | python procedures | `docs/development/python-procedures.md` | Authoritative Python implementation procedures: typing, boundaries, DI, testing, enforced by CI. |
 | 3.11 | commands | `docs/development/commands.md` | Make target catalog scoped to this product (dev / test / db / queue / CI / profiles). |
 
 ### Section 4 — API
@@ -94,7 +95,7 @@ Purpose: Canonical agent SOPs: queue work, implementation, validation, init, mig
 | 5.12 | handoff | `docs/procedures/handoff.md` | SOP: Complete handoff — files changed, commands run, results, risks, follow-ups. |
 | 5.13 | implement change | `docs/procedures/implement-change.md` | SOP: Execute code changes in small validated increments with commits that tell a story. |
 | 5.14 | incident rollback | `docs/procedures/incident-rollback.md` | SOP for incident-rollback. |
-| 5.16 | initialize repo | `docs/procedures/initialize-repo.md` | Canonical documentation-first, queue-first repo initialization from a completed idea.md, driven by `skills/init/repo_initialize.md`. |
+| 5.16 | initialize repo | `docs/procedures/initialize-repo.md` | Canonical documentation-first, queue-first repo initialization from a completed IDEA.md, driven by `skills/init/repo_initialize.md`. |
 | 5.17 | open pull request | `docs/procedures/open-pull-request.md` | SOP: Create PR with title, description template, evidence, labels, queue linkage. |
 | 5.18 | plan change | `docs/procedures/plan-change.md` | SOP: Create implementation plan with acceptance criteria, file impact, risks, scope bounds. |
 | 5.19 | release preparation | `docs/procedures/release-preparation.md` | SOP for release-preparation. |
@@ -106,7 +107,6 @@ Purpose: Canonical agent SOPs: queue work, implementation, validation, init, mig
 | 5.24 | update or create skill | `docs/procedures/update-or-create-skill.md` | SOP: Skill lifecycle — creating new skills or updating existing ones to the standard format. |
 | 5.25 | validate change | `docs/procedures/validate-change.md` | SOP: Run full validation matrix before opening PR. |
 | 5.26 | implementation loop | `docs/procedures/implementation-loop.md` | SOP for executing a queue row end-to-end: read context, plan, implement in small validated increments, hand off. |
-| 5.27 | MicroFast development MCP server | `docs/procedures/microfast-dev-mcp.md` | stdio MCP for agents: queue tools, repo resources, canonical make targets (dev-only). |
 | 5.28 | queue decomposition | `docs/procedures/queue-decomposition.md` | SOP for splitting an L-complexity queue row into S/M sub-tasks with proper dependency ordering. |
 | 5.29 | template upgrade | `docs/procedures/template-upgrade.md` | SOP for advancing the template baseline in a downstream initialized product. |
 | 5.30 | add procedure | `docs/procedures/add-procedure.md` | Meta-procedure for adding new procedures: sizing, structure, cross-referencing, registration. |
@@ -154,7 +154,7 @@ Purpose: Records architecture decisions: template, status, and the decision inde
 | --- | --- | --- | --- |
 | 7.0 | Adr overview | `docs/adr/README.md` | ADR index. Lists all decisions with status. |
 | 7.1 | template | `docs/adr/template.md` | ADR template for new decisions. |
-| 7.3 | ADR-0001 initial template architecture | `docs/adr/0001-initial-template-architecture.md` | Founding ADR — defines idea.md as the canonical intake, repo_initialize as the canonical skill, and the documentation-first/queue-first initialization model. |
+| 7.3 | ADR-0001 initial template architecture | `docs/adr/0001-initial-template-architecture.md` | Founding ADR — defines IDEA.md as the canonical intake, repo_initialize as the canonical skill, and the documentation-first/queue-first initialization model. |
 | 7.4 | ADR-0002 flutter as mobile client | `docs/adr/0002-flutter-as-mobile-client.md` | Mobile client architecture: Flutter for iOS/Android, no Flutter Web, locked technical decisions, and backend-as-source-of-truth contract. |
 
 ### Section 8 — Agents
@@ -165,7 +165,7 @@ Purpose: Defines human supervision of agents: review, quality gates, and inciden
 | --- | --- | --- | --- |
 | 8.0 | Agents overview | `docs/agents/README.md` | Agent supervision documentation index (§9.3). |
 | 8.1 | evolving from incidents | `docs/agents/evolving-from-incidents.md` | How to evolve rules/skills/prompts from incidents: post-incident analysis → artifact updates. |
-| 8.2 | initialization guide | `docs/agents/initialization-guide.md` | Guide for the initialization process: what `idea.md` is, how to fill it out, what the initializer does, what to review in the initializat... |
+| 8.2 | initialization guide | `docs/agents/initialization-guide.md` | Guide for the initialization process: what `IDEA.md` is, how to fill it out, what the initializer does, what to review in the initializat... |
 | 8.3 | pr audit checklist | `docs/agents/pr-audit-checklist.md` | Checklist for auditing a PR against acceptance criteria. |
 | 8.4 | quality ratcheting | `docs/agents/quality-ratcheting.md` | How to ratchet quality over time: increasing coverage floors, adding rules, tightening procedures. |
 | 8.5 | reviewing ai diffs | `docs/agents/reviewing-ai-diffs.md` | How to review AI-generated diffs: security focus, tenant isolation, scope validation, test adequacy. |

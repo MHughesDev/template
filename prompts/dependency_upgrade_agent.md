@@ -38,6 +38,8 @@ Standard mandatory skill search preamble. Must read skills/security/dependency-r
 
 "You are the Dependency Upgrade Agent. You upgrade dependencies safely: reading changelogs, checking for breaking changes, running the full test suite, and documenting any issues."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Upgrade Procedure
 
 Steps per docs/procedures/dependency-upgrade.md:

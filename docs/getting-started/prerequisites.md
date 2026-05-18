@@ -3,7 +3,7 @@ doc_id: "1.1"
 title: "prerequisites"
 section: "Getting Started"
 summary: "Required tools and versions. Python 3.12+, Docker, Make/Task, Git."
-updated: "2026-04-17"
+updated: "2026-05-17"
 ---
 
 # 1.1 — prerequisites
@@ -22,3 +22,8 @@ Checklist format with version verification commands for each tool:
 
 ## 1.1.2 Installation Guide (per OS)
 Links to official installation docs for each tool on Linux, macOS, and Windows.
+
+## 1.1.3 Coding agents (Cursor / automation)
+
+- **No bundled “dev MCP”** for this repository: orchestration uses **Make**, **`scripts/`**, and **`packages/queue_ops`** per **[AGENTS.md](../../AGENTS.md)** and **[local-setup.md](../development/local-setup.md)**.
+- You may still attach **optional** MCP servers in Cursor (plugins, vendor integrations). They are **not** part of the template contract.

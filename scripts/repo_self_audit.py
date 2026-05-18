@@ -12,7 +12,6 @@ from pathlib import Path
 REQUIRED_PATHS = (
     "AGENTS.md",
     "PYTHON_PROCEDURES.md",
-    "spec/spec.md",
     "Makefile",
     "pyproject.toml",
     ".gitignore",

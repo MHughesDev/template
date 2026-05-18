@@ -3,7 +3,7 @@ doc_id: "3.0"
 title: "Development overview"
 section: "Development"
 summary: "Index of developer documentation: setup, workflow, testing, and standards."
-updated: "2026-04-17"
+updated: "2026-05-17"
 ---
 
 # 3.0 — Development overview
@@ -15,13 +15,15 @@ updated: "2026-04-17"
 
 ## 3.0.1 Overview
 
-Index of developer documentation: setup, workflow, testing, and standards. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Index of developer documentation: setup, workflow, testing, and standards. See [AGENTS.md](../../AGENTS.md) for validation commands.
+
+**Agents:** Queue and validation commands are documented in **[local-setup.md](local-setup.md)** (section *Agent and queue tooling*). Shared queue CSV logic lives in **`packages/queue_ops`** (not a separate MCP binary).
 
 ## 3.0.2 Contents
 
 | Document | Description |
 |----------|-------------|
-| [local-setup.md](local-setup.md) | Bootstrap, Make targets, running the API |
+| [local-setup.md](local-setup.md) | Bootstrap, Make targets, queue/agent tooling, IDE |
 | [environment-vars.md](environment-vars.md) | Settings and `.env` reference |
 | [git-workflow.md](git-workflow.md) | Branches and pull requests |
 | [module-patterns.md](module-patterns.md) | FastAPI module layout |

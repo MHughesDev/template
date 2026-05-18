@@ -109,7 +109,7 @@ const BASE_URL = Constants.expoConfig?.extra?.apiUrl ?? "http://localhost:8000";
 
 ### Offline support
 
-If offline support is required (check `idea.md §5` for the offline profile): use **React Query** with `cacheTime: Infinity` + `staleTime: 5 * 60 * 1000` and **MMKV** for the persisted cache. Do not implement custom cache logic.
+If offline support is required (check `IDEA.md §5` for the offline profile): use **React Query** with `cacheTime: Infinity` + `staleTime: 5 * 60 * 1000` and **MMKV** for the persisted cache. Do not implement custom cache logic.
 
 ## Testing
 
@@ -177,7 +177,7 @@ Over-the-air updates are configured in `app.config.ts → updates`. OTA updates 
 
 ## Target platforms
 
-Confirm targets in `idea.md §5`. Default: iOS 16+ and Android API 31+. Update `app.config.ts → ios.minimumOsVersion` and `android.minSdkVersion` to match.
+Confirm targets in `IDEA.md §5`. Default: iOS 16+ and Android API 31+. Update `app.config.ts → ios.minimumOsVersion` and `android.minSdkVersion` to match.
 
 ## Security
 

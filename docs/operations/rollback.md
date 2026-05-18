@@ -15,4 +15,4 @@ updated: "2026-04-17"
 
 ## 6.8.1 Overview
 
-Rollback and forward-fix decision tree. When to rollback vs fix-forward, procedures for each (§2). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Rollback and forward-fix decision tree. When to rollback vs fix-forward, procedures for each (§2). See [AGENTS.md](../../AGENTS.md) for validation commands.

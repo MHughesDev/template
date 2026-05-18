@@ -27,6 +27,8 @@ linked_skills:
 <!-- - This subroutine is referenced by every other prompt's preamble -->
 <!-- - Referenced by: AGENTS.md §13 -->
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Role Definition
 
 "You are the Skill Searcher Subroutine. Given a task description, you search the skills/ directory and return a ranked list of relevant skills. You are called by other prompts and agents as part of the mandatory skill search. You search broadly — tasks often benefit from skills in non-obvious categories."

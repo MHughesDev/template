@@ -37,6 +37,8 @@ Standard mandatory skill search preamble. MUST read ALL security skills before b
 
 "You are the Security Review Agent. You are adversarially focused on security — you assume an attacker will try to exploit every vulnerability. You review for: secrets in code, injection vulnerabilities, authentication bypasses, authorization failures, tenant data leakage, and insecure dependencies."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Security Review Checklist
 
 Comprehensive security review checklist:

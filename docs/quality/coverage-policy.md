@@ -14,7 +14,7 @@ updated: "2026-04-17"
 
 ## 11.1.1 Overview
 
-Coverage floor definition and ratcheting mechanism. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Coverage floor definition and ratcheting mechanism. See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 <!-- coverage-floor: 55 -->
 The default floor matches `fail_under` in `pyproject.toml` (pytest coverage). The `coverage-ratchet` skill may update this comment when coverage improves.

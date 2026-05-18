@@ -20,19 +20,19 @@ One paragraph. AGENTS.md is the most important file in the repository. It is the
 
 ## Prerequisites
 
-spec/spec.md §4 read completely. All §4.1 required sections known. Current AGENTS.md read. The change to make is clearly defined.
+AGENTS.md read completely. Current AGENTS.md read. The change to make is clearly defined.
 
 ## Relevant Files/Areas
 
-AGENTS.md (root), apps/api/AGENTS.md, packages/*/AGENTS.md, spec/spec.md §4
+AGENTS.md (root), apps/api/AGENTS.md, packages/*/AGENTS.md
 
 ## Step-by-Step Method
 
 Numbered steps:
-1. Read spec/spec.md §4.1 — memorize all required sections (items 1–16)
+1. Read AGENTS.md — memorize all required sections
 2. Read the current AGENTS.md completely
 3. Identify the section to add/update (which §4.1 item requires change)
-4. For section 1 (Mission): write one paragraph per project from idea.md §2
+4. For section 1 (Mission): write one paragraph per project from IDEA.md §2
 5. For section 2 (Hierarchy): ensure all 8 levels listed with correct precedence
 6. For section 3 (Workflow): all 12 steps including mandatory skill search
 7. For section 13 (Mandatory skill search): the complete 6-step procedure
@@ -58,7 +58,7 @@ No specific make targets for AGENTS.md editing, but: `make audit:self` after cha
 ## Common Failure Modes
 
 - Missing section 13 (mandatory skill search) — agents skip the skill library. Fix: verify it's present with the full 6-step procedure.
-- Vague section 1 (Mission) — agents don't understand project context. Fix: fill with project-specific content from idea.md §2.
+- Vague section 1 (Mission) — agents don't understand project context. Fix: fill with project-specific content from IDEA.md §2.
 
 ## Handoff Expectations
 

@@ -12,7 +12,7 @@ updated: "2026-04-20"
 
 **Cardinality:** **One brainstorm file → many queue items** is the **default**. Only trivial changes might use a single row; still list that ID in the brainstorm’s tracking table.
 
-**Ordering rule (required):** **Implement and land code first** (per queue items and PRs). **After** behavior is merged, **update `spec/spec.md` and other docs** so they describe what the repo actually does. Do **not** edit `spec/spec.md` (or authoritative specs) *before* writing code for this feature unless you are documenting behavior that already exists.
+**Ordering rule (required):** **Implement and land code first** (per queue items and PRs). **After** behavior is merged, **update docs** so they describe what the repo actually does. Do **not** edit docs *before* writing code for this feature unless you are documenting behavior that already exists.
 
 ## 19.2.1 Step 0 — Gate: only “ready” brainstorms enter the pipeline
 
@@ -81,7 +81,7 @@ For each item in dependency order:
 3. Open PR; get review; merge per repo policy.
 4. Archive the queue row per [`queue/QUEUE_INSTRUCTIONS.md`](../../queue/QUEUE_INSTRUCTIONS.md).
 
-**Do not** use this step to rewrite `spec/spec.md` to “pretend” the feature exists before it is merged.
+**Do not** use this step to rewrite docs to “pretend” the feature exists before it is merged.
 
 ## 19.2.6 Step 5 — Mark brainstorm “in progress” / link tracking
 
@@ -98,8 +98,8 @@ For each item in dependency order:
 
 **Actions (typical order):**
 
-1. Update **`spec/spec.md`** only to reflect **actual** behavior and contracts (not aspirational text).
-2. Update other affected docs per [`docs/procedures/update-documentation.md`](../procedures/update-documentation.md) and repo rules (e.g. `docs/api/endpoints.md`, `CHANGELOG.md` if applicable).
+1. Update docs only to reflect **actual** behavior and contracts (not aspirational text).
+2. Update other affected docs per [`docs/procedures/update-documentation.md`](../procedures/update-documentation.md) and repo rules (e.g. `docs/api/endpoints.md`).
 3. Run `make docs:check` (and any doc-generation targets your change requires).
 
 **Optional:** Add or update an **ADR** under `docs/adr/` if the brainstorm implied a durable architectural decision.
@@ -120,7 +120,7 @@ For each item in dependency order:
 - [ ] **Multiple** queue rows planned (unless scope is trivially small); each row has category, long summary, dependencies; **`related_files`** includes the brainstorm path on **every** row
 - [ ] `make queue:validate` passes
 - [ ] Code + tests merged per queue order
-- [ ] **Then** `spec/spec.md` and other docs updated
+- [ ] **Then** docs updated
 - [ ] Brainstorm tracking table lists **all** queue IDs; status updated
 
 ## 19.2.10 Relationship to root policy

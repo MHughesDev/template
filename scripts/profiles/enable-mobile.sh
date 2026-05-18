@@ -11,7 +11,7 @@ if [[ ! -f "$ROOT/apps/mobile/README.md" ]]; then
 
 Mobile (Expo) profile. Enabled by initialization engine.
 
-See idea.md §5.
+See IDEA.md §5.
 EOF
 fi
 if [[ ! -f "$ROOT/apps/mobile/AGENTS.md" ]]; then

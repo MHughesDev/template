@@ -11,7 +11,7 @@ if [[ ! -f "$ROOT/apps/web/README.md" ]]; then
 
 Web frontend profile. Enabled by initialization engine.
 
-Framework: see idea.md §5.
+Framework: see IDEA.md §5.
 EOF
 fi
 if [[ ! -f "$ROOT/apps/web/AGENTS.md" ]]; then

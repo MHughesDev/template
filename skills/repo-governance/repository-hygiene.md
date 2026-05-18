@@ -48,7 +48,7 @@ Deleting a "stale" branch that actually has uncommitted work → data loss. Fix:
 
 ## Handoff Expectations
 
-Hygiene changes committed, CHANGELOG.md updated if any meaningful changes, audit passing.
+Hygiene changes committed, audit passing.
 
 ## Related Procedures
 
@@ -56,7 +56,7 @@ docs/procedures/update-documentation.md, docs/repo-governance/improvement-loops.
 
 ## Related Prompts
 
-prompts/spec_hardening_agent.md
+None.
 
 ## Related Rules
 

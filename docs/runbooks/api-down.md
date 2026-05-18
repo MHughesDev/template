@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 15.1.1 Overview
 
-Runbook: API service is down or unresponsive (§21). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Runbook: API service is down or unresponsive (§21). See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 15.1.2 Symptoms
 How to detect this failure condition.

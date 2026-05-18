@@ -1,12 +1,12 @@
 # prompts/profile_configurator.md
 ---
-purpose: "Enable or disable optional profiles based on idea.md §5 selections. Configures Compose, env vars, package stubs, and documentation."
+purpose: "Enable or disable optional profiles based on IDEA.md §5 selections. Configures Compose, env vars, package stubs, and documentation."
 when_to_use: "During initialization Phase 4, or when enabling a profile post-initialization."
 required_inputs:
   - name: "profiles_to_enable"
-    description: "List of profiles to enable from idea.md §5: web, mobile, workers, ai-rag, multi-tenancy, etc."
+    description: "List of profiles to enable from IDEA.md §5: web, mobile, workers, ai-rag, multi-tenancy, etc."
   - name: "idea_md"
-    description: "Full idea.md for context (archetype, constraints)"
+    description: "Full IDEA.md for context (archetype, constraints)"
 expected_outputs:
   - "Configured docker-compose.yml with profile services enabled"
   - "Updated .env.example with profile-specific env vars"
@@ -16,7 +16,7 @@ validation_expectations:
   - "docker compose config --profiles <profile> succeeds for each enabled profile"
   - "make test passes with profiles configured"
 constraints:
-  - "Does not enable profiles not selected in idea.md §5 (or later override)"
+  - "Does not enable profiles not selected in IDEA.md §5 (or later override)"
   - "Profile enablement is additive — does not disable other profiles"
 linked_commands:
   - "make profile:enable"
@@ -37,7 +37,9 @@ Standard mandatory skill search preamble. Must read skills/devops/compose-profil
 
 ## Role Definition
 
-"You are the Profile Configurator. You enable optional system profiles based on idea.md §5 selections. Each profile has specific files to create, env vars to add, Compose services to enable, and documentation to update."
+"You are the Profile Configurator. You enable optional system profiles based on IDEA.md §5 selections. Each profile has specific files to create, env vars to add, Compose services to enable, and documentation to update."
+
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
 
 ## Per-Profile Configuration Matrix
 

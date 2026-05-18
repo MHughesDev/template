@@ -1,18 +1,38 @@
 ---
 doc_id: "21.2"
-title: "migration procedures"
+title: "migrations"
 section: "Data"
 status: "pending-init"
-summary: "How to create, review, apply, and roll back database migrations for this specific project."
+summary: "Project-specific Alembic SOP: create, review checklist, apply, rollback, CI behavior. Populated during initialization."
+updated: "2026-05-17"
 ---
 
-# Migration Procedures
-<!-- status: pending-init -->
-<!-- initialized-by: skills/init/initialize-repo.md -->
+# Database Migrations
+<!-- populated by repo_initialize -->
 
-> **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
+## Creating migrations
 
-## Purpose
+```bash
+make migrate message="add_user_table"
+```
 
-Project-specific migration SOP: the exact commands to create a new migration, the review checklist before applying, how to apply to each environment, how to roll back, and how CI handles migration validation.
+## Review checklist
+
+- [ ] Migration has both `upgrade()` and `downgrade()`
+- [ ] Operations are idempotent where possible
+- [ ] Index additions are concurrent (PostgreSQL)
+- [ ] No data loss in `downgrade()` path
+
+## Applying migrations
+
+```bash
+make migrate-up
+```
+
+## Rollback
+
+```bash
+make migrate-down
+```
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization.]_

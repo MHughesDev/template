@@ -3,7 +3,7 @@ doc_id: "18.0"
 title: "Docs overview"
 section: "Root"
 summary: "Documentation hub. Index of all doc sections with one-line descriptions and links."
-updated: "2026-04-17"
+updated: "2026-05-17"
 ---
 
 # 18.0 — Docs overview
@@ -27,7 +27,7 @@ Ordered list of every docs/ subdirectory with description and link to its README
 - [glossary.md](glossary.md) — Ubiquitous language and domain glossary
 
 **Operating the system:**
-- [development/](development/README.md) — Local setup, coding standards, testing, env vars
+- [development/](development/README.md) — Local setup, coding standards, testing, env vars (**includes agent/queue tooling**)
 - [operations/](operations/README.md) — Docker, Kubernetes, observability, backups, rollback
 - [security/](security/README.md) — Threat model, secrets, incident response, token lifecycle
 - [runbooks/](runbooks/README.md) — Failure scenario runbooks (API down, DB failure, JWT rotation)

@@ -58,7 +58,7 @@ Desktop applications (macOS, Windows) are **out of scope** for this ADR. If a pr
 
 ### 4. Mobile lives behind an optional profile, like web
 
-`apps/mobile/` is enabled per-product when `idea.md` includes mobile in the scope. The presence of the directory does not force every initialized product to ship mobile builds, just as the presence of `apps/web/` does not force every product to ship a web client.
+`apps/mobile/` is enabled per-product when `IDEA.md` includes mobile in the scope. The presence of the directory does not force every initialized product to ship mobile builds, just as the presence of `apps/web/` does not force every product to ship a web client.
 
 ### 5. Locked technical decisions
 

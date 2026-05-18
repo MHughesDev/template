@@ -89,7 +89,7 @@ Write this in 1-2 sentences. If you can't, the scope is unclear.
 
 | Section | ID Range | Use For |
 |---------|----------|---------|
-| 5.0-5.9 | Core procedures | Make, MCP, prompts, queue, db |
+| 5.0-5.9 | Core procedures | Make, optional editor MCP, prompts, queue, db |
 | 5.10-5.19 | Workflow procedures | Archive, handoff, plan, PR, implement |
 | 5.20-5.29 | Dev procedures | Init, scaffold, skills, rules, validation |
 | 5.30+ | Meta/extended | This and future meta-procedures |

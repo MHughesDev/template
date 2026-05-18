@@ -10,11 +10,9 @@
 
 # AGENTS.md
 
-Root agent control plane. This is the default policy surface for all agents operating in this repository. It defines mission, instruction hierarchy, required workflows, validation, queue interaction, escalation, and anti-patterns. **Before reading [README.md](README.md), this file, or any other repo content:** ensure the **MicroFast dev MCP** session requirement in **section 3 step 1** is satisfied (unless your runtime cannot attach MCP — then note that in your handoff). **Read [README.md](README.md) next** for repository orientation, then read this file (`AGENTS.md`) completely before any other policy or code. Per [spec/spec.md](spec/spec.md) section 4 — sections 1–14 below are all required, plus sections 15–16 and navigation.
+Root agent control plane. This is the default policy surface for all agents operating in this repository. It defines mission, instruction hierarchy, required workflows, validation, queue interaction, escalation, and anti-patterns. **Read [README.md](README.md) first** for repository orientation, then read this file (`AGENTS.md`) completely before any other policy or code. Sections 1–14 below are all required, plus sections 15–16 and navigation.
 
 **Standing requirement:** Consult **`AGENTS.md` again** whenever the instruction hierarchy is unclear, a task touches policy (branch/PR, queue, security, docs), or you are about to **merge** or **hand off** — do not rely on memory from an earlier read.
-
-**Authoritative specification:** [spec/spec.md](spec/spec.md) (canonical full specification).
 
 ---
 
@@ -43,8 +41,6 @@ When instructions conflict, resolve in this order (higher overrides lower):
 7. **`prompts/`**
 8. General documentation under **`docs/`**
 
-**Link to authoritative source:** [spec/spec.md](spec/spec.md) (canonical full specification).
-
 **Conflict handling:** if two sources at the **same** rank disagree, **stop and escalate** — do not guess. Document the conflict in a PR or queue notes.
 
 ---
@@ -53,23 +49,22 @@ When instructions conflict, resolve in this order (higher overrides lower):
 
 For **every** task, follow this sequence:
 
-1. **MicroFast dev MCP — connect before anything else.** Before reading **README.md**, this file, source files, or acting on a task, ensure the **`microfast-dev`** MCP server is **available to your session** (see [docs/procedures/microfast-dev-mcp.md](docs/procedures/microfast-dev-mcp.md)). **If it is already connected/running** in your host (e.g. Cursor shows `microfast-dev` as connected), **do not** start a second server. **If it is not connected**, enable or start it per your client: **Cursor** — use `.cursor/mcp.json` and ensure the server is enabled in MCP settings; **stdio clients** — run `./dev_mcp/run.sh` (or `make dev-mcp` for the command line) only when needed to attach. This step is **mandatory** for coding agents using MCP-capable tooling. **Exception:** unattended automation or environments that cannot attach MCP (e.g. some CI jobs) may skip; state **"MCP unavailable"** in the handoff or job log.
-2. Read **[README.md](README.md)** (repository map, quickstart, key resources — required for every agent session).
-3. Read this **[AGENTS.md](AGENTS.md)** completely (the authoritative agent contract).
-4. **Discover relevant docs (each turn):** use **semantic / vector similarity search**, **@** references, or your environment’s **codebase search** over this repository to surface **any** relevant **skills**, **`docs/procedures/`**, **`prompts/`**, **`docs/`**, or **rules** that match the user’s query or your current step — then **read** the best-matching files. Do not skip obvious procedures or skills because you only used keyword grep. See **section 16**.
-5. Read the task description or queue item. **For queue work:** run **`make queue:top-item`** first — stdout is **one line** of JSON with every column of the top open non-human-ops row in **`queue/queue.csv`** (`id`, `batch`, `phase`, `category`, `complexity`, `goal`, `acceptance_criteria`, `touch_files`, `context_files`, and more). Parse it; **`goal`** and **`acceptance_criteria`** are the contract; follow **`agent_instructions`** when non-empty; only write paths listed in **`touch_files`**.
-6. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`** and **`queue/QUEUE_AGENT_PROMPT.md`**, and follow **`prompts/queue_worker_executor.md`** — implementation agents **do not** edit **`queue/queue.csv`** or **`queue/queuearchive.csv`** (operators own the ledger; see QUEUE_AGENT_PROMPT §Executor vs operator).
-7. **Mandatory — search `skills/` for relevant skills:** run `make skills:list` or read **`skills/README.md`**; scan titles and every **When to invoke** section; read every relevant skill in full **before** planning or writing code.
-8. Read relevant **`docs/procedures/`** for the task type.
-9. Read relevant source files and tests.
-10. **Plan** — files to touch, acceptance criteria, scope bounds, risks.
-11. **Implement** in small validated increments.
-12. **Validate** — `make lint`, `make fmt`, `make typecheck`, `make test`; if **you** changed queue CSV/docs as **operator**, `make queue:validate`.
-13. **Update documentation** if behavior or operational assumptions changed.
-14. **Queue state** — **implementation executors** do not edit `queue.csv` / `queuearchive.csv`; **operators** archive and validate per `queue/QUEUE_INSTRUCTIONS.md` after merge. Executors hand off with PR URL and evidence.
-15. **Hand off** — commands run with key output, files changed, PR link, risks, follow-ups.
+1. Read **[README.md](README.md)** (repository map, quickstart, key resources — required for every agent session).
+2. Read this **[AGENTS.md](AGENTS.md)** completely (the authoritative agent contract).
+3. **Discover relevant docs (each turn):** use **semantic / vector similarity search**, **@** references, or your environment’s **codebase search** over this repository to surface **any** relevant **skills**, **`docs/procedures/`**, **`prompts/`**, **`docs/`**, or **rules** that match the user’s query or your current step — then **read** the best-matching files. Do not skip obvious procedures or skills because you only used keyword grep. See **section 16**.
+4. Read the task description or queue item. **For queue work:** run **`make queue:top-item`** first — stdout is **one line** of JSON with every column of the top open non-human-ops row in **`queue/queue.csv`** (`id`, `batch`, `phase`, `category`, `complexity`, `goal`, `acceptance_criteria`, `touch_files`, `context_files`, and more). Parse it; **`goal`** and **`acceptance_criteria`** are the contract; follow **`agent_instructions`** when non-empty; only write paths listed in **`touch_files`**.
+5. If the task is queue work, read **`queue/QUEUE_INSTRUCTIONS.md`** and **`queue/QUEUE_AGENT_PROMPT.md`**, and follow **`prompts/queue_worker_executor.md`** — implementation agents **do not** edit **`queue/queue.csv`** or **`queue/queuearchive.csv`** (operators own the ledger; see QUEUE_AGENT_PROMPT §Executor vs operator).
+6. **Mandatory — search `skills/` for relevant skills:** run `make skills:list` or read **`skills/README.md`**; scan titles and every **When to invoke** section; read every relevant skill in full **before** planning or writing code.
+7. Read relevant **`docs/procedures/`** for the task type.
+8. Read relevant source files and tests.
+9. **Plan** — files to touch, acceptance criteria, scope bounds, risks.
+10. **Implement** in small validated increments.
+11. **Validate** — `make lint`, `make fmt`, `make typecheck`, `make test`; if **you** changed queue CSV/docs as **operator**, `make queue:validate`.
+12. **Update documentation** if behavior or operational assumptions changed.
+13. **Queue state** — **implementation executors** do not edit `queue.csv` / `queuearchive.csv`; **operators** archive and validate per `queue/QUEUE_INSTRUCTIONS.md` after merge. Executors hand off with PR URL and evidence.
+14. **Hand off** — commands run with key output, files changed, PR link, risks, follow-ups.
 
-The mandatory skill search in step 7 is **non-negotiable** for every invocation (queue item, prompt template, Cursor command, manual instruction, or any other trigger). **Section 16** complements it: similarity-style search finds files the index alone might miss.
+The mandatory skill search in step 6 is **non-negotiable** for every invocation (queue item, prompt template, Cursor command, manual instruction, or any other trigger). **Section 16** complements it: similarity-style search finds files the index alone might miss.
 
 ---
 
@@ -139,11 +134,13 @@ Minimum checks before opening a PR:
 
 | Command | Purpose |
 |---------|---------|
+| `make preflight` | Fast fail-fast checks: format, imports, headers (<10s) |
 | `make lint` | Ruff lint |
 | `make fmt` | Apply Ruff formatting |
 | `make fmt-check` | Ruff format verify (CI mode) |
 | `make typecheck` | mypy strict |
-| `make test` | Full test suite with coverage |
+| `make test` | Full test suite with coverage (pre-PR gate) |
+| `make test:affected` | Changed-code only (fast per-increment validation) |
 | `make queue:validate` | If any queue CSV or queue docs were touched |
 | `make docs:check` | If documentation content changed |
 | `make security:scan` | Auth, tenancy, secrets, or security-sensitive changes |
@@ -163,7 +160,6 @@ Update docs alongside code when:
 - **`docs/api/error-codes.md`** — any error code added or changed.
 - **`docs/operations/`** — deployment, Docker, or Kubernetes behavior changes.
 - **`docs/procedures/`** — procedure steps or commands change.
-- **`CHANGELOG.md`** — every meaningful user-visible or operator-visible change; required before release.
 - **`docs/adr/`** — significant architectural decisions.
 
 **Docs are not optional. Undocumented behavior is an agent failure.**
@@ -240,7 +236,6 @@ Document in the PR or queue notes: what is unclear, options, what information is
 - Never swallow exceptions (`except Exception: pass`).
 - Never query the database directly in a router handler.
 - Never hardcode tenant IDs, user IDs, or environment-specific values in code.
-- Never skip **MicroFast dev MCP** connectivity (section 3 step 1) before reading or acting when your environment supports MCP — unless documented as unavailable.
 - Never skip the mandatory **skill search** before execution.
 - Never fix unrelated bugs in the same PR without approval.
 
@@ -248,7 +243,7 @@ Document in the PR or queue notes: what is unclear, options, what information is
 
 ## 13. Mandatory skill search before execution
 
-Per spec §4.1 item 13 — required for **every** task:
+Required for **every** task:
 
 1. Identify the task domain (e.g. FastAPI endpoint, queue CSV edit, security review).
 2. Run **`make skills:list`** or read **`skills/README.md`** for the skill index.
@@ -265,10 +260,9 @@ This step applies whether the task arrives via queue, prompt, command, or chat. 
 
 Every prompt template used by agents must include or reference a short preamble that:
 
-- Points to **MicroFast dev MCP** connectivity (**section 3 step 1**) before other reads or actions when MCP is available.
-- Points to the mandatory skill search (section 13 / spec §4.1 item 13).
+- Points to **README.md** and **AGENTS.md** (especially section 3 workflow) before execution.
+- Points to the mandatory skill search (section 13).
 - References **`prompts/skill_searcher.md`** for task-to-skill matching.
-- Reminds agents to read **AGENTS.md** before execution.
 
 Prompt authors follow **`docs/procedures/add-prompt-template.md`**.
 
@@ -276,7 +270,7 @@ Prompt authors follow **`docs/procedures/add-prompt-template.md`**.
 
 ## 15. Python implementation procedures
 
-All Python code in this repository MUST follow **[PYTHON_PROCEDURES.md](PYTHON_PROCEDURES.md)** — the 18 implementation procedures that govern type safety, boundary definitions, import direction, error handling, configuration, async patterns, and testing.
+All Python code in this repository MUST follow **[docs/development/python-procedures.md](docs/development/python-procedures.md)** — the 18 implementation procedures that govern type safety, boundary definitions, import direction, error handling, configuration, async patterns, and testing.
 
 Key rules enforced:
 
@@ -298,7 +292,7 @@ See the full document for all 18 procedures, the condensed 12-point rule set, an
 **What to do:**
 
 1. **Each turn** (or whenever the task pivots): run **vector / semantic similarity search**, **embedding-backed retrieval**, or your host product’s **natural-language codebase search** against this repo. Query text should reflect the **user’s ask** and your **current subgoal** (e.g. “FastAPI tenant isolation procedure”, “queue archive steps”, “skill for migrations”).
-2. **Prioritize** hits under **`skills/`**, **`docs/procedures/`**, **`prompts/`**, **`docs/`**, **`.cursor/rules/`**, and **`spec/spec.md`** when they match. Open and read what is relevant; **do not** ignore a strong match because it was not in `skills/README.md`.
+2. **Prioritize** hits under **`skills/`**, **`docs/procedures/`**, **`prompts/`**, **`docs/`**, and **`.cursor/rules/`** when they match. Open and read what is relevant; **do not** ignore a strong match because it was not in `skills/README.md`.
 3. **Combine** with the **mandatory skill search** (section 13): use the index for completeness; use semantic search for **recall** (synonyms, related tasks, cross-domain docs).
 4. If your environment has **no** semantic search, use the closest equivalent: **broad keyword search**, **`@` file references**, or **`prompts/skill_searcher.md`** — still aim to surface **any** applicable procedure or skill before coding.
 
@@ -322,12 +316,12 @@ See the full document for all 18 procedures, the condensed 12-point rule set, an
 | Compose stack | `compose.yml` + `compose.override.yml` + `compose.traefik.yml` |
 | Deploy | `deploy/docker/`, `deploy/k8s/` (base + overlays) |
 | Documentation | `docs/` — start with **`docs/README.md`** |
-| Initialization input | `idea.md` (filled by developer) → canonical skill `skills/init/repo_initialize.md` |
+| Initialization input | `IDEA.md` (filled by developer) → canonical skill `skills/init/repo_initialize.md` |
 | Skills | `skills/` — **`skills/README.md`** |
 | Prompts | `prompts/` — **`prompts/README.md`** |
 | Queue (open / archive) | `queue/queue.csv`, `queue/queuearchive.csv` |
 | Scripts (Make backends) | `scripts/` |
-| Machine control | `.cursor/rules/`, `.cursor/commands/`, `.cursor/mcp.json` (MicroFast dev MCP — see [docs/procedures/microfast-dev-mcp.md](docs/procedures/microfast-dev-mcp.md)) |
+| Machine control | `.cursor/rules/`, `.cursor/commands/`, `.cursor/mcp.json` (optional third-party MCP servers) |
 
 ### Canonical commands
 

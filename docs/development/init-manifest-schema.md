@@ -2,7 +2,7 @@
 doc_id: "3.6"
 title: "Init manifest schema"
 section: "Development"
-summary: "Defines init-manifest.json fields produced from idea.md for deterministic initialization."
+summary: "Defines init-manifest.json fields produced from IDEA.md for deterministic initialization."
 updated: "2026-04-17"
 ---
 
@@ -11,11 +11,11 @@ updated: "2026-04-17"
 ## 3.6.1 Overview
 
 `init-manifest.json` is produced by `scripts/idea-parser.py` from structured fields in
-`idea.md`. It is the **contract** for `scripts/init-from-idea.py` and for agents using
+`IDEA.md`. It is the **contract** for `scripts/init-from-idea.py` and for agents using
 `prompts/repo_initializer.md`.
 
 The manifest is **write-once per initialization** for a given project decision set. To
-change profile decisions after init, update `idea.md`, delete `init-manifest.json`, set
+change profile decisions after init, update `IDEA.md`, delete `init-manifest.json`, set
 INIT_META `initialized: false`, and re-run `make init:from-idea`.
 
 ## 3.6.2 Top-level keys
@@ -37,7 +37,7 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 | `init_version` | string | Engine version (e.g. `2.0`). |
 | `idea_path` | string | Absolute or relative path parsed. |
 | `parsed_at` | string | ISO-8601 timestamp. |
-| `initialized` | boolean | Always `false` at parse time; orchestrator updates `idea.md` when done. |
+| `initialized` | boolean | Always `false` at parse time; orchestrator updates `IDEA.md` when done. |
 | `init_manifest_hash` | string | SHA-256 of canonical JSON (without the hash field), hex digest. |
 
 ## 3.6.3 `resolved_decisions` sub-schema
@@ -71,7 +71,7 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 {
   "meta": {
     "init_version": "2.0",
-    "idea_path": "/path/to/repo/idea.md",
+    "idea_path": "/path/to/repo/IDEA.md",
     "parsed_at": "2026-04-15T12:00:00+00:00",
     "initialized": false,
     "init_manifest_hash": "ab12cd34…"
@@ -187,5 +187,5 @@ INIT_META `initialized: false`, and re-run `make init:from-idea`.
 ## 3.6.5 Reading order for agents
 
 1. Read `meta.init_version` and `init_manifest_hash` for traceability.
-2. Read `resolved_decisions` in full — **no inference from prose in `idea.md`** during execution.
+2. Read `resolved_decisions` in full — **no inference from prose in `IDEA.md`** during execution.
 3. Cross-check `open_questions` against the PR risk list.

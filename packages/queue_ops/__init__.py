@@ -1,5 +1,5 @@
-# dev_mcp/queue_ops/__init__.py
-"""Queue CSV read/validate helpers (stdlib only). Used by MCP tools and Make scripts."""
+# packages/queue_ops/__init__.py
+"""Queue CSV read/validate helpers (stdlib only). Shared by Make scripts and tests."""
 
 from __future__ import annotations
 

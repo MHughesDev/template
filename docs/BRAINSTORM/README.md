@@ -24,7 +24,7 @@ updated: "2026-04-20"
 
 ## 19.0.3 What this folder is not
 
-- Not a substitute for `spec/spec.md`, ADRs, or the CSV queue.
+- Not a substitute for ADRs or the CSV queue.
 - Not an automatic trigger for CI or deploys.
 - Not a place to paste secrets or credentials.
 

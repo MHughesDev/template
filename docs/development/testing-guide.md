@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 3.9.1 Overview
 
-Pytest layout, markers, async tests, and coverage expectations for the API. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Pytest layout, markers, async tests, and coverage expectations for the API. See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 3.9.2 Commands
 

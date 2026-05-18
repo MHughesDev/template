@@ -22,13 +22,13 @@ One paragraph. The repo self-audit is the periodic health check that verifies th
 
 - Python 3.12+ with virtual environment activated
 - `queue/queue.csv` and `queue/queuearchive.csv` exist
-- `spec/spec.md` accessible (for inventory reference)
+- AGENTS.md accessible (for inventory reference)
 
 ## Relevant Files/Areas
 
 - `scripts/audit-self.sh` — the shell script that orchestrates the audit
 - `skills/agent-ops/repo-self-audit.py` — the Python audit engine
-- `spec/spec.md` §26 — the required file inventory
+- AGENTS.md §26 — the required file inventory
 - `.cursor/rules/global.md` — file title comment standard (§1.7)
 
 ## Step-by-Step Method

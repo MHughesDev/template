@@ -16,4 +16,4 @@ updated: "2026-04-17"
 
 ## 13.2.1 Overview
 
-Release promotion path: dev → staging → prod with gates and verification (§11.3). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Release promotion path: dev → staging → prod with gates and verification (§11.3). See [AGENTS.md](../../AGENTS.md) for validation commands.

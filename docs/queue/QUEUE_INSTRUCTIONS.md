@@ -228,12 +228,12 @@ Run `make queue:validate` after any modification. Validation checks:
 
 ## Initialization-derived MVP work
 
-When repository initialization runs ([`skills/init/repo_initialize.md`](../skills/init/repo_initialize.md)), it adds an **initial batch** of queue rows that walk the product from the baseline app to the MVP defined in `idea.md §4`. These rows follow the same schema as every other row but with three conventions that make the MVP path auditable:
+When repository initialization runs ([`skills/init/repo_initialize.md`](../skills/init/repo_initialize.md)), it adds an **initial batch** of queue rows that walk the product from the baseline app to the MVP defined in `IDEA.md §4`. These rows follow the same schema as every other row but with three conventions that make the MVP path auditable:
 
 ### How initialized MVP work enters the queue
 
-1. The skill decomposes each `idea.md §4` MVP bullet into one or more queue-sized rows (S or M complexity).
-2. Each row's `context_files` references the docs the skill itself produced in phase 2 (e.g. `docs/architecture/data-model.md`, `docs/api/endpoints.md`). Executors do not have to re-read `idea.md`.
+1. The skill decomposes each `IDEA.md §4` MVP bullet into one or more queue-sized rows (S or M complexity).
+2. Each row's `context_files` references the docs the skill itself produced in phase 2 (e.g. `docs/architecture/data-model.md`, `docs/api/endpoints.md`). Executors do not have to re-read `IDEA.md`.
 3. Rows are tagged on the MVP critical path with `batch=mvp-1`, `mvp-2`, … in dependency order. The first executable MVP row is the topmost row in `queue/queue.csv` that has all dependencies satisfied.
 
 ### How agents select the next initialization row
@@ -242,7 +242,7 @@ Standard `make queue:top-item` semantics apply — the first non-human-ops data 
 
 ### Blocked open-question rows
 
-For every entry in `idea.md §19` that the initializer judged blocking (architecture or implementation), it creates a `category=human-ops` row with:
+For every entry in `IDEA.md §19` that the initializer judged blocking (architecture or implementation), it creates a `category=human-ops` row with:
 
 - `goal` = `Resolve open question: <verbatim question>`
 - `notes` = `blocked_by: open_question`
@@ -291,7 +291,7 @@ Q-EX1,mvp-1,2,core-api,S,
 
 ### Example 2 — blocked open-question row (`category=human-ops`)
 
-Created by `repo_initialize` when `idea.md §19` lists a question whose answer changes product behavior. Skipped by `make queue:top-item`; resolved by a human writing the answer into `docs/open-questions.md` and archiving this row.
+Created by `repo_initialize` when `IDEA.md §19` lists a question whose answer changes product behavior. Skipped by `make queue:top-item`; resolved by a human writing the answer into `docs/open-questions.md` and archiving this row.
 
 ```
 Q-EX2,,,human-ops,S,
@@ -300,7 +300,7 @@ Q-EX2,,,human-ops,S,
 ,
 ,
 ,
-"idea.md,docs/open-questions.md",
+"IDEA.md,docs/open-questions.md",
 "docs/open-questions.md",
 ,
 ,

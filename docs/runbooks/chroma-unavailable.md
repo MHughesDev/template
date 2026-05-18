@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 15.2.1 Overview
 
-Runbook: ChromaDB unavailable — graceful degradation via kill switch. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Runbook: ChromaDB unavailable — graceful degradation via kill switch. See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 15.2.2 Symptoms
 How to detect this failure condition.

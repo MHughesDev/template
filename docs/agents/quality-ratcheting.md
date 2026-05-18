@@ -16,4 +16,4 @@ updated: "2026-04-17"
 
 ## 8.4.1 Overview
 
-How to ratchet quality over time: increasing coverage floors, adding rules, tightening procedures. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+How to ratchet quality over time: increasing coverage floors, adding rules, tightening procedures. See [AGENTS.md](../../AGENTS.md) for validation commands.

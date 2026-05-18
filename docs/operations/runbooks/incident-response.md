@@ -1,18 +1,39 @@
 ---
 doc_id: "6.12"
-title: "incident response runbook"
+title: "runbook — incident response"
 section: "Operations"
 status: "pending-init"
-summary: "Step-by-step response procedure for the most likely failure modes specific to this project."
+summary: "Incident-response scenarios for the project's likely failure modes. Populated during initialization."
+updated: "2026-05-17"
 ---
 
-# Incident Response Runbook
-<!-- status: pending-init -->
-<!-- initialized-by: skills/init/initialize-repo.md -->
+# Runbook: Incident Response
+<!-- populated by repo_initialize -->
 
-> **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
+## Incident classification
 
-## Purpose
+| Severity | Criteria | Response time |
+|----------|----------|---------------|
+| SEV-1 | _[Complete outage]_ | _[Immediate]_ |
+| SEV-2 | _[Degraded service]_ | _[30 minutes]_ |
+| SEV-3 | _[Minor issue]_ | _[Next business day]_ |
 
-Project-specific incident response steps for the failure modes most likely given this project's archetype, data layer, and enabled profiles. Each scenario lists detection signals, immediate actions, investigation steps, and resolution criteria.
+## Response procedures
+
+### 1. Assess
+
+_[How to evaluate scope and impact]_
+
+### 2. Contain
+
+_[How to limit damage]_
+
+### 3. Resolve
+
+_[Common resolution steps]_
+
+## Post-incident
+
+_[Required documentation and follow-ups]_
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization.]_

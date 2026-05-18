@@ -30,6 +30,7 @@ htmlcov/
 .tox/
 nosetests.xml
 pytest-cache/
+.testmondata
 
 # Type checking
 .mypy_cache/

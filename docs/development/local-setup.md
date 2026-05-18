@@ -3,7 +3,7 @@ doc_id: "3.7"
 title: "local setup"
 section: "Development"
 summary: "Detailed local development setup. All Make/Task targets documented with expected behavior (§10.1)."
-updated: "2026-04-17"
+updated: "2026-05-17"
 ---
 
 # 3.7 — local setup
@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 3.7.1 Overview
 
-Detailed local development setup. All Make/Task targets documented with expected behavior (§10.1). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Detailed local development setup. All Make/Task targets documented with expected behavior (§10.1). See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 3.7.2 Environment
 
@@ -61,19 +61,42 @@ Run `make help` for the full list. Common targets:
 | `make coverage-ratchet` / `make coverage:ratchet` | Compare `coverage.xml` to policy floor |
 | `make rule-lint` / `make rule:lint` | Lint `.cursor/rules` front matter |
 | `make adr-index` / `make adr:index` | Regenerate `docs/adr/README.md` |
-| `make codebase-summary` | Regenerate `CODEBASE_SUMMARY.md` |
+| `make codebase-summary` | Regenerate `docs/generated/CODEBASE_SUMMARY.md` |
 
 Colon forms (e.g. `make queue:peek`) are aliases to the hyphenated targets in the root `Makefile`.
 
-## 3.7.5 IDE
+## 3.7.5 Agent and queue tooling (no bundled repo MCP)
+
+This template **does not** ship a stdio MCP server that wraps the queue, Make, or repo files. Agents follow root **[AGENTS.md](../../AGENTS.md)** using the **Makefile** and **scripts** only.
+
+| Need | What to use |
+|------|----------------|
+| Active queue row (all columns, one JSON line) | `make queue:top-item` or `python scripts/queue_top_item.py` |
+| Validate open + archive CSV | `make queue:validate` or `python scripts/queue_validate.py` |
+| Queue CSV field rules and invariants | **[packages/queue_ops/AGENTS.md](../../packages/queue_ops/AGENTS.md)** and module **`packages.queue_ops`** |
+
+**Implementation note:** `packages/queue_ops` is stdlib-only Python shared by the queue scripts and tests. Keep CSV logic there; do not duplicate column lists or validators in ad hoc scripts.
+
+**FastAPI MCP (optional product surface):** The backend may expose MCP via **`fastapi-mcp`** at **`/mcp`** when that integration is enabled — that is **application** MCP, unrelated to editor automation. See **[add-mcp-tool.md](../procedures/add-mcp-tool.md)**.
+
+## 3.7.6 IDE
 
 Use your editor’s Python integration pointed at `.venv`. The repo uses Ruff and mypy; matching the versions in `pyproject.toml` avoids CI drift.
 
-### MicroFast dev MCP (optional)
+### Optional MCP servers in Cursor
 
-After `pip install -e ".[dev]"`, run `./dev_mcp/run.sh` (stdio) or use Cursor’s registered server from `.cursor/mcp.json`. Full tool and resource list: [microfast-dev-mcp.md](../procedures/microfast-dev-mcp.md).
+You may register **your own** MCP servers (Figma, GitLab, Firebase, etc.) in Cursor — globally or in this repo’s **`.cursor/mcp.json`**. The template ships **`mcpServers: {}`** as a placeholder only; nothing in **`AGENTS.md`** requires a project MCP connection.
 
-## 3.7.6 Related
+## 3.7.7 Windows Users
+
+This template standardizes on Unix-like shells. Windows developers should use one of:
+
+- **WSL 2** (Windows Subsystem for Linux) — Recommended. Full Linux environment with native Docker integration.
+- **Git Bash** — Lightweight option bundled with Git for Windows. Run `./setup.sh` and all `make` targets from Git Bash.
+
+PowerShell and `cmd.exe` are not directly supported. If you must use them, run commands through WSL (`wsl -e ./setup.sh`).
+
+## 3.7.8 Related
 
 - [environment-vars.md](environment-vars.md) — settings reference
 - [testing-guide.md](testing-guide.md) — pytest and coverage

@@ -15,7 +15,7 @@ validation_expectations:
   - "Rule is specific and actionable (not vague)"
   - "Rule does not contradict other rules"
 constraints:
-  - "Does not modify spec/spec.md or AGENTS.md for rule content"
+  - "Does not modify AGENTS.md for rule content"
   - "Rule must be auditable by scripts/rules-check.sh"
 linked_commands:
   - "make rules:check"
@@ -36,6 +36,8 @@ Standard mandatory skill search preamble. MUST read skills/repo-governance/autho
 ## Role Definition
 
 "You are the Rule Authoring Agent. You create or update constraints that prevent recurring mistakes. Rules must be specific, auditable, and non-contradictory. A rule like 'be careful with security' is worthless; a rule like 'NEVER use os.getenv() outside config.py' is enforceable."
+
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
 
 ## Rule Structure
 

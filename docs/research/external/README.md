@@ -1,17 +1,25 @@
 ---
-doc_id: "23.3"
-title: "Research external resources policy"
+doc_id: "23.5"
+title: "external resources policy"
 section: "Research"
-summary: "Copyright and quoting policy for external documentation linked from docs/research."
+status: "current"
+summary: "Policy for linking to external resources vs. mirroring content."
 updated: "2026-05-17"
 ---
 
-# External resources policy
+# External Resources Policy
 
-We **do not** vendor full copies of third-party documentation into this repository.
+## Link-don't-mirror
 
-- **Allowed:** Short excerpts with attribution, URLs, access dates, and paraphrased summaries in `../notes/` and `../SOURCES.md`.
-- **Preferred:** Link to the canonical URL; capture only what is needed for engineering decisions.
-- **Trademark:** Product names (AWS, Appium, Playwright, etc.) belong to their owners.
+This repository **links** to external resources rather than mirroring them.
 
-If you need offline archives for compliance, store them outside git or in private artifact storage — not in this folder tree.
+## Exceptions
+
+Content may be mirrored when:
+- _[License permits and attribution required]_
+- _[Content is at risk of disappearing]_
+- _[Digest/summary is needed for offline work]_
+
+## Citation
+
+Always cite external resources in [`SOURCES.md`](../SOURCES.md) with `[Snnn]` convention.

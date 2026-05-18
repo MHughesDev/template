@@ -4,9 +4,9 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-.PHONY: help dev dev-api dev-web dev-mcp lint lint-web fmt fmt-check fmt-fix typecheck test test-web test-unit test-integration test-smoke \
+.PHONY: help dev dev-api dev-web lint lint-web fmt fmt-check fmt-fix typecheck test test-web test-unit test-integration test-smoke \
         migrate migrate\:create ci-migrate-dry-run db-reset db-seed docs-check docs-map-check docs-generate docs-index \
-        queue-peek queue-top-item queue-validate queue-archive queue-archive-top queue-pr-merge queue-graph queue-analyze \
+        queue-peek queue-top-item queue-validate queue-archive queue-archive-top queue-pr-merge queue-graph queue-analyze queue-metrics \
         prompt-list skills-list rules-check audit-self \
         security-scan secret-scan image-build image-scan \
         release-prepare release-verify \
@@ -50,11 +50,6 @@ test-web:
 generate-client:
 	@cd apps/web && bun run generate-client
 
-## dev-mcp: how to run the MicroFast dev MCP server (stdio)
-dev-mcp:
-	@echo "MicroFast dev MCP (stdio for Cursor / Claude / Codex): ./dev_mcp/run.sh"
-	@echo "Repo config: .cursor/mcp.json"
-
 ## lint: Ruff lint
 lint:
 	@scripts/lint.sh
@@ -89,6 +84,14 @@ test-integration:
 ## test-smoke: smoke tests only
 test-smoke:
 	@TEST_TYPE=smoke scripts/test.sh
+
+## test-affected: pytest with testmon (changed-code only)
+test-affected:
+	@scripts/test-affected.sh
+
+## preflight: fast deterministic checks (<10s fail-fast)
+preflight:
+	@scripts/preflight.sh
 
 ## migrate: alembic upgrade head
 migrate:
@@ -157,6 +160,10 @@ queue-graph:
 ## queue-analyze: validate + analysis stub
 queue-analyze:
 	@scripts/queue-analyze.sh
+
+## queue-metrics: summarize audit.log metrics
+queue-metrics:
+	@scripts/queue-metrics.sh
 
 ## prompt-list: list prompts/*.md
 prompt-list:
@@ -230,7 +237,7 @@ profile-enable:
 env-generate:
 	@scripts/generate-env.sh
 
-## codebase-summary: regenerate CODEBASE_SUMMARY.md
+## codebase-summary: regenerate docs/generated/CODEBASE_SUMMARY.md
 codebase-summary:
 	@scripts/codebase-summary.sh
 
@@ -275,11 +282,11 @@ project-health:
 	@scripts/project-health.sh
 
 # --- Colon-style aliases (spec §10.2 and docs). GNU Make needs escaped colons in target names.
-.PHONY: skills\:list queue\:peek queue\:top-item queue\:validate queue\:archive queue\:archive-top queue\:pr-merge queue\:graph queue\:analyze audit\:self rules\:check \
+.PHONY: skills\:list queue\:peek queue\:top-item queue\:validate queue\:archive queue\:archive-top queue\:pr-merge queue\:graph queue\:analyze queue\:metrics audit\:self rules\:check \
         docs\:check docs\:generate docs\:index security\:scan release\:prepare release\:verify docker\:up docker\:down \
         health\:check project\:health profile\:enable \
         scaffold\:module test\:unit test\:integration \
-        test\:smoke fmt\:fix fmt\:check prompt\:list db\:reset db\:seed ci\:migrate-dry-run image\:build image\:scan \
+        test\:smoke test\:affected preflight fmt\:fix fmt\:check prompt\:list db\:reset db\:seed ci\:migrate-dry-run image\:build image\:scan \
         k8s\:render k8s\:validate env\:generate skill\:docs-gen \
         secret\:scan test\:scaffold env\:sync coverage\:ratchet rule\:lint adr\:index
 
@@ -292,6 +299,7 @@ queue\:archive-top: queue-archive-top
 queue\:pr-merge: queue-pr-merge
 queue\:graph: queue-graph
 queue\:analyze: queue-analyze
+queue\:metrics: queue-metrics
 audit\:self: audit-self
 rules\:check: rules-check
 docs\:check: docs-check
@@ -308,6 +316,8 @@ scaffold\:module: scaffold-module
 test\:unit: test-unit
 test\:integration: test-integration
 test\:smoke: test-smoke
+test\:affected: test-affected
+preflight: preflight
 fmt\:fix: fmt-fix
 fmt\:check: fmt-check
 prompt\:list: prompt-list

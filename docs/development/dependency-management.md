@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 3.2.1 Overview
 
-How Python dependencies are declared, upgraded, and reviewed in this repo. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+How Python dependencies are declared, upgraded, and reviewed in this repo. See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 3.2.2 Where dependencies live
 
@@ -28,7 +28,7 @@ How Python dependencies are declared, upgraded, and reviewed in this repo. See [
 2. Reinstall: `pip install -e ".[dev]"`.
 3. Run `make lint`, `make typecheck`, `make test`.
 4. Run `make security-scan` / `make security:scan` for dependency-related security review.
-5. Document notable upgrades in `CHANGELOG.md` when behavior or operators are affected.
+5. Document notable upgrades when behavior or operators are affected.
 
 ## 3.2.4 Related
 

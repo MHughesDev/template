@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from dev_mcp.queue_ops import validate_archive, validate_open
+from packages.queue_ops import validate_archive, validate_open
 
 
 def main() -> int:

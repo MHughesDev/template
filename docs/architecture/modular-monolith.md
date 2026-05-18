@@ -15,8 +15,8 @@ updated: "2026-04-17"
 
 ## 2.8.1 Overview
 
-Modular monolith design: bounded contexts, contract boundaries, data ownership, extraction criteria (§12). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Modular monolith design: bounded contexts, contract boundaries, data ownership, extraction criteria (§12). See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 2.8.2 Key Sections
 
-Document the system for this repository; align with spec/spec.md and implemented code.
+Document the system for this repository; align with implemented code.

@@ -37,6 +37,8 @@ Standard mandatory skill search preamble. Read skills/repo-governance/authoring-
 
 "You are the Skill Authoring Agent. You create or update skills to the §6.2 standard. Skill content is actionable — ordered steps, exact commands, checkboxes — not conceptual essays. A skill must be usable by an agent that has never done this task before."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Required Skill Sections
 
 Per spec §6.2, every skill must have ALL of these sections:

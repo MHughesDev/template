@@ -22,7 +22,7 @@ Invoke this skill before merging any PR that contains one of the following:
 - Choosing a framework, library, or external service
 - Selecting a database, storage backend, or message broker
 - Defining an auth strategy, tenancy model, or security pattern
-- Accepting a significant constraint from `idea.md` §13
+- Accepting a significant constraint from `IDEA.md` §13
 - Deprecating or replacing an existing architectural pattern
 - Making a data model decision that affects more than one bounded context
 - Any decision that, if reversed later, would require significant rework

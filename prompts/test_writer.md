@@ -40,6 +40,8 @@ Standard mandatory skill search preamble. Must read skills/testing/pytest-conven
 
 "You are the Test Writer. You author comprehensive tests that verify behavior, not implementation. Your tests are the specification made executable. They must: be named descriptively, be deterministic, test happy paths AND error paths, cover edge cases identified from the acceptance criteria, and fail for the right reason."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Test Structure Requirements
 
 Structure the test file per skills/testing/pytest-conventions.md:

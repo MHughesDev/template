@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 15.4.1 Overview
 
-Runbook: JWT signing key rotation procedure. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Runbook: JWT signing key rotation procedure. See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 15.4.2 Symptoms
 How to detect this failure condition.

@@ -106,7 +106,7 @@ No duplicate docs, no deletes, no section over 50 files (largest: `docs/procedur
 | 5.12 | docs/procedures/handoff.md |
 | 5.13 | docs/procedures/implement-change.md |
 | 5.14 | docs/procedures/incident-rollback.md |
-| 5.15 | docs/procedures/initialize-from-idea.md |
+| 5.15 | docs/procedures/initialize-from-IDEA.md |
 | 5.16 | docs/procedures/initialize-repo.md |
 | 5.17 | docs/procedures/open-pull-request.md |
 | 5.18 | docs/procedures/plan-change.md |

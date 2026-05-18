@@ -1,20 +1,32 @@
 ---
 doc_id: "2.18"
-title: "mobile architecture"
+title: "mobile"
 section: "Architecture"
 status: "pending-init"
-summary: "Mobile screen inventory, navigation structure, auth and token storage, offline behavior. Not applicable if no mobile profile."
+summary: "Mobile architecture: screen inventory, navigation, auth/token storage, offline behavior. Populated during initialization from IDEA.md §11 when mobile is enabled."
+updated: "2026-05-17"
 ---
 
 # Mobile Architecture
-<!-- status: pending-init -->
-<!-- initialized-by: skills/init/initialize-repo.md -->
+<!-- derived from: IDEA.md §11 — populated by repo_initialize -->
 
-> **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
->
-> If no mobile profile is enabled, this file will contain: `Not applicable — no mobile profile enabled for this project.`
+## Screen inventory
 
-## Purpose
+| Screen | Purpose |
+|--------|---------|
+| _[Home]_ | _[Main screen]_ |
+| _[Login]_ | _[Authentication]_ |
 
-Documents the mobile layer: every screen, navigation structure, how auth tokens are stored on device, offline behavior decisions, and how the app communicates with the API.
+## Navigation
+
+_[Tab-based, drawer, stack navigation]_
+
+## Auth & token storage
+
+_[Secure storage approach]_
+
+## Offline behavior
+
+_[What works offline, sync strategy]_
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization when mobile is enabled.]_

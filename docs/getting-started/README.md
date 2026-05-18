@@ -3,7 +3,7 @@ doc_id: "1.0"
 title: "Getting Started overview"
 section: "Getting Started"
 summary: "Getting started index. Links to prerequisites and quickstart."
-updated: "2026-04-17"
+updated: "2026-05-17"
 ---
 
 # 1.0 — Getting Started overview
@@ -15,5 +15,5 @@ Brief introduction to the getting started guide. Who this section is for (new de
 
 ## 1.0.2 Contents
 Link list to child docs:
-- [prerequisites.md](prerequisites.md) — required tools and versions
+- [prerequisites.md](prerequisites.md) — required tools, versions, and coding-agent notes (no bundled dev MCP)
 - [quickstart.md](quickstart.md) — from clone to running dev server

@@ -15,4 +15,4 @@ updated: "2026-04-17"
 
 ## 16.3.1 Overview
 
-Incident response plan: classification, evidence capture, communication, remediation, post-incident (§2). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Incident response plan: classification, evidence capture, communication, remediation, post-incident (§2). See [AGENTS.md](../../AGENTS.md) for validation commands.

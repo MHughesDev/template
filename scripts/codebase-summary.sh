@@ -68,11 +68,11 @@ summary = f"""# CODEBASE_SUMMARY.md
 - Models:    `apps/api/app/models.py`
 - Frontend:  `apps/web/src/main.tsx`
 - Compose:   `compose.yml` + `compose.override.yml`
-- Spec: `spec/spec.md`
+- AGENTS: `AGENTS.md`
 - Agent control: `AGENTS.md` (root) + `apps/api/AGENTS.md` + `apps/web/AGENTS.md`
-- Python rules: `PYTHON_PROCEDURES.md`
+- Python rules: `docs/development/python-procedures.md`
 - Commands: `make help`
 """
-Path("CODEBASE_SUMMARY.md").write_text(summary, encoding="utf-8")
-print("Regenerated CODEBASE_SUMMARY.md")
+Path("docs/generated/CODEBASE_SUMMARY.md").write_text(summary, encoding="utf-8")
+print("Regenerated docs/generated/CODEBASE_SUMMARY.md")
 PY

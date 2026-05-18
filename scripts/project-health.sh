@@ -18,7 +18,7 @@ echo "[project:health] adr index regeneration check"
 python3 skills/repo-governance/adr-index-generator.py --repo-root . >/dev/null
 
 echo "[project:health] placeholder scan (docs + idea)"
-if rg -n "TODO|TBD|<placeholder>|pending-init|Stub procedure placeholder|Compatibility stub" docs idea.md >/tmp/project_health_placeholders.txt; then
+if rg -n "TODO|TBD|<placeholder>|pending-init|Stub procedure placeholder|Compatibility stub" docs IDEA.md >/tmp/project_health_placeholders.txt; then
   echo "Found unresolved placeholders/stubs:"
   cat /tmp/project_health_placeholders.txt
   exit 1

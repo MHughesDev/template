@@ -15,4 +15,4 @@ updated: "2026-04-17"
 
 ## 10.0.1 Overview
 
-Prompt library conventions, metadata format, how to add templates (§7.1, §7.2). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Prompt library conventions, metadata format, how to add templates (§7.1, §7.2). See [AGENTS.md](../../AGENTS.md) for validation commands.

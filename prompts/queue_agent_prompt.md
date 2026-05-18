@@ -1,3 +1,4 @@
+# prompts/queue_agent_prompt.md
 ---
 purpose: "Define the primary behavior contract for agents processing queue-driven work."
 when_to_use: "When an agent is executing work selected from queue/queue.csv."
@@ -19,8 +20,6 @@ linked_procedures:
 linked_skills:
   - "skills/agent-ops/queue-triage.md"
 ---
-
-# prompts/queue_agent_prompt.md
 
 <!-- CROSS-REFERENCES -->
 <!-- - Read by: agents processing queue items (injected as context) -->

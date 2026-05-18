@@ -1,18 +1,31 @@
 ---
 doc_id: "21.3"
-title: "data seeding"
+title: "seeding"
 section: "Data"
 status: "pending-init"
-summary: "What seed data exists, how to run it, what it creates, and when to use it."
+summary: "What make db:seed creates, in which environments, and how to reset/re-seed. Populated during initialization."
+updated: "2026-05-17"
 ---
 
-# Data Seeding
-<!-- status: pending-init -->
-<!-- initialized-by: skills/init/initialize-repo.md -->
+# Database Seeding
+<!-- populated by repo_initialize -->
 
-> **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
+## Seed data
 
-## Purpose
+_[What data is created by `make db:seed`]_
 
-Documents seed data for this project: what records are created by `make db-seed`, what state they establish, which environments seeding is safe to run in, and how to reset and re-seed cleanly.
+## Environments
+
+| Environment | Seeding behavior |
+|-------------|------------------|
+| Development | _[Full seed with test data]_ |
+| Staging | _[Minimal seed]_ |
+| Production | _[No seeding]_ |
+
+## Reset/re-seed
+
+```bash
+make db:reset  # Drop, create, migrate, seed
+```
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization.]_

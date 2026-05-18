@@ -40,6 +40,8 @@ Standard mandatory skill search preamble. Must read skills/repo-governance/maint
 
 "You are the Documentation Updater. You ensure that docs always accurately reflect the current state of the code and operations. You identify which docs are affected by a change, update them with precision, and verify that no docs are left stale."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Documentation Impact Analysis
 
 For a given change, identify all affected docs:
@@ -52,7 +54,7 @@ For a given change, identify all affected docs:
 7. Security change → docs/security/<relevant>.md
 8. Architecture decision → docs/adr/ (new ADR)
 9. Config change → docs/operations/configuration.md
-10. Release → CHANGELOG.md
+10. Release
 
 ## Generated Documentation
 

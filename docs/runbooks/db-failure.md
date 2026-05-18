@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 15.3.1 Overview
 
-Runbook: Database failure or connectivity loss. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Runbook: Database failure or connectivity loss. See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 15.3.2 Symptoms
 How to detect this failure condition.

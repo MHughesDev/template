@@ -17,7 +17,7 @@ Update this table when you cut releases and drop old lines.
 
 1. **Do not** open a public GitHub issue for undisclosed security vulnerabilities.
 2. Use **GitHub Security Advisories**: open the repository **Security** tab and choose **Report a vulnerability**.
-3. If GitHub is unavailable, email **`security@example.com`** (replace with your project contact during initialization from `idea.md`).
+3. If GitHub is unavailable, email **`security@example.com`** (replace with your project contact during initialization from `IDEA.md`).
 4. Include: short description, steps to reproduce, suspected impact, and optional fix ideas.
 5. **Acknowledgment:** we aim to acknowledge within **48 hours** and provide a substantive update within **7 days** (best effort).
 6. **Disclosure:** please allow **90 days** for a fix before public disclosure, unless agreed otherwise.

@@ -61,7 +61,7 @@ Q-NNNb after. Run `make queue:validate` after insertion. Fix any failures.
 
 ## Step 6 — Document in CHANGELOG
 
-Add an entry to `CHANGELOG.md` noting the decomposition:
+Add an entry noting the decomposition:
 `Decomposed Q-NNN into Q-NNNa, Q-NNNb, ... (granularity requirement)`
 
 ---

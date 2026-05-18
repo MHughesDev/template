@@ -34,7 +34,7 @@ This skill is written for **AI agent execution**, not human team workshops. All 
 
 ## Prerequisites
 
-- `idea.md` is filled out (or, for non-initialization invocations, the artifact under design is fully described in repo docs).
+- `IDEA.md` is filled out (or, for non-initialization invocations, the artifact under design is fully described in repo docs).
 - The references this skill cites are available: `references/tactics-catalog.md`, `references/atam-procedure.md`, `references/adr-templates.md`.
 - The ADR template `docs/adr/template.md` is reachable for Stage 3 recording.
 - You can write to `docs/adr/` and have permission to open a PR with the new ADR(s).
@@ -44,7 +44,7 @@ This skill is written for **AI agent execution**, not human team workshops. All 
 ## Overview: The Three-Stage Pipeline
 
 ```
-STAGE 1 — READ & EXTRACT     → Gather architecturally significant requirements from idea.md
+STAGE 1 — READ & EXTRACT     → Gather architecturally significant requirements from IDEA.md
 STAGE 2 — DESIGN (ADD loop)  → Iteratively decompose using tactics and patterns
 STAGE 3 — RECORD             → Write ADRs; optionally run lightweight ATAM
 ```
@@ -55,11 +55,11 @@ Every stage is mandatory. Do not skip Stage 1 even when requirements seem obviou
 
 ## STAGE 1 — Read the System
 
-Read `idea.md` completely before beginning. Extract the four ADD inputs:
+Read `IDEA.md` completely before beginning. Extract the four ADD inputs:
 
 ### 1A — Functional Requirements
 
-Read `idea.md` §2 (problem/solution) and §4.3 (workflows). Identify the **architecturally significant** use cases — those that stress the system, introduce complexity, or constrain structure.
+Read `IDEA.md` §2 (problem/solution) and §4.3 (workflows). Identify the **architecturally significant** use cases — those that stress the system, introduce complexity, or constrain structure.
 
 Ask:
 - What are the top 5–10 user-facing capabilities?
@@ -80,11 +80,11 @@ Quality attributes drive architectural decisions more than any functional requir
 | Security | Unauthenticated request to protected endpoint | 401 returned, attempt logged |
 | Scalability | Traffic grows 10× | System scales without re-architecture |
 
-Read `idea.md` §13 (constraints), §6 (auth requirements), and §5 (profiles) to populate this table. Then select the **3–5 architectural drivers** — the QAS the architecture *must* satisfy. Everything else is desirable but does not shape structure.
+Read `IDEA.md` §13 (constraints), §6 (auth requirements), and §5 (profiles) to populate this table. Then select the **3–5 architectural drivers** — the QAS the architecture *must* satisfy. Everything else is desirable but does not shape structure.
 
 ### 1C — Constraints
 
-Read `idea.md` §13 explicitly. Collect forced decisions that narrow the design space:
+Read `IDEA.md` §13 explicitly. Collect forced decisions that narrow the design space:
 - **Technology**: existing stack, approved languages, mandated cloud provider
 - **Organizational**: team size implied by the project scope, skill set assumptions
 - **Business**: timeline, compliance requirements (GDPR, HIPAA, SOC2 if mentioned in §13)
@@ -96,7 +96,7 @@ Classify the current work. This changes how much analysis depth is needed:
 
 | Purpose | When it applies | Depth needed |
 |---|---|---|
-| **Greenfield** | First initialization from `idea.md` | Full ADD loop — all decisions are open |
+| **Greenfield** | First initialization from `IDEA.md` | Full ADD loop — all decisions are open |
 | **Incremental** | Adding a profile, bounded context, or external integration | ADD loop scoped to the new element only |
 | **Evaluation** | Assessing existing architecture against a new QAS | Lightweight ATAM (Stage 3B) |
 
@@ -269,7 +269,7 @@ For any architectural decision changed or confirmed by the ATAM analysis, update
 
 After completing all stages, verify before writing any `docs/architecture/` files or application code:
 
-- [ ] All architectural drivers listed with priority and source in `idea.md`
+- [ ] All architectural drivers listed with priority and source in `IDEA.md`
 - [ ] Pattern selection matrix completed; highest scorer selected with explicit tradeoff note
 - [ ] Element decomposition maps every bounded context to a module path
 - [ ] Each significant decision has a corresponding ADR in `docs/adr/`

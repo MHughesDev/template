@@ -70,9 +70,24 @@ class QueueItem:
     summary: str
     dependencies: list[str]
     related_files: str
+    touch_files: str
     notes: str
     created_date: str
     status: str = ""
+
+    def get_touch_files_list(self) -> list[str]:
+        """Parse touch_files column into list of paths."""
+        if not self.touch_files:
+            return []
+        return [t.strip() for t in self.touch_files.split(",") if t.strip()]
+
+    def get_all_file_refs(self) -> list[str]:
+        """Get all file references from touch_files and summary parsing."""
+        touch = self.get_touch_files_list()
+        # Also extract from summary + related_files via regex
+        combined = f"{self.summary}\n{self.related_files}"
+        found = PATH_RE.findall(combined)
+        return sorted(set(touch + found))
 
 
 @dataclass
@@ -201,10 +216,14 @@ class ConflictDetector:
     """Detect overlapping file/module references between open items."""
 
     def detect(self, items: list[QueueItem]) -> list[ConflictReport]:
+        """Detect conflicts between items based on touch_files and related files.
+
+        Returns ConflictReport for each pair with overlapping file references.
+        Risk levels: high (>3 overlapping files), medium (1-3 files), low (none).
+        """
         refs: dict[str, list[str]] = {}
         for it in items:
-            combined = f"{it.summary}\n{it.related_files}"
-            refs[it.id] = PATH_RE.findall(combined)
+            refs[it.id] = it.get_all_file_refs()
         reports: list[ConflictReport] = []
         ids = list(refs.keys())
         for i, a in enumerate(ids):
@@ -214,12 +233,11 @@ class ConflictDetector:
                 if not overlap:
                     continue
                 n = len(overlap)
+                # Risk based on overlap count
                 if n > 3:
                     risk = "high"
-                elif n >= 1:
-                    risk = "medium"
                 else:
-                    risk = "low"
+                    risk = "medium"
                 reports.append(
                     ConflictReport(
                         item_a=a,
@@ -229,6 +247,29 @@ class ConflictDetector:
                     )
                 )
         return reports
+
+    def detect_conflicts_with_touch_files(
+        self, items: list[QueueItem]
+    ) -> list[dict[str, Any]]:
+        """Enhanced conflict detection focusing on explicit touch_files.
+
+        Returns structured conflict data suitable for JSON serialization.
+        """
+        conflicts = self.detect(items)
+        return [
+            {
+                "item_a": c.item_a,
+                "item_b": c.item_b,
+                "overlapping_files": c.overlapping_patterns,
+                "risk_level": c.risk,
+                "recommendation": (
+                    "Cannot parallelize — sequential execution required"
+                    if c.risk == "high"
+                    else "Review before parallel execution"
+                ),
+            }
+            for c in conflicts
+        ]
 
 
 def load_items(path: Path) -> list[QueueItem]:
@@ -251,6 +292,7 @@ def load_items(path: Path) -> list[QueueItem]:
                 summary=(row.get("summary") or "").strip(),
                 dependencies=deps,
                 related_files=(row.get("related_files") or "").strip(),
+                touch_files=(row.get("touch_files") or "").strip(),
                 notes=(row.get("notes") or "").strip(),
                 created_date=(row.get("created_date") or "").strip(),
             )

@@ -1,33 +1,35 @@
 ---
 doc_id: "23.0"
-title: "DeviceLab research workspace"
+title: "research workspace"
 section: "Research"
-summary: "Index for DeviceLab external research: bibliography, queries, notes, and decision tables."
+status: "current"
+summary: "Pre-initialization research workspace: decisions, sources, notes, and external references."
 updated: "2026-05-17"
 ---
 
-# Research workspace
+# Research Workspace
 
-External discovery for **DeviceLab / BYOC cloud device platform** design. This folder keeps queries, skim notes, and bibliographies **separate from** internal architecture docs under `docs/architecture/` and brainstorm materials under `docs/BRAINSTORM/`.
+This folder holds research and decision-making artifacts created **before** repository initialization. Once initialization runs, key findings are synthesized into `IDEA.md` and design docs.
 
-## Folder layout
+## Structure
 
-| Path | Purpose |
-|------|---------|
-| [**SOURCES.md**](SOURCES.md) | Canonical bibliography: URLs, titles, access dates, one-line takeaways. Use citation IDs like `[S###]` elsewhere. |
-| [**open_ended_question.md**](open_ended_question.md) | Decision table: open design questions → recommended answers, confidence, pointers to sources. |
-| [**queries/queries-results.md**](queries/queries-results.md) | All web search strings used + compact outcomes (no raw dumps). |
-| [**notes/**](notes/) | Domain skim notes written **after** reading search snippets or fetched pages. Aggregates findings; does not mirror third-party docs in full. |
-| [**reference/**](reference/) | **Tracked upstream registry** + **direct-read digest** (repos/specs we cite in design). |
-| [**external/README.md**](external/README.md) | Policy for linking vs quoting external material (copyright, freshness). |
+| Folder | Purpose |
+|--------|---------|
+| [`notes/`](notes/) | Themed synthesis notes from research |
+| [`reference/`](reference/) | External reference registry and upstream digests |
+| [`queries/`](queries/) | Search logs and query results |
+| [`external/`](external/) | Policy for external resource linking |
 
-## How to extend
+## Key files
 
-1. Add a row to `queries-results.md` when running new searches.
-2. Add `[S###]` entries to `SOURCES.md` for every URL you rely on.
-3. Update `notes/*.md` when synthesis crosses multiple sources.
-4. Update `open_ended_question.md` when a decision changes.
+- [`SOURCES.md`](SOURCES.md) — Bibliography with `[Snnn]` citation convention
+- [`open_ended_question.md`](open_ended_question.md) — Decision table with confidence levels
+- [`reference/EXTERNAL_REFERENCE.md`](reference/EXTERNAL_REFERENCE.md) — Tracked upstream registry
 
-## Access dates
+## Usage
 
-Unless noted per entry, batch material was collected **2026-05-17**.
+1. Research topics relevant to the product
+2. Record findings in appropriate subfolders
+3. Cite sources as `[S001]`, `[S002]`, etc. in `SOURCES.md`
+4. Document decisions in `open_ended_question.md`
+5. When complete, run `skills/init/repo_initialize.md`

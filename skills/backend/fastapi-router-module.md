@@ -13,7 +13,7 @@ One paragraph. Adding a new FastAPI module is the most common structural change 
 
 ## When to Invoke
 
-- When adding a new bounded context (from idea.md §4.2 or a new queue item)
+- When adding a new bounded context (from IDEA.md §4.2 or a new queue item)
 - When the initialization agent scaffolds domain modules
 - When splitting a module that has grown too large
 - When adding a new feature area to an existing module

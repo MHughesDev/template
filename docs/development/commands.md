@@ -1,18 +1,44 @@
 ---
 doc_id: "3.11"
-title: "command reference"
+title: "commands"
 section: "Development"
 status: "pending-init"
-summary: "Every make target relevant to this project with a description of what it does and when to use it."
+summary: "Make target catalog scoped to this product (dev / test / db / queue / CI / profiles). Populated during initialization."
+updated: "2026-05-17"
 ---
 
-# Command Reference
-<!-- status: pending-init -->
-<!-- initialized-by: skills/init/initialize-repo.md -->
+# Development Commands
+<!-- populated by repo_initialize -->
 
-> **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
+## Development
 
-## Purpose
+| Command | Purpose |
+|---------|---------|
+| `make dev` | Start development servers |
+| `make docker-up` | Start with Docker Compose |
+| `make docker-down` | Stop Docker Compose |
 
-A complete reference of every `make` target relevant to this project, what each does, when to use it, and any required variables. Derived from the Makefile and trimmed to what is actually used by this project's archetype and enabled profiles.
+## Testing
+
+| Command | Purpose |
+|---------|---------|
+| `make test` | Run full test suite |
+| `make test:affected` | Run tests for changed files |
+
+## Database
+
+| Command | Purpose |
+|---------|---------|
+| `make migrate` | Create migration |
+| `make migrate-up` | Apply migrations |
+| `make migrate-down` | Rollback migration |
+| `make db:seed` | Seed database |
+
+## Queue
+
+| Command | Purpose |
+|---------|---------|
+| `make queue:top-item` | Show next queue item |
+| `make queue:validate` | Validate queue CSV |
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization.]_

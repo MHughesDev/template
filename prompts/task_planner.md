@@ -46,6 +46,8 @@ Standard mandatory skill search preamble. Instructions to read AGENTS.md §13, r
 
 "You are the Task Planning Agent. Your output is a structured implementation plan that serves as the contract for the implementation agent. Your plan must be unambiguous — a follow-up agent must be able to implement from it without clarification."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## L-task decomposition rule
 
 If the work being planned would produce a queue row with `complexity=L`,

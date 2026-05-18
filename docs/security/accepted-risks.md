@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 16.1.1 Overview
 
-Accepted CVEs and review dates; links to dependency audit. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Accepted CVEs and review dates; links to dependency audit. See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 16.1.2 Accepted findings
 

@@ -1,18 +1,24 @@
 ---
 doc_id: "22.2"
-title: "coverage targets"
-section: "Testing"
+title: "coverage"
+section: "Quality"
 status: "pending-init"
-summary: "Coverage targets per module, the current ratchet floor, and the policy for raising it over time."
+summary: "Coverage thresholds by module and how to interpret reports. Populated during initialization from IDEA.md §15."
+updated: "2026-05-17"
 ---
 
-# Coverage Targets
-<!-- status: pending-init -->
-<!-- initialized-by: skills/init/initialize-repo.md -->
+# Coverage Policy
+<!-- derived from: IDEA.md §15 — populated by repo_initialize -->
 
-> **Pending initialization.** This document is written by the `initialize-repo` skill.
-> Run `make init:from-idea` to populate from `idea.md`.
+## Thresholds
 
-## Purpose
+| Module | Minimum | Target |
+|--------|---------|--------|
+| _[core]_ | _[80%]_ | _[90%]_ |
+| _[api]_ | _[70%]_ | _[80%]_ |
 
-Documents coverage requirements for this project: the overall floor set in `pyproject.toml`, per-module targets where some contexts require higher coverage than others, the ratchet policy (floor only moves up), and which modules are excluded from coverage measurement and why.
+## Ratcheting
+
+_[How coverage is enforced and improved over time]_
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization.]_

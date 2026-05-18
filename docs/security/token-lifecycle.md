@@ -15,4 +15,4 @@ updated: "2026-04-17"
 
 ## 16.6.1 Overview
 
-JWT token lifecycle details: issuance parameters, refresh windows, revocation mechanism, key rotation (§14). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+JWT token lifecycle details: issuance parameters, refresh windows, revocation mechanism, key rotation (§14). See [AGENTS.md](../../AGENTS.md) for validation commands.

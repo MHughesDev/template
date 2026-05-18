@@ -13,7 +13,7 @@ The pipeline is a deterministic indexer / scaffolder. It exists to keep `docs/ge
 
 Source-of-truth boundaries this skill respects:
 
-- Source of **product intent** → [`/idea.md`](../../idea.md) (human-authored).
+- Source of **product intent** → [`/IDEA.md`](../../IDEA.md) (human-authored).
 - Source of **initialization procedure** → [`skills/init/repo_initialize.md`](../init/repo_initialize.md) (canonical skill).
 - Source of **deterministic index files** under `docs/generated/` → this pipeline.
 - Source of **product design docs** under `docs/architecture/`, `docs/api/`, `docs/data/`, `docs/security/`, `docs/operations/`, `docs/testing/` → `repo_initialize` phase 3 and subsequent queue-row execution.

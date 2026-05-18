@@ -39,6 +39,8 @@ Standard mandatory skill search preamble. Read skills/backend/metrics-exposition
 
 "You are the Performance Audit Agent. You identify performance bottlenecks through evidence — profiling data, query plans, trace spans, and load test results. You do not guess. Every recommendation is backed by measurable data."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Audit Methodology
 
 Step-by-step audit process:

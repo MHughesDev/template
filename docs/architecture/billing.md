@@ -1,15 +1,32 @@
 ---
 doc_id: "2.14"
-title: "billing and payments"
+title: "billing"
 section: "Architecture"
-status: "current"
-summary: "Not applicable for DeviceLab because the product is BYOC and does not implement hosted billing."
+status: "pending-init"
+summary: "Billing architecture: provider, webhook handling, subscription model, retry/dunning. Populated during initialization from IDEA.md §9 when billing is enabled."
 updated: "2026-05-17"
 ---
 
-# Billing and Payments
-<!-- derived from: spec/spec.md (DeviceLab product section), idea.md §5 §18 -->
+# Billing
+<!-- derived from: IDEA.md §9 — populated by repo_initialize -->
 
-Not applicable - no billing profile enabled for this project.
+## Billing provider
 
-DeviceLab is BYOC and local-first. Users pay AWS directly in their own account. The product includes cost estimation and guardrails, but no payment processor, invoicing, subscription ledger, or hosted billing endpoints.
+_[e.g., Stripe]_
+
+## Subscription model
+
+| Tier | Price | Features |
+|------|-------|----------|
+| _[Free]_ | _[$0]_ | _[Feature list]_ |
+| _[Pro]_ | _[$10/mo]_ | _[Feature list]_ |
+
+## Webhook handling
+
+_[Endpoint security, event types handled, idempotency]_
+
+## Retry/dunning
+
+_[Failed payment handling, retry schedule]_
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization when billing is enabled.]_

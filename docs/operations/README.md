@@ -15,4 +15,4 @@ updated: "2026-04-17"
 
 ## 6.0.1 Overview
 
-Operations documentation index. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Operations documentation index. See [AGENTS.md](../../AGENTS.md) for validation commands.

@@ -25,7 +25,7 @@ updated: "2026-04-20"
 
 ## 19.1.3 Read-only rule (critical)
 
-- **Do not** edit `apps/`, `packages/`, `deploy/`, `queue/`, root `spec/spec.md`, or other implementation artifacts **solely** because a brainstorm file suggests it.
+- **Do not** edit `apps/`, `packages/`, `deploy/`, `queue/`, or other implementation artifacts **solely** because a brainstorm file suggests it.
 - **Do** use brainstorms as **input** to planning and to drafting **queue** items when the idea is explicitly marked ready for implementation (see pipeline doc).
 
 Creating or editing files under `docs/BRAINSTORM/` is allowed; that is documentation of ideas, not product code.
@@ -42,7 +42,7 @@ When the brainstorm’s **Status** is set to **ready for implementation**:
 
 1. Follow [`PIPELINE-from-brainstorm-to-queue.md`](PIPELINE-from-brainstorm-to-queue.md) end-to-end.
 2. Use the queue as the execution lane: [`queue/QUEUE_INSTRUCTIONS.md`](../../queue/QUEUE_INSTRUCTIONS.md).
-3. **Code first, then spec/docs:** implement and merge behavior per queue items, **then** update `spec/spec.md` and other docs to match (per pipeline step 6).
+3. **Code first, then docs:** implement and merge behavior per queue items, **then** update other docs to match (per pipeline step 6).
 
 ## 19.1.6 Handoff
 

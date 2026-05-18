@@ -46,12 +46,46 @@ Numbered steps:
    - Section 1: Dependency readiness (which items are ready, which are blocked)
    - Section 2: Complexity estimates (S/M/L/XL per item)
    - Section 3: Batch suggestions (items that share context/module)
-   - Section 4: Conflict risk (items that may touch the same files)
+   - Section 4: Conflict detection (items with overlapping touch_files)
 4. Use the analysis to:
    - Mark ready vs. blocked items
    - Assign batch values to suggested groups
    - Note conflict risks in queue notes
 5. Never auto-edit the CSV based on analysis — human confirms changes
+
+### 12.2.5 Conflict Detection
+
+The conflict detection system analyzes `touch_files` from queue items to identify potential parallel execution conflicts:
+
+**How it works:**
+- Parses `touch_files` column (comma-separated paths) for each open queue item
+- Compares file paths between all pairs of open items
+- Reports overlapping files as conflict risks
+
+**Risk levels:**
+- **High risk**: >3 overlapping files — items cannot safely run in parallel
+- **Medium risk**: 1-3 overlapping files — review before parallel execution
+
+**Example output:**
+```json
+{
+  "conflicts": [
+    {
+      "item_a": "Q-042",
+      "item_b": "Q-043",
+      "overlapping_files": ["apps/api/app/users/router.py", "apps/api/app/users/schemas.py"],
+      "risk_level": "medium",
+      "recommendation": "Review before parallel execution"
+    }
+  ]
+}
+```
+
+**Using conflicts for batch planning:**
+1. Run `make queue:analyze` and inspect the `conflicts` section
+2. For high-risk pairs: schedule sequentially (add dependency or same batch)
+3. For medium-risk pairs: review file overlap scope — may be safe if touching different parts
+4. Document parallelization decisions in queue notes
 
 ## Command Examples
 

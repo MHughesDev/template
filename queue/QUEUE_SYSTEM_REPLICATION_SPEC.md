@@ -54,7 +54,7 @@ Recreate the following files and paths:
 - `scripts/queue-pr-merge.sh`
 
 Dependency module used by scripts:
-- `dev_mcp/queue_ops/__init__.py`
+- `packages/queue_ops/__init__.py`
 
 Also wire Makefile targets (section 7 below).
 
@@ -207,7 +207,7 @@ Behavior:
 - if no data rows: emit JSON `{"error":"no_open_items"...}` and zero exit
 - else print JSON object for first row with trimmed fields in `OPEN_FIELDS`
 
-### 8.2 `queue_validate.py` and `dev_mcp.queue_ops`
+### 8.2 `queue_validate.py` and `packages.queue_ops`
 
 Current implementation validates:
 - open header matches `OPEN_FIELDS`
@@ -350,7 +350,7 @@ Queue seeding script:
 
 Behavior:
 - prefer `init-manifest.json` path via `skills/init/queue-seeder.py`
-- fallback to parsing `idea.md` via `--from-idea`
+- fallback to parsing `IDEA.md` via `--from-idea`
 
 This is required if you want full repo parity (not just runtime queue processing).
 
@@ -363,7 +363,7 @@ To reproduce this repo’s queue system *exactly as implemented right now*, pres
 1. `scripts/queue_archive.py` has `OPEN_FIELDS` that omit `constraints`, while active queue schema includes `constraints`.
 2. `queue/QUEUE_INSTRUCTIONS.md` lifecycle language still includes agent-archives wording in parts, while executor prompts enforce operator-only archive.
 3. `docs/procedures/add-queue-category.md` is a skeleton template, not a fully fleshed operational SOP.
-4. `dev_mcp.queue_ops.validate_*` enforces header and summary length but does not enforce all documented invariants (e.g., category membership, duplicate IDs, circular deps) directly in shown code.
+4. `packages.queue_ops.validate_*` enforces header and summary length but does not enforce all documented invariants (e.g., category membership, duplicate IDs, circular deps) directly in shown code.
 5. Current `queue/queuearchive.csv` includes duplicated/irregular rows after canonical header (historical drift artifact).
 
 If you want **functional parity** instead of **bug-for-bug parity**, fix these explicitly in your destination implementation.
@@ -405,7 +405,7 @@ After cloning this system into another repo, run these checks:
 - [ ] Executor prompt and processor prompt created.
 - [ ] Queue rules file wired under `.cursor/rules/queue.md`.
 - [ ] Queue scripts created and executable.
-- [ ] `dev_mcp.queue_ops` module (or equivalent shared queue helpers) implemented.
+- [ ] `packages.queue_ops` module (or equivalent shared queue helpers) implemented.
 - [ ] Make targets + colon aliases wired.
 - [ ] Queue intelligence skill + script installed.
 - [ ] Queue docs/procedures included and cross-linked.
@@ -417,11 +417,11 @@ After cloning this system into another repo, run these checks:
 
 Use these source-of-truth layers in this order when reproducing:
 
-1. `spec/spec.md` queue sections (system-level contract)
+1. Queue sections (system-level contract)
 2. `AGENTS.md` queue interaction + mandatory skill search
 3. `queue/QUEUE_INSTRUCTIONS.md` and `queue/QUEUE_AGENT_PROMPT.md`
 4. `.cursor/rules/queue.md`
-5. scripts + `dev_mcp.queue_ops` implementation behavior
+5. scripts + `packages.queue_ops` implementation behavior
 6. queue docs/procedures/prompts/skills
 
 This ordering is necessary because there are minor doc-vs-code drifts in current repo state.

@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 3.8.1 Overview
 
-How to structure bounded-context modules under `apps/api/app/` (router, service, models, tests). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+How to structure bounded-context modules under `apps/api/app/` (router, service, models, tests). See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 3.8.2 Standard layout
 

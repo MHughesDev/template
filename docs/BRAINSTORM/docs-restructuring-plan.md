@@ -163,7 +163,7 @@ Keep all.
 - 5.24 Update/create skill ✓
 - 5.25 Validate change ✓
 - 5.26 Implementation loop ✓
-- 5.27 MicroFast MCP ✓
+- ~~5.27 MicroFast MCP~~ (removed — use `packages/queue_ops` + Make/scripts)
 - 5.28 Queue decomposition ✓
 - 5.29 Template upgrade ✓
 

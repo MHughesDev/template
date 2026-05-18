@@ -60,7 +60,7 @@ docs/procedures/handle-blocked-work.md
 docs/procedures/handoff.md
 docs/procedures/implement-change.md
 docs/procedures/incident-rollback.md
-docs/procedures/initialize-from-idea.md
+docs/procedures/initialize-from-IDEA.md
 docs/procedures/initialize-repo.md
 docs/procedures/open-pull-request.md
 docs/procedures/plan-change.md

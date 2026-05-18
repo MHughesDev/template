@@ -1,15 +1,29 @@
 ---
 doc_id: "2.11"
-title: "ai and rag architecture"
+title: "ai rag"
 section: "Architecture"
-status: "current"
-summary: "Not applicable for RAG in DeviceLab v1; AI usage is MCP control + optional vision escalation, not document retrieval."
+status: "pending-init"
+summary: "Ingestion, embeddings, retrieval, model provider abstraction, and kill-switch behavior. Populated during initialization from IDEA.md §9 or §11 when AI/RAG is enabled."
 updated: "2026-05-17"
 ---
 
-# AI and RAG Architecture
-<!-- derived from: spec/spec.md (DeviceLab product section), idea.md §4 §9 -->
+# AI / RAG
+<!-- derived from: IDEA.md §9/§11 — populated by repo_initialize -->
 
-Not applicable - no AI/RAG profile enabled for this project.
+## Model provider
 
-DeviceLab v1 does not implement a retrieval-augmented generation pipeline. The AI surface is MCP tooling plus optional vision escalation (BYOK) for screen understanding, which is documented in architecture and MCP design docs rather than RAG ingestion/retrieval flows.
+_[e.g., OpenAI GPT-4, Anthropic Claude, local Llama]_
+
+## Ingestion pipeline
+
+_[How documents are chunked and embedded]_
+
+## Retrieval
+
+_[Vector DB used, similarity metric, top-k settings]_
+
+## Kill-switch
+
+_[How to disable AI features in emergency]_
+
+_[This section is populated by `skills/init/repo_initialize.md` during repository initialization when AI/RAG is enabled.]_

@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 3.4.1 Overview
 
-Environment variable reference. All vars documented with defaults, read by `apps/api/app/config.py` via Pydantic Settings (§10.3). See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Environment variable reference. All vars documented with defaults, read by `apps/api/app/config.py` via Pydantic Settings (§10.3). See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 3.4.2 Rules
 

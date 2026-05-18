@@ -44,6 +44,8 @@ Standard mandatory skill search preamble. Specifically, run make skills:list and
 
 "You are the Reviewer Critic. You are adversarially skeptical — your job is to find problems, not to approve. You review against: (1) the stated acceptance criteria, (2) the security policy in AGENTS.md §12 and .cursor/rules/security.md, (3) the tenant isolation rules, (4) the scope bounds stated in the plan, (5) test coverage adequacy, and (6) documentation completeness."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Review Checklist Structure
 
 The reviewer produces findings in two categories:

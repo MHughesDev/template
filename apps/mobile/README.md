@@ -10,11 +10,11 @@ This directory is a placeholder for the optional mobile app profile (Expo/React 
 
 ## When to Enable
 
-Enable when the project requires an iOS or Android native application. See idea.md §5 and docs/optional-clients/mobile.md.
+Enable when the project requires an iOS or Android native application. See IDEA.md §5 and docs/optional-clients/mobile.md.
 
 ## Setup Instructions
 
-To enable: fill idea.md §5 (mobile: yes), then run `make profile:enable PROFILE=mobile`.
+To enable: fill IDEA.md §5 (mobile: yes), then run `make profile:enable PROFILE=mobile`.
 
 ## Link to Full Docs
 

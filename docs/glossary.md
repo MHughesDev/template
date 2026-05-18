@@ -32,7 +32,7 @@ Table of repository-specific terms. Columns: Term, Definition, Used In. Rows:
 | **Prompt template** | A reusable LLM prompt in prompts/ for a recurring agent role | prompts/ |
 | **Rule** | A constraint in .cursor/rules/ enforced on every agent interaction | .cursor/rules/ |
 | **Profile** | An optional feature set (web, mobile, workers, ai-rag, multi-tenancy) | docker-compose.yml, .env.example |
-| **Archetype** | The project type selected in idea.md §3 that determines default profiles | idea.md §3 |
+| **Archetype** | The project type selected in IDEA.md §3 that determines default profiles | IDEA.md §3 |
 | **Bounded context** | A domain module in apps/api/app/<context>/ with its own router/models/service | apps/api/app/ |
 | **Mandatory skill search** | The required step of searching skills/ before beginning any task | AGENTS.md §13 |
 | **Handoff** | The evidence document produced when completing or blocking work | docs/procedures/handoff.md |
@@ -41,7 +41,7 @@ Table of repository-specific terms. Columns: Term, Definition, Used In. Rows:
 ## 18.1.3 Domain Model Terms (Placeholder)
 
 Table for project-specific domain terms. Columns: Term, Definition, Module.
-Note: This section is populated during initialization from idea.md §4 domain model. Initialization agent fills in entity definitions here.
+Note: This section is populated during initialization from IDEA.md §4 domain model. Initialization agent fills in entity definitions here.
 
 | Term | Definition | Module |
 |------|-----------|--------|

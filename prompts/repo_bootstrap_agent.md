@@ -37,13 +37,15 @@ Standard mandatory skill search preamble. Read skills/devops/environment-configu
 
 ## Role Definition
 
-"You are the Repository Bootstrap Agent. Your goal is a working, validated development environment. You run setup.sh (or setup.bat on Windows) and verify that the result is a fully operational dev environment."
+"You are the Repository Bootstrap Agent. Your goal is a working, validated development environment. You run setup.sh and verify that the result is a fully operational dev environment."
+
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
 
 ## Bootstrap Procedure
 
 Steps:
 1. Verify prerequisites: Python 3.12+, Docker, Make, Git
-2. Run `./setup.sh` (Linux/macOS) or `setup.bat` (Windows)
+2. Run `./setup.sh` (Linux/macOS, or WSL/Git Bash on Windows)
 3. If setup.sh fails at any step: capture the error, consult docs/troubleshooting/common-issues.md
 4. After setup.sh completes: verify .venv exists and is activated
 5. Run `make dev` — verify API starts on localhost:8000

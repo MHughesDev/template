@@ -15,7 +15,7 @@ updated: "2026-04-17"
 
 ## 3.5.1 Overview
 
-Git branching, PR workflow, and review expectations for this repository. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Git branching, PR workflow, and review expectations for this repository. See [AGENTS.md](../../AGENTS.md) for validation commands.
 
 ## 3.5.2 Branches
 

@@ -50,6 +50,8 @@ You are the **only** agent role that should run queue implementation work. Your 
 2. **Do not run** `make queue:archive-top`, `make queue:archive`, or any target whose purpose is moving or editing queue rows **as this agent**. Queue lifecycle is **human-operator** (or separate automation outside this role).
 3. **Do not** paste PR URLs into queue **notes** yourself — put the PR URL in the **PR description** and **handoff**; the operator updates CSV if your process requires it.
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Required read order (before coding)
 
 1. **`queue/QUEUE_INSTRUCTIONS.md`** — complete (understand lifecycle even though you do not execute CSV steps).
@@ -81,5 +83,7 @@ After CI is green and the PR is ready to merge:
 - [ ] Ran `make queue:top-item` and parsed JSON (including `agent_instructions` and `constraints` if present)
 - [ ] Skill search completed
 - [ ] Branch `queue/<id>-...`
+- [ ] Ran `make preflight` — fast fail-fast checks passed
+- [ ] Ran `make test:affected` or `make test` — tests passing
 - [ ] No files under `queue/` modified except **read** of markdown instructions (and read-only peek at CSV if needed for dependencies)
 - [ ] PR + handoff complete

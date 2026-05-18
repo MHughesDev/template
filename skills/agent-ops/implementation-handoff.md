@@ -36,13 +36,15 @@ One paragraph. A handoff document is the evidence artifact that makes the next a
 
 Numbered steps:
 1. Run `python skills/agent-ops/handoff-template-generator.py` to generate a pre-populated template
-2. **Files changed**: list every file with a one-line description of the change
-3. **Commands run**: for each command run during implementation, paste the key output (not full — just pass/fail line and any errors)
-4. **Acceptance criteria verification**: for each criterion from the plan, state met/not-met with evidence
-5. **Risks**: list any residual risks discovered during implementation
-6. **Follow-ups**: list any out-of-scope findings that became queue items or issues
-7. **PR link**: paste the PR URL
-8. **Queue state**: for executors, list operator steps to archive; operators update notes / archive CSV
+2. Fill out **.github/PULL_REQUEST_TEMPLATE.md** sections:
+   - **Summary**: 1-2 sentences of what changed and why
+   - **Acceptance Criteria Verification**: per-criterion table (met/not-met/partial with evidence)
+   - **Commands Run**: paste output from `make preflight`, `make lint`, `make typecheck`, `make test`
+   - **Files Changed**: table with file paths and one-line change descriptions
+   - **Residual Risks**: any discovered risks, edge cases
+   - **Follow-ups**: out-of-scope items that became new queue rows
+3. **PR link**: paste the PR URL
+4. **Queue state**: for executors, list operator archive steps per AGENTS.md §9; operators update notes / archive CSV
 
 ## Command Examples
 
@@ -52,13 +54,15 @@ Numbered steps:
 
 ## Validation Checklist
 
-- [ ] Files changed list is complete (no files missing)
+- [ ] PR follows `.github/PULL_REQUEST_TEMPLATE.md` structure
+- [ ] Summary section captures what and why
+- [ ] Acceptance criteria verification table is complete
 - [ ] Commands run section has key output for each validation command
-- [ ] All acceptance criteria addressed (met/not-met/partial with evidence)
+- [ ] Files changed table lists all modified files
 - [ ] Residual risks documented
 - [ ] Follow-up queue items or issues created and referenced
 - [ ] PR URL included
-- [ ] Queue notes updated with PR URL
+- [ ] Queue notes include operator archive steps (executor handoff)
 
 ## Common Failure Modes
 

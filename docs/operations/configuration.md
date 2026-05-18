@@ -15,4 +15,4 @@ updated: "2026-04-17"
 
 ## 6.2.1 Overview
 
-Operations configuration reference: how config flows from env vars through Pydantic settings to application code. See [AGENTS.md](../../AGENTS.md) for validation commands and [spec/spec.md](../../spec/spec.md) for the full specification.
+Operations configuration reference: how config flows from env vars through Pydantic settings to application code. See [AGENTS.md](../../AGENTS.md) for validation commands.

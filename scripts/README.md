@@ -18,19 +18,22 @@ Table mapping each script to its Make target and purpose:
 | `lint.sh` | `make lint` | Run ruff lint checks |
 | `fmt.sh` | `make fmt` | Apply ruff formatting |
 | `fmt-check.sh` | `make fmt-check` | Verify ruff formatting (CI) |
-| `codebase-summary.sh` | `make codebase-summary` | Regenerate `CODEBASE_SUMMARY.md` |
+| `codebase-summary.sh` | `make codebase-summary` | Regenerate `docs/generated/CODEBASE_SUMMARY.md` |
 | `typecheck.sh` | `make typecheck` | Run mypy --strict |
+|| preflight.sh | make preflight | Fast fail-fast validation (<10s) |
 | `test.sh` | `make test`, `make test:unit`, `make test:integration`, `make test:smoke` | Run test suite |
+|| 	est-affected.sh | make test:affected | Run pytest with testmon (changed-code only) |
 | `migrate.sh` | `make migrate`, `make migrate:create` | Database migrations |
 | `ci-migrate-dry-run.sh` | `make ci-migrate-dry-run` | SQLite migration preview + apply (parity with CI `migrate-dry-run`) |
 | `docs-check.sh` | `make docs:check` | Check documentation |
 | `docs-generate.sh` | `make docs:generate` | Generate docs from source |
 | `docs-index.sh` | `make docs:index` | Update auto-index block in `docs/README.md` |
 | `queue-peek.sh` | `make queue:peek` | Raw CSV: header + first data row |
-| `queue-top-item.sh` | `make queue:top-item` | First open row as one JSON line (`queue_top_item.py` → `dev_mcp.queue_ops`) |
+| `queue-top-item.sh` | `make queue:top-item` | First open row as one JSON line (`queue_top_item.py` → `packages.queue_ops`) |
 | `queue-validate.sh` | `make queue:validate` | Validate queue schema |
 | `queue-archive.sh` | `make queue:archive`, `make queue:archive-top` | Move row to archive by id, or archive top open row (no id) |
 | `queue-pr-merge.sh` | `make queue:pr-merge` | After `queue:archive` + `queue:validate` — `gh pr merge --merge --delete-branch` (optional `PR_NUMBER=`) |
+|| queue-metrics.sh | make queue:metrics | Summarize queue audit log metrics |
 | `queue-graph.sh` | `make queue:graph` | Render dependency graph |
 | `queue-analyze.sh` | `make queue:analyze` | Full queue intelligence analysis |
 | `prompt-list.sh` | `make prompt:list` | List prompt templates |
@@ -52,8 +55,8 @@ Table mapping each script to its Make target and purpose:
 | `scaffold-module.sh` | `make scaffold:module` | Scaffold domain module |
 | `profile-enable.sh` | `make profile:enable` | Enable optional profile |
 | `generate-env.sh` | `make env:generate` | Generate .env |
-| `queue_top_item.py` | (via `queue-top-item.sh`) | First open row as JSON (`dev_mcp.queue_ops`) |
-| `queue_validate.py` | (via `queue-validate.sh`) | CSV schema validation (`dev_mcp.queue_ops`) |
+| `queue_top_item.py` | (via `queue-top-item.sh`) | First open row as JSON (`packages.queue_ops`) |
+| `queue_validate.py` | (via `queue-validate.sh`) | CSV schema validation (`packages.queue_ops`) |
 | `queue_archive.py` | (via `queue-archive.sh`) | Move queue row to archive |
 | `repo_self_audit.py` | (via `audit-self.sh`) | Lightweight audit runner |
 

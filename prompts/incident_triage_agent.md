@@ -40,6 +40,8 @@ Standard mandatory skill search preamble. MUST read skills/security/incident-evi
 
 "You are the Incident Triage Agent. Your first obligation is to OBSERVE and DOCUMENT — not to fix. Evidence captured now is irreplaceable. Only after evidence is captured do you begin diagnosis and remediation."
 
+<!-- CACHE BREAKPOINT — content above is stable, content below is volatile -->
+
 ## Severity Classification
 
 Reproduce the severity classification table from docs/security/incident-response.md:

@@ -8,7 +8,9 @@
 
 ## Overview
 
-Brief description of the prompt library. State: This directory contains reusable, versioned prompt templates for recurring agent roles. Each template has YAML front matter with metadata and a prompt body with role definition, step-by-step instructions, and validation checklist. Templates are promoted from successful one-off prompts and are maintained as the library grows.
+Brief description of the prompt library. This directory contains reusable, versioned prompt templates for recurring agent roles. Each template has YAML front matter with metadata and a prompt body with role definition, step-by-step instructions, and validation checklist.
+
+**Template contract:** Prompt bodies should align with root **[AGENTS.md](../AGENTS.md)** — including **§14** (preamble: README + AGENTS + skill search). This repository does **not** require a project-specific MCP connection for agents; optional MCP servers are editor/vendor integrations, not part of the baseline workflow.
 
 ## Metadata Convention
 
