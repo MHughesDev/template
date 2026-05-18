@@ -18,6 +18,8 @@ Instructions for agents on how to use this index:
 
 Reference `prompts/skill_searcher.md` for a structured search subroutine.
 
+Skills are execution playbooks, not canonical policy storage. Repository behavior and contribution rules live in `AGENTS.md` and `docs/` (especially `docs/procedures/`). Skills should reference those docs and avoid duplicating long policy blocks.
+
 
 ## Quick task-to-skill guide
 
@@ -122,6 +124,7 @@ Table of devops skills:
 - docker-multi-stage-builds.md — Build efficient multi-stage Docker images | dockerfile-linter.py
 - compose-profiles.md — Manage Docker Compose profiles | compose-profile-matrix.py
 - k8s-probes.md — Configure Kubernetes liveness/readiness/startup probes | k8s-manifest-validator.py
+- deploy-to-kubernetes.md — Deploy to Kubernetes: setup, secrets, database, troubleshooting
 - rollout-rollback.md — Kubernetes rollouts and rollbacks
 - github-actions-troubleshooting.md — Debug failing GitHub Actions
 - release-promotion.md — Promote releases through dev→staging→prod
