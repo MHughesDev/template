@@ -28,7 +28,7 @@ dev = [
   "coverage>=7.4.3",
 ]
 ai = [
-  "chromadb>=0.5.0",
+  "chromadb>=1.5.9",
 ]
 
 # uv workspace: the real application package is at apps/api (its own pyproject).
