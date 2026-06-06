@@ -48,7 +48,14 @@ Do this before writing a single line of code, config, or documentation for the t
 Do the full work required by the task. A task is complete when its corresponding spec acceptance
 criterion (cited in the task's source trace) is satisfied end-to-end — not partially.
 
-**Step 3c — Mark COMPLETE before moving on:**
+**Step 3c — Record verification evidence on the acceptance criterion:**
+A task is verified, not just done. Open the spec the task traces to and, on the acceptance
+criterion it satisfies (§6.1.x), replace `Verified by: [—]` with the evidence — a test name, a
+manual-test result + date, or a link — and tick the checkbox. This closes the chain
+requirement → criterion → evidence. If the criterion can only be confirmed by physical testing,
+leave the task `BLOCKED:TESTING` rather than ticking the box on unverified work.
+
+**Step 3d — Mark COMPLETE before moving on:**
 Update the task's status label from `IN PROGRESS` to `COMPLETE`.
 Do this before beginning the next task.
 

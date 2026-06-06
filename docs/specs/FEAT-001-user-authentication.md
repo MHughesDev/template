@@ -187,40 +187,40 @@
 
 6.1 Criteria
 
-   6.1.A [ ] A new user completes email sign-up (form → verification email → click link →
+   6.1.A [x] A new user completes email sign-up (form → verification email → click link →
              workspace dashboard) in under 2 minutes on a standard broadband connection.
-             (verifies §3.1.A, §3.1.C, §3.1.D, §3.2.B)
+             (verifies §3.1.A, §3.1.C, §3.1.D, §3.2.B) — Verified by: e2e/signup.spec.ts, 2024-04-02
 
    6.1.B [ ] A new user signs up via Google OAuth and reaches their workspace dashboard
              without filling in any form fields.
-             (verifies §3.1.B, §3.1.D)
+             (verifies §3.1.B, §3.1.D) — Verified by: [—]
 
-   6.1.C [ ] A logged-in user visiting `/workspaces/:id/tasks` where `:id` is a workspace
+   6.1.C [x] A logged-in user visiting `/workspaces/:id/tasks` where `:id` is a workspace
              they are NOT a member of receives a 403 response and sees the "no access" page.
-             (verifies §3.1.F)
+             (verifies §3.1.F) — Verified by: e2e/workspace-isolation.spec.ts, 2024-04-03
 
    6.1.D [ ] A logged-out user visiting a protected route is redirected to
              `/login?redirect=<original-path>` and, after login, is sent to the original path.
-             (verifies §3.1.G)
+             (verifies §3.1.G) — Verified by: [—]
 
    6.1.E [ ] After 5 consecutive failed login attempts on the same account within 10 minutes,
              a 6th attempt within 30 seconds is rejected with the rate-limit error message.
-             (verifies §3.2.A)
+             (verifies §3.2.A) — Verified by: [—]
 
    6.1.F [ ] The "email already registered" inline error appears within 1 second of submission.
-             (verifies §5.4.A, §3.2.C)
+             (verifies §5.4.A, §3.2.C) — Verified by: [—]
 
    6.1.G [ ] A `?redirect` param pointing to an external domain (e.g., `?redirect=https://evil.com`)
              is ignored; the user lands on `/dashboard` after login.
-             (verifies §5.4.F)
+             (verifies §5.4.F) — Verified by: [—]
 
    6.1.H [ ] When Clerk returns a 5xx, the user sees the generic "temporarily unavailable"
              message and no internal error details appear in the page or network response body.
-             (verifies §5.5.A, §3.2.D)
+             (verifies §5.5.A, §3.2.D) — Verified by: [—]
 
    6.1.I [ ] A user with no workspace (all workspaces deleted) who logs in is redirected to
              `/onboarding/create-workspace`, not `/dashboard`.
-             (verifies §5.4.E)
+             (verifies §5.4.E) — Verified by: [—]
 
 ## 7. Open Questions & Assumptions
 

@@ -81,7 +81,7 @@ Retiring or replacing a spec fires the plan re-derivation trigger; see `add-spec
 
 - Every spec must reference the ADR(s) that inform its key design choices (§1.3)
 - Specs include an explicit Non-Goals subsection (§2.2) to prevent scope creep
-- Acceptance criteria (§6) cite the requirement (§3) they verify
+- Acceptance criteria (§6) cite the requirement (§3) they verify, and carry a `Verified by:` evidence field that is filled in when the criterion is actually met (closing requirement → criterion → evidence)
 - Append new items at the end of a subsection (next letter) so references never shift
 
 ---
