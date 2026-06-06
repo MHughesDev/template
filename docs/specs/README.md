@@ -68,6 +68,15 @@ Every spec uses the same seven numbered sections, addressed `Section N → N.M �
 
 See `procedures/add-spec.md` for the full template.
 
+## Lifecycle (Status values)
+
+`Draft` → `Ready for Review` → `Approved` → `Implemented`, plus two retirement states:
+- `Deprecated` — no longer planned, nothing replaces it
+- `Superseded by <SPEC-ID>` — replaced by a newer spec
+
+Specs are never deleted — they retire so history stays readable (the same rule as ADRs).
+Retiring or replacing a spec fires the plan re-derivation trigger; see `add-spec.md` Step 6.
+
 ## Conventions
 
 - Every spec must reference the ADR(s) that inform its key design choices (§1.3)

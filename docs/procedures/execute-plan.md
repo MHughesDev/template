@@ -20,11 +20,15 @@ Before starting:
 
 ## Steps
 
-### 1. Check derivation status
+### 1. Check derivation status and traceability
 Open the plan file. Read the `Derivation Status` header field.
 - If `Current` — proceed.
 - If `STALE` — stop. Re-run `procedures/add-plan.md` to re-derive the plan against the changed
   artifacts before executing any tasks. Do not execute a stale plan.
+
+Then run `procedures/verify-traceability.md`. If it reports any reference that breaks traceability
+(an unresolved `Q-`, `SC-`, `§`, or a broken link in this plan), fix it before executing — an agent
+must not implement against a plan whose references do not resolve.
 
 ### 2. Confirm upstream milestone dependencies are met
 Before beginning a milestone, verify that every milestone it depends on (listed in the

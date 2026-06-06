@@ -29,6 +29,7 @@ A procedure is not:
 | [execute-plan.md](./execute-plan.md) | Execute a plan task by task with status tracking |
 | [add-spec.md](./add-spec.md) | Add a new specification file |
 | [add-adr.md](./add-adr.md) | Add a new Architecture Decision Record |
+| [verify-traceability.md](./verify-traceability.md) | Check that all cross-references, coverage, and links are intact |
 
 ---
 

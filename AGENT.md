@@ -93,6 +93,8 @@ This protocol is the reason the repo produces trustworthy design instead of conf
 - Do not write specs, architecture, or decisions before completing the Research-First Protocol (section 3).
 - Do not begin executing any milestone in a formal plan without first following `skills/execute-plan.md`.
 - Do not execute a plan whose `Derivation Status` is `STALE` — re-derive it first.
+- Run `skills/verify-traceability.md` at the end of a design session and before handing a plan to
+  execution — do not start implementing against a plan with broken references.
 - Do not assume anything about the target application or its architecture. This repo defines documentation
   practice only — it is application- and stack-agnostic by design.
 - Keep procedures editor- and agent-agnostic. They must work regardless of the AI tool being used.
