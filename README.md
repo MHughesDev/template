@@ -36,14 +36,14 @@ This repo is a procedurized system for turning rough ideas into well-documented 
 ├── README.md            ← you are here
 ├── AGENT.md             ← agent operating instructions
 │
-├── adr/                 ← Architecture Decision Records
-├── docs/                ← long-lived reference documentation
-├── plan/                ← lightweight working plans (session-scoped)
-├── plans/               ← formal, versioned project plans
-├── procedures/          ← atomic step-by-step task instructions
-├── research/            ← research briefs, findings, comparisons
-├── skills/              ← agent skill definitions (reference procedures)
-└── specs/               ← feature and component specification files
+└── docs/
+    ├── adr/             ← Architecture Decision Records
+    ├── plan/            ← lightweight working plans (session-scoped)
+    ├── plans/           ← formal, versioned project plans
+    ├── procedures/      ← atomic step-by-step task instructions
+    ├── research/        ← research briefs, findings, comparisons
+    ├── skills/          ← agent skill definitions (reference procedures)
+    └── specs/           ← feature and component specification files
 ```
 
 ---
@@ -64,7 +64,7 @@ Idea
  └─► Document (docs/)          Capture long-lived reference material
 ```
 
-Each step has a corresponding procedure in `procedures/` and a skill in `skills/`.
+Each step has a corresponding procedure in `docs/procedures/` and a skill in `docs/skills/`.
 
 ---
 
@@ -82,6 +82,6 @@ Each step has a corresponding procedure in `procedures/` and a skill in `skills/
 ## See Also
 
 - [AGENT.md](./AGENT.md) — agent operating model and skill discovery protocol
-- [procedures/README.md](./procedures/README.md) — procedure index and authoring guide
-- [skills/README.md](./skills/README.md) — skill index and authoring guide
-- [adr/README.md](./adr/README.md) — ADR index and template
+- [docs/procedures/README.md](./docs/procedures/README.md) — procedure index and authoring guide
+- [docs/skills/README.md](./docs/skills/README.md) — skill index and authoring guide
+- [docs/adr/README.md](./docs/adr/README.md) — ADR index and template

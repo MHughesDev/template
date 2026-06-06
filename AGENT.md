@@ -9,10 +9,10 @@
 **Before processing any user query or executing any task**, search the `skills/` folder for a skill that matches the request.
 
 Steps:
-1. List all files in `skills/`.
+1. List all files in `docs/skills/`.
 2. Read the title and `## Purpose` block of any skill that might apply.
 3. If a matching skill exists, follow it — do not improvise a different approach.
-4. If no skill matches, check `procedures/` for relevant atomic steps to compose.
+4. If no skill matches, check `docs/procedures/` for relevant atomic steps to compose.
 5. Only freeform if neither skills nor procedures apply. In that case, consider whether to create a new skill or procedure afterward.
 
 This ensures repeatable, consistent outputs and keeps the repo self-improving.
@@ -67,14 +67,13 @@ Present the success criteria and failure modes to the user. Get explicit confirm
 
 | Folder | What goes there | Agent action |
 |--------|----------------|--------------|
-| `research/` | Findings, comparisons, prior art, technology evaluations | Follow `skills/create-research-brief.md` |
-| `plan/` | Lightweight working plans, session scratchpads | Follow `skills/create-plan.md` |
-| `plans/` | Formal versioned project plans | Follow `skills/create-plan.md` |
-| `specs/` | Component and feature specifications | Follow `skills/create-spec.md` |
-| `adr/` | Architecture Decision Records | Follow `skills/create-adr.md` |
-| `docs/` | Long-lived reference docs | No specific skill — use clear Markdown |
-| `procedures/` | Atomic task instructions | Only modify when adding/improving a procedure |
-| `skills/` | Agent skill definitions | Only modify when adding/improving a skill |
+| `docs/research/` | Findings, comparisons, prior art, technology evaluations | Follow `docs/skills/create-research-brief.md` |
+| `docs/plan/` | Lightweight working plans, session scratchpads | Follow `docs/skills/create-plan.md` |
+| `docs/plans/` | Formal versioned project plans | Follow `docs/skills/create-plan.md` |
+| `docs/specs/` | Component and feature specifications | Follow `docs/skills/create-spec.md` |
+| `docs/adr/` | Architecture Decision Records | Follow `docs/skills/create-adr.md` |
+| `docs/procedures/` | Atomic task instructions | Only modify when adding/improving a procedure |
+| `docs/skills/` | Agent skill definitions | Only modify when adding/improving a skill |
 
 ---
 
@@ -102,8 +101,8 @@ Present the success criteria and failure modes to the user. Get explicit confirm
 ## 6. Self-Improvement
 
 If you complete a task and realize no skill or procedure covered it:
-1. Draft a new procedure in `procedures/` for the atomic steps you followed.
-2. Draft a new skill in `skills/` if it warrants a higher-level wrapper.
+1. Draft a new procedure in `docs/procedures/` for the atomic steps you followed.
+2. Draft a new skill in `docs/skills/` if it warrants a higher-level wrapper.
 3. Update the relevant `README.md` index.
 4. Mention what you added to the user at the end of the session.
 
@@ -112,5 +111,5 @@ If you complete a task and realize no skill or procedure covered it:
 ## References
 
 - [README.md](./README.md) — project overview and folder structure
-- [skills/README.md](./skills/README.md) — full skill index
-- [procedures/README.md](./procedures/README.md) — full procedure index
+- [docs/skills/README.md](./docs/skills/README.md) — full skill index
+- [docs/procedures/README.md](./docs/procedures/README.md) — full procedure index

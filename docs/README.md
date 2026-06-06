@@ -1,37 +1,21 @@
 # docs/
 
-Long-lived reference documentation for the project.
+All project content lives here. This folder is the root of the system design workspace.
 
 ---
 
-## What Belongs Here
+## Folder Index
 
-- System overviews and architecture summaries
-- Runbooks and operational guides
-- API references and integration guides
-- Glossaries and domain model definitions
-- Onboarding guides
-
-## What Does Not Belong Here
-
-- Working notes or session scratchpads → use `plan/`
-- Active design decisions → use `adr/`
-- Feature specifications → use `specs/`
-- Research findings and comparisons → use `research/`
+| Folder | Purpose |
+|--------|---------|
+| [adr/](./adr/README.md) | Architecture Decision Records — numbered, immutable, indexed |
+| [plan/](./plan/README.md) | Lightweight session-scoped working plans and scratchpads |
+| [plans/](./plans/README.md) | Formal versioned project plans with milestones |
+| [procedures/](./procedures/README.md) | Atomic source-of-truth task instructions |
+| [research/](./research/README.md) | Research briefs, findings, technology evaluations |
+| [skills/](./skills/README.md) | Agent skill definitions that compose procedures |
+| [specs/](./specs/README.md) | Feature, component, data, and integration specifications |
 
 ---
 
-## Conventions
-
-- File names: `kebab-case.md`
-- Each doc should have a clear H1 title and a brief one-paragraph summary at the top
-- Docs that reference an ADR should link to it: `[ADR-0001](../adr/0001-title.md)`
-- Docs that have been superseded should be marked `> **Deprecated:** see [replacement doc]` at the top
-
----
-
-## Index
-
-| File | Description |
-|------|-------------|
-| *(empty — add your first doc)* | — |
+See [README.md](../README.md) for project overview and [AGENT.md](../AGENT.md) for agent operating instructions.
