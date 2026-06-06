@@ -10,6 +10,7 @@
 **Type:** Formal
 **Author:** Agent
 **Status:** Draft
+**Derivation Status:** Current
 
 ## Goal
 
@@ -64,27 +65,27 @@ This plan sequences work already established in the following artifacts — it i
 ## Tasks by Milestone
 
 ### Milestone 1: Auth + Workspaces
-- [ ] Integrate Clerk with the app (→ FEAT-001 §5.1)
-- [ ] Implement default workspace creation on first login (→ FEAT-001 §3.1.B)
-- [ ] Enforce workspace membership access control (→ FEAT-001 §3.1.C / §6.1.C)
-- [ ] Write `DATA-001` workspace schema spec (missing source — create before Milestone 2)
+- `NOT STARTED` Integrate Clerk with the app (→ FEAT-001 §5.1)
+- `NOT STARTED` Implement default workspace creation on first login (→ FEAT-001 §3.1.B)
+- `NOT STARTED` Enforce workspace membership access control (→ FEAT-001 §3.1.C / §6.1.C)
+- `NOT STARTED` Write `DATA-001` workspace schema spec (→ architecture §2 — missing source, create before Milestone 2)
 
 ### Milestone 2: Core Task Flow
-- [ ] Write `FEAT-002` task feature spec and `DATA-001` tasks schema (sources must exist first)
-- [ ] Implement task create / assign / status / archive (→ FEAT-002 acceptance criteria)
-- [ ] Build task list and status filter views (→ FEAT-002)
+- `NOT STARTED` Write `FEAT-002` task feature spec and `DATA-001` tasks schema (→ artifact success condition "core task flow" — sources must exist first)
+- `NOT STARTED` Implement task create / assign / status / archive (→ FEAT-002 §6.1 — blocked on FEAT-002 spec)
+- `NOT STARTED` Build task list and status filter views (→ FEAT-002 §6.1 — blocked on FEAT-002 spec)
 
 ### Milestone 3: Notifications
-- [ ] Research and choose an email provider (→ open question; write research brief first)
-- [ ] Write `FEAT-003` notifications spec, then implement against it
+- `NOT STARTED` Research and choose an email provider (→ open-questions.md Q-2 — write research brief first)
+- `NOT STARTED` Write `FEAT-003` notifications spec, then implement against it (→ artifact "assignment reminders" — blocked on email research)
 
 ### Milestone 4: Beta Launch
-- [ ] Onboard pilot customers manually
-- [ ] Bug bash against each spec's acceptance criteria
+- `NOT STARTED` Onboard pilot customers manually (→ artifact success condition "first pilot customers") `BLOCKED:HUMAN` — requires manual customer outreach
+- `NOT STARTED` Bug bash against each spec's acceptance criteria (→ FEAT-001 §6.1, FEAT-002 §6.1) `BLOCKED:TESTING` — requires running application
 
 ### Milestone 5: Paid Launch
-- [ ] Write `INTG-001` Stripe billing spec, then integrate
-- [ ] Launch marketing page
+- `NOT STARTED` Write `INTG-001` Stripe billing spec, then integrate (→ artifact success condition "10 paying customers")
+- `NOT STARTED` Launch marketing page (→ artifact success condition "10 paying customers") `BLOCKED:HUMAN` — requires content approval
 
 ## Open Questions
 

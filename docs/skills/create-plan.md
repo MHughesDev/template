@@ -52,15 +52,22 @@ Build the plan up from the artifacts — never top-down from intuition:
 - If a milestone or task has no source, either find its source or cut it
 
 ### 4. Execute `procedures/add-plan.md`
-Follow the procedure. For formal plans, pay special attention to:
-- **Success signals** for each milestone — how do you know a milestone is done?
-- **Open questions** — known unknowns that must be resolved during execution
-- **Dependencies** — what must be true before execution can start?
+Follow the procedure. For formal plans, the three mandatory steps beyond the template are:
+
+- **Step 4 — Sequence from real dependencies:** derive milestone order from architecture component
+  dependencies and spec `§1.3 Related` links; do not order by intuition
+- **Step 5 — Coverage check:** verify every spec AC and every artifact success condition has a task
+  trace, and every task has a source; resolve all gaps before marking the plan Active
+- All tasks begin at `NOT STARTED` status — do not pre-fill any other status
 
 ### 5. Identify specs and ADRs triggered by the plan
 After writing the plan, identify:
 - What components or features need specs written? → run `skills/create-spec.md` for each
 - What design decisions are implied by the plan's approach? → run `skills/create-adr.md` for each
+
+### 6. Hand off to execution
+Once the plan is complete and passes the coverage check, tell the user it is ready.
+When work begins, follow `skills/execute-plan.md` — do not begin a milestone without it.
 
 ---
 

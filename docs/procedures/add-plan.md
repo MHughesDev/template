@@ -95,6 +95,7 @@ All plans go in `plans/`. The `Type:` field in the file header distinguishes the
 **Type:** Formal
 **Author:** [name or "Agent"]
 **Status:** Draft | Active | Complete | Superseded
+**Derivation Status:** Current
 
 ## Goal
 
@@ -140,15 +141,16 @@ derivation explicit — a milestone with no source does not belong in the plan.]
 
 ## Tasks by Milestone
 
-[Each task traces to a spec's acceptance criteria or an architecture component.]
+[Each task has a status label and traces to a spec's acceptance criteria or architecture component.
+Initial status is always `NOT STARTED`. See `procedures/execute-plan.md` for status update rules.]
 
 ### Milestone 1: [Name]
-- [ ] Task 1 (→ FEAT-001 §6.1.A)
-- [ ] Task 2
+- `NOT STARTED` Task description (→ FEAT-001 §6.1.A)
+- `NOT STARTED` Task description (→ FEAT-001 §6.1.B)
 
 ### Milestone 2: [Name]
-- [ ] Task 1 (→ DATA-001 §3.1.A)
-- [ ] Task 2
+- `NOT STARTED` Task description (→ DATA-001 §3.1.A)
+- `NOT STARTED` Task description (→ architecture §2)
 
 ## Open Questions
 
@@ -161,9 +163,56 @@ derivation explicit — a milestone with no source does not belong in the plan.]
 | YYYY-MM-DD | Initial draft | [name] |
 ```
 
-### 4. Update the folder index
+### 4. Sequence milestones from real dependencies
+
+Do not order milestones by intuition. Derive the order from the source artifacts:
+
+1. Read `docs/architecture.md` §2 (Components) and §3 (Data Flow). A component that others depend
+   on must appear in an earlier milestone than the components that depend on it.
+2. Read each spec's `§1.3 Related` section. If FEAT-002 cites DATA-001 as a dependency, DATA-001's
+   tasks must be in an earlier milestone.
+3. Build a dependency graph (mentally or on paper): draw an edge from A → B whenever B depends on A.
+   Topologically sort: specs with no dependencies go first; specs that depend on them go next.
+4. Assign milestones in that order. If two specs are independent, their milestone order is flexible —
+   order them by risk (higher-risk work earlier) or by user-facing value.
+5. Record each milestone's source in the `Source` column of the milestones table — this is what
+   makes the ordering auditable, not just asserted.
+
+### 5. Run the coverage check (MANDATORY for formal plans)
+
+After building the full task list, verify the plan has complete two-way coverage:
+
+**Forward check — every source has a task:**
+1. List every acceptance criterion (§6.1.x) from every spec in the **Derived From** section.
+2. List every success condition from `docs/artifact.md`.
+3. Confirm each one is cited by at least one task's source trace.
+4. Flag any criterion with no task — either add the task or document why it is out of scope.
+
+**Backward check — every task has a source:**
+1. Read every task in the task list.
+2. Confirm each one has a source trace `(→ SPEC-ID §N.M.X)` or `(→ architecture §N)`.
+3. Flag any task with no source — find its source or remove the task.
+
+A plan that passes both checks is complete. A plan that fails either check is incomplete —
+resolve the gaps before marking the plan `Active` or handing it to an agent for execution.
+
+### 6. Update the folder index
 1. Open `plans/README.md`.
 2. Add a row to the Index table with the file name, type, description, and status.
+
+---
+
+### On re-derivation: keeping `Derivation Status` current
+
+Whenever a spec or ADR that is listed in a plan's **Derived From** section changes, that plan's
+`Derivation Status` must be updated to `STALE`. This is done by `add-spec.md` and `add-adr.md`
+automatically when they complete.
+
+To re-derive a stale plan:
+1. Re-run Steps 0–5 of this procedure against the updated artifacts.
+2. Diff the resulting task list against the current one — add, remove, or update tasks as needed.
+3. Set `Derivation Status` back to `Current` and record the change in the **Change Log**.
+4. Do not execute a stale plan without re-deriving it first.
 
 ---
 
@@ -173,9 +222,12 @@ derivation explicit — a milestone with no source does not belong in the plan.]
 
 ## Checklist
 - [ ] `Type:` field is set (Working or Formal)
-- [ ] (Formal) A **Derived From** section lists the source artifacts
+- [ ] (Formal) `Derivation Status: Current` is set in the header
+- [ ] (Formal) A **Derived From** section lists all source artifacts
+- [ ] Milestone order is derived from architecture and spec dependencies (Step 4)
 - [ ] Every milestone names its source (spec / architecture / success condition)
-- [ ] Every task traces to a spec's acceptance criteria or an architecture component
+- [ ] Every task has a `NOT STARTED` status label and a source trace
+- [ ] Coverage check passed — every AC and success condition has a task; every task has a source
 - [ ] No milestone or task plans work that no spec, ADR, or decision supports
 - [ ] Goal is derived from the artifact's success conditions, not invented
 - [ ] Scope explicitly states what is out of scope
@@ -184,6 +236,7 @@ derivation explicit — a milestone with no source does not belong in the plan.]
 
 ## Related
 - Skill: `skills/create-plan.md`
+- Procedure: `procedures/execute-plan.md` (task-by-task execution with status updates)
 - Procedure: `procedures/add-research.md` (plans should reference prior research)
 - Procedure: `procedures/add-spec.md` (plans often spawn specs)
 - Procedure: `procedures/add-adr.md` (plans often surface decisions that need ADRs)

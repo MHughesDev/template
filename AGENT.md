@@ -64,7 +64,7 @@ This protocol is the reason the repo produces trustworthy design instead of conf
 | `docs/open-questions.md` | Living register of trade-offs and unresolved forks | Log every consequential comparison here |
 | `docs/architecture.md` | Current-state system map — emergent, never assumed | Update as ADRs/specs change the system shape |
 | `docs/research/` | Findings, comparisons, prior art, technology evaluations | Follow `docs/skills/create-research-brief.md` |
-| `docs/plans/` | All plans — working scratchpads and formal versioned roadmaps | Follow `docs/skills/create-plan.md` |
+| `docs/plans/` | All plans — working scratchpads and formal versioned roadmaps | Follow `docs/skills/create-plan.md` to create; `docs/skills/execute-plan.md` to execute |
 | `docs/specs/` | Component and feature specifications | Follow `docs/skills/create-spec.md` |
 | `docs/adr/` | Architecture Decision Records | Follow `docs/skills/create-adr.md` |
 | `docs/procedures/` | Atomic task instructions | Only modify when adding/improving a procedure |
@@ -91,6 +91,8 @@ This protocol is the reason the repo produces trustworthy design instead of conf
 - Do not skip the Skill Discovery Protocol (section 1) for any task.
 - Do not produce design artifacts before completing the Idea Intake Protocol (section 2) for new projects.
 - Do not write specs, architecture, or decisions before completing the Research-First Protocol (section 3).
+- Do not begin executing any milestone in a formal plan without first following `skills/execute-plan.md`.
+- Do not execute a plan whose `Derivation Status` is `STALE` — re-derive it first.
 - Do not assume anything about the target application or its architecture. This repo defines documentation
   practice only — it is application- and stack-agnostic by design.
 - Keep procedures editor- and agent-agnostic. They must work regardless of the AI tool being used.

@@ -145,10 +145,17 @@ existing references never shift. Acceptance items cite the requirement they veri
    | [<TYPE>-<NNN>-name.md](./<TYPE>-<NNN>-name.md) | <SPEC-ID> | [Type] | Draft | [ADR-NNNN] |
    ```
 
-### 5. Link related files
+### 5. Link related files and trigger re-derivation
 - Link the ADR(s) and research brief(s) that fed this spec (§1.3).
 - Mark any open-questions entries this spec resolved or raised.
 - If the spec changes the system's shape, update `docs/architecture.md`.
+- **Re-derivation trigger:** If this is an update to an existing spec (any section changed),
+  open `plans/README.md` and find every formal plan whose **Derived From** section lists this spec.
+  For each such plan, open the plan file and update its header field to:
+  ```
+  **Derivation Status:** STALE — [SPEC-ID] updated YYYY-MM-DD, re-derive before next execution
+  ```
+  This ensures no agent executes a plan against an outdated spec.
 
 ---
 
@@ -168,6 +175,7 @@ existing references never shift. Acceptance items cite the requirement they veri
 - [ ] Edge cases and error states (§5) are documented
 - [ ] Related ADRs, research, and open questions are linked (§1.3)
 - [ ] Index row added to `specs/README.md`
+- [ ] (If updating) Any plan listing this spec in Derived From is marked `STALE`
 - [ ] No placeholder text remaining in the template
 
 ## Related
