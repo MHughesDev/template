@@ -66,6 +66,13 @@ For each significant design choice made during spec writing:
    - A future maintainer would reasonably wonder "why was this done this way?"
 3. Link each ADR back to the spec(s) that prompted it
 
+### Phase 5: Verify
+Before considering the design session done:
+1. Run `skills/verify-traceability.md` across the whole `docs/` tree.
+2. Fix hygiene failures directly; surface any uncovered acceptance criteria, stale plans, or
+   undefined IDs to the user — these usually mean upstream work is missing, not a typo.
+3. Re-run until the report is clean (or the only remaining items are intentional and acknowledged).
+
 ---
 
 ## Output Checklist
@@ -78,6 +85,7 @@ At the end of a full system design session, the following should exist:
 - [ ] Specs for each major component and user-facing feature
 - [ ] ADRs for each significant architectural decision
 - [ ] All folder READMEs updated with new index entries
+- [ ] `verify-traceability` run and clean (Phase 5)
 
 ---
 

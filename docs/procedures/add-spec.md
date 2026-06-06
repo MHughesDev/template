@@ -86,7 +86,7 @@ existing references never shift. Acceptance items cite the requirement they veri
 
 **Spec ID:** <TYPE>-<NNN>
 **Type:** Feature | Component | Data | Integration | System-overview
-**Status:** Draft | Ready for Review | Approved | Implemented
+**Status:** Draft | Ready for Review | Approved | Implemented | Deprecated | Superseded by <SPEC-ID>
 **Date:** YYYY-MM-DD
 **Author:** [name or "Agent"]
 
@@ -156,6 +156,15 @@ existing references never shift. Acceptance items cite the requirement they veri
   **Derivation Status:** STALE — [SPEC-ID] updated YYYY-MM-DD, re-derive before next execution
   ```
   This ensures no agent executes a plan against an outdated spec.
+
+### 6. Retiring or replacing a spec
+Specs are not deleted — like ADRs, they retire so history stays readable.
+- **Deprecated:** the feature/component is no longer planned but nothing replaces it. Set
+  `**Status:** Deprecated`, add a one-line note at the top of §1 explaining why and when.
+- **Superseded:** a new spec replaces this one. Set `**Status:** Superseded by <NEW-SPEC-ID>` and
+  add the same line; the new spec references the old one in its §1.3 Related.
+- In both cases, fire the re-derivation trigger (Step 5) for any plan listing this spec, and update
+  the row in `specs/README.md`. Do not delete the file — a superseded spec is still cited by history.
 
 ---
 

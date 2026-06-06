@@ -121,7 +121,7 @@ Each artifact type has its own status set — they are intentionally different:
 | Open question | `Open` · `Researching` · `Resolved` |
 | Plan | `Draft` · `Active` · `Complete` · `Superseded` (plus `Derivation Status:` `Current` / `STALE`) |
 | Plan task | `NOT STARTED` · `IN PROGRESS` · `COMPLETE` · `BLOCKED:UPSTREAM` · `BLOCKED:HUMAN` · `BLOCKED:TESTING` |
-| Spec | `Draft` · `Ready for Review` · `Approved` · `Implemented` |
+| Spec | `Draft` · `Ready for Review` · `Approved` · `Implemented` · `Deprecated` · `Superseded by <SPEC-ID>` |
 | ADR | `Proposed` · `Accepted` · `Deprecated` · `Superseded by ADR-NNNN` |
 
 ---

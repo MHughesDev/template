@@ -30,6 +30,7 @@ Skills never replace procedures. If a skill and its underlying procedure conflic
 | [execute-plan.md](./execute-plan.md) | Execute a plan task by task with live status tracking |
 | [create-spec.md](./create-spec.md) | Create a new specification file |
 | [create-adr.md](./create-adr.md) | Create a new Architecture Decision Record |
+| [verify-traceability.md](./verify-traceability.md) | Verify cross-references, coverage, and links are intact |
 
 ---
 
