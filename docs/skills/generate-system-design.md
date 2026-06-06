@@ -71,7 +71,9 @@ Before considering the design session done:
 1. Run `skills/verify-traceability.md` across the whole `docs/` tree.
 2. Fix hygiene failures directly; surface any uncovered acceptance criteria, stale plans, or
    undefined IDs to the user — these usually mean upstream work is missing, not a typo.
-3. Re-run until the report is clean (or the only remaining items are intentional and acknowledged).
+3. Run `skills/trace-uncertainty.md` to render the risk surface, and show the user how much of the
+   design still rests on open questions or unvalidated assumptions before they commit to building.
+4. Re-run until the report is clean (or the only remaining items are intentional and acknowledged).
 
 ---
 

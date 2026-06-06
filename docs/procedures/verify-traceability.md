@@ -68,11 +68,17 @@ For each folder with a `README.md` index (`adr/`, `specs/`, `plans/`, `research/
 file in the folder has an index row and every index row points to a file that exists.
 - **Fail:** an unlisted file or a dangling index row.
 
-### 9. Write the report
+### 9. Verification evidence on implemented specs
+For each spec whose `Status` is `Implemented`, confirm every acceptance criterion (§6.1.x) has a
+real `Verified by:` value (not `[—]`) and a ticked checkbox.
+- **Fail:** a spec marked `Implemented` with an unverified criterion → either record the evidence
+  or the spec is not actually implemented; correct the status.
+
+### 10. Write the report
 Summarize results as a checklist, one line per check, `PASS` or `FAIL: <detail>`. Present failures
 to the user grouped by severity:
 - **Breaks traceability** (Steps 1–4, 7): a reference does not resolve — fix before proceeding.
-- **Incomplete design** (Steps 5–6): a gap or a stale plan — may need upstream work.
+- **Incomplete design** (Steps 5–6, 9): a gap, a stale plan, or an unverified "Implemented" spec — may need upstream work.
 - **Hygiene** (Step 8): index drift — safe to fix directly.
 
 Fix hygiene failures directly. For the others, surface the failure and the likely cause; only fix
@@ -91,6 +97,7 @@ when the correct resolution is unambiguous (e.g. a clear typo in an ID).
 - [ ] No plan is `STALE` without being reported; no missed re-derivation triggers
 - [ ] No broken relative markdown links
 - [ ] Every folder index matches its folder contents
+- [ ] Every `Implemented` spec has verification evidence on all its acceptance criteria
 - [ ] Report surfaced to the user; substantive gaps flagged, not silently patched
 
 ## Related

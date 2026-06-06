@@ -128,14 +128,20 @@ existing references never shift. Acceptance items cite the requirement they veri
    5.3.A [Error condition]: [expected system behavior]
 
 ## 6. Acceptance Criteria
-6.1 Criteria (each verifies a requirement from §3)
-   6.1.A [ ] [Observable, testable condition] (verifies §3.1.A)
-   6.1.B [ ] [Observable, testable condition]
+6.1 Criteria (each verifies a requirement from §3; record evidence once met)
+   6.1.A [ ] [Observable, testable condition] (verifies §3.1.A) — Verified by: [—]
+   6.1.B [ ] [Observable, testable condition] (verifies §3.1.B) — Verified by: [—]
+   > Leave `Verified by: [—]` until the criterion is actually met, then replace `[—]` with the
+   > evidence: a test name, a manual-test result + date, or a link. The checkbox is ticked only
+   > when evidence is recorded. This closes the chain: requirement → criterion → evidence.
 
 ## 7. Open Questions & Assumptions
 7.1 Open questions — tracked centrally in [open-questions.md](../open-questions.md) (Q-N)
-7.2 Assumptions
-   7.2.A [Thing assumed true that, if wrong, would change this spec]
+7.2 Assumptions (each carries a validation state; unvalidated assumptions are uncertainty sources)
+   7.2.A [Thing assumed true that, if wrong, would change this spec] — Validated: [—]
+   > Leave `Validated: [—]` until the assumption is confirmed, then replace `[—]` with the
+   > evidence (a test, a vendor confirmation, a research brief). Until then the assumption — and
+   > everything resting on it — sits on the risk surface (`trace-uncertainty.md`).
 ```
 
 ### 4. Update the specs index
@@ -156,6 +162,8 @@ existing references never shift. Acceptance items cite the requirement they veri
   **Derivation Status:** STALE — [SPEC-ID] updated YYYY-MM-DD, re-derive before next execution
   ```
   This ensures no agent executes a plan against an outdated spec.
+- For a large or far-reaching change, run `procedures/analyze-impact.md` first to find the full
+  downstream closure — not just the plans one hop away — before editing.
 
 ### 6. Retiring or replacing a spec
 Specs are not deleted — like ADRs, they retire so history stays readable.
@@ -180,7 +188,7 @@ Specs are not deleted — like ADRs, they retire so history stays readable.
 - [ ] `Spec ID` is set in the header
 - [ ] All seven sections are present and numbered; items use the `N.M.X` scheme
 - [ ] §2.2 Non-Goals is present and non-empty
-- [ ] Acceptance criteria (§6) are observable, testable, and cite the requirement they verify
+- [ ] Acceptance criteria (§6) are observable, testable, cite the requirement they verify, and carry a `Verified by:` field (`[—]` until met)
 - [ ] Edge cases and error states (§5) are documented
 - [ ] Related ADRs, research, and open questions are linked (§1.3)
 - [ ] Index row added to `specs/README.md`
