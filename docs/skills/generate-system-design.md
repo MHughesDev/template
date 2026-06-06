@@ -37,12 +37,18 @@ For each open question identified in the artifact and for each significant techn
 3. After all research is complete, summarize key findings and recommendations for the user before moving on
 
 ### Phase 2: Plan
+> Plans are derived, never assumed. If you cannot yet derive a milestone from a spec, decision, or
+> success condition, you are not ready to plan that part — return to research or specs first.
 1. Apply `procedures/add-plan.md` to create a Formal plan in `plans/`
-2. The plan should:
-   - Reference each research brief produced in Phase 1
-   - List milestones that map to the success conditions from the artifact
-   - List risks that map to the failure modes from the artifact
+2. Derive the plan from existing artifacts — record them in the plan's **Derived From** section:
+   - Milestones map to the artifact's success conditions and the specs that satisfy them
+   - Build order follows the architecture's component dependencies
+   - Each task traces to a spec's acceptance criteria
+   - Risks map to the artifact's failure modes and open questions
 3. Present the plan to the user for review before moving to specs
+
+> Note on ordering: a first pass often plans before every spec exists. That is fine for a working
+> plan, but a formal plan must name the specs it sequences — write the missing specs, then plan.
 
 ### Phase 3: Specify
 For each component or feature identified in the plan:

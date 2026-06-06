@@ -3,6 +3,12 @@
 ## Purpose
 Create a plan document — either a lightweight working plan or a formal versioned project plan — in `plans/`.
 
+> **Plans are derived, never assumed.** A formal plan does not invent work — it sequences work that
+> the artifact, architecture, specs, ADRs, and research have already established. Every milestone and
+> task must trace back to a source artifact. If you find yourself planning work that no spec or
+> decision supports, stop: the gap belongs upstream (a missing spec, ADR, or research brief), not in
+> the plan.
+
 ## Trigger
 Use this procedure when:
 - Scoping work for a session or sprint (Working plan)
@@ -13,6 +19,7 @@ Use this procedure when:
 ## Inputs
 Before starting, determine:
 - **Type**: Working (transient scratchpad) or Formal (persistent, versioned)
+- **Source artifacts**: the artifact, architecture, specs, ADRs, and research this plan is derived from
 - **Goal**: what does success look like at the end of this plan?
 - **Scope**: what is in and out of scope?
 - **Known dependencies**: what must be true or complete before this plan can execute?
@@ -20,6 +27,18 @@ Before starting, determine:
 ---
 
 ## Steps
+
+### 0. Gather the source artifacts (MANDATORY for formal plans)
+Before drafting, read what the plan must be derived from and list the relevant pieces:
+- `docs/artifact.md` — success conditions become milestones; failure modes become risks
+- `docs/architecture.md` — components and dependencies set the build order
+- `docs/specs/` — each spec (and its acceptance criteria) becomes one or more tasks
+- `docs/adr/` — accepted decisions constrain how the work is done
+- `docs/research/` and `docs/open-questions.md` — unresolved forks become dependencies or risks
+
+If the artifacts needed to plan a piece of work do not exist yet, do not assume them — go create the
+missing spec, ADR, or research brief first, then return here. A working plan may be rougher, but a
+formal plan with no sources is a guess, not a plan.
 
 ### 1. Choose the plan type
 
@@ -79,42 +98,56 @@ All plans go in `plans/`. The `Type:` field in the file header distinguishes the
 
 ## Goal
 
-[What does success look like at the end of this plan? Make it measurable.]
+[What does success look like at the end of this plan? Make it measurable.
+Derive this from the artifact's success conditions — do not invent a new goal here.]
+
+## Derived From
+
+[The artifacts this plan sequences. Every milestone and task below must trace to one of these.]
+- Artifact: [docs/artifact.md](../artifact.md) — success conditions and failure modes
+- Architecture: [docs/architecture.md](../architecture.md) — components and build order
+- Specs: [FEAT-001](../specs/FEAT-001-...md), [DATA-001](../specs/DATA-001-...md)
+- ADRs: [adr/NNNN-title.md](../adr/NNNN-title.md)
+- Research: [research/file.md](../research/file.md)
 
 ## Scope
 
 **In scope:**
-- [Item]
+- [Item — traceable to a spec or success condition]
 
 **Out of scope:**
-- [Item]
+- [Item — often a spec's Non-Goals, or work deferred to a later plan]
 
 ## Dependencies
 
 - [What must be true or done before this plan begins?]
-- Reference research: [research/file.md](../research/file.md)
-- Reference ADR: [adr/NNNN-title.md](../adr/NNNN-title.md)
+- Open questions that gate this plan: [open-questions.md](../open-questions.md) — Q-N
 
 ## Risks
 
-[Reference failure modes from the artifact, or list plan-specific risks]
+[Derive from the artifact's failure modes and open questions; add plan-specific risks as needed.]
 - Risk: [description] → Mitigation: [approach]
 
 ## Milestones
 
-| # | Milestone | Description | Success Signal |
-|---|-----------|-------------|----------------|
-| 1 | [Name] | [What happens] | [How you know it's done] |
-| 2 | [Name] | [What happens] | [How you know it's done] |
+[Each milestone advances a success condition and is built from specs. The Source column makes the
+derivation explicit — a milestone with no source does not belong in the plan.]
+
+| # | Milestone | Source (spec / §, architecture, success condition) | Success Signal |
+|---|-----------|---------------------------------------------------|----------------|
+| 1 | [Name] | [e.g. FEAT-001, artifact success condition #2] | [How you know it's done] |
+| 2 | [Name] | [e.g. DATA-001, architecture §2] | [How you know it's done] |
 
 ## Tasks by Milestone
 
+[Each task traces to a spec's acceptance criteria or an architecture component.]
+
 ### Milestone 1: [Name]
-- [ ] Task 1
+- [ ] Task 1 (→ FEAT-001 §6.1.A)
 - [ ] Task 2
 
 ### Milestone 2: [Name]
-- [ ] Task 1
+- [ ] Task 1 (→ DATA-001 §3.1.A)
 - [ ] Task 2
 
 ## Open Questions
@@ -140,9 +173,13 @@ All plans go in `plans/`. The `Type:` field in the file header distinguishes the
 
 ## Checklist
 - [ ] `Type:` field is set (Working or Formal)
-- [ ] Goal is clear and measurable
+- [ ] (Formal) A **Derived From** section lists the source artifacts
+- [ ] Every milestone names its source (spec / architecture / success condition)
+- [ ] Every task traces to a spec's acceptance criteria or an architecture component
+- [ ] No milestone or task plans work that no spec, ADR, or decision supports
+- [ ] Goal is derived from the artifact's success conditions, not invented
 - [ ] Scope explicitly states what is out of scope
-- [ ] Dependencies are listed and linked
+- [ ] Dependencies and gating open questions are listed and linked
 - [ ] Index row added to the folder README
 
 ## Related

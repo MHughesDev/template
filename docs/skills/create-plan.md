@@ -1,13 +1,17 @@
 # Skill: Create Plan
 
 ## Purpose
-Create a plan document — working or formal — that translates research findings and the artifact's success conditions into sequenced, executable milestones.
+Create a plan document — working or formal — that sequences work already established by the artifact,
+architecture, and specs into executable milestones. **A plan is derived, never assumed.**
 
 ## When to Use
-- After research is complete and before specs are written
+- After the artifact, architecture, and the relevant specs exist — a formal plan sequences them
 - When scoping a sprint, phase, or session of work
 - When a large feature needs to be broken into sequenced steps
 - When dependencies and risks need to be made explicit before work starts
+
+> If the specs and decisions a plan would sequence do not exist yet, you are not ready to plan.
+> Create the missing spec, ADR, or research brief first — do not plan against assumptions.
 
 ---
 
@@ -28,19 +32,24 @@ All plans live in `plans/`; the `Type:` field distinguishes them.
 | The plan may be discarded | The plan will be reviewed in retrospectives |
 | Low formality is fine | Stakeholders will read it |
 
-### 2. Check that prerequisites exist
-Before writing a formal plan:
-- [ ] `docs/artifact.md` is filled in and confirmed
-- [ ] Research briefs exist for major unknowns (`research/`)
-- [ ] Open trade-offs are logged in `docs/open-questions.md`
+### 2. Gather the source artifacts (the plan is derived from these)
+Before writing a formal plan, read and list what it will sequence:
+- [ ] `docs/artifact.md` — success conditions and failure modes
+- [ ] `docs/architecture.md` — components and the build order they imply
+- [ ] `docs/specs/` — the specs whose acceptance criteria become tasks
+- [ ] `docs/adr/` — decisions that constrain how the work is done
+- [ ] `docs/research/` and `docs/open-questions.md` — unresolved forks that become risks/dependencies
 
-If research is missing for a significant unknown, do research first.
+If a spec, decision, or research brief the plan would depend on is missing, create it first. Do not
+fill the gap with an assumption inside the plan.
 
-### 3. Connect the plan to the artifact
-A good plan traces directly to the artifact's success conditions and failure modes:
-- Every milestone should advance at least one success condition
-- Every significant risk in the plan should trace to a failure mode in the artifact
-- If a milestone has no connection to a success condition, question whether it belongs
+### 3. Derive milestones and tasks from the sources
+Build the plan up from the artifacts — never top-down from intuition:
+- Every milestone advances at least one success condition and names the spec(s) it builds
+- Every task traces to a spec's acceptance criteria or an architecture component
+- The build order follows the architecture's dependencies (foundational components first)
+- Every risk traces to a failure mode in the artifact or an open question
+- If a milestone or task has no source, either find its source or cut it
 
 ### 4. Execute `procedures/add-plan.md`
 Follow the procedure. For formal plans, pay special attention to:
