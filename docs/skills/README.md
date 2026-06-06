@@ -27,6 +27,7 @@ Skills never replace procedures. If a skill and its underlying procedure conflic
 | [create-artifact.md](./create-artifact.md) | Fill in the foundational project definition (run first) |
 | [create-research-brief.md](./create-research-brief.md) | Create a new research brief |
 | [create-plan.md](./create-plan.md) | Create a working or formal plan |
+| [execute-plan.md](./execute-plan.md) | Execute a plan task by task with live status tracking |
 | [create-spec.md](./create-spec.md) | Create a new specification file |
 | [create-adr.md](./create-adr.md) | Create a new Architecture Decision Record |
 

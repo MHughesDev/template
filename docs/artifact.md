@@ -30,14 +30,29 @@ What breaks or stays broken if it isn't built?]
 ## What Does Good Look Like?
 
 [Three to five observable conditions that tell you the system is working as intended.
-Write these so a stranger could verify them without asking you what you meant.]
+Write these so a stranger could verify them without asking you what you meant.
+
+Number each one `SC-N` (Success Condition). Downstream artifacts cite these IDs — a plan
+milestone advances an SC, a spec's acceptance criteria satisfy one. Keep the IDs stable;
+append new conditions at the end rather than renumbering.]
+
+- SC-1: [Observable condition]
+- SC-2: [Observable condition]
+- SC-3: [Observable condition]
 
 ---
 
 ## What Would Make This Fail?
 
 [The most likely ways this goes wrong — technically, from a product perspective, or operationally.
-Don't try to be exhaustive. Name the ones that would actually hurt.]
+Don't try to be exhaustive. Name the ones that would actually hurt.
+
+Number each one `FM-N` (Failure Mode). Plans cite these as the source of their risks, and
+research briefs are often opened to investigate one. Keep the IDs stable.]
+
+- FM-1: [How it fails] — [technical | product | operational]
+- FM-2: [How it fails]
+- FM-3: [How it fails]
 
 ---
 

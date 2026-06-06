@@ -33,9 +33,9 @@ in understanding, not a placeholder.
 | What Are We Building? | Name + one-sentence description | Framing for all artifacts |
 | Who Uses It? | Primary and secondary users | Feature specs, UX decisions |
 | What Problem Does It Actually Solve? | The underlying need, not features | Validates scope, surfaces ADR context |
-| What Does Good Look Like? | 3–5 observable success conditions | Acceptance criteria in specs, plan milestones |
-| What Would Make This Fail? | Likely failure modes by category | Plan risks, research questions |
-| What Don't We Know Yet? | Open questions | Research brief candidates |
+| What Does Good Look Like? | 3–5 observable success conditions, each numbered `SC-N` | Acceptance criteria in specs, plan milestones (cited as SC-N) |
+| What Would Make This Fail? | Likely failure modes, each numbered `FM-N` | Plan risks, research questions (cited as FM-N) |
+| What Don't We Know Yet? | Open questions | Research brief candidates → `open-questions.md` (as Q-N) |
 | What Are We Deliberately Not Building? | Explicit out-of-scope items | Spec non-goals, plan scope |
 | What Are We Working Within? | Constraints that shape every decision | ADR context, plan dependencies |
 
@@ -60,8 +60,8 @@ as a risk. But do not skip the step.
 
 ## Checklist
 - [ ] All eight sections have content (no placeholder text remaining)
-- [ ] Success conditions are observable — a stranger could verify them
-- [ ] Failure modes are specific, not generic ("slow" is not a failure mode; "P95 latency exceeds 500ms under 100 concurrent users" is)
+- [ ] Success conditions are numbered `SC-N` and observable — a stranger could verify them
+- [ ] Failure modes are numbered `FM-N` and specific, not generic ("slow" is not a failure mode; "P95 latency exceeds 500ms under 100 concurrent users" is)
 - [ ] Out-of-scope items are explicitly named
 - [ ] User has confirmed the artifact is accurate before any downstream work begins
 

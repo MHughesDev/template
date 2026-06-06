@@ -14,6 +14,11 @@ Use the `Type` field to distinguish them.
 
 A working plan is thinking in progress. A formal plan is a commitment made visible.
 
+**Plans are derived, never assumed.** A formal plan sequences work already established by the
+artifact, architecture, specs, ADRs, and research — every milestone and task traces to a source
+(see the plan's **Derived From** section). If the work has no source, the gap belongs upstream
+(a missing spec, ADR, or research brief), not in the plan.
+
 ---
 
 ## What Belongs Here
