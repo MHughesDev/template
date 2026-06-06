@@ -23,11 +23,12 @@ Skills never replace procedures. If a skill and its underlying procedure conflic
 
 | File | Purpose |
 |------|---------|
-| [generate-system-design.md](./generate-system-design.md) | Full workflow: idea intake → research → plan → spec → ADR |
-| [create-adr.md](./create-adr.md) | Create a new Architecture Decision Record |
-| [create-spec.md](./create-spec.md) | Create a new specification file |
+| [generate-system-design.md](./generate-system-design.md) | Full workflow: artifact → research → plan → spec → ADR |
+| [create-artifact.md](./create-artifact.md) | Fill in the foundational project definition (run first) |
 | [create-research-brief.md](./create-research-brief.md) | Create a new research brief |
 | [create-plan.md](./create-plan.md) | Create a working or formal plan |
+| [create-spec.md](./create-spec.md) | Create a new specification file |
+| [create-adr.md](./create-adr.md) | Create a new Architecture Decision Record |
 
 ---
 

@@ -23,10 +23,11 @@ A procedure is not:
 
 | File | Task |
 |------|------|
-| [add-adr.md](./add-adr.md) | Add a new Architecture Decision Record |
+| [create-artifact.md](./create-artifact.md) | Fill in the foundational project definition (run first) |
 | [add-research.md](./add-research.md) | Add a new research brief |
 | [add-plan.md](./add-plan.md) | Add a new plan (working or formal) |
 | [add-spec.md](./add-spec.md) | Add a new specification file |
+| [add-adr.md](./add-adr.md) | Add a new Architecture Decision Record |
 
 ---
 

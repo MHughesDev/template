@@ -18,7 +18,7 @@ Feature and component specification files. Specs define what something should do
 
 - Architecture decisions → `adr/`
 - Research that informed the spec → `research/`
-- Runbooks or operational docs → `docs/`
+- Project plans and milestones → `plans/`
 
 ---
 
@@ -32,6 +32,11 @@ Describes an internal system component: interface, responsibilities, constraints
 
 ### Data Spec
 Describes a data model or schema: fields, types, validation rules, relationships.
+
+### System Overview Spec
+A unified reference that links all component and feature specs for a complex system.
+Includes a system diagram (ASCII or description) and a cross-reference index.
+Use this instead of a separate documentation phase when the system warrants a top-level map.
 
 ---
 
@@ -48,4 +53,4 @@ Describes a data model or schema: fields, types, validation rules, relationships
 
 | File | Type | Status | Related ADR(s) |
 |------|------|--------|----------------|
-| *(empty — add your first spec)* | — | — | — |
+| [example-user-auth-feature.md](./example-user-auth-feature.md) | Feature | Approved | ADR-0001 |
