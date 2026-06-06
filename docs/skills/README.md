@@ -33,6 +33,7 @@ Skills never replace procedures. If a skill and its underlying procedure conflic
 | [verify-traceability.md](./verify-traceability.md) | Verify cross-references, coverage, and links are intact |
 | [analyze-impact.md](./analyze-impact.md) | Predict the downstream blast radius of a change before making it |
 | [explain-provenance.md](./explain-provenance.md) | Trace an element upward to the reasoning that justifies it |
+| [trace-uncertainty.md](./trace-uncertainty.md) | Render the risk surface of the design from open questions and assumptions |
 
 ---
 

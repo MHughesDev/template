@@ -228,15 +228,15 @@
    - Q-2: Does Clerk's SOC 2 Type II scope explicitly cover the Organizations feature?
    - Q-3: Is Clerk's EU data residency contractually lockable per-account, not just per-tenant?
 
-7.2 Assumptions
+7.2 Assumptions (unvalidated ones are uncertainty sources — see `trace-uncertainty.md`)
    7.2.A Clerk handles all session token issuance, rotation, and revocation. The app
-         does not implement a parallel session layer.
+         does not implement a parallel session layer. — Validated: ADR-0001 §Rationale, 2024-03-08
    7.2.B The app receives a verified Clerk session object and trusts it without re-validating
-         the JWT signature on every request (Clerk middleware handles this).
+         the JWT signature on every request (Clerk middleware handles this). — Validated: [—]
    7.2.C "Default workspace" creation (§3.1.D) is synchronous with the first login redirect.
          If workspace creation fails, the user should see an error rather than a blank
          dashboard — error handling for this case is out of scope for this spec but must be
-         addressed in `DATA-001`.
+         addressed in `DATA-001`. — Validated: [—]
    7.2.D Email domain detection for workspace naming uses a simple split on `@` and a
          hardcoded list of public provider domains (gmail.com, yahoo.com, outlook.com, etc.)
-         to determine whether to use the domain or fall back to "My Workspace".
+         to determine whether to use the domain or fall back to "My Workspace". — Validated: [—]

@@ -137,8 +137,11 @@ existing references never shift. Acceptance items cite the requirement they veri
 
 ## 7. Open Questions & Assumptions
 7.1 Open questions — tracked centrally in [open-questions.md](../open-questions.md) (Q-N)
-7.2 Assumptions
-   7.2.A [Thing assumed true that, if wrong, would change this spec]
+7.2 Assumptions (each carries a validation state; unvalidated assumptions are uncertainty sources)
+   7.2.A [Thing assumed true that, if wrong, would change this spec] — Validated: [—]
+   > Leave `Validated: [—]` until the assumption is confirmed, then replace `[—]` with the
+   > evidence (a test, a vendor confirmation, a research brief). Until then the assumption — and
+   > everything resting on it — sits on the risk surface (`trace-uncertainty.md`).
 ```
 
 ### 4. Update the specs index
