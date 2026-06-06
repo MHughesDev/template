@@ -30,6 +30,7 @@ A procedure is not:
 | [add-spec.md](./add-spec.md) | Add a new specification file |
 | [add-adr.md](./add-adr.md) | Add a new Architecture Decision Record |
 | [verify-traceability.md](./verify-traceability.md) | Check that all cross-references, coverage, and links are intact |
+| [analyze-impact.md](./analyze-impact.md) | Compute the downstream blast radius of a proposed change before making it |
 
 ---
 

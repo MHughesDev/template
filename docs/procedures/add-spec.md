@@ -156,6 +156,8 @@ existing references never shift. Acceptance items cite the requirement they veri
   **Derivation Status:** STALE — [SPEC-ID] updated YYYY-MM-DD, re-derive before next execution
   ```
   This ensures no agent executes a plan against an outdated spec.
+- For a large or far-reaching change, run `procedures/analyze-impact.md` first to find the full
+  downstream closure — not just the plans one hop away — before editing.
 
 ### 6. Retiring or replacing a spec
 Specs are not deleted — like ADRs, they retire so history stays readable.
