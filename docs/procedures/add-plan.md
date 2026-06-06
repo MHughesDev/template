@@ -1,18 +1,18 @@
 # Procedure: Add Plan
 
 ## Purpose
-Create a plan document — either a lightweight working plan in `plan/` or a formal versioned project plan in `plans/`.
+Create a plan document — either a lightweight working plan or a formal versioned project plan — in `plans/`.
 
 ## Trigger
 Use this procedure when:
-- Scoping work for a session or sprint (→ `plan/`)
-- Defining a multi-phase technical approach (→ `plans/`)
-- Breaking down a large feature or migration into sequenced steps (→ `plans/`)
-- Capturing open questions before diving into specs (→ `plan/`)
+- Scoping work for a session or sprint (Working plan)
+- Defining a multi-phase technical approach (Formal plan)
+- Breaking down a large feature or migration into sequenced steps (Formal plan)
+- Capturing open questions before diving into specs (Working plan)
 
 ## Inputs
 Before starting, determine:
-- **Type**: working plan (transient, `plan/`) or formal plan (persistent, `plans/`)
+- **Type**: Working (transient scratchpad) or Formal (persistent, versioned)
 - **Goal**: what does success look like at the end of this plan?
 - **Scope**: what is in and out of scope?
 - **Known dependencies**: what must be true or complete before this plan can execute?
@@ -21,29 +21,33 @@ Before starting, determine:
 
 ## Steps
 
-### 1. Choose the correct folder
-| If the plan is... | Use folder |
-|-------------------|------------|
-| A session scratchpad, quick scope outline, or spike note | `plan/` |
-| A formal roadmap, release plan, or multi-phase migration | `plans/` |
+### 1. Choose the plan type
+
+| If the plan is... | Use type |
+|-------------------|----------|
+| A session scratchpad, quick scope outline, or spike note | Working |
+| A formal roadmap, release plan, or multi-phase migration | Formal |
+
+All plans go in `plans/`. The `Type:` field in the file header distinguishes them.
 
 ### 2. Create the plan file
 
-**For working plans (`plan/`):**
+**For working plans:**
 - Name: `kebab-case-description.md` or `YYYY-MM-DD-description.md`
 - Example: `2024-03-15-auth-service-spike.md`
 
-**For formal plans (`plans/`):**
+**For formal plans:**
 - Name: `kebab-case-plan-title.md`
 - Example: `api-rate-limiting-rollout.md`
 
 ### 3. Fill in the plan template
 
-**Working plan template (`plan/`):**
+**Working plan template:**
 ```markdown
 # [Plan Title]
 
 **Date:** YYYY-MM-DD
+**Type:** Working
 **Status:** Active | Complete | Abandoned
 
 ## Goal
@@ -64,11 +68,12 @@ Before starting, determine:
 [Fill this in when the plan is complete or abandoned]
 ```
 
-**Formal plan template (`plans/`):**
+**Formal plan template:**
 ```markdown
 # [Plan Title]
 
 **Date:** YYYY-MM-DD
+**Type:** Formal
 **Author:** [name or "Agent"]
 **Status:** Draft | Active | Complete | Superseded
 
@@ -124,17 +129,17 @@ Before starting, determine:
 ```
 
 ### 4. Update the folder index
-1. Open the README.md in the folder you created the file in (`plan/README.md` or `plans/README.md`).
-2. Add a row to the Index table with the file name, description, and status.
+1. Open `plans/README.md`.
+2. Add a row to the Index table with the file name, type, description, and status.
 
 ---
 
 ## Outputs
-- A new file in `plan/` or `plans/`
-- Updated index in the corresponding `README.md`
+- A new file in `plans/`
+- Updated index in `plans/README.md`
 
 ## Checklist
-- [ ] Correct folder chosen (working vs. formal)
+- [ ] `Type:` field is set (Working or Formal)
 - [ ] Goal is clear and measurable
 - [ ] Scope explicitly states what is out of scope
 - [ ] Dependencies are listed and linked

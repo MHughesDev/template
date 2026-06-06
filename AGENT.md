@@ -21,55 +21,25 @@ This ensures repeatable, consistent outputs and keeps the repo self-improving.
 
 ## 2. Idea Intake Protocol
 
-When a user describes a new idea or application, do not immediately start producing design artifacts. First complete the intake sequence:
+When a user describes a new idea or application, do not immediately start producing design artifacts.
+First fill in `docs/artifact.md` — the foundational project definition.
 
-### Step 1 — Understand the Idea
-Ask for (or derive from context):
-- What is being built?
-- Who are the primary users?
-- What problem does it solve?
-- What constraints exist (timeline, budget, team size, existing stack)?
+Follow `docs/skills/create-artifact.md` to guide the user through it.
 
-### Step 2 — Derive Success Criteria
-Generate a numbered list of **success criteria** — observable, testable conditions that confirm the system is working as intended. Example format:
+The artifact replaces the old success-criteria / failure-modes intake sequence. It covers the same
+ground in a more structured, reusable form that directly feeds downstream artifacts.
 
-```
-Success Criteria:
-1. A user can complete [core action] in under [N] seconds.
-2. The system handles [N] concurrent users without degradation.
-3. Data is persisted durably across restarts.
-```
-
-Present these to the user and confirm or refine before continuing.
-
-### Step 3 — Derive Failure Modes
-Generate a numbered list of **failure modes** — specific ways the system could fail to meet its success criteria, broken into categories:
-
-```
-Failure Modes:
-Technical:
-  - [component] fails under [condition]
-  - [dependency] becomes unavailable
-Product:
-  - Users misunderstand [interaction]
-  - Core action is too slow or too complex
-Operational:
-  - No runbook for [failure scenario]
-  - Monitoring does not cover [edge case]
-```
-
-### Step 4 — Confirm Before Designing
-Present the success criteria and failure modes to the user. Get explicit confirmation (or corrections) before producing research, plans, specs, or ADRs.
+Do not proceed to research, plans, or specs until the artifact is filled in and confirmed by the user.
 
 ---
 
 ## 3. Folder Responsibilities
 
-| Folder | What goes there | Agent action |
-|--------|----------------|--------------|
+| Folder / File | What goes there | Agent action |
+|---------------|----------------|--------------|
+| `docs/artifact.md` | Foundational project definition — fill in first | Follow `docs/skills/create-artifact.md` |
 | `docs/research/` | Findings, comparisons, prior art, technology evaluations | Follow `docs/skills/create-research-brief.md` |
-| `docs/plan/` | Lightweight working plans, session scratchpads | Follow `docs/skills/create-plan.md` |
-| `docs/plans/` | Formal versioned project plans | Follow `docs/skills/create-plan.md` |
+| `docs/plans/` | All plans — working scratchpads and formal versioned roadmaps | Follow `docs/skills/create-plan.md` |
 | `docs/specs/` | Component and feature specifications | Follow `docs/skills/create-spec.md` |
 | `docs/adr/` | Architecture Decision Records | Follow `docs/skills/create-adr.md` |
 | `docs/procedures/` | Atomic task instructions | Only modify when adding/improving a procedure |
