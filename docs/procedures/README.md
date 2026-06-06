@@ -31,6 +31,7 @@ A procedure is not:
 | [add-adr.md](./add-adr.md) | Add a new Architecture Decision Record |
 | [verify-traceability.md](./verify-traceability.md) | Check that all cross-references, coverage, and links are intact |
 | [analyze-impact.md](./analyze-impact.md) | Compute the downstream blast radius of a proposed change before making it |
+| [explain-provenance.md](./explain-provenance.md) | Walk upward to the causal chain that justifies an element's existence |
 
 ---
 

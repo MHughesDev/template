@@ -32,6 +32,7 @@ Skills never replace procedures. If a skill and its underlying procedure conflic
 | [create-adr.md](./create-adr.md) | Create a new Architecture Decision Record |
 | [verify-traceability.md](./verify-traceability.md) | Verify cross-references, coverage, and links are intact |
 | [analyze-impact.md](./analyze-impact.md) | Predict the downstream blast radius of a change before making it |
+| [explain-provenance.md](./explain-provenance.md) | Trace an element upward to the reasoning that justifies it |
 
 ---
 
