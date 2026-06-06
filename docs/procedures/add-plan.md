@@ -97,7 +97,7 @@ All plans go in `plans/`. The `Type:` field in the file header distinguishes the
 
 ## Risks
 
-[Reference failure modes from the project intake, or list plan-specific risks]
+[Reference failure modes from the artifact, or list plan-specific risks]
 - Risk: [description] → Mitigation: [approach]
 
 ## Milestones

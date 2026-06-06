@@ -40,17 +40,45 @@ Use this instead of a separate documentation phase when the system warrants a to
 
 ---
 
+## Naming Convention
+
+Spec files are named with a type code + sequential number, not freeform:
+
+```
+<TYPE>-<NNN>-<kebab-name>.md
+```
+
+| Type | Code | Example |
+|------|------|---------|
+| Feature | `FEAT` | `FEAT-001-user-authentication.md` |
+| Component | `COMP` | `COMP-002-rate-limiter.md` |
+| Data | `DATA` | `DATA-001-user-profile-schema.md` |
+| Integration | `INTG` | `INTG-001-stripe-webhooks.md` |
+| System-overview | `SYS` | `SYS-001-system-overview.md` |
+
+Numbering is per type (`FEAT-001` and `COMP-001` may both exist). The **Spec ID** is `<TYPE>-<NNN>`;
+cite any line in a spec as `<SPEC-ID> §N.M.X` (e.g. `FEAT-001 §3.1.A`).
+
+## Internal Structure
+
+Every spec uses the same seven numbered sections, addressed `Section N → N.M → N.M.X`:
+
+`1.` Overview · `2.` Scope · `3.` Requirements · `4.` Interface / Data · `5.` Behavior ·
+`6.` Acceptance Criteria · `7.` Open Questions & Assumptions
+
+See `procedures/add-spec.md` for the full template.
+
 ## Conventions
 
-- File names: `kebab-case.md` — include the type if helpful: `user-auth-feature.md`, `rate-limiter-component.md`
-- Every spec must reference the ADR(s) that inform its key design choices
-- Specs include explicit **out of scope** sections to prevent scope creep
-- Use numbered acceptance criteria so they can be checked off
+- Every spec must reference the ADR(s) that inform its key design choices (§1.3)
+- Specs include an explicit Non-Goals subsection (§2.2) to prevent scope creep
+- Acceptance criteria (§6) cite the requirement (§3) they verify
+- Append new items at the end of a subsection (next letter) so references never shift
 
 ---
 
 ## Index
 
-| File | Type | Status | Related ADR(s) |
-|------|------|--------|----------------|
-| [example-user-auth-feature.md](./example-user-auth-feature.md) | Feature | Approved | ADR-0001 |
+| File | Spec ID | Type | Status | Related ADR(s) |
+|------|---------|------|--------|----------------|
+| [FEAT-001-user-authentication.md](./FEAT-001-user-authentication.md) | FEAT-001 | Feature | Approved | ADR-0001 |

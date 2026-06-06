@@ -8,11 +8,12 @@ A copy-paste starter repository for designing new ideas and applications using a
 
 ## What This Is
 
-This repo is a procedurized system for turning rough ideas into well-documented architectures. It is built around three principles:
+This repo is a procedurized system for turning rough ideas into well-documented architectures. It is application- and stack-agnostic — it defines documentation *practice*, not any particular system. It is built around four principles:
 
 1. **Procedures are the source of truth.** Every repeatable task lives in `procedures/` as a named, atomic instruction set.
 2. **Skills compose procedures.** Files in `skills/` combine procedures into higher-level agent capabilities.
 3. **Folders have a single job.** Each directory has a README that defines what belongs there and why.
+4. **Research before design.** The agent must research prevailing practice, existing building blocks, and trade-offs on the internet before writing any spec, architecture, or decision — never assume. See [AGENT.md](./AGENT.md) §3.
 
 ---
 
@@ -34,13 +35,15 @@ This repo is a procedurized system for turning rough ideas into well-documented 
 ├── AGENT.md             ← agent operating instructions
 │
 └── docs/
-    ├── artifact.md      ← foundational project definition (fill in first)
-    ├── adr/             ← Architecture Decision Records
-    ├── plans/           ← all plans: working scratchpads and formal roadmaps
-    ├── procedures/      ← atomic step-by-step task instructions
-    ├── research/        ← research briefs, findings, comparisons
-    ├── skills/          ← agent skill definitions (reference procedures)
-    └── specs/           ← feature and component specification files
+    ├── artifact.md       ← foundational project definition (fill in first)
+    ├── open-questions.md ← living register of trade-offs and open forks
+    ├── architecture.md   ← current-state system map (emergent, never assumed)
+    ├── adr/              ← Architecture Decision Records
+    ├── plans/            ← all plans: working scratchpads and formal roadmaps
+    ├── procedures/       ← atomic step-by-step task instructions
+    ├── research/         ← research briefs, findings, comparisons
+    ├── skills/           ← agent skill definitions (reference procedures)
+    └── specs/            ← feature and component specification files
 ```
 
 ---
@@ -62,6 +65,8 @@ Idea
 ```
 
 Each step has a corresponding procedure in `docs/procedures/` and a skill in `docs/skills/`.
+
+Two files live *across* all steps: `docs/open-questions.md` (every trade-off the agent weighs) and `docs/architecture.md` (the current-state map, updated as decisions land).
 
 ---
 

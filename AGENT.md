@@ -33,11 +33,36 @@ Do not proceed to research, plans, or specs until the artifact is filled in and 
 
 ---
 
-## 3. Folder Responsibilities
+## 3. Research-First Protocol (MANDATORY)
+
+**Before writing any spec, architecture entry, or design decision, you must research the web first.**
+You may not specify, decide, or assume your way into a design. Do the homework, then design.
+
+Research must establish, at minimum:
+1. **Prevailing practice** — how is this problem commonly solved? What are the established patterns?
+2. **Existing building blocks** — what APIs, services, libraries, or software already exist that
+   could be used instead of building from scratch?
+3. **Trade-offs** — for every consequential fork, what are the competing options and how do they
+   compare? Never present a single option as if it were the only one.
+
+Rules:
+- Record findings as a research brief in `docs/research/` (follow `create-research-brief.md`).
+- Every trade-off you weigh must be logged in `docs/open-questions.md` — open it when you raise the
+  question, resolve it when research settles it.
+- **If you cannot access the internet, say so explicitly and stop.** Do not fill the gap with
+  assumptions. Surface the blocker to the user rather than guessing at common practice.
+
+This protocol is the reason the repo produces trustworthy design instead of confident speculation.
+
+---
+
+## 4. Folder Responsibilities
 
 | Folder / File | What goes there | Agent action |
 |---------------|----------------|--------------|
 | `docs/artifact.md` | Foundational project definition — fill in first | Follow `docs/skills/create-artifact.md` |
+| `docs/open-questions.md` | Living register of trade-offs and unresolved forks | Log every consequential comparison here |
+| `docs/architecture.md` | Current-state system map — emergent, never assumed | Update as ADRs/specs change the system shape |
 | `docs/research/` | Findings, comparisons, prior art, technology evaluations | Follow `docs/skills/create-research-brief.md` |
 | `docs/plans/` | All plans — working scratchpads and formal versioned roadmaps | Follow `docs/skills/create-plan.md` |
 | `docs/specs/` | Component and feature specifications | Follow `docs/skills/create-spec.md` |
@@ -47,10 +72,11 @@ Do not proceed to research, plans, or specs until the artifact is filled in and 
 
 ---
 
-## 4. Output Standards
+## 5. Output Standards
 
 - File names: `kebab-case.md`
 - Headings: Title Case for H1, Sentence case for H2+
+- Specs are named `<TYPE>-NNN-name.md` (e.g. `FEAT-001-…`) and use hierarchical section numbering (`N.M.X`) — see `add-spec.md`
 - Every new artifact must be linked from the relevant folder's `README.md`
 - ADRs are numbered: `adr/0001-title.md`, `adr/0002-title.md`, etc.
 - Specs reference the ADR(s) that informed them
@@ -58,17 +84,20 @@ Do not proceed to research, plans, or specs until the artifact is filled in and 
 
 ---
 
-## 5. Constraints
+## 6. Constraints
 
 - Do not create `.cursor`, `.claude`, `.vscode`, or any editor-specific config files.
 - Do not modify `procedures/` without explicitly telling the user what changed and why.
 - Do not skip the Skill Discovery Protocol (section 1) for any task.
 - Do not produce design artifacts before completing the Idea Intake Protocol (section 2) for new projects.
+- Do not write specs, architecture, or decisions before completing the Research-First Protocol (section 3).
+- Do not assume anything about the target application or its architecture. This repo defines documentation
+  practice only — it is application- and stack-agnostic by design.
 - Keep procedures editor- and agent-agnostic. They must work regardless of the AI tool being used.
 
 ---
 
-## 6. Self-Improvement
+## 7. Self-Improvement
 
 If you complete a task and realize no skill or procedure covered it:
 1. Draft a new procedure in `docs/procedures/` for the atomic steps you followed.

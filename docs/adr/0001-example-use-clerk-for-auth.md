@@ -59,4 +59,4 @@ time before the product is built.
 ## References
 
 - Research: [research/example-auth-provider-comparison.md](../research/example-auth-provider-comparison.md)
-- Spec: [specs/example-user-auth-feature.md](../specs/example-user-auth-feature.md)
+- Spec: [specs/FEAT-001-user-authentication.md](../specs/FEAT-001-user-authentication.md)
